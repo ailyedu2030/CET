@@ -1,0 +1,228 @@
+# AlertManager配置文件 - CET4学习系统告警管理
+# 系统监控与告警 - 任务7.3
+
+global:
+  # SMTP配置
+  smtp_smarthost: 'smtp.qq.com:587'
+  smtp_from: 'cet4-system@example.com'
+  smtp_auth_username: 'cet4-system@example.com'
+  smtp_auth_password: 'your_smtp_password'
+  smtp_require_tls: true
+
+  # 企业微信配置
+  wechat_api_url: 'https://qyapi.weixin.qq.com/cgi-bin/'
+  wechat_api_secret: 'your_wechat_secret'
+  wechat_api_corp_id: 'your_corp_id'
+
+  # 钉钉配置
+  # dingtalk_api_url: 'https://oapi.dingtalk.com/robot/send'
+
+# 路由配置
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'default-receiver'
+  routes:
+    # 严重告警路由
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      group_wait: 5s
+      group_interval: 5s
+      repeat_interval: 30m
+      continue: true
+
+    # 系统告警路由
+    - match:
+        service: system
+      receiver: 'system-alerts'
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 2h
+
+    # 应用告警路由
+    - match:
+        service: application
+      receiver: 'application-alerts'
+      group_wait: 15s
+      group_interval: 2m
+      repeat_interval: 1h
+
+    # 数据库告警路由
+    - match:
+        service: database
+      receiver: 'database-alerts'
+      group_wait: 10s
+      group_interval: 1m
+      repeat_interval: 30m
+
+    # AI服务告警路由
+    - match:
+        service: ai
+      receiver: 'ai-service-alerts'
+      group_wait: 20s
+      group_interval: 5m
+      repeat_interval: 2h
+
+    # 成本告警路由
+    - match_re:
+        alertname: '.*Cost.*'
+      receiver: 'cost-alerts'
+      group_wait: 1m
+      group_interval: 10m
+      repeat_interval: 6h
+
+# 抑制规则
+inhibit_rules:
+  # 当有严重告警时，抑制相同服务的警告告警
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'service', 'instance']
+
+  # 当应用服务不可用时，抑制相关的性能告警
+  - source_match:
+      alertname: 'ApplicationDown'
+    target_match_re:
+      alertname: '(HighResponseTime|HighHTTPErrorRate|HighConcurrentConnections)'
+    equal: ['instance']
+
+# 接收器配置
+receivers:
+  # 默认接收器
+  - name: 'default-receiver'
+    email_configs:
+      - to: 'admin@example.com'
+        subject: '[CET4系统] {{ .GroupLabels.alertname }} 告警'
+        body: |
+          {{ range .Alerts }}
+          告警名称: {{ .Annotations.summary }}
+          告警描述: {{ .Annotations.description }}
+          告警级别: {{ .Labels.severity }}
+          服务名称: {{ .Labels.service }}
+          实例地址: {{ .Labels.instance }}
+          开始时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+
+  # 严重告警接收器
+  - name: 'critical-alerts'
+    email_configs:
+      - to: 'admin@example.com,ops@example.com'
+        subject: '[CET4系统-严重] {{ .GroupLabels.alertname }} 告警'
+        body: |
+          🚨 严重告警通知 🚨
+          
+          {{ range .Alerts }}
+          告警名称: {{ .Annotations.summary }}
+          告警描述: {{ .Annotations.description }}
+          告警级别: {{ .Labels.severity }}
+          服务名称: {{ .Labels.service }}
+          实例地址: {{ .Labels.instance }}
+          开始时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          
+          请立即处理！
+          {{ end }}
+        headers:
+          Priority: 'high'
+    
+    # 企业微信通知
+    wechat_configs:
+      - agent_id: 'your_agent_id'
+        to_user: '@all'
+        to_party: 'ops_team'
+        message: |
+          🚨 CET4系统严重告警
+          
+          {{ range .Alerts }}
+          告警: {{ .Annotations.summary }}
+          描述: {{ .Annotations.description }}
+          服务: {{ .Labels.service }}
+          时间: {{ .StartsAt.Format "15:04:05" }}
+          {{ end }}
+
+  # 系统告警接收器
+  - name: 'system-alerts'
+    email_configs:
+      - to: 'ops@example.com'
+        subject: '[CET4系统-系统] {{ .GroupLabels.alertname }} 告警'
+        body: |
+          系统资源告警通知
+          
+          {{ range .Alerts }}
+          告警名称: {{ .Annotations.summary }}
+          告警描述: {{ .Annotations.description }}
+          实例地址: {{ .Labels.instance }}
+          当前值: {{ .Annotations.value }}
+          开始时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+
+  # 应用告警接收器
+  - name: 'application-alerts'
+    email_configs:
+      - to: 'dev@example.com,ops@example.com'
+        subject: '[CET4系统-应用] {{ .GroupLabels.alertname }} 告警'
+        body: |
+          应用服务告警通知
+          
+          {{ range .Alerts }}
+          告警名称: {{ .Annotations.summary }}
+          告警描述: {{ .Annotations.description }}
+          服务实例: {{ .Labels.instance }}
+          开始时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+
+  # 数据库告警接收器
+  - name: 'database-alerts'
+    email_configs:
+      - to: 'dba@example.com,ops@example.com'
+        subject: '[CET4系统-数据库] {{ .GroupLabels.alertname }} 告警'
+        body: |
+          数据库服务告警通知
+          
+          {{ range .Alerts }}
+          告警名称: {{ .Annotations.summary }}
+          告警描述: {{ .Annotations.description }}
+          数据库实例: {{ .Labels.instance }}
+          开始时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+
+  # AI服务告警接收器
+  - name: 'ai-service-alerts'
+    email_configs:
+      - to: 'ai-team@example.com,ops@example.com'
+        subject: '[CET4系统-AI服务] {{ .GroupLabels.alertname }} 告警'
+        body: |
+          AI服务告警通知
+          
+          {{ range .Alerts }}
+          告警名称: {{ .Annotations.summary }}
+          告警描述: {{ .Annotations.description }}
+          服务实例: {{ .Labels.instance }}
+          开始时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+
+  # 成本告警接收器
+  - name: 'cost-alerts'
+    email_configs:
+      - to: 'finance@example.com,admin@example.com'
+        subject: '[CET4系统-成本] {{ .GroupLabels.alertname }} 告警'
+        body: |
+          成本控制告警通知
+          
+          {{ range .Alerts }}
+          告警名称: {{ .Annotations.summary }}
+          告警描述: {{ .Annotations.description }}
+          当前成本: {{ .Annotations.value }}
+          开始时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          
+          请关注成本控制！
+          {{ end }}
+        headers:
+          Priority: 'high'
+
+# 模板配置
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'

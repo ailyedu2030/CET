@@ -1,0 +1,55 @@
+# Pre-commit hooks配置 - 零容忍质量标准
+repos:
+  # Python代码质量
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.6
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  # Python类型检查
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-all]
+        args: [--strict]
+
+  # 通用代码质量
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: mixed-line-ending
+
+  # TypeScript/JavaScript代码质量
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.53.0
+    hooks:
+      - id: eslint
+        files: \.(ts|tsx|js|jsx)$
+        types: [file]
+        additional_dependencies:
+          - eslint@8.53.0
+          - '@typescript-eslint/eslint-plugin@6.10.0'
+          - '@typescript-eslint/parser@6.10.0'
+          - eslint-plugin-react-hooks@4.6.0
+          - eslint-plugin-react-refresh@0.4.4
+
+  # 安全检查
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: [-r, app/, -f, json, -o, bandit-report.json]
+
+# 全局配置
+default_stages: [commit]
+fail_fast: true

@@ -1,0 +1,329 @@
+# 英语四级学习系统 - 生产环境Docker Compose配置
+# 用于生产环境的完整服务栈部署
+
+version: '3.8'
+
+services:
+  # 主应用服务
+  app:
+    image: ghcr.io/your-org/cet4-learning:${IMAGE_TAG:-latest}
+    container_name: cet4_app_prod
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - MILVUS_HOST=milvus
+      - MILVUS_PORT=19530
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+      - DEEPSEEK_API_KEYS=${DEEPSEEK_API_KEYS}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    volumes:
+      - app_logs:/app/logs
+      - app_uploads:/app/uploads
+      - app_reports:/app/reports
+    networks:
+      - cet4_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      milvus:
+        condition: service_started
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+
+  # PostgreSQL数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: cet4_postgres_prod
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_backups:/backups
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    networks:
+      - cet4_network
+    ports:
+      - "127.0.0.1:5432:5432"  # 仅本地访问
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+
+  # Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: cet4_redis_prod
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes --appendfsync everysec
+    volumes:
+      - redis_data:/data
+    networks:
+      - cet4_network
+    ports:
+      - "127.0.0.1:6379:6379"  # 仅本地访问
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+  # Milvus向量数据库
+  milvus:
+    image: milvusdb/milvus:v2.3.0
+    container_name: cet4_milvus_prod
+    restart: unless-stopped
+    command: ["milvus", "run", "standalone"]
+    environment:
+      - ETCD_ENDPOINTS=etcd:2379
+      - MINIO_ADDRESS=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+    volumes:
+      - milvus_data:/var/lib/milvus
+    networks:
+      - cet4_network
+    ports:
+      - "127.0.0.1:19530:19530"  # 仅本地访问
+    depends_on:
+      - etcd
+      - minio
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  # etcd (Milvus依赖)
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: cet4_etcd_prod
+    restart: unless-stopped
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    volumes:
+      - etcd_data:/etcd
+    networks:
+      - cet4_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # MinIO对象存储
+  minio:
+    image: minio/minio:latest
+    container_name: cet4_minio_prod
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    networks:
+      - cet4_network
+    ports:
+      - "127.0.0.1:9000:9000"   # API端口，仅本地访问
+      - "127.0.0.1:9001:9001"   # 控制台端口，仅本地访问
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+  # Celery Worker
+  celery-worker:
+    image: ghcr.io/your-org/cet4-learning:${IMAGE_TAG:-latest}
+    container_name: cet4_celery_worker_prod
+    restart: unless-stopped
+    command: celery -A app.core.celery worker --loglevel=info --concurrency=4
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - SECRET_KEY=${SECRET_KEY}
+      - DEEPSEEK_API_KEYS=${DEEPSEEK_API_KEYS}
+    volumes:
+      - app_logs:/app/logs
+      - app_uploads:/app/uploads
+      - app_reports:/app/reports
+    networks:
+      - cet4_network
+    depends_on:
+      - postgres
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  # Celery Beat (定时任务)
+  celery-beat:
+    image: ghcr.io/your-org/cet4-learning:${IMAGE_TAG:-latest}
+    container_name: cet4_celery_beat_prod
+    restart: unless-stopped
+    command: celery -A app.core.celery beat --loglevel=info
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - app_logs:/app/logs
+      - celery_beat_data:/app/celerybeat-schedule
+    networks:
+      - cet4_network
+    depends_on:
+      - postgres
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 512M
+
+  # Nginx反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: cet4_nginx_prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - nginx_logs:/var/log/nginx
+      - app_uploads:/var/www/uploads:ro
+      - app_reports:/var/www/reports:ro
+    networks:
+      - cet4_network
+    depends_on:
+      - app
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+
+# 网络配置
+networks:
+  cet4_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# 数据卷配置
+volumes:
+  postgres_data:
+    driver: local
+  postgres_backups:
+    driver: local
+  redis_data:
+    driver: local
+  milvus_data:
+    driver: local
+  etcd_data:
+    driver: local
+  minio_data:
+    driver: local
+  app_logs:
+    driver: local
+  app_uploads:
+    driver: local
+  app_reports:
+    driver: local
+  celery_beat_data:
+    driver: local
+  nginx_logs:
+    driver: local

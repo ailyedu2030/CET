@@ -1,0 +1,314 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.5, pytest-8.4.1, pluggy-1.6.0 -- /Volumes/APP1/CET/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Volumes/APP1/CET
+configfile: pytest.ini
+plugins: anyio-4.10.0, cov-6.2.1
+collecting ... collected 66 items / 8 errors
+
+==================================== ERRORS ====================================
+______________ ERROR collecting tests/e2e/admin_workflow_test.py _______________
+ImportError while importing test module '/Volumes/APP1/CET/tests/e2e/admin_workflow_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/e2e/admin_workflow_test.py:18: in <module>
+    from app.main import app
+app/main.py:13: in <module>
+    from app.core.api.v1.architecture_endpoints import router as architecture_router
+app/core/api/v1/architecture_endpoints.py:13: in <module>
+    from app.core.services.data_integration_service import DataIntegrationService
+app/core/services/data_integration_service.py:15: in <module>
+    from app.shared.utils.exceptions import BusinessLogicError
+E   ModuleNotFoundError: No module named 'app.shared.utils.exceptions'
+________________ ERROR collecting tests/e2e/performance_test.py ________________
+ImportError while importing test module '/Volumes/APP1/CET/tests/e2e/performance_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/e2e/performance_test.py:17: in <module>
+    import psutil
+E   ModuleNotFoundError: No module named 'psutil'
+_____________ ERROR collecting tests/e2e/student_workflow_test.py ______________
+ImportError while importing test module '/Volumes/APP1/CET/tests/e2e/student_workflow_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/e2e/student_workflow_test.py:18: in <module>
+    from app.main import app
+app/main.py:13: in <module>
+    from app.core.api.v1.architecture_endpoints import router as architecture_router
+app/core/api/v1/architecture_endpoints.py:13: in <module>
+    from app.core.services.data_integration_service import DataIntegrationService
+app/core/services/data_integration_service.py:15: in <module>
+    from app.shared.utils.exceptions import BusinessLogicError
+E   ModuleNotFoundError: No module named 'app.shared.utils.exceptions'
+_____________ ERROR collecting tests/e2e/teacher_workflow_test.py ______________
+ImportError while importing test module '/Volumes/APP1/CET/tests/e2e/teacher_workflow_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/e2e/teacher_workflow_test.py:19: in <module>
+    from app.main import app
+app/main.py:13: in <module>
+    from app.core.api.v1.architecture_endpoints import router as architecture_router
+app/core/api/v1/architecture_endpoints.py:13: in <module>
+    from app.core.services.data_integration_service import DataIntegrationService
+app/core/services/data_integration_service.py:15: in <module>
+    from app.shared.utils.exceptions import BusinessLogicError
+E   ModuleNotFoundError: No module named 'app.shared.utils.exceptions'
+_________________ ERROR collecting tests/fixtures/test_data.py _________________
+ImportError while importing test module '/Volumes/APP1/CET/tests/fixtures/test_data.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/fixtures/test_data.py:12: in <module>
+    from faker import Faker
+E   ModuleNotFoundError: No module named 'faker'
+__________ ERROR collecting tests/integration/api_integration_test.py __________
+ImportError while importing test module '/Volumes/APP1/CET/tests/integration/api_integration_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/api_integration_test.py:17: in <module>
+    from app.main import app
+app/main.py:13: in <module>
+    from app.core.api.v1.architecture_endpoints import router as architecture_router
+app/core/api/v1/architecture_endpoints.py:13: in <module>
+    from app.core.services.data_integration_service import DataIntegrationService
+app/core/services/data_integration_service.py:15: in <module>
+    from app.shared.utils.exceptions import BusinessLogicError
+E   ModuleNotFoundError: No module named 'app.shared.utils.exceptions'
+_______ ERROR collecting tests/integration/database_integration_test.py ________
+ImportError while importing test module '/Volumes/APP1/CET/tests/integration/database_integration_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/database_integration_test.py:20: in <module>
+    from app.core.database import get_session
+E   ImportError: cannot import name 'get_session' from 'app.core.database' (/Volumes/APP1/CET/app/core/database.py)
+____ ERROR collecting tests/unit/shared/test_base_model_education_logic.py _____
+ImportError while importing test module '/Volumes/APP1/CET/tests/unit/shared/test_base_model_education_logic.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/shared/test_base_model_education_logic.py:8: in <module>
+    from app.shared.models.base_model import BaseModel, EducationBaseModel
+E   ImportError: cannot import name 'EducationBaseModel' from 'app.shared.models.base_model' (/Volumes/APP1/CET/app/shared/models/base_model.py)
+=============================== warnings summary ===============================
+app/shared/models/validators.py:18
+  /Volumes/APP1/CET/app/shared/models/validators.py:18: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("username")
+
+app/shared/models/validators.py:25
+  /Volumes/APP1/CET/app/shared/models/validators.py:25: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("password")
+
+app/shared/models/validators.py:46
+  /Volumes/APP1/CET/app/shared/models/validators.py:46: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("question_count")
+
+app/shared/models/validators.py:68
+  /Volumes/APP1/CET/app/shared/models/validators.py:68: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("difficulty_level")
+
+app/shared/models/validators.py:75
+  /Volumes/APP1/CET/app/shared/models/validators.py:75: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("time_limit")
+
+app/shared/models/validators.py:110
+  /Volumes/APP1/CET/app/shared/models/validators.py:110: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("temperature")
+
+app/shared/models/validators.py:125
+  /Volumes/APP1/CET/app/shared/models/validators.py:125: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("max_tokens")
+
+app/shared/models/validators.py:141
+  /Volumes/APP1/CET/app/shared/models/validators.py:141: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("model_name")
+
+app/shared/models/validators.py:157
+  /Volumes/APP1/CET/app/shared/models/validators.py:157: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("daily_study_minutes")
+
+app/shared/models/validators.py:171
+  /Volumes/APP1/CET/app/shared/models/validators.py:171: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("content")
+
+app/shared/models/validators.py:200
+  /Volumes/APP1/CET/app/shared/models/validators.py:200: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("resource_type")
+
+app/shared/models/validators.py:214
+  /Volumes/APP1/CET/app/shared/models/validators.py:214: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("accuracy_score")
+
+app/shared/models/validators.py:230
+  /Volumes/APP1/CET/app/shared/models/validators.py:230: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("difficulty_preference")
+
+app/shared/models/validators.py:243
+  /Volumes/APP1/CET/app/shared/models/validators.py:243: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("performance_history")
+
+app/shared/models/validators.py:250
+  /Volumes/APP1/CET/app/shared/models/validators.py:250: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("recommended_difficulty")
+
+app/shared/models/validators.py:264
+  /Volumes/APP1/CET/app/shared/models/validators.py:264: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("error_type")
+
+app/shared/models/validators.py:272
+  /Volumes/APP1/CET/app/shared/models/validators.py:272: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("confidence_score")
+
+app/users/schemas/registration_schemas.py:37
+  /Volumes/APP1/CET/app/users/schemas/registration_schemas.py:37: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("id_number")
+
+app/training/schemas/training_schemas.py:56
+  /Volumes/APP1/CET/app/training/schemas/training_schemas.py:56: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("session_name")
+
+app/training/schemas/training_schemas.py:91
+  /Volumes/APP1/CET/app/training/schemas/training_schemas.py:91: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("accuracy_rate", pre=True, always=True)
+
+app/training/schemas/training_schemas.py:213
+  /Volumes/APP1/CET/app/training/schemas/training_schemas.py:213: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("time_spent", pre=True, always=True)
+
+.venv/lib/python3.13/site-packages/pydantic/_internal/_config.py:353: 11 warnings
+  /Volumes/APP1/CET/.venv/lib/python3.13/site-packages/pydantic/_internal/_config.py:353: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+app/shared/config/vector_config.py:62
+  /Volumes/APP1/CET/app/shared/config/vector_config.py:62: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("index_type")
+
+app/shared/config/vector_config.py:70
+  /Volumes/APP1/CET/app/shared/config/vector_config.py:70: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("metric_type")
+
+app/shared/config/vector_config.py:90
+  /Volumes/APP1/CET/app/shared/config/vector_config.py:90: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("dimension")
+
+app/shared/config/vector_config.py:97
+  /Volumes/APP1/CET/app/shared/config/vector_config.py:97: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("max_length")
+
+tests/unit/test_milvus_integration.py:127
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:127: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:141
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:141: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:151
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:151: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:168
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:168: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:190
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:190: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:210
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:210: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:222
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:222: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:233
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:233: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:242
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:242: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:292
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:292: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:304
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:304: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:318
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:318: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:330
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:330: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:347
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:347: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:377
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:377: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:396
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:396: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:427
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:427: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+tests/unit/test_milvus_integration.py:440
+  /Volumes/APP1/CET/tests/unit/test_milvus_integration.py:440: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+app/shared/config/storage_config.py:63
+  /Volumes/APP1/CET/app/shared/config/storage_config.py:63: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("extension")
+
+app/shared/config/storage_config.py:70
+  /Volumes/APP1/CET/app/shared/config/storage_config.py:70: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    @validator("max_size")
+
+tests/unit/test_minio_integration.py:197
+  /Volumes/APP1/CET/tests/unit/test_minio_integration.py:197: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/e2e/admin_workflow_test.py
+ERROR tests/e2e/performance_test.py
+ERROR tests/e2e/student_workflow_test.py
+ERROR tests/e2e/teacher_workflow_test.py
+ERROR tests/fixtures/test_data.py
+ERROR tests/integration/api_integration_test.py
+ERROR tests/integration/database_integration_test.py
+ERROR tests/unit/shared/test_base_model_education_logic.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 8 errors during collection !!!!!!!!!!!!!!!!!!!!
+======================== 57 warnings, 8 errors in 1.93s ========================

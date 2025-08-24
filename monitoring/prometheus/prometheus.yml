@@ -1,0 +1,141 @@
+# Prometheus配置文件 - CET4学习系统监控
+# 系统监控与告警 - 任务7.3
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'cet4-learning-system'
+    environment: 'production'
+
+# 告警规则文件
+rule_files:
+  - "rules/*.yml"
+
+# 告警管理器配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - cet4-alertmanager:9093
+
+# 监控目标配置
+scrape_configs:
+  # FastAPI应用监控
+  - job_name: 'cet4-app'
+    static_configs:
+      - targets: ['cet4-app:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    honor_labels: true
+    params:
+      format: ['prometheus']
+
+  # PostgreSQL数据库监控
+  - job_name: 'cet4-postgres'
+    static_configs:
+      - targets: ['cet4-postgres-exporter:9187']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Redis缓存监控
+  - job_name: 'cet4-redis'
+    static_configs:
+      - targets: ['cet4-redis-exporter:9121']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Milvus向量数据库监控
+  - job_name: 'cet4-milvus'
+    static_configs:
+      - targets: ['cet4-milvus:9091']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # MinIO对象存储监控
+  - job_name: 'cet4-minio'
+    static_configs:
+      - targets: ['cet4-minio:9000']
+    metrics_path: '/minio/v2/metrics/cluster'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Nginx反向代理监控
+  - job_name: 'cet4-nginx'
+    static_configs:
+      - targets: ['cet4-nginx:9113']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Node Exporter - 系统资源监控
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['cet4-node-exporter:9100']
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  # cAdvisor - 容器监控
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cet4-cadvisor:8080']
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  # Prometheus自监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Grafana监控
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['cet4-grafana:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # AlertManager监控
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['cet4-alertmanager:9093']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+# 远程写入配置（可选，用于长期存储）
+# remote_write:
+#   - url: "http://cet4-thanos-receive:19291/api/v1/receive"
+#     queue_config:
+#       max_samples_per_send: 1000
+#       max_shards: 200
+#       capacity: 2500
+
+# 远程读取配置（可选，用于查询历史数据）
+# remote_read:
+#   - url: "http://cet4-thanos-query:19192/api/v1/query"
+#     read_recent: true
+
+# 存储配置
+storage:
+  tsdb:
+    path: /prometheus/data
+    retention.time: 30d
+    retention.size: 50GB
+    wal-compression: true
+
+# Web配置
+web:
+  console.templates: /etc/prometheus/consoles
+  console.libraries: /etc/prometheus/console_libraries
+  enable-lifecycle: true
+  enable-admin-api: true
+  max-connections: 512
+  read-timeout: 30s
+  route-prefix: /
+
+# 日志配置
+log:
+  level: info
+  format: logfmt

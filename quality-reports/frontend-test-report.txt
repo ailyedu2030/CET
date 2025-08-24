@@ -1,0 +1,12 @@
+
+> cet4-learning-frontend@1.0.0 test
+> vitest
+
+
+ DEV  v0.34.6 /Volumes/APP1/CET/frontend
+
+include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*
+watch exclude:  **/node_modules/**, **/dist/**
+
+No test files found, exiting with code 1

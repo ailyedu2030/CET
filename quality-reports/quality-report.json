@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-08-25T02:47:14.853810",
+  "summary": {
+    "code_quality": {
+      "ruff_issues": 0,
+      "status": "✅ PASS"
+    },
+    "security": {
+      "bandit_issues": 0,
+      "high_severity": 0,
+      "vulnerabilities": 0,
+      "status": "✅ PASS"
+    },
+    "complexity": {
+      "high_complexity_files": 0,
+      "status": "✅ PASS"
+    }
+  },
+  "details": {},
+  "recommendations": []
+}

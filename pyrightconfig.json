@@ -1,0 +1,20 @@
+{
+  "typeCheckingMode": "off",
+  "reportGeneralTypeIssues": "none",
+  "reportMissingModuleSource": "none",
+  "reportMissingImports": "none",
+  "reportMissingTypeStubs": "none",
+  "reportOptionalMemberAccess": "none",
+  "reportOptionalSubscript": "none",
+  "reportPrivateImportUsage": "none",
+  "reportUnusedImport": "none",
+  "reportUnusedVariable": "none",
+  "reportIncompatibleMethodOverride": "none",
+  "reportIncompatibleVariableOverride": "none",
+  "reportUntypedFunctionDecorator": "none",
+  "reportUntypedClassDecorator": "none",
+  "reportUntypedBaseClass": "none",
+  "reportConstantRedefinition": "none",
+  "reportDuplicateImport": "none",
+  "reportWildcardImportFromLibrary": "none"
+}

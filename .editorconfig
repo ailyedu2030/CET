@@ -1,0 +1,63 @@
+# EditorConfig配置文件
+# 确保代码风格一致性
+
+root = true
+
+# 所有文件的默认设置
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Python文件
+[*.py]
+indent_size = 4
+max_line_length = 88
+
+# JavaScript/TypeScript文件
+[*.{js,jsx,ts,tsx}]
+indent_size = 2
+
+# JSON文件
+[*.json]
+indent_size = 2
+
+# YAML文件
+[*.{yml,yaml}]
+indent_size = 2
+
+# Markdown文件
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = 120
+
+# Shell脚本
+[*.{sh,bash}]
+indent_size = 2
+
+# Docker文件
+[Dockerfile*]
+indent_size = 4
+
+# CODEOWNERS文件
+[CODEOWNERS]
+indent_size = 2
+
+# 配置文件
+[*.{toml,ini,cfg}]
+indent_size = 4
+
+# 环境文件
+[.env*]
+indent_size = 2
+
+# GitHub Actions工作流
+[.github/workflows/*.{yml,yaml}]
+indent_size = 2
+
+# 忽略生成的文件
+[{package-lock.json,yarn.lock}]
+insert_final_newline = false

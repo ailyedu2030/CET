@@ -1,0 +1,41 @@
+{
+  "mcpServers": {
+    "chrome-mcp-stdio": {
+      "command": "npx",
+      "args": [
+        "node",
+        "/opt/homebrew/lib/node_modules/mcp-chrome-bridge/dist/mcp/mcp-server-stdio.js"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "navigate",
+        "screenshot",
+        "get_page_content",
+        "click",
+        "type",
+        "get_windows_and_tabs",
+        "chrome_navigate",
+        "chrome_screenshot",
+        "chrome_get_web_content",
+        "chrome_get_interactive_elements",
+        "chrome_click_element",
+        "chrome_navigate",
+        "chrome_keyboard",
+        "search_tabs_content"
+      ]
+    },
+    "Context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": [
+        "resolve-library-id",
+        "get-library-docs"
+      ]
+    }
+  }
+}

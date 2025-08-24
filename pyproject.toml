@@ -1,0 +1,180 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cet4-learning-system"
+version = "1.0.0"
+description = "英语四级学习及教学系统"
+authors = [
+    {name = "CET4 Learning Team", email = "team@cet4learning.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.12.0",
+    "asyncpg>=0.29.0",
+    "redis>=5.0.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "python-multipart>=0.0.6",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "httpx>=0.25.0",
+    "aiofiles>=23.2.1",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+# 排除不需要检查的文件和目录
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "node_modules",
+    "quality-reports",
+    "*.json",
+    "*.md",
+    "*.yml",
+    "*.yaml",
+    "*.toml",
+    "*.txt",
+    "*.sh",
+    ".env*",
+    "Dockerfile*",
+    ".github/CODEOWNERS",
+]
+
+[tool.ruff.format]
+# 使用双引号而不是单引号
+quote-style = "double"
+# 缩进风格：空格
+indent-style = "space"
+# 跳过magic trailing comma
+skip-magic-trailing-comma = false
+# 行结束符
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ANN", # flake8-annotations
+]
+ignore = [
+    "E501",    # line too long, handled by formatter
+    "B008",    # do not perform function calls in argument defaults
+    "C901",    # too complex
+    "ANN401",  # Dynamically typed expressions (Any) are disallowed
+]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = [
+    "S101",    # Use of assert detected
+    "T201",    # print found
+    "G003",    # logging statement uses +
+    "G004",    # logging statement uses f-string
+    "PLR2004", # Magic value used in comparison
+    "F841",    # Local variable assigned but never used
+    "RUF001",  # String contains ambiguous characters
+    "RUF002",  # Docstring contains ambiguous characters
+    "RUF003",  # Comment contains ambiguous characters
+    "ANN201",  # Missing return type annotation
+    "PLC0415", # import should be at top level
+]
+"tests/*" = ["S101", "PLR2004", "F841", "ANN"]  # 测试文件允许assert和魔法数字
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = false  # 关闭装饰器类型检查，避免Celery等框架问题
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = false  # 关闭未使用ignore警告，避免框架兼容性问题
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+ignore_missing_imports = true
+
+# 关闭一些严格检查来解决框架兼容性问题
+disable_error_code = ["misc", "override", "assignment"]
+
+[[tool.mypy.overrides]]
+module = ["scripts.*", "tests.*"]
+ignore_errors = true
+
+# Celery任务装饰器兼容性
+[[tool.mypy.overrides]]
+module = ["app.*.tasks.*", "app.shared.tasks.*"]
+disable_error_code = ["misc", "override"]
+disallow_untyped_decorators = false
+
+# SQLAlchemy模型兼容性
+[[tool.mypy.overrides]]
+module = ["app.*.models.*", "app.shared.models.*"]
+disable_error_code = ["misc", "override", "assignment"]
+
+# 第三方库兼容性
+[[tool.mypy.overrides]]
+module = ["celery.*", "sqlalchemy.*", "alembic.*", "fastapi.*", "pydantic.*"]
+ignore_missing_imports = true
+disable_error_code = ["misc"]
+
+[tool.pyright]
+# 禁用pyright类型检查 - 项目使用ruff和mypy作为代码质量工具
+typeCheckingMode = "off"
+reportMissingImports = false
+reportMissingTypeStubs = false
+reportGeneralTypeIssues = false
+reportOptionalMemberAccess = false
+reportOptionalSubscript = false
+reportPrivateImportUsage = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=app",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]

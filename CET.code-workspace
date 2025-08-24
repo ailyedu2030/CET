@@ -1,0 +1,61 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.analysis.typeCheckingMode": "off",
+        "python.analysis.autoImportCompletions": true,
+        "python.analysis.autoSearchPaths": true,
+        "python.analysis.extraPaths": [],
+        "python.analysis.stubPath": "${workspaceFolder}/.venv/lib/python3.11/site-packages",
+        "python.analysis.diagnosticMode": "workspace",
+        "python.analysis.disabled": [
+            "reportMissingModuleSource",
+            "reportMissingImports", 
+            "reportMissingTypeStubs",
+            "reportGeneralTypeIssues",
+            "reportOptionalMemberAccess",
+            "reportOptionalSubscript", 
+            "reportPrivateImportUsage",
+            "reportUnusedImport",
+            "reportUnusedVariable"
+        ],
+        "mypy-type-checker.args": [
+            "--config-file=pyproject.toml",
+            "--show-error-codes", 
+            "--show-error-context",
+            "--no-incremental",
+            "--cache-dir=/tmp/mypy_workspace_cache"
+        ],
+        "mypy-type-checker.path": ["${workspaceFolder}/.venv/bin/mypy"],
+        "mypy-type-checker.importStrategy": "fromEnvironment",
+        "mypy-type-checker.showNotifications": "onError",
+        "mypy-type-checker.reportingScope": "workspace",
+        "mypy-type-checker.severity": {
+            "error": "Error",
+            "note": "Information"
+        },
+        "[python]": {
+            "diffEditor.ignoreTrimWhitespace": false,
+            "editor.defaultColorDecorators": "never",
+            "editor.defaultFormatter": "charliermarsh.ruff",
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports.ruff": "explicit",
+                "source.fixAll.ruff": "explicit",
+                "source.organizeImports": "never"
+            }
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.mypy-type-checker",
+            "charliermarsh.ruff"
+        ]
+    }
+}

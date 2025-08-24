@@ -1,0 +1,66 @@
+# Grafana面板配置 - CET4学习系统
+# 系统监控与告警 - 任务7.3
+
+apiVersion: 1
+
+# 面板提供者配置
+providers:
+  # CET4系统面板
+  - name: 'cet4-dashboards'
+    orgId: 1
+    folder: 'CET4学习系统'
+    folderUid: 'cet4-system'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
+
+  # 系统监控面板
+  - name: 'system-monitoring'
+    orgId: 1
+    folder: '系统监控'
+    folderUid: 'system-monitoring'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/system
+
+  # 应用监控面板
+  - name: 'application-monitoring'
+    orgId: 1
+    folder: '应用监控'
+    folderUid: 'application-monitoring'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/application
+
+  # 业务监控面板
+  - name: 'business-monitoring'
+    orgId: 1
+    folder: '业务监控'
+    folderUid: 'business-monitoring'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/business
+
+  # AI服务监控面板
+  - name: 'ai-service-monitoring'
+    orgId: 1
+    folder: 'AI服务监控'
+    folderUid: 'ai-service-monitoring'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/ai

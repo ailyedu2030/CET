@@ -1,0 +1,4 @@
+
+> cet4-learning-frontend@1.0.0 type-check
+> tsc --noEmit
+

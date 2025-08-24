@@ -1,0 +1,139 @@
+# Grafana数据源配置 - CET4学习系统
+# 系统监控与告警 - 任务7.3
+
+apiVersion: 1
+
+# 数据源配置列表
+datasources:
+  # Prometheus数据源
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://cet4-prometheus:9090
+    isDefault: true
+    editable: true
+    jsonData:
+      httpMethod: POST
+      manageAlerts: true
+      prometheusType: Prometheus
+      prometheusVersion: 2.40.0
+      cacheLevel: 'High'
+      disableMetricsLookup: false
+      customQueryParameters: ''
+      timeInterval: '30s'
+      queryTimeout: '60s'
+      defaultEditor: 'code'
+      exemplarTraceIdDestinations:
+        - name: trace_id
+          datasourceUid: jaeger
+    secureJsonData: {}
+    version: 1
+    uid: prometheus
+
+  # AlertManager数据源
+  - name: AlertManager
+    type: alertmanager
+    access: proxy
+    url: http://cet4-alertmanager:9093
+    isDefault: false
+    editable: true
+    jsonData:
+      implementation: prometheus
+      handleGrafanaManagedAlerts: false
+    version: 1
+    uid: alertmanager
+
+  # Loki日志数据源（可选）
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://cet4-loki:3100
+    isDefault: false
+    editable: true
+    jsonData:
+      maxLines: 1000
+      derivedFields:
+        - datasourceUid: jaeger
+          matcherRegex: "trace_id=(\\w+)"
+          name: TraceID
+          url: "$${__value.raw}"
+    version: 1
+    uid: loki
+
+  # Jaeger链路追踪数据源（可选）
+  - name: Jaeger
+    type: jaeger
+    access: proxy
+    url: http://cet4-jaeger:16686
+    isDefault: false
+    editable: true
+    jsonData:
+      tracesToLogs:
+        datasourceUid: loki
+        tags: ['job', 'instance', 'pod', 'namespace']
+        mappedTags: [{ key: 'service.name', value: 'service' }]
+        mapTagNamesEnabled: false
+        spanStartTimeShift: '1h'
+        spanEndTimeShift: '1h'
+        filterByTraceID: false
+        filterBySpanID: false
+      tracesToMetrics:
+        datasourceUid: prometheus
+        tags: [{ key: 'service.name', value: 'service' }, { key: 'job' }]
+        queries:
+          - name: 'Sample query'
+            query: 'sum(rate(traces_spanmetrics_latency_bucket{$$__tags}[5m]))'
+      nodeGraph:
+        enabled: true
+      search:
+        hide: false
+      spanBar:
+        type: 'Tag'
+        tag: 'http.path'
+    version: 1
+    uid: jaeger
+
+  # PostgreSQL数据源（用于业务数据查询）
+  - name: PostgreSQL
+    type: postgres
+    access: proxy
+    url: cet4-postgres:5432
+    database: cet4_learning_system
+    user: cet4_user
+    isDefault: false
+    editable: true
+    jsonData:
+      sslmode: disable
+      maxOpenConns: 100
+      maxIdleConns: 100
+      maxIdleConnsAuto: true
+      connMaxLifetime: 14400
+      postgresVersion: 1500
+      timescaledb: false
+    secureJsonData:
+      password: cet4_password
+    version: 1
+    uid: postgres
+
+  # Redis数据源（用于缓存监控）
+  - name: Redis
+    type: redis-datasource
+    access: proxy
+    url: redis://cet4-redis:6379
+    isDefault: false
+    editable: true
+    jsonData:
+      client: standalone
+      poolSize: 5
+      timeout: 10
+      pingInterval: 0
+      pipelineWindow: 0
+    secureJsonData:
+      password: ''
+    version: 1
+    uid: redis
+
+# 删除数据源配置
+deleteDatasources:
+  - name: TestData DB
+    orgId: 1

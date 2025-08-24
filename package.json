@@ -1,0 +1,77 @@
+{
+  "name": "cet4-learning-system",
+  "version": "1.0.0",
+  "description": "英语四级学习及教学系统 - AI驱动的智能化教学平台",
+  "main": "app/main.py",
+  "scripts": {
+    "cursor:setup": "bash scripts/setup-cursor-rules.sh",
+    "cursor:update": "node scripts/cursor-docs-helper.js --update",
+    "cursor:status": "node scripts/cursor-docs-helper.js --status",
+    "cursor:verify": "bash scripts/setup-cursor-rules.sh --verify",
+    "cursor:test": "node scripts/test-cursor-rules.js",
+    "cursor:verify-specs": "node scripts/verify-specs-integration.js",
+    "dev:startup-guide": "./scripts/dev-startup-guide.sh",
+    "dev:setup-basic": "echo '🏗️ 基础架构开发模式' && npm run cursor:verify-specs",
+    "dev:setup-core": "echo '🎯 核心功能开发模式' && npm run cursor:verify-specs",
+    "dev:setup-docker": "echo '🐳 Docker环境模式' && docker-compose up -d",
+    "dev:start": "bash scripts/dev-start.sh",
+    "dev:backend": "cd app && python main.py",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:full": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "quality:check": "bash scripts/quality-check.sh",
+    "quality:python": "ruff check . --output-format=github && mypy . --strict",
+    "quality:frontend": "cd frontend && npm run lint && npm run type-check",
+    "test:python": "python -m pytest tests/ -v --cov=app",
+    "test:frontend": "cd frontend && npm run test",
+    "test:all": "npm run test:python && npm run test:frontend",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "install:all": "npm install && cd frontend && npm install",
+    "build:frontend": "cd frontend && npm run build",
+    "build:docker": "docker-compose build",
+    "deploy:staging": "docker-compose -f docker-compose.staging.yml up -d",
+    "deploy:production": "docker-compose -f docker-compose.prod.yml up -d"
+  },
+  "keywords": [
+    "education",
+    "english",
+    "cet4",
+    "ai",
+    "learning",
+    "teaching",
+    "fastapi",
+    "react",
+    "typescript",
+    "deepseek"
+  ],
+  "author": "CET4 Learning Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cet4-learning/cet4-learning-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cet4-learning/cet4-learning-system/issues"
+  },
+  "homepage": "https://github.com/cet4-learning/cet4-learning-system#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0",
+    "python": ">=3.11.0"
+  },
+  "devDependencies": {
+    "chokidar": "^3.5.3",
+    "nodemon": "^3.0.1",
+    "concurrently": "^8.2.2"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.3"
+  },
+  "config": {
+    "cursor": {
+      "rulesVersion": "1.0.0",
+      "lastUpdate": "2024-01-19"
+    }
+  }
+}

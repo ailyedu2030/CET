@@ -1,0 +1,79 @@
+# 英语四级学习系统 - Cursor AI 开发规则
+
+## 🎯 项目核心架构
+
+### 单体架构模块化设计
+
+这是一个单体架构项目(8000 端口)，采用严格的模块化设计。**绝对禁止**跨模块混合业务逻辑。
+
+**模块结构：**
+
+- `app/users/` - 用户管理 (auth, permission)
+- `app/ai/` - AI 集成 (deepseek, grading)
+- `app/courses/` - 课程管理 (curriculum, teaching)
+- `app/training/` - 训练系统 (exercise, quiz)
+- `app/notifications/` - 通知系统 (message, websocket)
+- `app/analytics/` - 数据分析 (monitoring, report)
+- `app/resources/` - 资源库 (document, search)
+- `app/shared/` - 共享组件
+- `frontend/src/` - React 前端 (components, pages, stores, api)
+
+## 🚨 文件创建强制检查清单
+
+**创建任何文件前必须明确回答：**
+
+1. 这个文件属于哪个业务领域？
+2. 应该放在哪个模块下？
+3. 文件类型是什么？(API/服务/模型/测试/配置)
+
+**关键词匹配：**
+
+- 用户/认证 → `app/users/`
+- AI/智能 → `app/ai/`
+- 课程/教学 → `app/courses/`
+- 训练/练习 → `app/training/`
+- 通知/消息 → `app/notifications/`
+- 分析/监控 → `app/analytics/`
+- 资源/文档 → `app/resources/`
+
+## 🔧 代码质量强制标准
+
+### TypeScript/JavaScript 规则：
+
+- **严禁使用 `any` 类型**
+- **所有函数必须有明确的返回类型**
+- **必须完整处理异步操作的错误**
+- **API 调用必须有超时和重试机制**
+- **用户输入必须验证和清理**
+
+### Python 规则：
+
+- **遵循 PEP 8 规范**
+- **使用类型注解 (Type Hints)**
+- **异步函数必须正确处理异常**
+- **数据库操作必须有事务管理**
+- **API 端点必须有输入验证**
+
+## 🎓 教育系统特殊要求
+
+### AI 服务集成规则：
+
+- **AI 批改准确率必须 >90%**
+- **调用 AI 服务必须有降级策略**
+- **实施成本控制和配额管理**
+- **错峰调度优化 (北京时间 00:30-08:30)**
+
+## 📚 详细规则文档
+
+详细的专业规则分布在 `.cursor/` 目录下：
+
+- `.cursor/rules-ai.md` - AI 服务集成和 DeepSeek 优化规范
+- `.cursor/rules-education.md` - 教育系统特殊要求和合规性
+- `.cursor/rules-performance.md` - 性能优化和缓存策略
+- `.cursor/rules-security.md` - 安全和数据保护要求
+
+## 💬 使用指南
+
+**获取详细规则：** 在 Cursor Chat 中引用对应规则文件
+**文件创建：** 遵循强制检查清单，确定业务领域 → 模块 → 文件类型
+**代码审查：** 参考 `.cursor/rules-*.md` 进行专项检查

@@ -1,0 +1,71 @@
+# GitHub CODEOWNERS file for CET4 Learning System
+# This file defines code review assignments
+
+# Global default owners
+* @cet4-learning-team
+
+# 核心配置文件
+/.github/ @cet4-learning-team @devops-team
+/pyproject.toml @cet4-learning-team
+/requirements.txt @cet4-learning-team
+/docker-compose*.yml @cet4-learning-team @devops-team
+/Dockerfile @cet4-learning-team @devops-team
+/.env.example @cet4-learning-team @devops-team
+
+# 数据库相关
+/app/core/database.py @backend-team @database-team
+/app/migrations/ @backend-team @database-team
+/alembic.ini @backend-team @database-team
+
+# 核心业务逻辑
+/app/core/ @backend-team @architecture-team
+/app/shared/ @backend-team @architecture-team
+
+# AI服务
+/app/ai/ @ai-team @backend-team
+
+# 用户认证和权限
+/app/users/ @security-team @backend-team
+/app/core/security.py @security-team @backend-team
+
+# 训练系统
+/app/training/ @training-team @backend-team
+
+# 资源管理
+/app/resources/ @content-team @backend-team
+
+# 分析系统
+/app/analytics/ @analytics-team @backend-team
+
+# 前端代码
+/frontend/ @frontend-team
+
+# 测试文件
+/tests/ @qa-team @backend-team
+/frontend/src/**/*.test.* @qa-team @frontend-team
+
+# 文档
+/docs/ @docs-team
+/README.md @docs-team
+/.doc/ @docs-team
+
+# CI/CD配置
+/.github/workflows/ @devops-team @cet4-learning-team
+/.github/scripts/ @devops-team @cet4-learning-team
+
+# 安全相关
+/.github/workflows/security-*.yml @security-team @devops-team
+/app/core/security.py @security-team
+/app/users/services/auth_service.py @security-team
+
+# 性能关键文件
+/app/core/cache.py @performance-team @backend-team
+/app/shared/utils/performance_utils.py @performance-team @backend-team
+
+# 部署脚本
+/scripts/ @devops-team
+/nginx/ @devops-team
+
+# 监控配置
+/monitoring/ @devops-team @sre-team
+/grafana/ @devops-team @sre-team
