@@ -1,0 +1,20 @@
+{
+  "total_files": 614,
+  "important_files": 14,
+  "files_to_upload": [
+    "README.md",
+    "pyproject.toml",
+    "requirements.txt",
+    ".github/workflows/ci.yml",
+    ".github/workflows/quality-check.yml",
+    ".github/workflows/cd.yml",
+    ".github/workflows/dependency-update.yml",
+    ".github/CODEOWNERS",
+    ".github/pull_request_template.md",
+    ".gitignore",
+    "app/main.py",
+    "app/__init__.py",
+    "Dockerfile",
+    "docker-compose.yml"
+  ]
+}
