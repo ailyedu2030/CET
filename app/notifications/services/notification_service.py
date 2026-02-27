@@ -19,6 +19,7 @@ from app.notifications.schemas.notification_schemas import (
 )
 from app.shared.tasks.email_tasks import send_notification_email
 
+from app.notifications.services.websocket_manager import websocket_manager
 logger = logging.getLogger(__name__)
 
 
@@ -406,6 +407,47 @@ class UnifiedNotificationService:
         results = {}
 
         for channel in channels:
+            try:
+                if channel == "in_app":
+                    # 系统内消息已通过数据库记录实现, 同时发送WebSocket
+                    from app.notifications.schemas.notification_schemas import NotificationResponse
+                    notification_response = NotificationResponse(
+                        id=notification.id,
+                        user_id=notification.user_id,
+                        title=notification.title,
+                        content=notification.content,
+                        notification_type=notification.notification_type,
+                        priority=notification.priority,
+                        channels=channels,
+                        is_read=False,
+                        read_at=notification.read_at,
+                        created_at=notification.created_at,
+                        send_results={},
+                        metadata=notification.metadata,
+                    )
+                    await websocket_manager.send_notification_to_user(
+                        notification.user_id, notification_response
+                    )
+                    results[channel] = {
+                        "status": "success",
+                        "message": "已保存到数据库并发送WebSocket",
+                    }
+
+                elif channel == "email":
+                    # 使用现有邮件任务
+                    email_result = await self._send_email_notification(notification)
+                    results[channel] = email_result
+
+                elif channel == "sms":
+                    # SMS发送（暂时模拟）
+                    results[channel] = {"status": "success", "message": "SMS发送成功"}
+
+                elif channel == "push":
+                    # 推送通知（暂时模拟）
+                    results[channel] = {"status": "success", "message": "推送发送成功"}
+
+            except Exception as e:
+                results[channel] = {"status": "error", "message": str(e)}
             try:
                 if channel == "in_app":
                     # 系统内消息已通过数据库记录实现

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "model": "volcengine/doubao-seed-2.0-code",
+  "agents": {
+    "sisyphus": {
+      "model": "volcengine/doubao-seed-2.0-code",
+      "temperature": 0.1
+    },
+    "hephaestus": {
+      "model": "volcengine/doubao-seed-2.0-code",
+      "temperature": 0.1
+    },
+    "oracle": {
+      "model": "opencode/big-pickle",
+      "temperature": 0.1
+    },
+    "librarian": {
+      "model": "opencode/minimax-m2.5-free",
+      "temperature": 0.1
+    },
+    "explore": {
+      "model": "volcengine/deepseek-v3.2",
+      "temperature": 0.1
+    },
+    "multimodal-looker": {
+      "model": "volcengine/kimi-k2.5",
+      "temperature": 0.1
+    },
+    "metis": {
+      "model": "volcengine/doubao-seed-2.0-code",
+      "temperature": 0.3
+    },
+    "momus": {
+      "model": "volcengine/kimi-k2-thinking",
+      "temperature": 0.1
+    },
+    "atlas": {
+      "model": "opencode/big-pickle",
+      "temperature": 0.1
+    },
+    "prometheus": {
+      "model": "volcengine/doubao-seed-2.0-code",
+      "temperature": 0.1
+    },
+    "sisyphus-junior": {
+      "model": "opencode/minimax-m2.5-free",
+      "temperature": 0.1
+    }
+  },
+  "categories": {
+    "quick": {
+      "model": "opencode/minimax-m2.5-free"
+    },
+    "visual-engineering": {
+      "model": "volcengine/doubao-seed-2.0-code"
+    },
+    "ultrabrain": {
+      "model": "volcengine/doubao-seed-2.0-code"
+    },
+    "deep": {
+      "model": "volcengine/doubao-seed-2.0-code"
+    },
+    "artistry": {
+      "model": "volcengine/kimi-k2.5"
+    },
+    "unspecified-low": {
+      "model": "opencode/minimax-m2.5-free"
+    },
+    "unspecified-high": {
+      "model": "volcengine/doubao-seed-2.0-code"
+    },
+    "writing": {
+      "model": "volcengine/kimi-k2-thinking"
+    }
+  }
+}

@@ -12,6 +12,8 @@ from app.users.schemas.auth_schemas import (
     LoginResponse,
     PasswordChangeRequest,
     ProfileUpdateRequest,
+    RefreshTokenRequest,
+    RefreshTokenResponse,
     UserProfile,
 )
 from app.users.services.auth_service import AuthService
@@ -49,6 +51,40 @@ async def login(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="登录失败，请稍后重试",
+        ) from e
+
+
+
+@router.post(
+    "/refresh-token",
+    response_model=RefreshTokenResponse,
+    summary="刷新访问令牌",
+    description="使用刷新令牌获取新的访问令牌",
+)
+async def refresh_token(
+    request: RefreshTokenRequest,
+    db: AsyncSession = Depends(get_db),
+) -> RefreshTokenResponse:
+    """刷新访问令牌端点."""
+    try:
+        service = AuthService(db)
+        result = await service.refresh_token(request.refresh_token, request.session_token)
+        if not result:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="无效的刷新令牌或会话",
+            )
+        from app.core.config import settings
+        expires_in = int(settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+        return RefreshTokenResponse(
+            access_token=result["access_token"],
+            token_type=result["token_type"],
+            expires_in=expires_in,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="刷新令牌失败",
         ) from e
 
 

@@ -101,6 +101,12 @@ class CeleryConfig:
             "task": "cleanup_expired_hotspots",
             "schedule": 60.0 * 60.0 * 24 * 7,  # 每周执行一次
         },
+        # 每日凌晨3点清理旧通知
+        "cleanup-old-notifications": {
+            "task": "app.notifications.tasks.cleanup_old_notifications",
+            "schedule": 60.0 * 60.0 * 24,  # 每日执行一次（开发环境）
+            # "schedule": crontab(hour=3, minute=0),  # 生产环境使用
+        },
     }
 
     # 安全配置

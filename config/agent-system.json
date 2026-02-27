@@ -1,0 +1,42 @@
+{
+  "system": {
+    "auto_template_enabled": true,
+    "force_existing_code_check": true,
+    "prevent_duplicate_creation": true,
+    "log_level": "INFO",
+    "max_concurrent_agents": 5,
+    "execution_timeout": 1800
+  },
+  "agents": {
+    "coordinator": {
+      "enabled": true,
+      "max_tasks": 5,
+      "tools": ["view", "codebase-retrieval", "str-replace-editor", "save-file"]
+    },
+    "backend_agent": {
+      "enabled": true,
+      "max_tasks": 2,
+      "tools": ["str-replace-editor", "save-file", "launch-process", "diagnostics"]
+    },
+    "frontend_agent": {
+      "enabled": true,
+      "max_tasks": 2,
+      "tools": ["str-replace-editor", "save-file", "view", "diagnostics"]
+    },
+    "devops_agent": {
+      "enabled": true,
+      "max_tasks": 1,
+      "tools": ["launch-process", "view", "str-replace-editor"]
+    },
+    "qa_agent": {
+      "enabled": true,
+      "max_tasks": 3,
+      "tools": ["launch-process", "diagnostics", "view"]
+    }
+  },
+  "requirements": {
+    "priority_order": ["23", "24", "25", "26", "27", "28", "29", "30"],
+    "parallel_execution": true,
+    "dependency_check": true
+  }
+}

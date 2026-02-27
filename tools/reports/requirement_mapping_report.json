@@ -1,0 +1,2595 @@
+{
+  "summary": {
+    "total_requirements": 40,
+    "total_apis": 354,
+    "fully_implemented": 2,
+    "partially_implemented": 0,
+    "not_implemented": 31,
+    "needs_review": 7
+  },
+  "requirements": {
+    "需求1": {
+      "requirement_id": "需求1",
+      "title": "用户注册审核管理",
+      "description": "用户注册审核管理",
+      "user_stories": [
+        "作为系统用户，我希望用户注册审核管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持用户注册审核管理"
+      ],
+      "mapped_apis": [
+        {
+          "path": "/api/v1/users/audit/logs",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/users/audit/permissions",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/users/audit/security-events",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/users/audit/statistics",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/users/audit/user-activity",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/users/audit/reports/generate",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        }
+      ],
+      "status": "needs_review",
+      "priority": "P0_critical",
+      "completion_percentage": 100.0,
+      "issues": [
+        "缺失API端点: /api/v1/users/register",
+        "缺失API端点: /api/v1/users/status"
+      ]
+    },
+    "需求2": {
+      "requirement_id": "需求2",
+      "title": "基础信息管理",
+      "description": "基础信息管理",
+      "user_stories": [
+        "作为系统用户，我希望基础信息管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持基础信息管理"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/users/students",
+        "缺失API端点: /api/v1/users/teachers",
+        "缺失API端点: /api/v1/users/classrooms"
+      ]
+    },
+    "需求3": {
+      "requirement_id": "需求3",
+      "title": "课程全生命周期管理",
+      "description": "课程全生命周期管理",
+      "user_stories": [
+        "作为系统用户，我希望课程全生命周期管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持课程全生命周期管理"
+      ],
+      "mapped_apis": [
+        {
+          "path": "/api/v1/courses/courses/",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/courses/",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/courses/{course_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/courses/{course_id}",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/courses/{course_id}",
+          "method": "DELETE",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/courses/{course_id}/status",
+          "method": "PATCH",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/courses/{course_id}/duplicate",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/courses/{course_id}/versions",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/courses/{course_id}/versions/{version_id}/rollback",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/courses/{course_id}/versions/compare",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/public",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        },
+        {
+          "path": "/api/v1/courses/templates/popular",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}",
+          "method": "DELETE",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}/use",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}/clone",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/categories/",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        },
+        {
+          "path": "/api/v1/courses/classes/",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}",
+          "method": "DELETE",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/batch",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/assign-teacher",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/enroll",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/conflict-check",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/statistics",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/resources",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/resources",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/resources",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/schedule",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/schedule",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/class-management/classes",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/class-management/classes/{class_id}",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/class-management/classes/{class_id}",
+          "method": "DELETE",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/class-management/classes/from-template",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/class-management/classes/batch",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/class-management/classes/{class_id}/resources",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/class-management/classes/{class_id}/resources",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/class-management/classes/{class_id}/resource-history",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/class-management/classes/{class_id}/binding-validation",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/course-assignment/assignments",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/course-assignment/one-to-many-configuration",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/course-assignment/teacher-collaboration-permissions",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/course-assignment/rule-exemption-requests",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/course-assignment/rule-exemption-requests",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/course-assignment/rule-exemption-requests/{exemption_id}/approve",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/course-assignment/rule-exemption-requests/{exemption_id}/reject",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/courses",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/qualification-check",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/teachers/{teacher_id}/workload",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/workload-balance",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/time-conflict-check",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/bulk",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/history",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/statistics",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/suggestions",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/rules",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/rules",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/rules/",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/rules/",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/rules/{rule_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/rules/{rule_id}",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/rules/{rule_id}",
+          "method": "DELETE",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/rules/validate",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/rules/templates",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/syllabus-approval/syllabi/pending",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/syllabus-approval/syllabi/{syllabus_id}/approve",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/syllabus-approval/syllabi/{syllabus_id}/reject",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/syllabus-approval/syllabi/{syllabus_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/syllabus-approval/courses/{course_id}/approval-status",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/syllabus-approval/courses/{course_id}/approve",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/syllabus-approval/courses/{course_id}/reject",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/public",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        },
+        {
+          "path": "/api/v1/courses/templates/popular",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}",
+          "method": "DELETE",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}/use",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/{template_id}/clone",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/templates/categories/",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        }
+      ],
+      "status": "needs_review",
+      "priority": "P1_high",
+      "completion_percentage": 100.0,
+      "issues": [
+        "缺失API端点: /api/v1/courses/versions"
+      ]
+    },
+    "需求4": {
+      "requirement_id": "需求4",
+      "title": "班级管理与资源配置",
+      "description": "班级管理与资源配置",
+      "user_stories": [
+        "作为系统用户，我希望班级管理与资源配置"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持班级管理与资源配置"
+      ],
+      "mapped_apis": [
+        {
+          "path": "/api/v1/courses/classes/",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}",
+          "method": "DELETE",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/batch",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/assign-teacher",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/enroll",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/conflict-check",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/statistics",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/resources",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/resources",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/resources",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/schedule",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/classes/{class_id}/schedule",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/courses",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/qualification-check",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/teachers/{teacher_id}/workload",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/workload-balance",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/time-conflict-check",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/bulk",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/history",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/statistics",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/suggestions",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/rules",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/courses/assignments/rules",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        }
+      ],
+      "status": "fully_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 100.0,
+      "issues": []
+    },
+    "需求5": {
+      "requirement_id": "需求5",
+      "title": "课程分配管理",
+      "description": "课程分配管理",
+      "user_stories": [
+        "作为系统用户，我希望课程分配管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持课程分配管理"
+      ],
+      "mapped_apis": [
+        {
+          "path": "/api/v1/courses/classes/batch",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        }
+      ],
+      "status": "needs_review",
+      "priority": "P1_high",
+      "completion_percentage": 100.0,
+      "issues": [
+        "缺失API端点: /api/v1/courses/scheduling"
+      ]
+    },
+    "需求6": {
+      "requirement_id": "需求6",
+      "title": "系统监控与数据决策支持",
+      "description": "系统监控与数据决策支持",
+      "user_stories": [
+        "作为系统用户，我希望系统监控与数据决策支持"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持系统监控与数据决策支持"
+      ],
+      "mapped_apis": [
+        {
+          "path": "/api/v1/analytics/monitoring/teaching/dashboard",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/monitoring/system/operations",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/monitoring/predictive/maintenance",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/monitoring/comprehensive/report",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/monitoring/health/check",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/monitoring/alerts/active",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/reports/generate",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/reports/types",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/reports/schedule",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/reports/templates",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/reports/custom/generate",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/reports/schedules",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/reports/schedules/{schedule_id}/run",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/analytics/reports/history",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        }
+      ],
+      "status": "fully_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 100.0,
+      "issues": []
+    },
+    "需求7": {
+      "requirement_id": "需求7",
+      "title": "权限中枢管理",
+      "description": "权限中枢管理",
+      "user_stories": [
+        "作为系统用户，我希望权限中枢管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持权限中枢管理"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P0_critical",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/auth",
+        "缺失API端点: /api/v1/permissions",
+        "缺失API端点: /api/v1/roles"
+      ]
+    },
+    "需求8": {
+      "requirement_id": "需求8",
+      "title": "班级与课程规则管理",
+      "description": "班级与课程规则管理",
+      "user_stories": [
+        "作为系统用户，我希望班级与课程规则管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持班级与课程规则管理"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求9": {
+      "requirement_id": "需求9",
+      "title": "数据备份与恢复",
+      "description": "数据备份与恢复",
+      "user_stories": [
+        "作为系统用户，我希望数据备份与恢复"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持数据备份与恢复"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求10": {
+      "requirement_id": "需求10",
+      "title": "教师注册与资质管理",
+      "description": "教师注册与资质管理",
+      "user_stories": [
+        "作为系统用户，我希望教师注册与资质管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持教师注册与资质管理"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P0_critical",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/users/teachers/register",
+        "缺失API端点: /api/v1/users/teachers/qualification"
+      ]
+    },
+    "需求11": {
+      "requirement_id": "需求11",
+      "title": "课程资源库管理",
+      "description": "课程资源库管理",
+      "user_stories": [
+        "作为系统用户，我希望课程资源库管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持课程资源库管理"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/resources/vocabulary",
+        "缺失API端点: /api/v1/resources/knowledge"
+      ]
+    },
+    "需求12": {
+      "requirement_id": "需求12",
+      "title": "热点资源池管理",
+      "description": "热点资源池管理",
+      "user_stories": [
+        "作为系统用户，我希望热点资源池管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持热点资源池管理"
+      ],
+      "mapped_apis": [
+        {
+          "path": "/api/v1/resources/hotspots/rss-feeds/collect",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/resources/hotspots/daily-recommendations",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/resources/hotspots/resources",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/resources/hotspots/resources/{hotspot_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/resources/hotspots/resources/{hotspot_id}",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/resources/hotspots/resources/{hotspot_id}",
+          "method": "DELETE",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/resources/hotspots/resources/search",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        }
+      ],
+      "status": "needs_review",
+      "priority": "P1_high",
+      "completion_percentage": 100.0,
+      "issues": [
+        "缺失API端点: /api/v1/resources/rss"
+      ]
+    },
+    "需求13": {
+      "requirement_id": "需求13",
+      "title": "教学计划构建",
+      "description": "教学计划构建",
+      "user_stories": [
+        "作为系统用户，我希望教学计划构建"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持教学计划构建"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/ai/syllabus",
+        "缺失API端点: /api/v1/ai/lesson-plans"
+      ]
+    },
+    "需求14": {
+      "requirement_id": "需求14",
+      "title": "教师智能教学调整系统（系统核心）",
+      "description": "教师智能教学调整系统（系统核心）",
+      "user_stories": [
+        "作为系统用户，我希望教师智能教学调整系统（系统核心）"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持教师智能教学调整系统（系统核心）"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/ai/teaching-adjustment",
+        "缺失API端点: /api/v1/ai/optimization"
+      ]
+    },
+    "需求15": {
+      "requirement_id": "需求15",
+      "title": "智能训练工坊",
+      "description": "智能训练工坊",
+      "user_stories": [
+        "作为系统用户，我希望智能训练工坊"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持智能训练工坊"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/training/generation",
+        "缺失API端点: /api/v1/training/parameters"
+      ]
+    },
+    "需求16": {
+      "requirement_id": "需求16",
+      "title": "系统协同功能",
+      "description": "系统协同功能",
+      "user_stories": [
+        "作为系统用户，我希望系统协同功能"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持系统协同功能"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求17": {
+      "requirement_id": "需求17",
+      "title": "教学资源库与专业发展",
+      "description": "教学资源库与专业发展",
+      "user_stories": [
+        "作为系统用户，我希望教学资源库与专业发展"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持教学资源库与专业发展"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求18": {
+      "requirement_id": "需求18",
+      "title": "教师端系统逻辑与架构",
+      "description": "教师端系统逻辑与架构",
+      "user_stories": [
+        "作为系统用户，我希望教师端系统逻辑与架构"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持教师端系统逻辑与架构"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求19": {
+      "requirement_id": "需求19",
+      "title": "教师端技术实现与性能要求",
+      "description": "教师端技术实现与性能要求",
+      "user_stories": [
+        "作为系统用户，我希望教师端技术实现与性能要求"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持教师端技术实现与性能要求"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求20": {
+      "requirement_id": "需求20",
+      "title": "学生注册与账号管理",
+      "description": "学生注册与账号管理",
+      "user_stories": [
+        "作为系统用户，我希望学生注册与账号管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持学生注册与账号管理"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P0_critical",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/users/students/register",
+        "缺失API端点: /api/v1/users/students/activation"
+      ]
+    },
+    "需求21": {
+      "requirement_id": "需求21",
+      "title": "学生综合训练中心（系统核心）",
+      "description": "学生综合训练中心（系统核心）",
+      "user_stories": [
+        "作为系统用户，我希望学生综合训练中心（系统核心）"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持学生综合训练中心（系统核心）"
+      ],
+      "mapped_apis": [
+        {
+          "path": "/api/v1/training/sessions",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/sessions/{session_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/sessions/{session_id}/complete",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/questions",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/questions/{question_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/questions/{question_id}/submit",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/question-batches",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/question-batches",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/analytics/progress",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/analytics/performance/{training_type}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/analytics/report",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/analytics/patterns",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/analytics/comparison",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive/recommendations",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive/next-questions",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/intelligent-loop/execute",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/intelligent-loop/history",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/intelligent-loop/status",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/precise-adaptive/execute",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/precise-adaptive/performance",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/error-analysis/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/knowledge-gaps/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/reinforcement-plan/{student_id}",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/forgetting-curve/{student_id}/{question_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/review-schedule/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/update-memory-strength/{student_id}/{question_id}",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/learning-strategy/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/learning-path/{start_knowledge_id}/{target_knowledge_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/knowledge-dependencies/{knowledge_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/next-knowledge-points/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/training-workshop/parameter-templates",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/training-workshop/parameter-templates",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/training-workshop/parameter-templates/{template_id}",
+          "method": "PUT",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/training-workshop/parameter-templates/{template_id}",
+          "method": "DELETE",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/training-workshop/training-tasks",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/training-workshop/training-tasks",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/training-workshop/weekly-training",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/training-workshop/analytics/class/{class_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        }
+      ],
+      "status": "needs_review",
+      "priority": "P0_critical",
+      "completion_percentage": 100.0,
+      "issues": [
+        "缺失API端点: /api/v1/training/vocabulary",
+        "缺失API端点: /api/v1/training/listening"
+      ]
+    },
+    "需求22": {
+      "requirement_id": "需求22",
+      "title": "听力训练系统",
+      "description": "听力训练系统",
+      "user_stories": [
+        "作为系统用户，我希望听力训练系统"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持听力训练系统"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/training/listening",
+        "缺失API端点: /api/v1/training/audio"
+      ]
+    },
+    "需求23": {
+      "requirement_id": "需求23",
+      "title": "智能批改与反馈系统",
+      "description": "智能批改与反馈系统",
+      "user_stories": [
+        "作为系统用户，我希望智能批改与反馈系统"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持智能批改与反馈系统"
+      ],
+      "mapped_apis": [
+        {
+          "path": "/api/v1/ai/grading/stream",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/ai/grading/writing-assistance/stream",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/ai/grading/grade",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/ai/grading/standards/writing",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        },
+        {
+          "path": "/api/v1/ai/grading/standards/translation",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        },
+        {
+          "path": "/api/v1/ai/grading/evaluate/writing",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        },
+        {
+          "path": "/api/v1/ai/grading/evaluate/translation",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": false
+        }
+      ],
+      "status": "needs_review",
+      "priority": "P0_critical",
+      "completion_percentage": 100.0,
+      "issues": [
+        "缺失API端点: /api/v1/ai/feedback"
+      ]
+    },
+    "需求24": {
+      "requirement_id": "需求24",
+      "title": "AI 智能分析与学情报告生成（系统核心）",
+      "description": "AI 智能分析与学情报告生成（系统核心）",
+      "user_stories": [
+        "作为系统用户，我希望AI 智能分析与学情报告生成（系统核心）"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持AI 智能分析与学情报告生成（系统核心）"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/ai/analysis",
+        "缺失API端点: /api/v1/ai/reports"
+      ]
+    },
+    "需求25": {
+      "requirement_id": "需求25",
+      "title": "错题强化与自适应学习",
+      "description": "错题强化与自适应学习",
+      "user_stories": [
+        "作为系统用户，我希望错题强化与自适应学习"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持错题强化与自适应学习"
+      ],
+      "mapped_apis": [
+        {
+          "path": "/api/v1/training/adaptive/recommendations",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive/next-questions",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/error-analysis/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/knowledge-gaps/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/reinforcement-plan/{student_id}",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/forgetting-curve/{student_id}/{question_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/review-schedule/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/update-memory-strength/{student_id}/{question_id}",
+          "method": "POST",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/learning-strategy/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/learning-path/{start_knowledge_id}/{target_knowledge_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/knowledge-dependencies/{knowledge_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        },
+        {
+          "path": "/api/v1/training/adaptive-learning/next-knowledge-points/{student_id}",
+          "method": "GET",
+          "status_code": 200,
+          "response_time": 0.0,
+          "error_message": null,
+          "requires_auth": true
+        }
+      ],
+      "status": "needs_review",
+      "priority": "P1_high",
+      "completion_percentage": 100.0,
+      "issues": [
+        "缺失API端点: /api/v1/training/errors"
+      ]
+    },
+    "需求26": {
+      "requirement_id": "需求26",
+      "title": "英语四级写作标准库",
+      "description": "英语四级写作标准库",
+      "user_stories": [
+        "作为系统用户，我希望英语四级写作标准库"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持英语四级写作标准库"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/training/writing",
+        "缺失API端点: /api/v1/training/writing/templates"
+      ]
+    },
+    "需求27": {
+      "requirement_id": "需求27",
+      "title": "学习计划与管理",
+      "description": "学习计划与管理",
+      "user_stories": [
+        "作为系统用户，我希望学习计划与管理"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持学习计划与管理"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求28": {
+      "requirement_id": "需求28",
+      "title": "学习社交与互动",
+      "description": "学习社交与互动",
+      "user_stories": [
+        "作为系统用户，我希望学习社交与互动"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持学习社交与互动"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求29": {
+      "requirement_id": "需求29",
+      "title": "学习辅助工具",
+      "description": "学习辅助工具",
+      "user_stories": [
+        "作为系统用户，我希望学习辅助工具"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持学习辅助工具"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求30": {
+      "requirement_id": "需求30",
+      "title": "学生端系统逻辑与架构",
+      "description": "学生端系统逻辑与架构",
+      "user_stories": [
+        "作为系统用户，我希望学生端系统逻辑与架构"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持学生端系统逻辑与架构"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求31": {
+      "requirement_id": "需求31",
+      "title": "学生端技术实现与性能要求",
+      "description": "学生端技术实现与性能要求",
+      "user_stories": [
+        "作为系统用户，我希望学生端技术实现与性能要求"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持学生端技术实现与性能要求"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求32": {
+      "requirement_id": "需求32",
+      "title": "数据合规与隐私保护",
+      "description": "数据合规与隐私保护",
+      "user_stories": [
+        "作为系统用户，我希望数据合规与隐私保护"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持数据合规与隐私保护"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/compliance",
+        "缺失API端点: /api/v1/privacy"
+      ]
+    },
+    "需求33": {
+      "requirement_id": "需求33",
+      "title": "资源库技术架构",
+      "description": "资源库技术架构",
+      "user_stories": [
+        "作为系统用户，我希望资源库技术架构"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持资源库技术架构"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/resources/architecture",
+        "缺失API端点: /api/v1/resources/storage"
+      ]
+    },
+    "需求34": {
+      "requirement_id": "需求34",
+      "title": "大规模文档处理与 AI 集成",
+      "description": "大规模文档处理与 AI 集成",
+      "user_stories": [
+        "作为系统用户，我希望大规模文档处理与 AI 集成"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持大规模文档处理与 AI 集成"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/ai/document-processing",
+        "缺失API端点: /api/v1/ai/vector-search"
+      ]
+    },
+    "需求35": {
+      "requirement_id": "需求35",
+      "title": "高并发架构与 AI 服务优化",
+      "description": "高并发架构与 AI 服务优化",
+      "user_stories": [
+        "作为系统用户，我希望高并发架构与 AI 服务优化"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持高并发架构与 AI 服务优化"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": [
+        "缺失API端点: /api/v1/system/performance",
+        "缺失API端点: /api/v1/system/concurrency"
+      ]
+    },
+    "需求36": {
+      "requirement_id": "需求36",
+      "title": "成本控制与风险管控",
+      "description": "成本控制与风险管控",
+      "user_stories": [
+        "作为系统用户，我希望成本控制与风险管控"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持成本控制与风险管控"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求37": {
+      "requirement_id": "需求37",
+      "title": "通知系统架构",
+      "description": "通知系统架构",
+      "user_stories": [
+        "作为系统用户，我希望通知系统架构"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持通知系统架构"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求38": {
+      "requirement_id": "需求38",
+      "title": "学习数据分析架构",
+      "description": "学习数据分析架构",
+      "user_stories": [
+        "作为系统用户，我希望学习数据分析架构"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持学习数据分析架构"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P2_medium",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求39": {
+      "requirement_id": "需求39",
+      "title": "安全与监控架构",
+      "description": "安全与监控架构",
+      "user_stories": [
+        "作为系统用户，我希望安全与监控架构"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持安全与监控架构"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P0_critical",
+      "completion_percentage": 0.0,
+      "issues": []
+    },
+    "需求40": {
+      "requirement_id": "需求40",
+      "title": "部署与运维架构\n\n## API 审查需求\n\n管理员端需求",
+      "description": "部署与运维架构\n\n## API 审查需求\n\n管理员端需求",
+      "user_stories": [
+        "作为系统用户，我希望部署与运维架构\n\n## API 审查需求\n\n管理员端需求"
+      ],
+      "acceptance_criteria": [
+        "系统应该支持部署与运维架构\n\n## API 审查需求\n\n管理员端需求"
+      ],
+      "mapped_apis": [],
+      "status": "not_implemented",
+      "priority": "P1_high",
+      "completion_percentage": 0.0,
+      "issues": []
+    }
+  },
+  "priority_breakdown": {
+    "P0_critical": [
+      {
+        "requirement_id": "需求1",
+        "title": "用户注册审核管理",
+        "status": "needs_review",
+        "completion": 100.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求7",
+        "title": "权限中枢管理",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 3
+      },
+      {
+        "requirement_id": "需求10",
+        "title": "教师注册与资质管理",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求20",
+        "title": "学生注册与账号管理",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求21",
+        "title": "学生综合训练中心（系统核心）",
+        "status": "needs_review",
+        "completion": 100.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求23",
+        "title": "智能批改与反馈系统",
+        "status": "needs_review",
+        "completion": 100.0,
+        "issues_count": 1
+      },
+      {
+        "requirement_id": "需求39",
+        "title": "安全与监控架构",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      }
+    ],
+    "P1_high": [
+      {
+        "requirement_id": "需求2",
+        "title": "基础信息管理",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 3
+      },
+      {
+        "requirement_id": "需求3",
+        "title": "课程全生命周期管理",
+        "status": "needs_review",
+        "completion": 100.0,
+        "issues_count": 1
+      },
+      {
+        "requirement_id": "需求4",
+        "title": "班级管理与资源配置",
+        "status": "fully_implemented",
+        "completion": 100.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求5",
+        "title": "课程分配管理",
+        "status": "needs_review",
+        "completion": 100.0,
+        "issues_count": 1
+      },
+      {
+        "requirement_id": "需求6",
+        "title": "系统监控与数据决策支持",
+        "status": "fully_implemented",
+        "completion": 100.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求8",
+        "title": "班级与课程规则管理",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求11",
+        "title": "课程资源库管理",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求12",
+        "title": "热点资源池管理",
+        "status": "needs_review",
+        "completion": 100.0,
+        "issues_count": 1
+      },
+      {
+        "requirement_id": "需求13",
+        "title": "教学计划构建",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求14",
+        "title": "教师智能教学调整系统（系统核心）",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求17",
+        "title": "教学资源库与专业发展",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求18",
+        "title": "教师端系统逻辑与架构",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求19",
+        "title": "教师端技术实现与性能要求",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求25",
+        "title": "错题强化与自适应学习",
+        "status": "needs_review",
+        "completion": 100.0,
+        "issues_count": 1
+      },
+      {
+        "requirement_id": "需求27",
+        "title": "学习计划与管理",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求30",
+        "title": "学生端系统逻辑与架构",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求31",
+        "title": "学生端技术实现与性能要求",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求33",
+        "title": "资源库技术架构",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求40",
+        "title": "部署与运维架构\n\n## API 审查需求\n\n管理员端需求",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      }
+    ],
+    "P2_medium": [
+      {
+        "requirement_id": "需求9",
+        "title": "数据备份与恢复",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求15",
+        "title": "智能训练工坊",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求16",
+        "title": "系统协同功能",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求22",
+        "title": "听力训练系统",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求24",
+        "title": "AI 智能分析与学情报告生成（系统核心）",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求26",
+        "title": "英语四级写作标准库",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求28",
+        "title": "学习社交与互动",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求29",
+        "title": "学习辅助工具",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求32",
+        "title": "数据合规与隐私保护",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求34",
+        "title": "大规模文档处理与 AI 集成",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求35",
+        "title": "高并发架构与 AI 服务优化",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 2
+      },
+      {
+        "requirement_id": "需求36",
+        "title": "成本控制与风险管控",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求37",
+        "title": "通知系统架构",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      },
+      {
+        "requirement_id": "需求38",
+        "title": "学习数据分析架构",
+        "status": "not_implemented",
+        "completion": 0.0,
+        "issues_count": 0
+      }
+    ],
+    "P3_low": []
+  },
+  "issues_summary": [
+    {
+      "type": "缺失API端点",
+      "count": 41
+    }
+  ]
+}

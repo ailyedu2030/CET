@@ -1,0 +1,44 @@
+{
+  "test_summary": {
+    "total_tests": 5,
+    "passed_tests": 5,
+    "failed_tests": 0,
+    "success_rate": 100.0,
+    "test_time": "2025-08-26T01:39:52.790006"
+  },
+  "detailed_results": {
+    "agent_templates": {
+      "status": "success",
+      "template_count": 14,
+      "analysis_template": "阶段2：需求深度分析",
+      "commands_generated": 8,
+      "message": "智能体模板系统工作正常"
+    },
+    "priority_scheduler": {
+      "status": "success",
+      "total_tasks": 3,
+      "completed_files": 12,
+      "missing_files": 0,
+      "message": "优先级调度器工作正常"
+    },
+    "api_validator": {
+      "status": "success",
+      "health_status": "healthy",
+      "priority_results": 3,
+      "message": "API验证器工作正常"
+    },
+    "api_implementation": {
+      "status": "success",
+      "existing_apis": 3,
+      "missing_apis": 33,
+      "message": "API实现管理器工作正常"
+    },
+    "system_collaboration": {
+      "status": "success",
+      "collaboration_score": 100,
+      "all_components_working": true,
+      "message": "系统协作评分: 100/100"
+    }
+  },
+  "overall_status": "success"
+}

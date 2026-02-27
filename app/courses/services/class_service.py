@@ -7,7 +7,7 @@ from sqlalchemy import and_, desc, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.courses.models import Class, Course
+from app.courses.models import Class, Course, ClassStudent
 from app.courses.schemas.class_schemas import (
     ClassBatchCreate,
     ClassConflictCheck,
@@ -218,7 +218,15 @@ class ClassService:
         if existing_enrollment:
             raise ValueError("学生已选择此班级")
 
-        # 创建选课记录（这里简化处理，实际需要ClassStudent表）
+        # 创建选课记录
+        class_student = ClassStudent(
+            class_id=enrollment_data.class_id,
+            student_id=enrollment_data.student_id,
+            enrolled_at=datetime.utcnow(),
+            enrollment_status="active",
+            enrolled_by=getattr(enrollment_data, "enrolled_by", None),
+        )
+        self.db.add(class_student)
         # 更新班级学生数
         stmt = (
             update(Class)
@@ -230,6 +238,7 @@ class ClassService:
         )
         await self.db.execute(stmt)
         await self.db.commit()
+        await self.db.refresh(class_student)
 
         return {
             "status": "success",
@@ -400,9 +409,16 @@ class ClassService:
 
     async def _check_student_enrollment(self, student_id: int, class_id: int) -> bool:
         """检查学生是否已选择指定班级."""
-        # 这里需要查询ClassStudent表，简化处理返回False
-        # 实际实现中需要查询class_students表
-        return False
+        from sqlalchemy import select
+        stmt = select(ClassStudent).where(
+            and_(
+                ClassStudent.student_id == student_id,
+                ClassStudent.class_id == class_id,
+                ClassStudent.enrollment_status == "active",
+            )
+        )
+        result = await self.db.execute(stmt)
+        return result.scalar_one_or_none() is not None
 
 
 class ClassResourceService:

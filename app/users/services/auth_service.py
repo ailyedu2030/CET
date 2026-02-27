@@ -104,18 +104,18 @@ class AuthService:
         )
 
         return {
-            "user": {
+            "access_token": token_pair["access_token"],
+            "refresh_token": token_pair["refresh_token"],
+            "token_type": token_pair["token_type"],
+            "expires_in": int(settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60),
+            "user_info": {
                 "id": user.id,
                 "username": user.username,
                 "email": user.email,
-                "user_type": user.user_type.value,
+                "user_type": user.user_type,
                 "is_active": user.is_active,
                 "is_verified": user.is_verified,
             },
-            "tokens": token_pair,
-            "session_token": session_token,
-            "roles": [{"id": role.id, "code": role.code, "name": role.name} for role in user_roles],
-            "permissions": [perm.code for perm in user_permissions],
         }
 
     async def refresh_token(self, refresh_token: str, session_token: str) -> dict[str, str] | None:

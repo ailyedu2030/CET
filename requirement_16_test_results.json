@@ -1,0 +1,333 @@
+{
+  "requirement": "需求16 - 系统协同功能",
+  "total_tests": 9,
+  "passed_tests": 7,
+  "failed_tests": 2,
+  "results": [
+    {
+      "endpoint": "/api/v1/ai/status",
+      "method": "GET",
+      "status_code": 200,
+      "success": true,
+      "data": {
+        "service_status": "healthy",
+        "test_error": null,
+        "key_pool_status": {
+          "status": "active",
+          "keys_available": true
+        },
+        "usage_statistics": {
+          "total_calls": 0,
+          "success_rate": 1.0
+        },
+        "configuration": {
+          "base_url": "https://api.deepseek.com",
+          "default_model": "deepseek-chat",
+          "timeout": 60,
+          "max_tokens": 4096
+        }
+      }
+    },
+    {
+      "endpoint": "/api/v1/ai/enhanced-teaching/system/capabilities",
+      "method": "GET",
+      "status_code": 200,
+      "success": true,
+      "data": {
+        "success": true,
+        "capabilities": {
+          "learning_analytics": {
+            "comprehensive_analysis": true,
+            "multi_dimensional_data_fusion": true,
+            "learning_predictions": true,
+            "risk_assessment": true,
+            "personalized_recommendations": true
+          },
+          "teaching_adjustment": {
+            "intelligent_adjustments": true,
+            "resource_recommendations": true,
+            "implementation_planning": true,
+            "effectiveness_prediction": true
+          },
+          "collaboration_management": {
+            "enhanced_sessions": true,
+            "permission_management": true,
+            "conflict_resolution": true,
+            "real_time_editing": true
+          },
+          "recommendation_engine": {
+            "intelligent_recommendations": true,
+            "fast_recommendations": true,
+            "optimization_algorithms": true,
+            "confidence_scoring": true
+          },
+          "system_features": {
+            "ai_powered": true,
+            "real_time_processing": true,
+            "caching_optimization": true,
+            "multi_user_support": true
+          }
+        },
+        "version": "2.0.0",
+        "last_updated": "2024-01-01T00:00:00Z",
+        "message": "增强教学系统能力清单"
+      }
+    },
+    {
+      "endpoint": "/api/v1/ai/enhanced-teaching/recommendations/intelligent",
+      "method": "POST",
+      "status_code": 200,
+      "success": true,
+      "request_data": {
+        "recommendation_type": "learning_path",
+        "context": {
+          "student_level": "intermediate",
+          "subject": "english",
+          "current_progress": 60
+        }
+      },
+      "data": {
+        "success": true,
+        "recommendation_result": {
+          "user_id": 2,
+          "recommendation_type": "learning_path",
+          "recommendations": [
+            {
+              "type": "learning_resource",
+              "category": "weakness_improvement",
+              "title": "听力理解专项训练资源",
+              "description": "针对听力理解的专项学习材料",
+              "difficulty_level": "beginner",
+              "priority": "high",
+              "estimated_time": "30-45分钟",
+              "target_skill": "听力理解"
+            },
+            {
+              "type": "learning_resource",
+              "category": "weakness_improvement",
+              "title": "写作表达专项训练资源",
+              "description": "针对写作表达的专项学习材料",
+              "difficulty_level": "beginner",
+              "priority": "high",
+              "estimated_time": "30-45分钟",
+              "target_skill": "写作表达"
+            },
+            {
+              "type": "learning_resource",
+              "category": "comprehensive",
+              "title": "beginner级别综合训练",
+              "description": "全面提升英语四级各项技能",
+              "difficulty_level": "beginner",
+              "priority": "medium",
+              "estimated_time": "60-90分钟",
+              "target_skill": "comprehensive"
+            }
+          ],
+          "confidence_scores": {
+            "recommendation_0": 0.8,
+            "recommendation_1": 0.8,
+            "recommendation_2": 0.8
+          },
+          "user_profile_summary": {
+            "user_id": 2,
+            "current_level": "intermediate",
+            "target_score": 425,
+            "accuracy_rate": 0,
+            "weak_areas": [
+              "听力理解",
+              "写作表达"
+            ]
+          },
+          "generation_metadata": {
+            "timestamp": "2025-08-28T06:18:16.733908",
+            "cache_status": "generated",
+            "processing_time_ms": 0
+          }
+        },
+        "message": "智能推荐生成完成"
+      }
+    },
+    {
+      "endpoint": "/api/v1/ai/enhanced-teaching/collaboration/create-session",
+      "method": "POST",
+      "status_code": 200,
+      "success": true,
+      "request_data": {
+        "resource_type": "lesson_plan",
+        "resource_id": 1,
+        "collaboration_settings": {
+          "max_participants": 5,
+          "allow_edit": true,
+          "session_duration": 3600
+        }
+      },
+      "data": {
+        "success": true,
+        "session_result": {
+          "success": true,
+          "session_id": "4ab6fc6b-0798-47d4-971c-2bab68ac01ac",
+          "session_state": {
+            "session_id": "4ab6fc6b-0798-47d4-971c-2bab68ac01ac",
+            "resource_type": "lesson_plan",
+            "resource_id": 1,
+            "initiator_id": 2,
+            "participants": [
+              2
+            ],
+            "permission_matrix": {
+              "resource_owner": {
+                "user_id": 2,
+                "permissions": [
+                  "read",
+                  "write",
+                  "delete",
+                  "manage_permissions",
+                  "invite_users"
+                ]
+              },
+              "collaboration_rules": {
+                "max_participants": 5,
+                "allow_external_users": false,
+                "require_approval": true,
+                "edit_timeout": 300,
+                "auto_save_interval": 60
+              },
+              "permission_levels": {
+                "owner": [
+                  "read",
+                  "write",
+                  "delete",
+                  "manage_permissions",
+                  "invite_users"
+                ],
+                "editor": [
+                  "read",
+                  "write"
+                ],
+                "reviewer": [
+                  "read",
+                  "comment"
+                ],
+                "viewer": [
+                  "read"
+                ]
+              },
+              "default_permission_level": "editor",
+              "resource_specific": {
+                "can_modify_objectives": [
+                  "owner",
+                  "editor"
+                ],
+                "can_modify_content": [
+                  "owner",
+                  "editor"
+                ],
+                "can_modify_methods": [
+                  "owner",
+                  "editor"
+                ],
+                "can_add_comments": [
+                  "owner",
+                  "editor",
+                  "reviewer"
+                ],
+                "can_view_history": [
+                  "owner",
+                  "editor",
+                  "reviewer"
+                ]
+              }
+            },
+            "collaboration_settings": {
+              "max_participants": 5,
+              "allow_edit": true,
+              "session_duration": 3600
+            },
+            "active_locks": {},
+            "pending_changes": [],
+            "conflict_resolution_strategy": "auto_merge",
+            "created_at": "2025-08-28T06:18:16.757152",
+            "last_activity": "2025-08-28T06:18:16.757156"
+          },
+          "message": "协作会话创建成功"
+        },
+        "message": "协作会话创建成功"
+      }
+    },
+    {
+      "method": "test_learning_analysis_api",
+      "success": false,
+      "error": ""
+    },
+    {
+      "method": "test_teaching_content_generation_api",
+      "success": false,
+      "error": ""
+    },
+    {
+      "endpoint": "/api/v1/core/architecture/resource-base",
+      "method": "GET",
+      "status_code": 200,
+      "success": true,
+      "data": {
+        "success": true,
+        "data": {
+          "course_resources": [],
+          "hotspot_pool": [
+            {
+              "id": 3,
+              "title": "AI技术发展趋势分析",
+              "content": "",
+              "popularity_score": 0.001,
+              "source_type": "manual",
+              "source_url": "https://example.com/ai-trends-2025",
+              "created_at": "2025-08-26T23:10:52.055237+00:00"
+            }
+          ],
+          "metadata": {
+            "total_resources": 0,
+            "total_hotspots": 1,
+            "last_updated": "2025-08-27T22:18:26.882434",
+            "cache_key": "teaching_resource_base:english:college"
+          }
+        },
+        "message": "成功获取教学资源底座"
+      }
+    },
+    {
+      "endpoint": "/api/v1/training/adaptive-learning/learning-strategy/1",
+      "method": "GET",
+      "status_code": 200,
+      "success": true,
+      "data": {
+        "student_id": 1,
+        "learning_style": "unknown",
+        "current_performance": {
+          "status": "no_data"
+        },
+        "weak_areas": [],
+        "recommendations": [
+          "建议加强基础练习，巩固基本知识"
+        ],
+        "confidence_score": 0.3,
+        "generated_at": "2025-08-28T06:18:26.897474"
+      },
+      "error": null
+    },
+    {
+      "endpoint": "/api/v1/training/adaptive-learning/reinforcement-plan/1",
+      "method": "GET",
+      "status_code": 200,
+      "success": true,
+      "data": {
+        "student_id": 1,
+        "plan_created_at": "2025-08-28T06:18:26.917992",
+        "knowledge_gaps_count": 0,
+        "training_modules": [],
+        "estimated_completion_days": 0,
+        "priority_focus_areas": []
+      },
+      "error": null
+    }
+  ]
+}

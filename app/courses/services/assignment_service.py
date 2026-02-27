@@ -7,6 +7,7 @@ from sqlalchemy import and_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.courses.models import Class, Course
+from app.courses.models.assignment_models import CourseAssignment, AssignmentStatus
 from app.courses.schemas.assignment_schemas import (
     BulkAssignmentRequest,
     BulkAssignmentResponse,
@@ -59,7 +60,28 @@ class AssignmentService:
             best_teacher["teacher_id"] if best_teacher else assignment_request.teacher_ids[0]
         )
 
-        # 创建分配记录（这里简化，实际可能需要单独的分配表）
+        # 创建分配记录
+        assignment_record = CourseAssignment(
+            course_id=assignment_request.course_id,
+            teacher_id=selected_teacher_id,
+            assigned_by=assigner_id,
+            assignment_type=("direct" if assignment_request.force_assign else "optimal"),
+            notes=assignment_request.assignment_reason,
+            status=AssignmentStatus.ACTIVE,
+        )
+        self.db.add(assignment_record)
+        await self.db.commit()
+        await self.db.refresh(assignment_record)
+
+        return {
+            "course_id": assignment_record.course_id,
+            "teacher_id": assignment_record.teacher_id,
+            "assigned_at": assignment_record.assigned_at.isoformat(),
+            "assigned_by": assignment_record.assigned_by,
+            "assignment_type": assignment_record.assignment_type,
+            "assignment_reason": assignment_request.assignment_reason,
+            "evaluation_score": best_teacher["total_score"] if best_teacher else 0.0,
+        }
         assignment_record = {
             "course_id": assignment_request.course_id,
             "teacher_id": selected_teacher_id,

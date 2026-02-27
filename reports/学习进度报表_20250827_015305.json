@@ -1,0 +1,80 @@
+{
+  "report_info": {
+    "id": "learning_progress_default_1756230785",
+    "name": "学习进度报表_20250827_015305",
+    "generated_at": "2025-08-27T01:53:05.036996",
+    "generation_time": 2.7e-05
+  },
+  "data": [
+    {
+      "user_id": 1,
+      "username": "张三",
+      "total_study_time": 25.5,
+      "sessions_count": 15,
+      "avg_accuracy": 0.85,
+      "progress_score": 78.5,
+      "last_activity": "2024-01-15 14:30:00"
+    },
+    {
+      "user_id": 2,
+      "username": "李四",
+      "total_study_time": 32.0,
+      "sessions_count": 20,
+      "avg_accuracy": 0.92,
+      "progress_score": 85.2,
+      "last_activity": "2024-01-15 16:45:00"
+    }
+  ],
+  "charts": [
+    {
+      "type": "line",
+      "title": "学习进度趋势",
+      "config": {
+        "width": 800,
+        "height": 600,
+        "show_legend": true,
+        "show_grid": true
+      },
+      "data": {
+        "labels": [
+          "2024-01-15 14:30:00",
+          "2024-01-15 16:45:00"
+        ],
+        "datasets": [
+          {
+            "label": "progress_score",
+            "data": [
+              78.5,
+              85.2
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "bar",
+      "title": "学习时长排行",
+      "config": {
+        "width": 800,
+        "height": 600,
+        "show_legend": true,
+        "show_grid": true
+      },
+      "data": {
+        "labels": [
+          "张三",
+          "李四"
+        ],
+        "datasets": [
+          {
+            "label": "total_study_time",
+            "data": [
+              25.5,
+              32.0
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

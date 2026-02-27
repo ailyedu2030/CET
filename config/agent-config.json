@@ -1,0 +1,260 @@
+{
+  "agent_system": {
+    "version": "2.0.0",
+    "description": "基于TODO优先级的多智能体协作系统",
+    "updated": "2024-12-19",
+    "priority_based": true
+  },
+  
+  "agent_roles": {
+    "ai_specialist": {
+      "name": "AI专家",
+      "description": "专门负责AI集成和算法实现",
+      "responsibilities": [
+        "DeepSeek AI服务集成",
+        "智能批改算法实现",
+        "学习数据分析引擎",
+        "自适应学习算法",
+        "AI模型优化"
+      ],
+      "max_concurrent_tasks": 2,
+      "priority_focus": [1, 2]
+    },
+    
+    "training_specialist": {
+      "name": "训练系统专家",
+      "description": "专门负责训练系统实现",
+      "responsibilities": [
+        "综合训练中心开发",
+        "听力训练系统",
+        "词汇训练模块",
+        "阅读理解训练",
+        "写作训练系统"
+      ],
+      "max_concurrent_tasks": 3,
+      "priority_focus": [1, 2, 3]
+    },
+    
+    "api_specialist": {
+      "name": "API专家",
+      "description": "专门负责API设计和实现",
+      "responsibilities": [
+        "REST API端点设计",
+        "API文档编写",
+        "接口测试覆盖",
+        "API性能优化",
+        "错误处理机制"
+      ],
+      "max_concurrent_tasks": 4,
+      "priority_focus": [1, 2, 3, 4]
+    },
+    
+    "backend": {
+      "name": "后端开发",
+      "description": "后端服务和数据库实现",
+      "responsibilities": [
+        "数据模型设计",
+        "业务逻辑实现",
+        "数据库优化",
+        "服务层开发",
+        "缓存策略"
+      ],
+      "max_concurrent_tasks": 3,
+      "priority_focus": [1, 2, 3, 4, 5]
+    },
+    
+    "frontend": {
+      "name": "前端开发",
+      "description": "用户界面和交互实现",
+      "responsibilities": [
+        "React组件开发",
+        "用户界面设计",
+        "交互逻辑实现",
+        "响应式布局",
+        "前端性能优化"
+      ],
+      "max_concurrent_tasks": 3,
+      "priority_focus": [1, 2, 3, 4]
+    },
+    
+    "coordinator": {
+      "name": "协调员",
+      "description": "任务协调和质量控制",
+      "responsibilities": [
+        "任务分配协调",
+        "进度跟踪管理",
+        "质量检查验证",
+        "文档一致性检查",
+        "集成测试协调"
+      ],
+      "max_concurrent_tasks": 5,
+      "priority_focus": [1, 2, 3, 4, 5]
+    }
+  },
+  
+  "priority_mapping": {
+    "1": {
+      "name": "第一优先级 - 核心训练功能",
+      "description": "系统核心价值，立即开始实现",
+      "estimated_hours": 105,
+      "modules": [
+        "学生综合训练中心",
+        "AI智能批改系统", 
+        "听力训练系统"
+      ],
+      "success_criteria": [
+        "训练中心API完全可用",
+        "AI批改准确率>95%",
+        "听力训练功能完整"
+      ]
+    },
+    
+    "2": {
+      "name": "第二优先级 - AI智能功能",
+      "description": "AI驱动的智能化功能",
+      "estimated_hours": 105,
+      "modules": [
+        "AI智能分析与学情报告",
+        "错题强化与自适应学习",
+        "词汇训练模块"
+      ],
+      "success_criteria": [
+        "学情分析准确率>90%",
+        "自适应算法有效运行",
+        "词汇训练计划智能化"
+      ]
+    },
+    
+    "3": {
+      "name": "第三优先级 - 完整训练体系",
+      "description": "训练功能的完善和扩展",
+      "estimated_hours": 90,
+      "modules": [
+        "阅读理解训练",
+        "英语四级写作标准库",
+        "学习计划与管理"
+      ],
+      "success_criteria": [
+        "阅读训练题型完整",
+        "写作评分引擎准确",
+        "学习计划个性化"
+      ]
+    },
+    
+    "4": {
+      "name": "第四优先级 - 支持功能",
+      "description": "用户体验和辅助功能",
+      "estimated_hours": 60,
+      "modules": [
+        "学习辅助工具",
+        "学习社交与互动"
+      ],
+      "success_criteria": [
+        "智能问答覆盖率>90%",
+        "社交功能安全稳定"
+      ]
+    },
+    
+    "5": {
+      "name": "第五优先级 - 技术架构",
+      "description": "性能优化和架构完善",
+      "estimated_hours": 75,
+      "modules": [
+        "资源库技术架构",
+        "高并发架构优化"
+      ],
+      "success_criteria": [
+        "支持1000+并发用户",
+        "响应时间<200ms"
+      ]
+    }
+  },
+  
+  "execution_rules": {
+    "mandatory_checks": {
+      "requirements_consistency": true,
+      "design_document_alignment": true,
+      "existing_code_reuse": true,
+      "user_confirmation": true,
+      "uncertainty_reporting": true
+    },
+    
+    "implementation_principles": [
+      "优先扩展现有代码",
+      "保持架构一致性",
+      "渐进式实现",
+      "零Linter错误",
+      "完整测试覆盖"
+    ],
+    
+    "quality_gates": {
+      "code_quality": {
+        "typescript_check": true,
+        "eslint_validation": true,
+        "test_coverage": ">80%"
+      },
+      "api_quality": {
+        "response_time": "<1s",
+        "error_handling": "complete",
+        "documentation": "up_to_date"
+      },
+      "ai_quality": {
+        "grading_accuracy": ">95%",
+        "analysis_accuracy": ">90%",
+        "prediction_accuracy": ">85%"
+      }
+    }
+  },
+  
+  "integration_points": {
+    "deepseek_ai": {
+      "service": "DeepSeek API",
+      "purpose": "智能批改和分析",
+      "requirements": [
+        "API密钥管理",
+        "请求限流控制",
+        "错误重试机制",
+        "响应缓存策略"
+      ]
+    },
+    
+    "database": {
+      "primary": "PostgreSQL",
+      "cache": "Redis",
+      "requirements": [
+        "数据一致性保证",
+        "事务管理",
+        "性能优化",
+        "备份策略"
+      ]
+    },
+    
+    "frontend": {
+      "framework": "React 18.x + TypeScript 5.x",
+      "ui_library": "Mantine 7.x",
+      "requirements": [
+        "响应式设计",
+        "实时数据更新",
+        "离线功能支持",
+        "性能优化"
+      ]
+    }
+  },
+  
+  "monitoring": {
+    "metrics": [
+      "任务完成率",
+      "代码质量分数",
+      "API响应时间",
+      "用户满意度",
+      "系统稳定性"
+    ],
+    
+    "alerts": [
+      "任务失败率>10%",
+      "API响应时间>2s",
+      "错误率>5%",
+      "测试覆盖率<80%"
+    ]
+  }
+}

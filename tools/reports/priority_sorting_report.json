@@ -1,0 +1,13 @@
+{
+  "summary": {
+    "total_tasks": 0,
+    "total_estimated_time": 0,
+    "critical_tasks": 0,
+    "high_priority_tasks": 0,
+    "medium_priority_tasks": 0,
+    "low_priority_tasks": 0
+  },
+  "execution_plan": [],
+  "dependency_graph": {},
+  "resource_allocation": {}
+}

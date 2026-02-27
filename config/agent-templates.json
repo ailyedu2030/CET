@@ -1,0 +1,226 @@
+{
+  "templates": {
+    "phase1_mandatory_check": {
+      "name": "阶段1：强制检查清单执行",
+      "description": "确保任务开始前的所有必要检查都已完成",
+      "phase": "PHASE_1",
+      "agent_role": "COORDINATOR",
+      "estimated_hours": 2,
+      "commands": [
+        "view .kiro/specs/cet4-learning-system/requirements.md",
+        "search_requirements_for_requirement_id {requirement_id}",
+        "view .kiro/specs/cet4-learning-system/design.md",
+        "check_design_conflicts_for_requirement {requirement_id}",
+        "confirm_implementation_approach_with_user {requirement_id}",
+        "report_uncertainties_to_user {requirement_id}"
+      ],
+      "checklist": [
+        "需求文档一致性检查：确认需求在requirements.md中有明确定义",
+        "设计文档冲突检查：确认与design.md技术架构无冲突",
+        "用户确认检查：获得具体实施方案的明确确认",
+        "文档依据检查：基于文档要求而非个人判断进行实现",
+        "不确定性报告：向用户报告任何模糊之处并获得澄清"
+      ],
+      "success_criteria": [
+        "需求定义明确且无歧义",
+        "技术架构兼容性确认",
+        "实施方案获得用户确认",
+        "所有不确定性已澄清"
+      ],
+      "quality_gates": [
+        "文档完整性检查通过",
+        "用户确认获得",
+        "技术可行性验证"
+      ]
+    },
+    "phase2_requirement_analysis": {
+      "name": "阶段2：需求深度分析",
+      "description": "深入分析需求的所有细节和技术要求",
+      "phase": "PHASE_2",
+      "agent_role": "COORDINATOR",
+      "estimated_hours": 3,
+      "commands": [
+        "extract_functional_requirements {requirement_id}",
+        "identify_technical_requirements {requirement_id}",
+        "define_acceptance_criteria {requirement_id}",
+        "map_requirement_dependencies {requirement_id}",
+        "scope_frontend_backend_work {requirement_id}"
+      ],
+      "checklist": [
+        "详细解读所有功能要求点",
+        "明确技术实现要求和性能指标",
+        "提取验收标准和成功指标",
+        "识别与其他需求的依赖关系",
+        "确定前端和后端的具体实现范围"
+      ],
+      "success_criteria": [
+        "功能要求完整清晰",
+        "技术要求具体可行",
+        "验收标准明确可测",
+        "依赖关系清楚",
+        "工作范围界定明确"
+      ],
+      "quality_gates": [
+        "需求分解完整性检查",
+        "技术可行性评估",
+        "验收标准可测性验证"
+      ]
+    },
+    "phase3_current_assessment": {
+      "name": "阶段3：现状全面评估",
+      "description": "全面评估当前实现状态和缺口",
+      "phase": "PHASE_3",
+      "agent_role": "COORDINATOR",
+      "estimated_hours": 4,
+      "commands": [
+        "assess_frontend_implementation {requirement_id}",
+        "assess_backend_implementation {requirement_id}",
+        "assess_database_schema {requirement_id}",
+        "assess_integration_status {requirement_id}",
+        "assess_test_coverage {requirement_id}"
+      ],
+      "checklist": [
+        "前端实现状态：检查React组件、页面、路由完整性",
+        "后端实现状态：检查API端点、数据模型、业务逻辑完整性",
+        "数据库状态：检查表结构、索引、约束完整性",
+        "集成状态：检查前后端API集成、数据流完整性",
+        "测试覆盖：检查单元测试、集成测试覆盖情况"
+      ],
+      "success_criteria": [
+        "前端实现状态清楚",
+        "后端实现状态清楚",
+        "数据库状态清楚",
+        "集成状态清楚",
+        "测试覆盖状态清楚"
+      ],
+      "quality_gates": [
+        "代码审查完成",
+        "架构一致性检查",
+        "测试覆盖率评估"
+      ]
+    },
+    "phase4_solution_design": {
+      "name": "阶段4：实现方案制定",
+      "description": "制定详细的技术实现方案",
+      "phase": "PHASE_4",
+      "agent_role": "COORDINATOR",
+      "estimated_hours": 3,
+      "commands": [
+        "select_technology_stack {requirement_id}",
+        "ensure_architecture_consistency {requirement_id}",
+        "plan_code_reuse_strategy {requirement_id}",
+        "design_progressive_implementation {requirement_id}"
+      ],
+      "checklist": [
+        "技术栈遵循：使用设计文档指定的技术栈",
+        "架构一致性：确保符合设计文档的系统架构",
+        "代码复用优先：优先修复和补全现有代码文件",
+        "渐进式实现：制定分阶段的实现计划"
+      ],
+      "success_criteria": [
+        "技术栈选择合理",
+        "架构设计一致",
+        "代码复用最大化",
+        "实现计划可行"
+      ],
+      "quality_gates": [
+        "技术方案评审通过",
+        "架构一致性验证",
+        "实现计划可行性确认"
+      ]
+    },
+    "phase5_implementation": {
+      "name": "阶段5：代码实现与验证",
+      "description": "执行代码实现并进行全面验证",
+      "phase": "PHASE_5",
+      "agent_role": "COORDINATOR",
+      "estimated_hours": 8,
+      "commands": [
+        "implement_frontend_code {requirement_id}",
+        "implement_backend_code {requirement_id}",
+        "ensure_quality_standards {requirement_id}",
+        "verify_functionality {requirement_id}",
+        "run_integration_tests {requirement_id}"
+      ],
+      "checklist": [
+        "前端代码补全：基于现有组件结构进行功能补全和优化",
+        "后端代码补全：基于现有API结构进行功能补全和优化",
+        "质量保证：确保TypeScript类型安全、ESLint规则合规",
+        "功能验证：验证实现完全满足需求的验收标准",
+        "集成测试：确保前后端集成正常工作"
+      ],
+      "success_criteria": [
+        "前端功能完整实现",
+        "后端功能完整实现",
+        "代码质量达标",
+        "功能验证通过",
+        "集成测试通过"
+      ],
+      "quality_gates": [
+        "代码质量检查通过",
+        "功能测试通过",
+        "集成测试通过",
+        "性能测试通过",
+        "安全测试通过"
+      ]
+    }
+  },
+  "agent_roles": {
+    "BACKEND": {
+      "name": "Backend Agent",
+      "specialties": ["Python", "FastAPI", "Database", "API", "认证", "性能"],
+      "tools": ["ruff", "mypy", "pytest", "SQLAlchemy"],
+      "max_concurrent_tasks": 2
+    },
+    "FRONTEND": {
+      "name": "Frontend Agent",
+      "specialties": ["React", "TypeScript", "UI/UX", "界面", "用户体验"],
+      "tools": ["eslint", "prettier", "jest", "webpack"],
+      "max_concurrent_tasks": 2
+    },
+    "DEVOPS": {
+      "name": "DevOps Agent",
+      "specialties": ["CI/CD", "Docker", "部署", "监控", "安全"],
+      "tools": ["GitHub Actions", "Docker", "Kubernetes", "Prometheus"],
+      "max_concurrent_tasks": 1
+    },
+    "QA": {
+      "name": "QA Agent",
+      "specialties": ["Testing", "Quality", "测试", "质量", "自动化"],
+      "tools": ["pytest", "selenium", "coverage", "k6"],
+      "max_concurrent_tasks": 3
+    },
+    "COORDINATOR": {
+      "name": "Main Coordinator",
+      "specialties": ["project_management", "task_coordination", "quality_assurance"],
+      "tools": ["Augment", "Task Management", "Documentation"],
+      "max_concurrent_tasks": 5
+    }
+  },
+  "quality_standards": {
+    "code_quality": {
+      "typescript_safety": true,
+      "eslint_compliance": true,
+      "test_coverage_min": 80,
+      "documentation_required": true
+    },
+    "performance": {
+      "response_time_max": 3000,
+      "concurrent_users": 1000,
+      "first_screen_load_max": 3000
+    },
+    "security": {
+      "gdpr_compliance": true,
+      "data_encryption": "AES-256",
+      "https_required": true,
+      "auth_required": true
+    }
+  },
+  "execution_settings": {
+    "parallel_execution": true,
+    "max_retry_attempts": 3,
+    "timeout_minutes": 30,
+    "auto_save_progress": true,
+    "generate_reports": true
+  }
+}

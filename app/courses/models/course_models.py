@@ -13,6 +13,8 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
+    Index,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -290,10 +292,76 @@ class Class(BaseModel):
         "User",
         foreign_keys=[teacher_id],
     )
+    students: Mapped[list["ClassStudent"]] = relationship(
+        "ClassStudent",
+        back_populates="class_obj",
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self) -> str:
         """班级模型字符串表示."""
         return f"<Class(id={self.id}, name='{self.name}', course_id={self.course_id})>"
+
+
+
+class ClassStudent(BaseModel):
+    """班级学生注册模型 - 记录学生在班级中的注册信息."""
+
+    __tablename__ = "class_students"
+    __table_args__ = (
+        UniqueConstraint("class_id", "student_id", name="idx_class_student_unique"),
+        Index("idx_class_students_class_id", "class_id"),
+        Index("idx_class_students_student_id", "student_id"),
+    )
+
+    # 外键
+    class_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("classes.id", ondelete="CASCADE"),
+        nullable=False,
+        comment="班级ID",
+    )
+    student_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        comment="学生ID",
+    )
+    enrolled_by: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+        comment="注册人ID",
+    )
+
+    # 注册信息
+    enrolled_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=datetime.utcnow,
+        nullable=False,
+        comment="注册时间",
+    )
+    enrollment_status: Mapped[str] = mapped_column(
+        String(20),
+        default="active",
+        nullable=False,
+        comment="注册状态：active/suspended/withdrawn",
+    )
+
+    # 关系
+    class_obj: Mapped["Class"] = relationship(
+        "Class",
+        foreign_keys=[class_id],
+        back_populates="students",
+    )
+    student: Mapped["User"] = relationship(
+        "User",
+        foreign_keys=[student_id],
+    )
+
+    def __repr__(self) -> str:
+        """班级学生模型字符串表示."""
+        return f"<ClassStudent(id={self.id}, class_id={self.class_id}, student_id={self.student_id})>"
 
 
 class ClassResourceHistory(BaseModel):
