@@ -3,8 +3,7 @@
 import logging
 from datetime import datetime, timedelta
 
-from sqlalchemy import delete, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import delete
 
 from app.core.celery_config import celery_app
 from app.core.database import async_session_maker
@@ -21,7 +20,7 @@ def cleanup_old_notifications_task() -> dict[str, int]:
     """清理过期的通知和通知历史记录."""
     import asyncio
 
-    async def _cleanup():
+    async def _cleanup() -> dict[str, int]:
         async with async_session_maker() as session:
             # 计算90天前的日期
             cutoff_date = datetime.utcnow() - timedelta(days=90)
@@ -36,7 +35,7 @@ def cleanup_old_notifications_task() -> dict[str, int]:
             # 清理已读通知（30天前）
             read_cutoff = datetime.utcnow() - timedelta(days=30)
             delete_notifications_stmt = delete(Notification).where(
-                Notification.is_read == True,
+                Notification.is_read.is_(True),
                 Notification.created_at < read_cutoff,  # noqa: E712
             )
             notifications_result = await session.execute(delete_notifications_stmt)
