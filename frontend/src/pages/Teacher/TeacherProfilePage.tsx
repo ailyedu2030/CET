@@ -67,6 +67,7 @@ interface ProfileUpdateRequest {
   subject?: string
   phone?: string
   introduction?: string
+  [key: string]: unknown
 }
 
 // 密码修改请求接口

@@ -12,6 +12,7 @@
  */
 
 import { apiClient } from './client'
+import { GradingRequest } from './grading'
 
 
 // ==================== 核心类型定义 ====================

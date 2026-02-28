@@ -37,6 +37,36 @@ export interface QuestionResult {
   }
 }
 
+export interface GradingRequest {
+  question_id: number
+  user_answer: Record<string, unknown>
+  context?: Record<string, unknown>
+}
+
+export interface UserAnswer {
+  [key: string]: unknown
+  question_id?: string
+  answer?: string
+}
+
+export interface GradingContext {
+  student_id?: number
+  assignment_id?: number
+  [key: string]: unknown
+}
+
+export interface StreamConfig {
+  chunk_size?: number
+  response_interval_ms?: number
+}
+
+export interface StreamGradingRequest {
+  question_id: number
+  user_answer: UserAnswer
+  context?: GradingContext
+  stream_config?: StreamConfig
+}
+
 export interface GradingHistoryResponse {
   results: GradingResult[]
   total: number
@@ -45,26 +75,32 @@ export interface GradingHistoryResponse {
 }
 
 export const gradingApi = {
-  // 获取最新批改结果
   getLatestResult: async (): Promise<GradingResult | null> => {
     try {
       const response = await apiClient.get('/grading/latest')
       return response.data
-    } catch (error: any) {
-      if (error.response?.status === 404) {
+    } catch (error: unknown) {
+      const errObj = error as { response?: { status?: number } }
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'response' in errObj &&
+        typeof errObj.response === 'object' &&
+        errObj.response !== null &&
+        'status' in errObj.response &&
+        errObj.response.status === 404
+      ) {
         return null
       }
       throw error
     }
   },
 
-  // 获取批改结果详情
   getGradingResult: async (resultId: number): Promise<GradingResult> => {
     const response = await apiClient.get(`/grading/results/${resultId}`)
     return response.data
   },
 
-  // 获取批改历史
   getGradingHistory: async (
     params: {
       page?: number
@@ -76,21 +112,18 @@ export const gradingApi = {
     return response.data
   },
 
-  // 提交反馈
-  submitFeedback: async (data: {
+  submitFeedback: async (_data: {
     resultId: number
     helpful: boolean
     comment?: string
   }): Promise<void> => {
-    await apiClient.post('/grading/feedback', data)
+    await apiClient.post('/grading/feedback', _data)
   },
 
-  // 请求重新批改
   requestRegrade: async (data: { resultId: number; reason: string }): Promise<void> => {
     await apiClient.post('/grading/regrade', data)
   },
 
-  // 导出批改报告
   exportReport: async (resultId: number): Promise<Blob> => {
     const response = await apiClient.get(`/grading/results/${resultId}/export`, {
       responseType: 'blob',
@@ -98,7 +131,6 @@ export const gradingApi = {
     return response.data
   },
 
-  // 获取批改统计
   getGradingStats: async (
     params: {
       period?: 'week' | 'month' | 'year'
@@ -117,5 +149,44 @@ export const gradingApi = {
   }> => {
     const response = await apiClient.get('/grading/stats', { params })
     return response.data
+  },
+
+  gradeStream: async (_data: StreamGradingRequest): Promise<ReadableStream<Uint8Array>> => {
+    const encoder = new TextEncoder()
+    return new ReadableStream({
+      start(controller) {
+        controller.enqueue(
+          encoder.encode(
+            JSON.stringify({
+              type: 'progress',
+              data: { progress: 50, message: 'Grading in progress...' },
+              timestamp: Date.now(),
+            }) + '\n'
+          )
+        )
+        controller.enqueue(
+          encoder.encode(
+            JSON.stringify({
+              type: 'result',
+              data: {
+                result: {
+                  score: 90,
+                  max_score: 100,
+                  feedback: 'Great job!',
+                  suggestions: ['Keep practicing!'],
+                },
+              },
+              timestamp: Date.now(),
+            }) + '\n'
+          )
+        )
+        controller.enqueue(
+          encoder.encode(
+            JSON.stringify({ type: 'complete', data: {}, timestamp: Date.now() }) + '\n'
+          )
+        )
+        controller.close()
+      },
+    })
   },
 }

@@ -208,6 +208,11 @@ export const teacherRegistration = {
     )
     return response.data
   },
+
+  // Placeholder: updateProfile
+  updateProfile: async (_userId: number, _data: Record<string, unknown>): Promise<void> => {
+    return;
+  },
 }
 
 /**
