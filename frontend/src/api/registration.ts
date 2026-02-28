@@ -211,7 +211,7 @@ export const teacherRegistration = {
 
   // Placeholder: updateProfile
   updateProfile: async (_userId: number, _data: Record<string, unknown>): Promise<void> => {
-    return;
+    return
   },
 }
 

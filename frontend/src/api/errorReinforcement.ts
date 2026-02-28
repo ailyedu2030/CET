@@ -190,9 +190,7 @@ export const errorReinforcementApi = {
     return response.data
   },
 
-  autoCollectError: async (
-    _data: AutoCollectErrorRequest
-  ): Promise<AutoCollectErrorResponse> => {
+  autoCollectError: async (_data: AutoCollectErrorRequest): Promise<AutoCollectErrorResponse> => {
     return {
       collected: true,
       reason: '错题已归集',
