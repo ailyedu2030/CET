@@ -662,8 +662,9 @@ async def get_queue_service() -> QueueService:
     global _queue_service
 
     if _queue_service is None:
-        from app.core.database import get_db
         from app.core.redis import get_redis
+
+        from app.core.database import get_db
 
         async for db in get_db():
             redis = await get_redis()

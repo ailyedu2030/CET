@@ -27,9 +27,16 @@ from app.shared.models.enums import AlertLevel, MetricType
 
 # Prometheus客户端支持
 try:
-    from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, Counter
+    from prometheus_client import (
+        CONTENT_TYPE_LATEST,
+        CollectorRegistry,
+        Counter,
+        Gauge,
+        Histogram,
+        Info,
+        generate_latest,
+    )
     from prometheus_client import Enum as PrometheusEnum
-    from prometheus_client import Gauge, Histogram, Info, generate_latest
 
     PROMETHEUS_AVAILABLE = True
 except ImportError:
