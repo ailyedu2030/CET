@@ -3,8 +3,19 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import (JSON, Boolean, DateTime, Enum, Float, ForeignKey, Index,
-                        Integer, String, Text, UniqueConstraint)
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.shared.models.base_model import BaseModel

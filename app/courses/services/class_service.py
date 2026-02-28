@@ -8,10 +8,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.courses.models import Class, ClassStudent, Course
-from app.courses.schemas.class_schemas import (ClassBatchCreate, ClassConflictCheck,
-                                               ClassCreate, ClassUpdate,
-                                               ConflictCheckResult,
-                                               StudentEnrollmentRequest)
+from app.courses.schemas.class_schemas import (
+    ClassBatchCreate,
+    ClassConflictCheck,
+    ClassCreate,
+    ClassUpdate,
+    ConflictCheckResult,
+    StudentEnrollmentRequest,
+)
 from app.courses.utils.conflict_detection_utils import ConflictDetectionUtils
 
 
