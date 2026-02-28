@@ -87,23 +87,15 @@ select = [
     "ANN", # flake8-annotations
 ]
 ignore = [
-    "E501",    # line too long, handled by formatter
-    "B008",    # do not perform function calls in argument defaults
-    "C901",    # too complex
-    "ANN401",  # Dynamically typed expressions (Any) are disallowed
-    "ANN101",  # Missing type annotation for `self` in method
-    "ANN102",  # Missing type annotation for `cls` in classmethod
-    "ANN204",  # Missing return type annotation for special method
-    "UP042",   # Use StrEnum instead of str, Enum
-    "UP045",   # Use X | None instead of Optional[X]
-]
-    "E501",    # line too long, handled by formatter
-    "B008",    # do not perform function calls in argument defaults
-    "C901",    # too complex
-    "ANN401",  # Dynamically typed expressions (Any) are disallowed
-    "ANN101",  # Missing type annotation for `self` in method
-    "ANN102",  # Missing type annotation for `cls` in classmethod
-    "ANN204",  # Missing return type annotation for special method
+    "E501",
+    "B008",
+    "C901",
+    "ANN401",
+    "ANN101",
+    "ANN102",
+    "ANN204",
+    "UP042",
+    "UP045",
 ]
 
 [tool.ruff.lint.per-file-ignores]
