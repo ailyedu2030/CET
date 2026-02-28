@@ -15,8 +15,11 @@ from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import DifficultyLevel, TrainingType
-from app.training.models.training_models import (IntelligentTrainingLoop,
-                                                 TrainingRecord, TrainingSession)
+from app.training.models.training_models import (
+    IntelligentTrainingLoop,
+    TrainingRecord,
+    TrainingSession,
+)
 
 logger = logging.getLogger(__name__)
 

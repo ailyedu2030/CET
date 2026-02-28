@@ -9,9 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.resources.models.resource_models import KnowledgePoint, ResourceLibrary
-from app.resources.schemas.resource_schemas import (KnowledgePointCreate,
-                                                    KnowledgePointSearchRequest,
-                                                    KnowledgePointUpdate)
+from app.resources.schemas.resource_schemas import (
+    KnowledgePointCreate,
+    KnowledgePointSearchRequest,
+    KnowledgePointUpdate,
+)
 from app.shared.models.enums import DifficultyLevel
 
 

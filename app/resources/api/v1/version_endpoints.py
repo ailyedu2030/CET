@@ -10,11 +10,17 @@ from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.exceptions import (PermissionDeniedError, ResourceNotFoundError,
-                                 ValidationError)
-from app.resources.schemas.version_schemas import (ResourceVersionResponse,
-                                                   RollbackRequest, RollbackResponse,
-                                                   VersionComparisonResponse)
+from app.core.exceptions import (
+    PermissionDeniedError,
+    ResourceNotFoundError,
+    ValidationError,
+)
+from app.resources.schemas.version_schemas import (
+    ResourceVersionResponse,
+    RollbackRequest,
+    RollbackResponse,
+    VersionComparisonResponse,
+)
 from app.resources.services.version_service import VersionService
 from app.users.dependencies import get_current_user
 from app.users.models import User

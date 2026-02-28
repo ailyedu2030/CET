@@ -9,8 +9,14 @@ from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.shared.models.base_model import BaseModel
-from app.shared.models.enums import (ContentType, DifficultyLevel, PermissionLevel,
-                                     PermissionType, ProcessingStatus, ResourceType)
+from app.shared.models.enums import (
+    ContentType,
+    DifficultyLevel,
+    PermissionLevel,
+    PermissionType,
+    ProcessingStatus,
+    ResourceType,
+)
 
 # 导出枚举以供其他模块使用
 __all__ = [

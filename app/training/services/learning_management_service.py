@@ -8,20 +8,25 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.training.models.learning_plan_models import (LearningPlanModel,
-                                                      LearningProgressModel,
-                                                      LearningReminderModel,
-                                                      LearningReportModel,
-                                                      LearningTaskModel, PlanStatus,
-                                                      TaskStatus)
-from app.training.schemas.learning_management_schemas import (LearningDashboard,
-                                                              LearningPlanCreate,
-                                                              LearningPlanUpdate,
-                                                              LearningProgressCreate,
-                                                              LearningReportCreate,
-                                                              LearningStatistics,
-                                                              LearningTaskCreate,
-                                                              LearningTaskUpdate)
+from app.training.models.learning_plan_models import (
+    LearningPlanModel,
+    LearningProgressModel,
+    LearningReminderModel,
+    LearningReportModel,
+    LearningTaskModel,
+    PlanStatus,
+    TaskStatus,
+)
+from app.training.schemas.learning_management_schemas import (
+    LearningDashboard,
+    LearningPlanCreate,
+    LearningPlanUpdate,
+    LearningProgressCreate,
+    LearningReportCreate,
+    LearningStatistics,
+    LearningTaskCreate,
+    LearningTaskUpdate,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -448,7 +453,10 @@ class LearningManagementService:
         statistics = await self.get_user_statistics(user_id)
 
         from app.training.schemas.learning_management_schemas import (
-            LearningPlanResponse, LearningProgressResponse, LearningTaskResponse)
+            LearningPlanResponse,
+            LearningProgressResponse,
+            LearningTaskResponse,
+        )
 
         return LearningDashboard(
             today_tasks=[LearningTaskResponse.model_validate(t) for t in today_tasks],

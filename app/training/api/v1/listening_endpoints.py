@@ -9,9 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.shared.models.enums import DifficultyLevel
-from app.training.schemas.listening_schemas import (ListeningExercise,
-                                                    ListeningExerciseListResponse,
-                                                    SubmitAnswersRequest)
+from app.training.schemas.listening_schemas import (
+    ListeningExercise,
+    ListeningExerciseListResponse,
+    SubmitAnswersRequest,
+)
 from app.training.services.listening_service import ListeningService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user

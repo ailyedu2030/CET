@@ -7,8 +7,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi import status as http_status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.schemas.analytics_schemas import (BackupConfig, BackupInfo,
-                                                     BackupRequest, BackupStatistics)
+from app.analytics.schemas.analytics_schemas import (
+    BackupConfig,
+    BackupInfo,
+    BackupRequest,
+    BackupStatistics,
+)
 from app.backup.services.backup_service import BackupService
 from app.core.database import get_db
 from app.users.models.user_models import User

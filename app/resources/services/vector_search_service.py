@@ -657,8 +657,13 @@ class VectorSearchService:
     async def _ensure_collection_exists(self) -> None:
         """确保集合存在"""
         try:
-            from pymilvus import (Collection, CollectionSchema, DataType, FieldSchema,
-                                  utility)
+            from pymilvus import (
+                Collection,
+                CollectionSchema,
+                DataType,
+                FieldSchema,
+                utility,
+            )
 
             collection_name = self.milvus_config.collection_name
 
@@ -709,8 +714,9 @@ class VectorSearchService:
     async def _vectorize_query(self, query_text: str) -> list[float]:
         """查询向量化"""
         try:
-            from app.ai.services.deepseek_embedding_service import \
-                DeepSeekEmbeddingService
+            from app.ai.services.deepseek_embedding_service import (
+                DeepSeekEmbeddingService,
+            )
 
             # 创建embedding服务
             embedding_service = DeepSeekEmbeddingService(self.cache_service)

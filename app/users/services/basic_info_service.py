@@ -9,9 +9,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.shared.models.enums import UserType
-from app.users.models import (Building, Campus, Classroom, ClassroomSchedule, Equipment,
-                              EquipmentMaintenanceRecord, StudentProfile,
-                              TeacherProfile, User)
+from app.users.models import (
+    Building,
+    Campus,
+    Classroom,
+    ClassroomSchedule,
+    Equipment,
+    EquipmentMaintenanceRecord,
+    StudentProfile,
+    TeacherProfile,
+    User,
+)
 
 logger = logging.getLogger(__name__)
 

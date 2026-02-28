@@ -6,13 +6,18 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.course_schemas import (CourseCreate, CourseListResponse,
-                                                CourseResponse, CourseStatusUpdate,
-                                                CourseTemplateCreate,
-                                                CourseTemplateListResponse,
-                                                CourseTemplateResponse,
-                                                CourseTemplateUpdate, CourseUpdate,
-                                                CourseVersionResponse)
+from app.courses.schemas.course_schemas import (
+    CourseCreate,
+    CourseListResponse,
+    CourseResponse,
+    CourseStatusUpdate,
+    CourseTemplateCreate,
+    CourseTemplateListResponse,
+    CourseTemplateResponse,
+    CourseTemplateUpdate,
+    CourseUpdate,
+    CourseVersionResponse,
+)
 from app.courses.services.course_service import CoursePermissionService, CourseService
 from app.courses.services.template_service import CourseTemplateService
 from app.courses.utils.version_utils import VersionUtils

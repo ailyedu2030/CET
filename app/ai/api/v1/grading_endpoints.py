@@ -11,9 +11,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.ai.schemas.grading_schemas import (GradingRequest, GradingResponse,
-                                            StreamingGradingRequest,
-                                            WritingAssistanceRequest)
+from app.ai.schemas.grading_schemas import (
+    GradingRequest,
+    GradingResponse,
+    StreamingGradingRequest,
+    WritingAssistanceRequest,
+)
 from app.ai.utils.cet4_standards import CET4Standards
 from app.ai.utils.streaming_utils import StreamingGradingUtils
 from app.core.database import get_db

@@ -14,7 +14,10 @@ sys.path.insert(0, str(project_root))
 from sqlalchemy import MetaData, create_engine, inspect  # noqa: E402
 
 from app.training.models.training_models import (  # noqa: E402
-    TrainingParameterTemplate, TrainingTask, TrainingTaskSubmission)
+    TrainingParameterTemplate,
+    TrainingTask,
+    TrainingTaskSubmission,
+)
 
 
 def validate_migration_completeness() -> bool:

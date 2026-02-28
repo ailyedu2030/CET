@@ -3,13 +3,26 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import (JSON, Boolean, DateTime, Enum, Float, ForeignKey, Integer,
-                        String, Text)
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.shared.models.base_model import BaseModel
-from app.shared.models.enums import (DifficultyLevel, GradingStatus, QuestionType,
-                                     TrainingType)
+from app.shared.models.enums import (
+    DifficultyLevel,
+    GradingStatus,
+    QuestionType,
+    TrainingType,
+)
 
 if TYPE_CHECKING:
     from app.users.models import User

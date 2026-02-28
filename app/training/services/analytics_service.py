@@ -10,9 +10,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import TrainingType
 from app.training.models.training_models import TrainingRecord, TrainingSession
-from app.training.schemas.training_schemas import (LearningProgressResponse,
-                                                   PerformanceMetrics,
-                                                   PerformanceReportResponse)
+from app.training.schemas.training_schemas import (
+    LearningProgressResponse,
+    PerformanceMetrics,
+    PerformanceReportResponse,
+)
 
 
 class AnalyticsService:

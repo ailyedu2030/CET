@@ -10,11 +10,16 @@ from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.exceptions import (PermissionDeniedError, ResourceNotFoundError,
-                                 ValidationError)
-from app.resources.schemas.permission_schemas import (PermissionSettingRequest,
-                                                      PermissionSettingResponse,
-                                                      SharedResourceResponse)
+from app.core.exceptions import (
+    PermissionDeniedError,
+    ResourceNotFoundError,
+    ValidationError,
+)
+from app.resources.schemas.permission_schemas import (
+    PermissionSettingRequest,
+    PermissionSettingResponse,
+    SharedResourceResponse,
+)
 from app.resources.services.permission_service import PermissionService
 from app.users.dependencies import get_current_user
 from app.users.models import User

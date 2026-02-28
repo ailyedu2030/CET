@@ -9,7 +9,10 @@ from typing import Any
 from fastapi import WebSocket
 
 from app.notifications.schemas.notification_schemas import (
-    NotificationResponse, WebSocketConnectionInfo, WebSocketNotificationMessage)
+    NotificationResponse,
+    WebSocketConnectionInfo,
+    WebSocketNotificationMessage,
+)
 
 logger = logging.getLogger(__name__)
 

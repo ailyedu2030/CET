@@ -5,8 +5,12 @@ from typing import Any
 
 from pydantic import BaseModel, Field, validator
 
-from app.shared.models.enums import (DifficultyLevel, GradingStatus, QuestionType,
-                                     TrainingType)
+from app.shared.models.enums import (
+    DifficultyLevel,
+    GradingStatus,
+    QuestionType,
+    TrainingType,
+)
 
 # ==================== 基础响应模式 ====================
 

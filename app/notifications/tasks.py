@@ -7,8 +7,10 @@ from sqlalchemy import delete
 
 from app.core.celery_config import celery_app
 from app.core.database import async_session_maker
-from app.notifications.models.notification_models import (Notification,
-                                                          NotificationHistory)
+from app.notifications.models.notification_models import (
+    Notification,
+    NotificationHistory,
+)
 
 logger = logging.getLogger(__name__)
 

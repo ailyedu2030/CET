@@ -13,11 +13,15 @@ from fastapi import HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from app.shared.security.csrf_protection import (CSRFValidationResult,
-                                                 get_csrf_protection)
+from app.shared.security.csrf_protection import (
+    CSRFValidationResult,
+    get_csrf_protection,
+)
 from app.shared.security.rate_limiter import RateLimitResult, rate_limiter
-from app.shared.security.sql_injection_guard import (SQLInjectionRiskLevel,
-                                                     sql_injection_guard)
+from app.shared.security.sql_injection_guard import (
+    SQLInjectionRiskLevel,
+    sql_injection_guard,
+)
 from app.shared.security.xss_protection import XSSContext, XSSRiskLevel, xss_protection
 from app.shared.utils.audit_logger import audit_logger
 

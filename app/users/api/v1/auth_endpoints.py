@@ -7,10 +7,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.users.models import User
-from app.users.schemas.auth_schemas import (LoginRequest, LoginResponse,
-                                            PasswordChangeRequest, ProfileUpdateRequest,
-                                            RefreshTokenRequest, RefreshTokenResponse,
-                                            UserProfile)
+from app.users.schemas.auth_schemas import (
+    LoginRequest,
+    LoginResponse,
+    PasswordChangeRequest,
+    ProfileUpdateRequest,
+    RefreshTokenRequest,
+    RefreshTokenResponse,
+    UserProfile,
+)
 from app.users.services.auth_service import AuthService
 from app.users.utils.auth_decorators import get_current_active_user
 

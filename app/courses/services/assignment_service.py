@@ -8,16 +8,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.courses.models import Class, Course
 from app.courses.models.assignment_models import AssignmentStatus, CourseAssignment
-from app.courses.schemas.assignment_schemas import (BulkAssignmentRequest,
-                                                    BulkAssignmentResponse,
-                                                    CourseAssignmentRequest,
-                                                    QualificationCheckResult,
-                                                    TeacherQualificationCheck,
-                                                    TeacherWorkloadInfo,
-                                                    TimeConflictCheck,
-                                                    TimeConflictResult,
-                                                    WorkloadBalanceRequest,
-                                                    WorkloadBalanceResponse)
+from app.courses.schemas.assignment_schemas import (
+    BulkAssignmentRequest,
+    BulkAssignmentResponse,
+    CourseAssignmentRequest,
+    QualificationCheckResult,
+    TeacherQualificationCheck,
+    TeacherWorkloadInfo,
+    TimeConflictCheck,
+    TimeConflictResult,
+    WorkloadBalanceRequest,
+    WorkloadBalanceResponse,
+)
 from app.courses.utils.conflict_detection_utils import ConflictDetectionUtils
 from app.users.models import User
 

@@ -3,17 +3,29 @@
 from datetime import date, datetime
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import (JSON, Boolean, Date, DateTime, Enum, Float, ForeignKey, Integer,
-                        String, Text)
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Date,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.shared.models.base_model import BaseModel
 from app.shared.models.enums import UserType
 
 if TYPE_CHECKING:
-    from app.training.models.training_models import (TrainingParameterTemplate,
-                                                     TrainingTask,
-                                                     TrainingTaskSubmission)
+    from app.training.models.training_models import (
+        TrainingParameterTemplate,
+        TrainingTask,
+        TrainingTaskSubmission,
+    )
     from app.users.models.permission_models import LoginSession, Role
 
 

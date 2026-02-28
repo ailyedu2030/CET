@@ -10,12 +10,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.shared.models.enums import UserType
 from app.users.models import User
-from app.users.schemas.permission_schemas import (PermissionAssignRequest,
-                                                  PermissionCreateRequest,
-                                                  PermissionResponse,
-                                                  PermissionUpdateRequest,
-                                                  RoleCreateRequest, RoleResponse,
-                                                  UserRoleAssignRequest)
+from app.users.schemas.permission_schemas import (
+    PermissionAssignRequest,
+    PermissionCreateRequest,
+    PermissionResponse,
+    PermissionUpdateRequest,
+    RoleCreateRequest,
+    RoleResponse,
+    UserRoleAssignRequest,
+)
 from app.users.services.permission_service import PermissionService
 from app.users.utils.auth_decorators import get_current_active_user
 

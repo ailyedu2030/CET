@@ -5,8 +5,12 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.training.models.social_models import (MatchingStatus, PostStatus, PostType,
-                                               ReportReason)
+from app.training.models.social_models import (
+    MatchingStatus,
+    PostStatus,
+    PostType,
+    ReportReason,
+)
 
 
 # 讨论区模式

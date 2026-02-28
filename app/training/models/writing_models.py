@@ -3,8 +3,18 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey, Index,
-                        Integer, String, Text)
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import relationship
 
 from app.shared.models.base_model import BaseModel

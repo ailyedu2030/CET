@@ -8,20 +8,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.security import get_current_user
-from app.training.schemas.learning_plan_schemas import (DifficultyAdjustmentResponse,
-                                                        GoalAchievementResponse,
-                                                        GoalCreateRequest,
-                                                        GoalProgressTrackingResponse,
-                                                        GoalProgressUpdateRequest,
-                                                        GoalResponse,
-                                                        GoalSuggestionResponse,
-                                                        LearningPlanConfigRequest,
-                                                        LearningPlanResponse,
-                                                        LearningStatisticsResponse,
-                                                        ProgressAlertResponse,
-                                                        ProgressMonitoringResponse,
-                                                        ProgressSummaryResponse,
-                                                        RealTimeProgressResponse)
+from app.training.schemas.learning_plan_schemas import (
+    DifficultyAdjustmentResponse,
+    GoalAchievementResponse,
+    GoalCreateRequest,
+    GoalProgressTrackingResponse,
+    GoalProgressUpdateRequest,
+    GoalResponse,
+    GoalSuggestionResponse,
+    LearningPlanConfigRequest,
+    LearningPlanResponse,
+    LearningStatisticsResponse,
+    ProgressAlertResponse,
+    ProgressMonitoringResponse,
+    ProgressSummaryResponse,
+    RealTimeProgressResponse,
+)
 from app.training.services.goal_setting_service import GoalSettingService
 from app.training.services.learning_plan_service import LearningPlanService
 from app.training.services.progress_monitoring_service import ProgressMonitoringService

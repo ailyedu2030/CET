@@ -5,8 +5,11 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.training.models.training_center_models import (DifficultyLevel, TrainingMode,
-                                                        TrainingType)
+from app.training.models.training_center_models import (
+    DifficultyLevel,
+    TrainingMode,
+    TrainingType,
+)
 
 
 # 基础模式

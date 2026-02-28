@@ -9,18 +9,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.users.models import User
-from app.users.schemas.admin_schemas import (AdminDashboardResponse,
-                                             BackupRestoreRequest,
-                                             BackupRestoreResponse,
-                                             ClassManagementRequest,
-                                             ClassManagementResponse,
-                                             CourseAssignmentRequest,
-                                             CourseAssignmentResponse,
-                                             CourseManagementStatsResponse,
-                                             SystemMonitoringResponse,
-                                             SystemRulesConfigRequest,
-                                             SystemRulesConfigResponse,
-                                             UserManagementStatsResponse)
+from app.users.schemas.admin_schemas import (
+    AdminDashboardResponse,
+    BackupRestoreRequest,
+    BackupRestoreResponse,
+    ClassManagementRequest,
+    ClassManagementResponse,
+    CourseAssignmentRequest,
+    CourseAssignmentResponse,
+    CourseManagementStatsResponse,
+    SystemMonitoringResponse,
+    SystemRulesConfigRequest,
+    SystemRulesConfigResponse,
+    UserManagementStatsResponse,
+)
 from app.users.services.admin_service import AdminService
 from app.users.utils.auth_decorators import get_current_active_user, require_admin
 

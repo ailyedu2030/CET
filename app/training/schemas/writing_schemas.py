@@ -5,8 +5,11 @@ from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.training.models.writing_models import (WritingDifficulty, WritingScoreLevel,
-                                                WritingType)
+from app.training.models.writing_models import (
+    WritingDifficulty,
+    WritingScoreLevel,
+    WritingType,
+)
 
 
 # 写作模板模式

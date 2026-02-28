@@ -8,12 +8,14 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.adaptive_learning_schemas import (ErrorAnalysisResponse,
-                                                            ForgettingCurveResponse,
-                                                            KnowledgeGapResponse,
-                                                            LearningStrategyResponse,
-                                                            ReinforcementPlanResponse,
-                                                            ReviewScheduleResponse)
+from app.training.schemas.adaptive_learning_schemas import (
+    ErrorAnalysisResponse,
+    ForgettingCurveResponse,
+    KnowledgeGapResponse,
+    LearningStrategyResponse,
+    ReinforcementPlanResponse,
+    ReviewScheduleResponse,
+)
 from app.training.services.error_analysis_service import ErrorAnalysisService
 from app.training.services.forgetting_curve_service import ForgettingCurveService
 from app.training.utils.knowledge_graph import KnowledgeGraph

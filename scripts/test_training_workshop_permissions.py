@@ -19,7 +19,9 @@ def test_permission_helper_functions() -> bool:
 
     try:
         from app.training.api.v1.training_workshop_endpoints import (
-            check_teacher_permission, check_template_ownership)
+            check_teacher_permission,
+            check_template_ownership,
+        )
 
         print("✅ 权限检查函数导入成功")
 

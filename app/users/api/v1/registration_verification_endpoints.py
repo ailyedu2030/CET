@@ -9,11 +9,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.shared.services.cache_service import CacheService, get_cache_service
-from app.users.schemas.mfa_schemas import (SMSVerificationRequest,
-                                           VerificationCodeRequest,
-                                           VerificationResponse)
-from app.users.services.registration_verification_service import \
-    RegistrationVerificationService
+from app.users.schemas.mfa_schemas import (
+    SMSVerificationRequest,
+    VerificationCodeRequest,
+    VerificationResponse,
+)
+from app.users.services.registration_verification_service import (
+    RegistrationVerificationService,
+)
 
 logger = logging.getLogger(__name__)
 

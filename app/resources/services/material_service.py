@@ -10,9 +10,11 @@ from sqlalchemy import desc, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.resources.models.resource_models import ResourceLibrary, TeachingMaterial
-from app.resources.schemas.resource_schemas import (TeachingMaterialCreate,
-                                                    TeachingMaterialSearchRequest,
-                                                    TeachingMaterialUpdate)
+from app.resources.schemas.resource_schemas import (
+    TeachingMaterialCreate,
+    TeachingMaterialSearchRequest,
+    TeachingMaterialUpdate,
+)
 from app.shared.models.enums import ContentType, DifficultyLevel
 
 

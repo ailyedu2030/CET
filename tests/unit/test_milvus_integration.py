@@ -7,15 +7,23 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from app.shared.config.vector_config import (CollectionConfig, EmbeddingConfig,
-                                             IndexConfig, vector_config)
-from app.shared.services.vector_database_service import (SearchResult,
-                                                         VectorDatabaseService,
-                                                         VectorSearchQuery)
+from app.shared.config.vector_config import (
+    CollectionConfig,
+    EmbeddingConfig,
+    IndexConfig,
+    vector_config,
+)
+from app.shared.services.vector_database_service import (
+    SearchResult,
+    VectorDatabaseService,
+    VectorSearchQuery,
+)
 from app.shared.utils.embedding_utils import EmbeddingError, EmbeddingUtils
 from app.shared.utils.milvus_manager import MilvusManager, MilvusManagerError
-from app.shared.utils.similarity_calculator import (SimilarityCalculator,
-                                                    SimilarityResult)
+from app.shared.utils.similarity_calculator import (
+    SimilarityCalculator,
+    SimilarityResult,
+)
 
 
 class TestVectorConfig:

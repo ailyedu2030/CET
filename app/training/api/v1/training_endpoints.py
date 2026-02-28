@@ -10,22 +10,26 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.shared.models.enums import DifficultyLevel, TrainingType
-from app.training.schemas.training_schemas import (LearningProgressResponse,
-                                                   PerformanceMetrics,
-                                                   PerformanceReportResponse,
-                                                   QuestionBatchListResponse,
-                                                   QuestionBatchRequest,
-                                                   QuestionBatchResponse,
-                                                   QuestionFilter, QuestionListResponse,
-                                                   QuestionResponse,
-                                                   SubmitAnswerRequest,
-                                                   TrainingRecordResponse,
-                                                   TrainingSessionRequest,
-                                                   TrainingSessionResponse)
+from app.training.schemas.training_schemas import (
+    LearningProgressResponse,
+    PerformanceMetrics,
+    PerformanceReportResponse,
+    QuestionBatchListResponse,
+    QuestionBatchRequest,
+    QuestionBatchResponse,
+    QuestionFilter,
+    QuestionListResponse,
+    QuestionResponse,
+    SubmitAnswerRequest,
+    TrainingRecordResponse,
+    TrainingSessionRequest,
+    TrainingSessionResponse,
+)
 from app.training.services.adaptive_service import AdaptiveLearningService
 from app.training.services.analytics_service import AnalyticsService
-from app.training.services.intelligent_training_loop_service import \
-    IntelligentTrainingLoopService
+from app.training.services.intelligent_training_loop_service import (
+    IntelligentTrainingLoopService,
+)
 from app.training.services.precise_adaptive_service import PreciseAdaptiveService
 from app.training.services.training_center_service import TrainingCenterService
 from app.users.models.user_models import User

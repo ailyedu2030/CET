@@ -10,18 +10,24 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.training.models.assistant_models import (KnowledgeBaseModel,
-                                                  LearningResourceModel, QARecordModel,
-                                                  UserResourceInteractionModel,
-                                                  VoiceRecognitionRecordModel)
-from app.training.schemas.assistant_schemas import (KnowledgeBaseCreate,
-                                                    KnowledgeBaseUpdate,
-                                                    LearningResourceCreate, QARequest,
-                                                    QAResponse,
-                                                    ResourceRecommendationRequest,
-                                                    UserResourceInteractionCreate,
-                                                    VoiceRecognitionRequest,
-                                                    VoiceRecognitionResponse)
+from app.training.models.assistant_models import (
+    KnowledgeBaseModel,
+    LearningResourceModel,
+    QARecordModel,
+    UserResourceInteractionModel,
+    VoiceRecognitionRecordModel,
+)
+from app.training.schemas.assistant_schemas import (
+    KnowledgeBaseCreate,
+    KnowledgeBaseUpdate,
+    LearningResourceCreate,
+    QARequest,
+    QAResponse,
+    ResourceRecommendationRequest,
+    UserResourceInteractionCreate,
+    VoiceRecognitionRequest,
+    VoiceRecognitionResponse,
+)
 
 logger = logging.getLogger(__name__)
 

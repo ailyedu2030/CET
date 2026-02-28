@@ -22,8 +22,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import DifficultyLevel
 from app.shared.utils.metrics_collector import collect_metric
-from app.training.models.training_models import (Question, TrainingRecord,
-                                                 TrainingSession)
+from app.training.models.training_models import (
+    Question,
+    TrainingRecord,
+    TrainingSession,
+)
 
 
 class AnalysisType(Enum):

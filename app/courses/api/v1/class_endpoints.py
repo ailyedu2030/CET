@@ -6,12 +6,18 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.class_schemas import (ClassBatchCreate, ClassConflictCheck,
-                                               ClassCreate, ClassListResponse,
-                                               ClassResponse, ClassStatistics,
-                                               ClassUpdate, ConflictCheckResult,
-                                               StudentEnrollmentRequest,
-                                               StudentEnrollmentResponse)
+from app.courses.schemas.class_schemas import (
+    ClassBatchCreate,
+    ClassConflictCheck,
+    ClassCreate,
+    ClassListResponse,
+    ClassResponse,
+    ClassStatistics,
+    ClassUpdate,
+    ConflictCheckResult,
+    StudentEnrollmentRequest,
+    StudentEnrollmentResponse,
+)
 from app.courses.services.class_service import ClassResourceService, ClassService
 from app.users.utils.auth_decorators import AuthRequired
 
