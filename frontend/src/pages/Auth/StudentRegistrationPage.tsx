@@ -50,7 +50,9 @@ interface StudentRegistrationForm {
 
 export function StudentRegistrationPage(): JSX.Element {
   const navigate = useNavigate()
-  const [currentStep, setCurrentStep] = useState<'basic' | 'profile' | 'phone' | 'academic'>('basic')
+  const [currentStep, setCurrentStep] = useState<'basic' | 'profile' | 'phone' | 'academic'>(
+    'basic'
+  )
   const [isPhoneVerified, setIsPhoneVerified] = useState(false)
   const [verifiedPhone, setVerifiedPhone] = useState('')
 
@@ -336,13 +338,13 @@ export function StudentRegistrationPage(): JSX.Element {
 
   const renderPhoneVerificationStep = () => (
     <PhoneVerification
-      onVerificationSuccess={(phoneNumber) => {
+      onVerificationSuccess={phoneNumber => {
         setIsPhoneVerified(true)
         setVerifiedPhone(phoneNumber)
         // 自动跳转到下一步
         setCurrentStep('academic')
       }}
-      onVerificationError={(_error) => {
+      onVerificationError={_error => {
         // 错误已在PhoneVerification组件中处理
       }}
       purpose="register"
@@ -445,7 +447,9 @@ export function StudentRegistrationPage(): JSX.Element {
           <Button
             type="submit"
             loading={registrationMutation.isPending}
-            disabled={registrationMutation.isPending || (currentStep === 'phone' && !isPhoneVerified)}
+            disabled={
+              registrationMutation.isPending || (currentStep === 'phone' && !isPhoneVerified)
+            }
           >
             {currentStep === 'academic'
               ? '提交注册申请'

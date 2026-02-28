@@ -27,7 +27,22 @@ import {
   IconRefresh,
   IconDownload,
 } from '@tabler/icons-react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+} from 'recharts'
 import { useVisualizationData, useProgressSummary } from '@/hooks/useProgressData'
 import { useState } from 'react'
 
@@ -42,12 +57,16 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
   height = 300,
 }) => {
   const [timeRange, setTimeRange] = useState('30')
-  const [chartType, setChartType] = useState<'progress' | 'knowledge' | 'performance' | 'time'>('progress')
-
-  const { data: visualizationData, isLoading, error, refetch } = useVisualizationData(
-    chartType,
-    parseInt(timeRange)
+  const [chartType, setChartType] = useState<'progress' | 'knowledge' | 'performance' | 'time'>(
+    'progress'
   )
+
+  const {
+    data: visualizationData,
+    isLoading,
+    error,
+    refetch,
+  } = useVisualizationData(chartType, parseInt(timeRange))
   const { data: summary } = useProgressSummary(parseInt(timeRange))
 
   if (isLoading) {
@@ -100,7 +119,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
               <Select
                 label="时间范围"
                 value={timeRange}
-                onChange={(value) => setTimeRange(value || '30')}
+                onChange={value => setTimeRange(value || '30')}
                 data={[
                   { value: '7', label: '最近7天' },
                   { value: '30', label: '最近30天' },
@@ -113,7 +132,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
               <Select
                 label="图表类型"
                 value={chartType}
-                onChange={(value) => setChartType(value as any || 'progress')}
+                onChange={value => setChartType((value as any) || 'progress')}
                 data={[
                   { value: 'progress', label: '学习进度' },
                   { value: 'knowledge', label: '知识点掌握' },
@@ -144,7 +163,9 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
         {/* 总体进度环形图 */}
         <Grid.Col span={{ base: 12, md: 4 }}>
           <Card withBorder padding="md" h="100%">
-            <Title order={4} mb="md">总体进度</Title>
+            <Title order={4} mb="md">
+              总体进度
+            </Title>
             <Center>
               <RingProgress
                 size={150}
@@ -152,7 +173,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
                 sections={[
                   {
                     value: summary?.progress_metrics?.['overall_score'] || 0,
-                    color: 'blue'
+                    color: 'blue',
                   },
                 ]}
                 label={
@@ -169,10 +190,10 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
                 }
               />
             </Center>
-            
+
             {/* 进度趋势指标 */}
             <Stack gap="xs" mt="md">
-              {Array.isArray(summary?.progress_trends) ?
+              {Array.isArray(summary?.progress_trends) ? (
                 summary.progress_trends.slice(0, 3).map((trend: any, index: number) => (
                   <Group key={index} justify="space-between">
                     <Group gap="xs">
@@ -184,12 +205,16 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
                       color={getTrendColor(trend?.trend || 'stable')}
                       variant="light"
                     >
-                      {(trend?.change_rate || 0) > 0 ? '+' : ''}{((trend?.change_rate || 0) * 100).toFixed(1)}%
+                      {(trend?.change_rate || 0) > 0 ? '+' : ''}
+                      {((trend?.change_rate || 0) * 100).toFixed(1)}%
                     </Badge>
                   </Group>
-                )) :
-                <Text size="sm" c="dimmed">暂无趋势数据</Text>
-              }
+                ))
+              ) : (
+                <Text size="sm" c="dimmed">
+                  暂无趋势数据
+                </Text>
+              )}
             </Stack>
           </Card>
         </Grid.Col>
@@ -203,34 +228,42 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
               {chartType === 'performance' && '能力雷达图'}
               {chartType === 'time' && '学习时间分布'}
             </Title>
-            
+
             <div style={{ height: height }}>
               {chartType === 'progress' && visualizationData?.progress_chart && (
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={(() => {
-                    const datasets = visualizationData.progress_chart.datasets
-                    const labels = visualizationData.progress_chart.labels
-                    if (!datasets || !Array.isArray(datasets) || datasets.length === 0 || !labels || !Array.isArray(labels)) {
-                      return []
-                    }
-                    const firstDataset = datasets[0]
-                    if (!firstDataset?.data || !Array.isArray(firstDataset.data)) {
-                      return []
-                    }
-                    // 限制数据点数量以提高性能
-                    const maxDataPoints = 100
-                    const dataToShow = firstDataset.data.length > maxDataPoints
-                      ? firstDataset.data.slice(-maxDataPoints)
-                      : firstDataset.data
-                    const labelsToShow = labels.length > maxDataPoints
-                      ? labels.slice(-maxDataPoints)
-                      : labels
+                  <LineChart
+                    data={(() => {
+                      const datasets = visualizationData.progress_chart.datasets
+                      const labels = visualizationData.progress_chart.labels
+                      if (
+                        !datasets ||
+                        !Array.isArray(datasets) ||
+                        datasets.length === 0 ||
+                        !labels ||
+                        !Array.isArray(labels)
+                      ) {
+                        return []
+                      }
+                      const firstDataset = datasets[0]
+                      if (!firstDataset?.data || !Array.isArray(firstDataset.data)) {
+                        return []
+                      }
+                      // 限制数据点数量以提高性能
+                      const maxDataPoints = 100
+                      const dataToShow =
+                        firstDataset.data.length > maxDataPoints
+                          ? firstDataset.data.slice(-maxDataPoints)
+                          : firstDataset.data
+                      const labelsToShow =
+                        labels.length > maxDataPoints ? labels.slice(-maxDataPoints) : labels
 
-                    return dataToShow.map((value, index) => ({
-                      date: labelsToShow[index] || `Day ${index + 1}`,
-                      progress: typeof value === 'number' ? value : 0,
-                    }))
-                  })()}>
+                      return dataToShow.map((value, index) => ({
+                        date: labelsToShow[index] || `Day ${index + 1}`,
+                        progress: typeof value === 'number' ? value : 0,
+                      }))
+                    })()}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis />
@@ -260,19 +293,32 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
 
               {chartType === 'performance' && visualizationData?.performance_radar && (
                 <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart data={(() => {
-                    const radar = visualizationData.performance_radar
-                    if (!radar.categories || !Array.isArray(radar.categories) ||
-                        !radar.current_scores || !Array.isArray(radar.current_scores) ||
-                        !radar.target_scores || !Array.isArray(radar.target_scores)) {
-                      return []
-                    }
-                    return radar.categories.map((category, index) => ({
-                      category: category || `Category ${index + 1}`,
-                      current: typeof radar.current_scores[index] === 'number' ? radar.current_scores[index] : 0,
-                      target: typeof radar.target_scores[index] === 'number' ? radar.target_scores[index] : 0,
-                    }))
-                  })()}>
+                  <RadarChart
+                    data={(() => {
+                      const radar = visualizationData.performance_radar
+                      if (
+                        !radar.categories ||
+                        !Array.isArray(radar.categories) ||
+                        !radar.current_scores ||
+                        !Array.isArray(radar.current_scores) ||
+                        !radar.target_scores ||
+                        !Array.isArray(radar.target_scores)
+                      ) {
+                        return []
+                      }
+                      return radar.categories.map((category, index) => ({
+                        category: category || `Category ${index + 1}`,
+                        current:
+                          typeof radar.current_scores[index] === 'number'
+                            ? radar.current_scores[index]
+                            : 0,
+                        target:
+                          typeof radar.target_scores[index] === 'number'
+                            ? radar.target_scores[index]
+                            : 0,
+                      }))
+                    })()}
+                  >
                     <PolarGrid />
                     <PolarAngleAxis dataKey="category" />
                     <PolarRadiusAxis angle={90} domain={[0, 100]} />
@@ -316,7 +362,9 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
         <Grid.Col span={{ base: 6, md: 3 }}>
           <Card withBorder padding="md" h="100%">
             <Stack gap="xs" align="center">
-              <Text size="sm" c="dimmed">完成率</Text>
+              <Text size="sm" c="dimmed">
+                完成率
+              </Text>
               <Text size="xl" fw={700} c="blue">
                 {Math.round((summary?.progress_metrics?.['completion_rate'] || 0) * 100)}%
               </Text>
@@ -333,7 +381,9 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
         <Grid.Col span={{ base: 6, md: 3 }}>
           <Card withBorder padding="md" h="100%">
             <Stack gap="xs" align="center">
-              <Text size="sm" c="dimmed">准确率</Text>
+              <Text size="sm" c="dimmed">
+                准确率
+              </Text>
               <Text size="xl" fw={700} c="green">
                 {Math.round((summary?.progress_metrics?.['accuracy_rate'] || 0) * 100)}%
               </Text>
@@ -350,7 +400,9 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
         <Grid.Col span={{ base: 6, md: 3 }}>
           <Card withBorder padding="md" h="100%">
             <Stack gap="xs" align="center">
-              <Text size="sm" c="dimmed">一致性</Text>
+              <Text size="sm" c="dimmed">
+                一致性
+              </Text>
               <Text size="xl" fw={700} c="orange">
                 {Math.round((summary?.progress_metrics?.['consistency_score'] || 0) * 100)}%
               </Text>
@@ -367,7 +419,9 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({
         <Grid.Col span={{ base: 6, md: 3 }}>
           <Card withBorder padding="md" h="100%">
             <Stack gap="xs" align="center">
-              <Text size="sm" c="dimmed">参与度</Text>
+              <Text size="sm" c="dimmed">
+                参与度
+              </Text>
               <Text size="xl" fw={700} c="violet">
                 {Math.round((summary?.progress_metrics?.['engagement_score'] || 0) * 100)}%
               </Text>

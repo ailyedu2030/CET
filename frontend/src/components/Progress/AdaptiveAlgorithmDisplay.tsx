@@ -22,13 +22,16 @@ import {
   Select,
   Button,
 } from '@mantine/core'
+import { IconBrain, IconClock, IconTarget, IconRefresh } from '@tabler/icons-react'
 import {
-  IconBrain,
-  IconClock,
-  IconTarget,
-  IconRefresh,
-} from '@tabler/icons-react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts'
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+} from 'recharts'
 import { useQuery } from '@tanstack/react-query'
 import { progressTrackingApi } from '@/api/progressTracking'
 
@@ -92,60 +95,84 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
   const [activeTab, setActiveTab] = useState('difficulty')
   const [timeRange, setTimeRange] = useState('7')
 
-  const { data: adaptiveData, isLoading, error, refetch } = useQuery({
+  const {
+    data: adaptiveData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['adaptive-algorithm', studentId, timeRange],
     queryFn: async (): Promise<AdaptiveData> => {
       try {
         // 调用自适应算法API获取真实数据
-        const progressData = await progressTrackingApi.getLearningProgress('adaptive', parseInt(timeRange))
+        const progressData = await progressTrackingApi.getLearningProgress(
+          'adaptive',
+          parseInt(timeRange)
+        )
 
         // 基于真实API响应构建自适应数据，如果API数据不完整则使用默认值
         return {
-        difficulty_adaptation: {
-          current_level: progressData?.difficulty_metrics?.['current_level'] || 6.5,
-          target_level: progressData?.difficulty_metrics?.['target_level'] || 7.2,
-          adjustment_history: progressData?.difficulty_history || [
-            { date: '2024-01-01', level: 5.8, reason: '准确率提升', effectiveness: 92 },
-            { date: '2024-01-02', level: 6.1, reason: '连续正确', effectiveness: 88 },
-            { date: '2024-01-03', level: 6.5, reason: '挑战性维持', effectiveness: 95 },
-          ],
-          adaptation_accuracy: progressData?.adaptation_metrics?.['accuracy'] || 94,
-          challenge_maintenance: progressData?.adaptation_metrics?.['challenge_maintenance'] || 87,
-        },
-        intensity_adaptation: {
-          current_intensity: progressData?.intensity_metrics?.['current'] || 75,
-          optimal_intensity: progressData?.intensity_metrics?.['optimal'] || 82,
-          forgetting_curve_data: progressData?.forgetting_curve || [
-            { day: 1, retention_rate: 95, predicted_rate: 94 },
-            { day: 3, retention_rate: 82, predicted_rate: 85 },
-            { day: 7, retention_rate: 68, predicted_rate: 70 },
-            { day: 14, retention_rate: 45, predicted_rate: 48 },
-            { day: 30, retention_rate: 28, predicted_rate: 30 },
-          ],
-          schedule_optimization: progressData?.optimization_metrics?.['schedule'] || 91,
-          learning_efficiency: progressData?.optimization_metrics?.['efficiency'] || 88,
-        },
-        content_adaptation: {
-          weak_areas: progressData?.weak_areas || [
-            { knowledge_point: '语法-虚拟语气', mastery_level: 45, focus_weight: 85, improvement_trend: 12 },
-            { knowledge_point: '词汇-高频动词', mastery_level: 62, focus_weight: 70, improvement_trend: 8 },
-            { knowledge_point: '阅读-推理判断', mastery_level: 58, focus_weight: 75, improvement_trend: 15 },
-          ],
-          content_adjustments: progressData?.content_metrics?.['adjustments'] || 23,
-          personalization_score: progressData?.content_metrics?.['personalization'] || 89,
-          adaptation_effectiveness: progressData?.content_metrics?.['effectiveness'] || 92,
-        },
-        bayesian_model: {
-          prediction_accuracy: progressData?.bayesian_metrics?.['accuracy'] || 94.2,
-          model_confidence: progressData?.bayesian_metrics?.['confidence'] || 87,
-          iteration_count: progressData?.bayesian_metrics?.['iterations'] || 156,
-          learning_curve: progressData?.learning_curve || [
-            { iteration: 50, accuracy: 78, confidence: 65 },
-            { iteration: 100, accuracy: 89, confidence: 78 },
-            { iteration: 150, accuracy: 94, confidence: 87 },
-          ],
-          target_accuracy: 95,
-        },
+          difficulty_adaptation: {
+            current_level: progressData?.difficulty_metrics?.['current_level'] || 6.5,
+            target_level: progressData?.difficulty_metrics?.['target_level'] || 7.2,
+            adjustment_history: progressData?.difficulty_history || [
+              { date: '2024-01-01', level: 5.8, reason: '准确率提升', effectiveness: 92 },
+              { date: '2024-01-02', level: 6.1, reason: '连续正确', effectiveness: 88 },
+              { date: '2024-01-03', level: 6.5, reason: '挑战性维持', effectiveness: 95 },
+            ],
+            adaptation_accuracy: progressData?.adaptation_metrics?.['accuracy'] || 94,
+            challenge_maintenance:
+              progressData?.adaptation_metrics?.['challenge_maintenance'] || 87,
+          },
+          intensity_adaptation: {
+            current_intensity: progressData?.intensity_metrics?.['current'] || 75,
+            optimal_intensity: progressData?.intensity_metrics?.['optimal'] || 82,
+            forgetting_curve_data: progressData?.forgetting_curve || [
+              { day: 1, retention_rate: 95, predicted_rate: 94 },
+              { day: 3, retention_rate: 82, predicted_rate: 85 },
+              { day: 7, retention_rate: 68, predicted_rate: 70 },
+              { day: 14, retention_rate: 45, predicted_rate: 48 },
+              { day: 30, retention_rate: 28, predicted_rate: 30 },
+            ],
+            schedule_optimization: progressData?.optimization_metrics?.['schedule'] || 91,
+            learning_efficiency: progressData?.optimization_metrics?.['efficiency'] || 88,
+          },
+          content_adaptation: {
+            weak_areas: progressData?.weak_areas || [
+              {
+                knowledge_point: '语法-虚拟语气',
+                mastery_level: 45,
+                focus_weight: 85,
+                improvement_trend: 12,
+              },
+              {
+                knowledge_point: '词汇-高频动词',
+                mastery_level: 62,
+                focus_weight: 70,
+                improvement_trend: 8,
+              },
+              {
+                knowledge_point: '阅读-推理判断',
+                mastery_level: 58,
+                focus_weight: 75,
+                improvement_trend: 15,
+              },
+            ],
+            content_adjustments: progressData?.content_metrics?.['adjustments'] || 23,
+            personalization_score: progressData?.content_metrics?.['personalization'] || 89,
+            adaptation_effectiveness: progressData?.content_metrics?.['effectiveness'] || 92,
+          },
+          bayesian_model: {
+            prediction_accuracy: progressData?.bayesian_metrics?.['accuracy'] || 94.2,
+            model_confidence: progressData?.bayesian_metrics?.['confidence'] || 87,
+            iteration_count: progressData?.bayesian_metrics?.['iterations'] || 156,
+            learning_curve: progressData?.learning_curve || [
+              { iteration: 50, accuracy: 78, confidence: 65 },
+              { iteration: 100, accuracy: 89, confidence: 78 },
+              { iteration: 150, accuracy: 94, confidence: 87 },
+            ],
+            target_accuracy: 95,
+          },
         }
       } catch (error) {
         // 静默处理错误，返回默认演示数据
@@ -176,9 +203,24 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
           },
           content_adaptation: {
             weak_areas: [
-              { knowledge_point: '语法-虚拟语气', mastery_level: 45, focus_weight: 85, improvement_trend: 12 },
-              { knowledge_point: '词汇-高频动词', mastery_level: 62, focus_weight: 70, improvement_trend: 8 },
-              { knowledge_point: '阅读-推理判断', mastery_level: 58, focus_weight: 75, improvement_trend: 15 },
+              {
+                knowledge_point: '语法-虚拟语气',
+                mastery_level: 45,
+                focus_weight: 85,
+                improvement_trend: 12,
+              },
+              {
+                knowledge_point: '词汇-高频动词',
+                mastery_level: 62,
+                focus_weight: 70,
+                improvement_trend: 8,
+              },
+              {
+                knowledge_point: '阅读-推理判断',
+                mastery_level: 58,
+                focus_weight: 75,
+                improvement_trend: 15,
+              },
             ],
             content_adjustments: 23,
             personalization_score: 89,
@@ -215,8 +257,12 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
   if (error || !adaptiveData) {
     return (
       <Alert color="red" title="数据加载失败">
-        <Text size="sm" mb="md">无法加载自适应算法数据，请检查网络连接后重试</Text>
-        <Button size="xs" onClick={() => refetch()}>重试</Button>
+        <Text size="sm" mb="md">
+          无法加载自适应算法数据，请检查网络连接后重试
+        </Text>
+        <Button size="xs" onClick={() => refetch()}>
+          重试
+        </Button>
       </Alert>
     )
   }
@@ -238,7 +284,7 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
               <Select
                 label="时间范围"
                 value={timeRange}
-                onChange={(value) => setTimeRange(value || '7')}
+                onChange={value => setTimeRange(value || '7')}
                 data={[
                   { value: '7', label: '最近7天' },
                   { value: '14', label: '最近14天' },
@@ -263,7 +309,7 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
       <Card withBorder padding="md">
         <Group justify="space-between" mb="md">
           <Title order={4}>贝叶斯适配模型</Title>
-          <Badge 
+          <Badge
             color={adaptiveData.bayesian_model.prediction_accuracy >= 95 ? 'green' : 'orange'}
             size="lg"
           >
@@ -278,10 +324,11 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
                 size={120}
                 thickness={12}
                 sections={[
-                  { 
-                    value: adaptiveData.bayesian_model.prediction_accuracy, 
-                    color: adaptiveData.bayesian_model.prediction_accuracy >= 95 ? 'green' : 'orange'
-                  }
+                  {
+                    value: adaptiveData.bayesian_model.prediction_accuracy,
+                    color:
+                      adaptiveData.bayesian_model.prediction_accuracy >= 95 ? 'green' : 'orange',
+                  },
                 ]}
                 label={
                   <Center>
@@ -306,13 +353,17 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
             <Stack gap="xs">
               <Group justify="space-between">
                 <Text size="sm">模型置信度</Text>
-                <Text size="sm" fw={600}>{adaptiveData.bayesian_model.model_confidence}%</Text>
+                <Text size="sm" fw={600}>
+                  {adaptiveData.bayesian_model.model_confidence}%
+                </Text>
               </Group>
               <Progress value={adaptiveData.bayesian_model.model_confidence} color="blue" />
 
               <Group justify="space-between">
                 <Text size="sm">迭代次数</Text>
-                <Text size="sm" fw={600}>{adaptiveData.bayesian_model.iteration_count}</Text>
+                <Text size="sm" fw={600}>
+                  {adaptiveData.bayesian_model.iteration_count}
+                </Text>
               </Group>
 
               <Alert
@@ -321,10 +372,9 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
                 mt="sm"
               >
                 <Text size="sm">
-                  {adaptiveData.bayesian_model.prediction_accuracy >= 95 ? 
-                    '✅ 模型精度已达到95%目标要求' :
-                    `⚠️ 模型精度${adaptiveData.bayesian_model.prediction_accuracy}%，距离95%目标还需优化`
-                  }
+                  {adaptiveData.bayesian_model.prediction_accuracy >= 95
+                    ? '✅ 模型精度已达到95%目标要求'
+                    : `⚠️ 模型精度${adaptiveData.bayesian_model.prediction_accuracy}%，距离95%目标还需优化`}
                 </Text>
               </Alert>
             </Stack>
@@ -334,9 +384,11 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
 
       {/* 自适应详情 */}
       <Card withBorder padding="md">
-        <Title order={4} mb="md">动态适配详情</Title>
+        <Title order={4} mb="md">
+          动态适配详情
+        </Title>
 
-        <Tabs value={activeTab} onChange={(value) => setActiveTab(value || 'difficulty')}>
+        <Tabs value={activeTab} onChange={value => setActiveTab(value || 'difficulty')}>
           <Tabs.List>
             <Tabs.Tab value="difficulty" leftSection={<IconTarget size={16} />}>
               难度自适应
@@ -356,43 +408,62 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
                 <Stack gap="md">
                   <Group justify="space-between">
                     <Text size="sm">当前难度等级</Text>
-                    <Badge color={getDifficultyColor(adaptiveData.difficulty_adaptation.current_level, adaptiveData.difficulty_adaptation.target_level)}>
+                    <Badge
+                      color={getDifficultyColor(
+                        adaptiveData.difficulty_adaptation.current_level,
+                        adaptiveData.difficulty_adaptation.target_level
+                      )}
+                    >
                       {adaptiveData.difficulty_adaptation.current_level}
                     </Badge>
                   </Group>
-                  
+
                   <Group justify="space-between">
                     <Text size="sm">目标难度等级</Text>
-                    <Badge color="blue">
-                      {adaptiveData.difficulty_adaptation.target_level}
-                    </Badge>
+                    <Badge color="blue">{adaptiveData.difficulty_adaptation.target_level}</Badge>
                   </Group>
 
                   <Stack gap="xs">
                     <Group justify="space-between">
                       <Text size="sm">适配准确率</Text>
-                      <Text size="sm" fw={600}>{adaptiveData.difficulty_adaptation.adaptation_accuracy}%</Text>
+                      <Text size="sm" fw={600}>
+                        {adaptiveData.difficulty_adaptation.adaptation_accuracy}%
+                      </Text>
                     </Group>
-                    <Progress value={adaptiveData.difficulty_adaptation.adaptation_accuracy} color="green" />
+                    <Progress
+                      value={adaptiveData.difficulty_adaptation.adaptation_accuracy}
+                      color="green"
+                    />
 
                     <Group justify="space-between">
                       <Text size="sm">挑战性维持</Text>
-                      <Text size="sm" fw={600}>{adaptiveData.difficulty_adaptation.challenge_maintenance}%</Text>
+                      <Text size="sm" fw={600}>
+                        {adaptiveData.difficulty_adaptation.challenge_maintenance}%
+                      </Text>
                     </Group>
-                    <Progress value={adaptiveData.difficulty_adaptation.challenge_maintenance} color="orange" />
+                    <Progress
+                      value={adaptiveData.difficulty_adaptation.challenge_maintenance}
+                      color="orange"
+                    />
                   </Stack>
                 </Stack>
               </Grid.Col>
 
               <Grid.Col span={{ base: 12, md: 6 }}>
-                <Text size="sm" mb="xs">难度调整历史</Text>
+                <Text size="sm" mb="xs">
+                  难度调整历史
+                </Text>
                 <Stack gap="xs">
                   {adaptiveData.difficulty_adaptation.adjustment_history.map((item, index) => (
                     <Card key={index} withBorder padding="xs">
                       <Group justify="space-between">
                         <Stack gap={0}>
-                          <Text size="xs" fw={600}>等级 {item.level}</Text>
-                          <Text size="xs" c="dimmed">{item.reason}</Text>
+                          <Text size="xs" fw={600}>
+                            等级 {item.level}
+                          </Text>
+                          <Text size="xs" c="dimmed">
+                            {item.reason}
+                          </Text>
                         </Stack>
                         <Badge size="sm" color="blue">
                           {item.effectiveness}%
@@ -412,48 +483,64 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
                 <Stack gap="md">
                   <Group justify="space-between">
                     <Text size="sm">当前训练强度</Text>
-                    <Badge color="blue">{adaptiveData.intensity_adaptation.current_intensity}%</Badge>
+                    <Badge color="blue">
+                      {adaptiveData.intensity_adaptation.current_intensity}%
+                    </Badge>
                   </Group>
-                  
+
                   <Group justify="space-between">
                     <Text size="sm">最优训练强度</Text>
-                    <Badge color="green">{adaptiveData.intensity_adaptation.optimal_intensity}%</Badge>
+                    <Badge color="green">
+                      {adaptiveData.intensity_adaptation.optimal_intensity}%
+                    </Badge>
                   </Group>
 
                   <Stack gap="xs">
                     <Group justify="space-between">
                       <Text size="sm">计划优化度</Text>
-                      <Text size="sm" fw={600}>{adaptiveData.intensity_adaptation.schedule_optimization}%</Text>
+                      <Text size="sm" fw={600}>
+                        {adaptiveData.intensity_adaptation.schedule_optimization}%
+                      </Text>
                     </Group>
-                    <Progress value={adaptiveData.intensity_adaptation.schedule_optimization} color="blue" />
+                    <Progress
+                      value={adaptiveData.intensity_adaptation.schedule_optimization}
+                      color="blue"
+                    />
 
                     <Group justify="space-between">
                       <Text size="sm">学习效率</Text>
-                      <Text size="sm" fw={600}>{adaptiveData.intensity_adaptation.learning_efficiency}%</Text>
+                      <Text size="sm" fw={600}>
+                        {adaptiveData.intensity_adaptation.learning_efficiency}%
+                      </Text>
                     </Group>
-                    <Progress value={adaptiveData.intensity_adaptation.learning_efficiency} color="green" />
+                    <Progress
+                      value={adaptiveData.intensity_adaptation.learning_efficiency}
+                      color="green"
+                    />
                   </Stack>
                 </Stack>
               </Grid.Col>
 
               <Grid.Col span={{ base: 12, md: 6 }}>
-                <Text size="sm" mb="xs">遗忘曲线分析</Text>
+                <Text size="sm" mb="xs">
+                  遗忘曲线分析
+                </Text>
                 <ResponsiveContainer width="100%" height={200}>
                   <LineChart data={adaptiveData.intensity_adaptation.forgetting_curve_data}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="day" />
                     <YAxis />
                     <RechartsTooltip />
-                    <Line 
-                      type="monotone" 
-                      dataKey="retention_rate" 
-                      stroke="#228be6" 
+                    <Line
+                      type="monotone"
+                      dataKey="retention_rate"
+                      stroke="#228be6"
                       name="实际保持率"
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="predicted_rate" 
-                      stroke="#fa5252" 
+                    <Line
+                      type="monotone"
+                      dataKey="predicted_rate"
+                      stroke="#fa5252"
                       strokeDasharray="5 5"
                       name="预测保持率"
                     />
@@ -470,42 +557,66 @@ export const AdaptiveAlgorithmDisplay: React.FC<AdaptiveAlgorithmDisplayProps> =
                 <Stack gap="md">
                   <Group justify="space-between">
                     <Text size="sm">内容调整次数</Text>
-                    <Badge color="blue">{adaptiveData.content_adaptation.content_adjustments}</Badge>
+                    <Badge color="blue">
+                      {adaptiveData.content_adaptation.content_adjustments}
+                    </Badge>
                   </Group>
 
                   <Stack gap="xs">
                     <Group justify="space-between">
                       <Text size="sm">个性化评分</Text>
-                      <Text size="sm" fw={600}>{adaptiveData.content_adaptation.personalization_score}%</Text>
+                      <Text size="sm" fw={600}>
+                        {adaptiveData.content_adaptation.personalization_score}%
+                      </Text>
                     </Group>
-                    <Progress value={adaptiveData.content_adaptation.personalization_score} color="violet" />
+                    <Progress
+                      value={adaptiveData.content_adaptation.personalization_score}
+                      color="violet"
+                    />
 
                     <Group justify="space-between">
                       <Text size="sm">适配有效性</Text>
-                      <Text size="sm" fw={600}>{adaptiveData.content_adaptation.adaptation_effectiveness}%</Text>
+                      <Text size="sm" fw={600}>
+                        {adaptiveData.content_adaptation.adaptation_effectiveness}%
+                      </Text>
                     </Group>
-                    <Progress value={adaptiveData.content_adaptation.adaptation_effectiveness} color="green" />
+                    <Progress
+                      value={adaptiveData.content_adaptation.adaptation_effectiveness}
+                      color="green"
+                    />
                   </Stack>
                 </Stack>
               </Grid.Col>
 
               <Grid.Col span={{ base: 12, md: 6 }}>
-                <Text size="sm" mb="xs">薄弱环节强化</Text>
+                <Text size="sm" mb="xs">
+                  薄弱环节强化
+                </Text>
                 <Stack gap="xs">
                   {adaptiveData.content_adaptation.weak_areas.map((area, index) => (
                     <Card key={index} withBorder padding="xs">
                       <Stack gap="xs">
                         <Group justify="space-between">
-                          <Text size="xs" fw={600}>{area.knowledge_point}</Text>
+                          <Text size="xs" fw={600}>
+                            {area.knowledge_point}
+                          </Text>
                           <Badge size="sm" color={area.mastery_level < 60 ? 'red' : 'orange'}>
                             {area.mastery_level}%
                           </Badge>
                         </Group>
                         <Group justify="space-between">
-                          <Text size="xs" c="dimmed">关注权重: {area.focus_weight}%</Text>
-                          <Text size="xs" c="dimmed">改善趋势: +{area.improvement_trend}%</Text>
+                          <Text size="xs" c="dimmed">
+                            关注权重: {area.focus_weight}%
+                          </Text>
+                          <Text size="xs" c="dimmed">
+                            改善趋势: +{area.improvement_trend}%
+                          </Text>
                         </Group>
-                        <Progress value={area.mastery_level} color={area.mastery_level < 60 ? 'red' : 'orange'} size="xs" />
+                        <Progress
+                          value={area.mastery_level}
+                          color={area.mastery_level < 60 ? 'red' : 'orange'}
+                          size="xs"
+                        />
                       </Stack>
                     </Card>
                   ))}

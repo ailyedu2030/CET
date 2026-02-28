@@ -1,6 +1,6 @@
 /**
  * 优化图片组件
- * 
+ *
  * 提供图片性能优化功能：
  * - 懒加载
  * - 自动格式选择
@@ -101,8 +101,8 @@ export function OptimizedImage({
 
     // 创建Intersection Observer
     observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             loadImage(optimizedSrc)
             observerRef.current?.unobserve(img)
@@ -129,7 +129,7 @@ export function OptimizedImage({
     setLoadingState('loading')
 
     const img = new Image()
-    
+
     img.onload = () => {
       setLoadingState('loaded')
       if (onLoad) {
@@ -158,12 +158,7 @@ export function OptimizedImage({
     }
 
     if (loadingState === 'loading') {
-      return (
-        <Skeleton
-          style={placeholderStyle}
-          className={className}
-        />
-      )
+      return <Skeleton style={placeholderStyle} className={className} />
     }
 
     if (loadingState === 'error') {
@@ -239,7 +234,7 @@ export function OptimizedImage({
     >
       {renderPlaceholder()}
       {renderImage()}
-      
+
       {/* 格式标识（开发模式） */}
       {process.env['NODE_ENV'] === 'development' && actualFormat && (
         <Box
@@ -291,7 +286,7 @@ export function ResponsiveImage({
   useEffect(() => {
     const updateWidth = () => {
       const width = window.innerWidth
-      
+
       if (width >= (breakpoints.xl || 1920)) {
         setCurrentWidth(breakpoints.xl || 1920)
       } else if (width >= (breakpoints.lg || 1440)) {
@@ -307,7 +302,7 @@ export function ResponsiveImage({
 
     updateWidth()
     window.addEventListener('resize', updateWidth)
-    
+
     return () => window.removeEventListener('resize', updateWidth)
   }, [breakpoints])
 
@@ -330,22 +325,15 @@ export function ResponsiveImage({
   const sizes = Object.entries(breakpoints)
     .filter(([_, width]) => width)
     .map(([breakpoint, width]) => {
-      const mediaQuery = breakpoint === 'xs' 
-        ? `(max-width: ${breakpoints.sm || 768}px)`
-        : `(min-width: ${width}px)`
+      const mediaQuery =
+        breakpoint === 'xs' ? `(max-width: ${breakpoints.sm || 768}px)` : `(min-width: ${width}px)`
       return `${mediaQuery} ${width}px`
     })
     .reverse()
     .join(', ')
 
   return (
-    <OptimizedImage
-      {...props}
-      width={currentWidth}
-      height={height}
-      srcSet={srcSet}
-      sizes={sizes}
-    />
+    <OptimizedImage {...props} width={currentWidth} height={height} srcSet={srcSet} sizes={sizes} />
   )
 }
 
@@ -377,7 +365,7 @@ export function ImageGrid({
         gap,
       }}
     >
-      {images.map((image) => (
+      {images.map(image => (
         <Box
           key={image.id}
           style={{

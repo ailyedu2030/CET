@@ -89,10 +89,7 @@ export const notificationApi = {
   async sendTeachingPlanChangeNotification(
     notificationData: TeachingPlanChangeNotification
   ): Promise<{ success: boolean; message: string }> {
-    const response = await apiClient.post(
-      '/notifications/teaching-plan-change',
-      notificationData
-    )
+    const response = await apiClient.post('/notifications/teaching-plan-change', notificationData)
     return response.data
   },
 
@@ -177,7 +174,7 @@ export const notificationApi = {
    * 批量标记为已读
    */
   async markAllAsRead(notificationIds: number[]): Promise<NotificationResponse[]> {
-    const promises = notificationIds.map((id) => this.markAsRead(id))
+    const promises = notificationIds.map(id => this.markAsRead(id))
     return Promise.all(promises)
   },
 

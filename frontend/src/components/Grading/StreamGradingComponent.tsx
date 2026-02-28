@@ -14,7 +14,12 @@ import {
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconCheck, IconX, IconRefresh, IconCopy } from '@tabler/icons-react'
-import { gradingApi, type StreamGradingRequest, type UserAnswer, type GradingContext } from '../../api/grading'
+import {
+  gradingApi,
+  type StreamGradingRequest,
+  type UserAnswer,
+  type GradingContext,
+} from '../../api/grading'
 
 // 常量定义
 const STREAM_CONFIG = {
@@ -76,7 +81,7 @@ export const StreamGradingComponent: React.FC<StreamGradingComponentProps> = ({
   const [finalResult, setFinalResult] = useState<GradingResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [responseTime, setResponseTime] = useState<number>(0)
-  
+
   const abortControllerRef = useRef<AbortController | null>(null)
   const startTimeRef = useRef<number>(0)
 
@@ -113,7 +118,7 @@ export const StreamGradingComponent: React.FC<StreamGradingComponentProps> = ({
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read()
-        
+
         if (done) break
 
         // 检查是否被取消
@@ -122,7 +127,7 @@ export const StreamGradingComponent: React.FC<StreamGradingComponentProps> = ({
         }
 
         buffer += decoder.decode(value, { stream: true })
-        
+
         // 处理完整的 JSON 行
         const lines = buffer.split('\n')
         buffer = lines.pop() || '' // 保留不完整的行
@@ -132,7 +137,7 @@ export const StreamGradingComponent: React.FC<StreamGradingComponentProps> = ({
             try {
               const chunk: StreamChunk = JSON.parse(line)
               chunk.timestamp = Date.now() - startTimeRef.current
-              
+
               setStreamChunks(prev => [...prev, chunk])
 
               // 更新进度
@@ -167,11 +172,10 @@ export const StreamGradingComponent: React.FC<StreamGradingComponentProps> = ({
         color: 'green',
         icon: <IconCheck size={16} />,
       })
-
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '批改失败'
       setError(errorMessage)
-      
+
       if (onError) {
         onError(err instanceof Error ? err : new Error(errorMessage))
       }
@@ -238,7 +242,10 @@ export const StreamGradingComponent: React.FC<StreamGradingComponentProps> = ({
           </Text>
           <Group gap="xs">
             {responseTime > 0 && (
-              <Badge color={responseTime < RESPONSE_TIME.THRESHOLD_MS ? 'green' : 'yellow'} variant="light">
+              <Badge
+                color={responseTime < RESPONSE_TIME.THRESHOLD_MS ? 'green' : 'yellow'}
+                variant="light"
+              >
                 {responseTime}ms
               </Badge>
             )}
@@ -309,16 +316,24 @@ export const StreamGradingComponent: React.FC<StreamGradingComponentProps> = ({
             <Text size="sm" fw={500}>
               实时流式输出 ({streamChunks.length} 个数据块)
             </Text>
-            <Card withBorder padding="sm" style={{ maxHeight: UI_CONFIG.MAX_STREAM_HEIGHT, overflowY: 'auto' }}>
+            <Card
+              withBorder
+              padding="sm"
+              style={{ maxHeight: UI_CONFIG.MAX_STREAM_HEIGHT, overflowY: 'auto' }}
+            >
               <Stack gap="xs">
                 {streamChunks.map((chunk, index) => (
                   <Group key={index} justify="space-between" align="flex-start">
                     <Badge
                       size="xs"
                       color={
-                        chunk.type === 'progress' ? 'blue' :
-                        chunk.type === 'result' ? 'green' :
-                        chunk.type === 'error' ? 'red' : 'gray'
+                        chunk.type === 'progress'
+                          ? 'blue'
+                          : chunk.type === 'result'
+                            ? 'green'
+                            : chunk.type === 'error'
+                              ? 'red'
+                              : 'gray'
                       }
                     >
                       {chunk.type}

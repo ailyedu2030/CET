@@ -1,6 +1,6 @@
 /**
  * D3.js知识点掌握热力图组件 - 需求23验收标准
- * 
+ *
  * 功能特性：
  * - D3.js渲染知识点掌握热力图
  * - 支持多维度筛选和时间序列展示
@@ -68,7 +68,8 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
   // 过滤数据
   const filteredData = data.knowledgePoints.filter(point => {
     const categoryMatch = filterCategory === 'all' || point.category === filterCategory
-    const difficultyMatch = filterDifficulty === 'all' || point.difficulty.toString() === filterDifficulty
+    const difficultyMatch =
+      filterDifficulty === 'all' || point.difficulty.toString() === filterDifficulty
     return categoryMatch && difficultyMatch
   })
 
@@ -117,11 +118,7 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
     })
 
     // 创建比例尺
-    const xScale = d3
-      .scaleBand()
-      .domain(categories)
-      .range([0, innerWidth])
-      .padding(0.1)
+    const xScale = d3.scaleBand().domain(categories).range([0, innerWidth]).padding(0.1)
 
     const yScale = d3
       .scaleBand()
@@ -130,9 +127,7 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
       .padding(0.1)
 
     // 颜色比例尺 - 基于掌握程度
-    const colorScale = d3
-      .scaleSequential(d3.interpolateRdYlGn)
-      .domain([0, 1])
+    const colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([0, 1])
 
     // 创建工具提示
     const tooltip = d3
@@ -163,12 +158,12 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
       .attr('stroke', '#fff')
       .attr('stroke-width', 1)
       .style('cursor', 'pointer')
-      .on('mouseover', function(_event: any, d: GridDataItem) {
-        d3.select(this as any).attr('stroke-width', 2).attr('stroke', '#333')
+      .on('mouseover', function (_event: any, d: GridDataItem) {
+        d3.select(this as any)
+          .attr('stroke-width', 2)
+          .attr('stroke', '#333')
 
-        tooltip
-          .style('visibility', 'visible')
-          .html(`
+        tooltip.style('visibility', 'visible').html(`
             <div><strong>${d.category}</strong></div>
             <div>重要程度: ${d.importance}/5</div>
             <div>知识点数量: ${d.count}</div>
@@ -177,16 +172,16 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
             ${d.points.map((p: KnowledgePoint) => `<div>• ${p.name} (${(p.masteryLevel * 100).toFixed(0)}%)</div>`).join('')}
           `)
       })
-      .on('mousemove', function(event: any) {
-        tooltip
-          .style('top', (event.pageY - 10) + 'px')
-          .style('left', (event.pageX + 10) + 'px')
+      .on('mousemove', function (event: any) {
+        tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px')
       })
-      .on('mouseout', function() {
-        d3.select(this as any).attr('stroke-width', 1).attr('stroke', '#fff')
+      .on('mouseout', function () {
+        d3.select(this as any)
+          .attr('stroke-width', 1)
+          .attr('stroke', '#fff')
         tooltip.style('visibility', 'hidden')
       })
-      .on('click', function(_event: any, d: GridDataItem) {
+      .on('click', function (_event: any, d: GridDataItem) {
         if (onPointClick && d.points.length === 1 && d.points[0]) {
           onPointClick(d.points[0])
         }
@@ -199,10 +194,13 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
       .append('text')
       .attr('class', 'cell-label')
       .attr('x', (d: GridDataItem) => (xScale(d.category) || 0) + xScale.bandwidth() / 2)
-      .attr('y', (d: GridDataItem) => (yScale(d.importance.toString()) || 0) + yScale.bandwidth() / 2)
+      .attr(
+        'y',
+        (d: GridDataItem) => (yScale(d.importance.toString()) || 0) + yScale.bandwidth() / 2
+      )
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
-      .attr('fill', (d: GridDataItem) => d.avgMastery > 0.5 ? '#000' : '#fff')
+      .attr('fill', (d: GridDataItem) => (d.avgMastery > 0.5 ? '#000' : '#fff'))
       .attr('font-size', '12px')
       .attr('font-weight', 'bold')
       .text((d: GridDataItem) => `${(d.avgMastery * 100).toFixed(0)}%`)
@@ -220,9 +218,7 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
       .attr('transform', 'rotate(-45)')
 
     // 添加Y轴
-    g.append('g')
-      .attr('class', 'y-axis')
-      .call(d3.axisLeft(yScale))
+    g.append('g').attr('class', 'y-axis').call(d3.axisLeft(yScale))
 
     // 添加轴标签
     g.append('text')
@@ -259,12 +255,14 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
     const legendScale = d3.scaleLinear().domain([0, 1]).range([0, legendWidth])
     const legendAxis = d3.axisBottom(legendScale).tickFormat((d: any) => `${(d * 100).toFixed(0)}%`)
 
-    const legend = g.append('g')
+    const legend = g
+      .append('g')
       .attr('class', 'legend')
       .attr('transform', `translate(${legendX}, ${legendY})`)
 
     // 创建渐变
-    const gradient = svg.append('defs')
+    const gradient = svg
+      .append('defs')
       .append('linearGradient')
       .attr('id', 'heatmap-gradient')
       .attr('x1', '0%')
@@ -272,23 +270,24 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
       .attr('y1', '0%')
       .attr('y2', '0%')
 
-    gradient.selectAll('stop')
+    gradient
+      .selectAll('stop')
       .data(d3.range(0, 1.1, 0.1))
       .enter()
       .append('stop')
       .attr('offset', (d: number) => `${d * 100}%`)
       .attr('stop-color', (d: number) => colorScale(d))
 
-    legend.append('rect')
+    legend
+      .append('rect')
       .attr('width', legendWidth)
       .attr('height', legendHeight)
       .style('fill', 'url(#heatmap-gradient)')
 
-    legend.append('g')
-      .attr('transform', `translate(0, ${legendHeight})`)
-      .call(legendAxis)
+    legend.append('g').attr('transform', `translate(0, ${legendHeight})`).call(legendAxis)
 
-    legend.append('text')
+    legend
+      .append('text')
       .attr('x', legendWidth / 2)
       .attr('y', -5)
       .attr('text-anchor', 'middle')
@@ -344,32 +343,28 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
           <Select
             label="类别筛选"
             value={filterCategory}
-            onChange={(value) => setFilterCategory(value || 'all')}
+            onChange={value => setFilterCategory(value || 'all')}
             data={categories.map(cat => ({ value: cat, label: cat === 'all' ? '全部类别' : cat }))}
             size="sm"
           />
           <Select
             label="难度筛选"
             value={filterDifficulty}
-            onChange={(value) => setFilterDifficulty(value || 'all')}
-            data={difficulties.map(diff => ({ 
-              value: diff, 
-              label: diff === 'all' ? '全部难度' : `难度${diff}` 
+            onChange={value => setFilterDifficulty(value || 'all')}
+            data={difficulties.map(diff => ({
+              value: diff,
+              label: diff === 'all' ? '全部难度' : `难度${diff}`,
             }))}
             size="sm"
           />
         </Group>
-        
+
         <Group>
           <Text size="sm" c="dimmed">
             最后更新: {new Date(data.lastUpdated).toLocaleString()}
           </Text>
           <Tooltip label="刷新数据">
-            <ActionIcon 
-              variant="light" 
-              onClick={handleRefresh}
-              loading={isLoading}
-            >
+            <ActionIcon variant="light" onClick={handleRefresh} loading={isLoading}>
               <IconRefresh size={16} />
             </ActionIcon>
           </Tooltip>
@@ -388,9 +383,7 @@ export const D3KnowledgeHeatmap: React.FC<D3KnowledgeHeatmapProps> = ({
 
       {/* 统计信息 */}
       <Group justify="space-between" mt="md" pt="md" style={{ borderTop: '1px solid #e9ecef' }}>
-        <Text size="sm">
-          显示 {filteredData.length} 个知识点
-        </Text>
+        <Text size="sm">显示 {filteredData.length} 个知识点</Text>
         <Text size="sm" c="dimmed">
           时间范围: {data.timeRange}
         </Text>

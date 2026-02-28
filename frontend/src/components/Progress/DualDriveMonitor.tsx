@@ -69,12 +69,17 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
   studentId,
   showDetails = true,
 }) => {
-  const { data: dualDriveData, isLoading, error, refetch } = useQuery({
+  const {
+    data: dualDriveData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['dual-drive-monitor', studentId],
     queryFn: async (): Promise<DualDriveData> => {
       // 模拟API调用，实际应该调用真实的双驱动监控API
       const response = await progressTrackingApi.getRealTimeProgress()
-      
+
       // 转换数据格式以匹配双驱动机制
       return {
         student_drive: {
@@ -87,7 +92,9 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
         },
         teacher_drive: {
           data_sync_status: (response as any)?.['sync_status'] || 'synced',
-          last_sync_time: (response as any)?.['last_sync'] || new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+          last_sync_time:
+            (response as any)?.['last_sync'] ||
+            new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
           sync_delay_hours: (response as any)?.['sync_delay'] || 2,
           teaching_adjustments_made: (response as any)?.['teacher_metrics']?.['adjustments'] || 1,
           content_optimizations: (response as any)?.['teacher_metrics']?.['optimizations'] || 3,
@@ -95,7 +102,8 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
         },
         feedback_loop: {
           cycle_completion_rate: (response as any)?.['feedback_metrics']?.['completion_rate'] || 85,
-          optimization_effectiveness: (response as any)?.['feedback_metrics']?.['effectiveness'] || 92,
+          optimization_effectiveness:
+            (response as any)?.['feedback_metrics']?.['effectiveness'] || 92,
           response_time_hours: (response as any)?.['feedback_metrics']?.['response_time'] || 4.5,
           improvement_trend: (response as any)?.['feedback_metrics']?.['trend'] || 'improving',
         },
@@ -118,37 +126,54 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
   if (error || !dualDriveData) {
     return (
       <Alert color="red" title="数据加载失败">
-        <Text size="sm" mb="md">无法加载双驱动机制监控数据，请检查网络连接后重试</Text>
-        <Button size="xs" onClick={() => refetch()}>重试</Button>
+        <Text size="sm" mb="md">
+          无法加载双驱动机制监控数据，请检查网络连接后重试
+        </Text>
+        <Button size="xs" onClick={() => refetch()}>
+          重试
+        </Button>
       </Alert>
     )
   }
 
   const getSyncStatusColor = (status: string) => {
     switch (status) {
-      case 'synced': return 'green'
-      case 'syncing': return 'blue'
-      case 'pending': return 'orange'
-      case 'error': return 'red'
-      default: return 'gray'
+      case 'synced':
+        return 'green'
+      case 'syncing':
+        return 'blue'
+      case 'pending':
+        return 'orange'
+      case 'error':
+        return 'red'
+      default:
+        return 'gray'
     }
   }
 
   const getSyncStatusText = (status: string) => {
     switch (status) {
-      case 'synced': return '已同步'
-      case 'syncing': return '同步中'
-      case 'pending': return '待同步'
-      case 'error': return '同步失败'
-      default: return '未知状态'
+      case 'synced':
+        return '已同步'
+      case 'syncing':
+        return '同步中'
+      case 'pending':
+        return '待同步'
+      case 'error':
+        return '同步失败'
+      default:
+        return '未知状态'
     }
   }
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'improving': return <IconTrendingUp size={16} color="green" />
-      case 'declining': return <IconTrendingUp size={16} color="red" style={{ transform: 'rotate(180deg)' }} />
-      default: return <IconTarget size={16} color="blue" />
+      case 'improving':
+        return <IconTrendingUp size={16} color="green" />
+      case 'declining':
+        return <IconTrendingUp size={16} color="red" style={{ transform: 'rotate(180deg)' }} />
+      default:
+        return <IconTarget size={16} color="blue" />
     }
   }
 
@@ -174,10 +199,12 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
                   <ThemeIcon size="sm" color="blue">
                     <IconBrain size={14} />
                   </ThemeIcon>
-                  <Text size="sm" fw={600}>学生端驱动</Text>
+                  <Text size="sm" fw={600}>
+                    学生端驱动
+                  </Text>
                 </Group>
-                
-                <Badge 
+
+                <Badge
                   color={dualDriveData.student_drive.status === 'active' ? 'green' : 'orange'}
                   size="sm"
                 >
@@ -187,15 +214,21 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
                 <Stack gap="xs">
                   <Group justify="space-between">
                     <Text size="xs">今日训练</Text>
-                    <Text size="xs" fw={600}>{dualDriveData.student_drive.training_sessions_today}次</Text>
+                    <Text size="xs" fw={600}>
+                      {dualDriveData.student_drive.training_sessions_today}次
+                    </Text>
                   </Group>
                   <Group justify="space-between">
                     <Text size="xs">反馈接收</Text>
-                    <Text size="xs" fw={600}>{dualDriveData.student_drive.feedback_received}条</Text>
+                    <Text size="xs" fw={600}>
+                      {dualDriveData.student_drive.feedback_received}条
+                    </Text>
                   </Group>
                   <Group justify="space-between">
                     <Text size="xs">难度调整</Text>
-                    <Text size="xs" fw={600}>{dualDriveData.student_drive.difficulty_adjustments}次</Text>
+                    <Text size="xs" fw={600}>
+                      {dualDriveData.student_drive.difficulty_adjustments}次
+                    </Text>
                   </Group>
                 </Stack>
               </Stack>
@@ -210,17 +243,19 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
                   <ThemeIcon size="sm" color="orange">
                     <IconArrowRight size={14} />
                   </ThemeIcon>
-                  <Text size="sm" fw={600}>数据同步</Text>
+                  <Text size="sm" fw={600}>
+                    数据同步
+                  </Text>
                 </Group>
 
                 <RingProgress
                   size={80}
                   thickness={8}
                   sections={[
-                    { 
-                      value: dualDriveData.feedback_loop.cycle_completion_rate, 
-                      color: 'blue' 
-                    }
+                    {
+                      value: dualDriveData.feedback_loop.cycle_completion_rate,
+                      color: 'blue',
+                    },
                   ]}
                   label={
                     <Center>
@@ -231,7 +266,7 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
                   }
                 />
 
-                <Badge 
+                <Badge
                   color={getSyncStatusColor(dualDriveData.teacher_drive.data_sync_status)}
                   size="sm"
                 >
@@ -253,7 +288,9 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
                   <ThemeIcon size="sm" color="green">
                     <IconUsers size={14} />
                   </ThemeIcon>
-                  <Text size="sm" fw={600}>教师端驱动</Text>
+                  <Text size="sm" fw={600}>
+                    教师端驱动
+                  </Text>
                 </Group>
 
                 <Badge color="blue" size="sm">
@@ -263,15 +300,21 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
                 <Stack gap="xs">
                   <Group justify="space-between">
                     <Text size="xs">教学调整</Text>
-                    <Text size="xs" fw={600}>{dualDriveData.teacher_drive.teaching_adjustments_made}次</Text>
+                    <Text size="xs" fw={600}>
+                      {dualDriveData.teacher_drive.teaching_adjustments_made}次
+                    </Text>
                   </Group>
                   <Group justify="space-between">
                     <Text size="xs">内容优化</Text>
-                    <Text size="xs" fw={600}>{dualDriveData.teacher_drive.content_optimizations}次</Text>
+                    <Text size="xs" fw={600}>
+                      {dualDriveData.teacher_drive.content_optimizations}次
+                    </Text>
                   </Group>
                   <Group justify="space-between">
                     <Text size="xs">响应时间</Text>
-                    <Text size="xs" fw={600}>{dualDriveData.feedback_loop.response_time_hours}h</Text>
+                    <Text size="xs" fw={600}>
+                      {dualDriveData.feedback_loop.response_time_hours}h
+                    </Text>
                   </Group>
                 </Stack>
               </Stack>
@@ -283,22 +326,32 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
       {/* 闭环反馈详情 */}
       {showDetails && (
         <Card withBorder padding="md">
-          <Title order={5} mb="md">闭环反馈流程</Title>
-          
+          <Title order={5} mb="md">
+            闭环反馈流程
+          </Title>
+
           <Timeline active={3}>
             <Timeline.Item
               title="学生训练"
-              bullet={<ThemeIcon size={20} color="blue"><IconBrain size={12} /></ThemeIcon>}
+              bullet={
+                <ThemeIcon size={20} color="blue">
+                  <IconBrain size={12} />
+                </ThemeIcon>
+              }
             >
               <Text size="sm" c="dimmed">
-                完成 {dualDriveData.student_drive.training_sessions_today} 次训练，
-                接收 {dualDriveData.student_drive.feedback_received} 条反馈
+                完成 {dualDriveData.student_drive.training_sessions_today} 次训练， 接收{' '}
+                {dualDriveData.student_drive.feedback_received} 条反馈
               </Text>
             </Timeline.Item>
 
             <Timeline.Item
               title="数据分析"
-              bullet={<ThemeIcon size={20} color="orange"><IconClock size={12} /></ThemeIcon>}
+              bullet={
+                <ThemeIcon size={20} color="orange">
+                  <IconClock size={12} />
+                </ThemeIcon>
+              }
             >
               <Text size="sm" c="dimmed">
                 数据已同步至教师端，延迟 {dualDriveData.teacher_drive.sync_delay_hours} 小时
@@ -307,11 +360,15 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
 
             <Timeline.Item
               title="教师调整"
-              bullet={<ThemeIcon size={20} color="green"><IconUsers size={12} /></ThemeIcon>}
+              bullet={
+                <ThemeIcon size={20} color="green">
+                  <IconUsers size={12} />
+                </ThemeIcon>
+              }
             >
               <Text size="sm" c="dimmed">
-                教师进行 {dualDriveData.teacher_drive.teaching_adjustments_made} 次教学调整，
-                优化 {dualDriveData.teacher_drive.content_optimizations} 项内容
+                教师进行 {dualDriveData.teacher_drive.teaching_adjustments_made} 次教学调整， 优化{' '}
+                {dualDriveData.teacher_drive.content_optimizations} 项内容
               </Text>
             </Timeline.Item>
 
@@ -324,8 +381,8 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
               }
             >
               <Text size="sm" c="dimmed">
-                优化效果 {dualDriveData.feedback_loop.optimization_effectiveness}%，
-                趋势：{dualDriveData.feedback_loop.improvement_trend === 'improving' ? '改善中' : '稳定'}
+                优化效果 {dualDriveData.feedback_loop.optimization_effectiveness}%， 趋势：
+                {dualDriveData.feedback_loop.improvement_trend === 'improving' ? '改善中' : '稳定'}
               </Text>
             </Timeline.Item>
           </Timeline>
@@ -334,18 +391,19 @@ export const DualDriveMonitor: React.FC<DualDriveMonitorProps> = ({
           <Alert
             mt="md"
             icon={
-              dualDriveData.teacher_drive.sync_delay_hours <= 24 ? 
-              <IconCheck size={16} /> : 
-              <IconAlertTriangle size={16} />
+              dualDriveData.teacher_drive.sync_delay_hours <= 24 ? (
+                <IconCheck size={16} />
+              ) : (
+                <IconAlertTriangle size={16} />
+              )
             }
             color={dualDriveData.teacher_drive.sync_delay_hours <= 24 ? 'green' : 'orange'}
             title="同步时效性检查"
           >
             <Text size="sm">
-              {dualDriveData.teacher_drive.sync_delay_hours <= 24 ? 
-                `✅ 数据同步符合24小时要求（当前：${dualDriveData.teacher_drive.sync_delay_hours}小时）` :
-                `⚠️ 数据同步超过24小时要求（当前：${dualDriveData.teacher_drive.sync_delay_hours}小时）`
-              }
+              {dualDriveData.teacher_drive.sync_delay_hours <= 24
+                ? `✅ 数据同步符合24小时要求（当前：${dualDriveData.teacher_drive.sync_delay_hours}小时）`
+                : `⚠️ 数据同步超过24小时要求（当前：${dualDriveData.teacher_drive.sync_delay_hours}小时）`}
             </Text>
           </Alert>
         </Card>

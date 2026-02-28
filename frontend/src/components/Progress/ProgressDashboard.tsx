@@ -40,20 +40,19 @@ import {
   IconBrain,
   IconCertificate,
 } from '@tabler/icons-react'
-import { 
-  useProgressMonitoring, 
-  useRealTimeProgress, 
+import {
+  useProgressMonitoring,
+  useRealTimeProgress,
   useAchievements,
   useSetLearningReminder,
   useExportProgressReport,
-  useRefreshProgressData 
+  useRefreshProgressData,
 } from '@/hooks/useProgressData'
 import { ProgressCharts } from './ProgressCharts'
 import { DualDriveMonitor } from './DualDriveMonitor'
 import { AdaptiveAlgorithmDisplay } from './AdaptiveAlgorithmDisplay'
 import { StandardizationInterface } from './StandardizationInterface'
 import { KnowledgeHeatmap } from './KnowledgeHeatmap'
-
 
 interface ProgressDashboardProps {
   studentId?: number
@@ -78,8 +77,16 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
   }, [])
 
   // 数据获取
-  const { data: monitoring, isLoading: monitoringLoading, error: monitoringError } = useProgressMonitoring()
-  const { data: realtime, isLoading: realtimeLoading, error: realtimeError } = useRealTimeProgress(isComponentMounted)
+  const {
+    data: monitoring,
+    isLoading: monitoringLoading,
+    error: monitoringError,
+  } = useProgressMonitoring()
+  const {
+    data: realtime,
+    isLoading: realtimeLoading,
+    error: realtimeError,
+  } = useRealTimeProgress(isComponentMounted)
   const { data: achievements, error: achievementsError } = useAchievements()
 
   // 操作
@@ -91,7 +98,10 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
     exportReportMutation.mutate({ format, periodDays: 30 })
   }
 
-  const handleSetReminder = (type: 'daily' | 'goal_deadline' | 'performance_drop', enabled: boolean) => {
+  const handleSetReminder = (
+    type: 'daily' | 'goal_deadline' | 'performance_drop',
+    enabled: boolean
+  ) => {
     setReminderMutation.mutate({
       type,
       enabled,
@@ -118,14 +128,8 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
   if (hasError) {
     return (
       <Container size="xl" py="md">
-        <Alert
-          icon={<IconAlertTriangle size={16} />}
-          title="数据加载失败"
-          color="red"
-        >
-          <Text size="sm">
-            无法加载进度数据，请检查网络连接或稍后重试。
-          </Text>
+        <Alert icon={<IconAlertTriangle size={16} />} title="数据加载失败" color="red">
+          <Text size="sm">无法加载进度数据，请检查网络连接或稍后重试。</Text>
           <Group mt="md">
             <Button variant="light" onClick={refreshData}>
               重新加载
@@ -139,9 +143,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
             color="orange"
             mt="md"
           >
-            <Text size="sm">
-              成就数据暂时无法加载，其他功能正常使用。
-            </Text>
+            <Text size="sm">成就数据暂时无法加载，其他功能正常使用。</Text>
           </Alert>
         )}
       </Container>
@@ -190,11 +192,14 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
           <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
             <Card withBorder padding="md" h="100%">
               <Group justify="space-between" mb="xs">
-                <Text size="sm" c="dimmed">今日学习时间</Text>
+                <Text size="sm" c="dimmed">
+                  今日学习时间
+                </Text>
                 <IconClock size={16} color="blue" />
               </Group>
               <Text size="xl" fw={700} c="blue">
-                {Math.floor((realtime?.today_progress?.['study_time'] || 0) / 60)}h {(realtime?.today_progress?.['study_time'] || 0) % 60}m
+                {Math.floor((realtime?.today_progress?.['study_time'] || 0) / 60)}h{' '}
+                {(realtime?.today_progress?.['study_time'] || 0) % 60}m
               </Text>
               <Text size="xs" c="dimmed">
                 已完成 {realtime?.today_progress?.['completed_tasks'] || 0} 个任务
@@ -205,7 +210,9 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
           <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
             <Card withBorder padding="md" h="100%">
               <Group justify="space-between" mb="xs">
-                <Text size="sm" c="dimmed">今日准确率</Text>
+                <Text size="sm" c="dimmed">
+                  今日准确率
+                </Text>
                 <IconTarget size={16} color="green" />
               </Group>
               <Text size="xl" fw={700} c="green">
@@ -220,16 +227,22 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
           <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
             <Card withBorder padding="md" h="100%">
               <Group justify="space-between" mb="xs">
-                <Text size="sm" c="dimmed">整体进度</Text>
+                <Text size="sm" c="dimmed">
+                  整体进度
+                </Text>
                 <IconTrendingUp size={16} color="orange" />
               </Group>
               <Text size="xl" fw={700} c="orange">
                 {Math.round(monitoring?.progress_metrics?.['overall_score'] || 0)}%
               </Text>
               <Text size="xs" c="dimmed">
-                {monitoring?.overall_status === 'excellent' ? '表现优秀' :
-                 monitoring?.overall_status === 'good' ? '表现良好' :
-                 monitoring?.overall_status === 'needs_attention' ? '需要关注' : '需要改进'}
+                {monitoring?.overall_status === 'excellent'
+                  ? '表现优秀'
+                  : monitoring?.overall_status === 'good'
+                    ? '表现良好'
+                    : monitoring?.overall_status === 'needs_attention'
+                      ? '需要关注'
+                      : '需要改进'}
               </Text>
             </Card>
           </Grid.Col>
@@ -237,16 +250,20 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
           <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
             <Card withBorder padding="md" h="100%">
               <Group justify="space-between" mb="xs">
-                <Text size="sm" c="dimmed">获得成就</Text>
+                <Text size="sm" c="dimmed">
+                  获得成就
+                </Text>
                 <IconTrophy size={16} color="yellow" />
               </Group>
               <Text size="xl" fw={700} c="yellow">
                 {achievements?.length || 0}
               </Text>
               <Text size="xs" c="dimmed">
-                本月新增 {achievements?.filter(a =>
-                  new Date(a.achieved_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-                ).length || 0} 个
+                本月新增{' '}
+                {achievements?.filter(
+                  a => new Date(a.achieved_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+                ).length || 0}{' '}
+                个
               </Text>
             </Card>
           </Grid.Col>
@@ -254,7 +271,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
       )}
 
       {/* 主要内容区域 */}
-      <Tabs value={activeTab} onChange={(value) => setActiveTab(value || 'overview')}>
+      <Tabs value={activeTab} onChange={value => setActiveTab(value || 'overview')}>
         <Tabs.List>
           <Tabs.Tab value="overview" leftSection={<IconDashboard size={16} />}>
             总览
@@ -308,9 +325,11 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
             {/* 最近活动 */}
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Card withBorder padding="md" h="100%">
-                <Title order={4} mb="md">最近活动</Title>
+                <Title order={4} mb="md">
+                  最近活动
+                </Title>
                 <Timeline active={-1}>
-                  {realtime?.suggestions && Array.isArray(realtime.suggestions) ?
+                  {realtime?.suggestions && Array.isArray(realtime.suggestions) ? (
                     realtime.suggestions.slice(0, 5).map((suggestion: string, index: number) => (
                       <Timeline.Item
                         key={index}
@@ -325,10 +344,12 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
                           {new Date().toLocaleString()}
                         </Text>
                       </Timeline.Item>
-                    )) : (
-                      <Text c="dimmed" size="sm">暂无最近活动</Text>
-                    )
-                  }
+                    ))
+                  ) : (
+                    <Text c="dimmed" size="sm">
+                      暂无最近活动
+                    </Text>
+                  )}
                 </Timeline>
               </Card>
             </Grid.Col>
@@ -336,28 +357,39 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
             {/* 异常提醒 */}
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Card withBorder padding="md" h="100%">
-                <Title order={4} mb="md">异常提醒</Title>
+                <Title order={4} mb="md">
+                  异常提醒
+                </Title>
                 <Stack gap="xs">
-                  {monitoring?.anomalies && Array.isArray(monitoring.anomalies) ?
+                  {monitoring?.anomalies && Array.isArray(monitoring.anomalies) ? (
                     monitoring.anomalies.map((anomaly: any, index: number) => (
                       <Alert
                         key={index}
                         icon={<IconAlertTriangle size={16} />}
-                        color={anomaly?.['severity'] === 'high' ? 'red' :
-                               anomaly?.['severity'] === 'medium' ? 'orange' : 'yellow'}
+                        color={
+                          anomaly?.['severity'] === 'high'
+                            ? 'red'
+                            : anomaly?.['severity'] === 'medium'
+                              ? 'orange'
+                              : 'yellow'
+                        }
                         title={anomaly?.['type'] || '异常'}
                       >
                         <Text size="sm">{anomaly?.['description'] || '未知异常'}</Text>
-                        {anomaly?.['suggestions'] && Array.isArray(anomaly['suggestions']) && anomaly['suggestions'].length > 0 && (
-                          <Text size="xs" c="dimmed" mt="xs">
-                            建议: {anomaly['suggestions'][0]}
-                          </Text>
-                        )}
+                        {anomaly?.['suggestions'] &&
+                          Array.isArray(anomaly['suggestions']) &&
+                          anomaly['suggestions'].length > 0 && (
+                            <Text size="xs" c="dimmed" mt="xs">
+                              建议: {anomaly['suggestions'][0]}
+                            </Text>
+                          )}
                       </Alert>
-                    )) : (
-                      <Text c="dimmed" size="sm">暂无异常提醒</Text>
-                    )
-                  }
+                    ))
+                  ) : (
+                    <Text c="dimmed" size="sm">
+                      暂无异常提醒
+                    </Text>
+                  )}
                 </Stack>
               </Card>
             </Grid.Col>
@@ -372,7 +404,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
         {/* 成就记录面板 */}
         <Tabs.Panel value="achievements" pt="md">
           <Grid>
-            {achievements?.map((achievement) => (
+            {achievements?.map(achievement => (
               <Grid.Col key={achievement.achievement_id} span={{ base: 12, sm: 6, md: 4 }}>
                 <Card withBorder padding="md" h="100%">
                   <Group justify="space-between" mb="xs">
@@ -383,13 +415,19 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
                       {new Date(achievement.achieved_at).toLocaleDateString()}
                     </Text>
                   </Group>
-                  <Title order={5} mb="xs">{achievement.name}</Title>
-                  <Text size="sm" c="dimmed">{achievement.description}</Text>
+                  <Title order={5} mb="xs">
+                    {achievement.name}
+                  </Title>
+                  <Text size="sm" c="dimmed">
+                    {achievement.description}
+                  </Text>
                 </Card>
               </Grid.Col>
             )) || (
               <Grid.Col span={12}>
-                <Text c="dimmed" size="sm" ta="center">暂无成就记录</Text>
+                <Text c="dimmed" size="sm" ta="center">
+                  暂无成就记录
+                </Text>
               </Grid.Col>
             )}
           </Grid>
@@ -398,14 +436,9 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
         {/* 提醒通知面板 */}
         <Tabs.Panel value="alerts" pt="md">
           <Stack gap="md">
-            {realtime?.suggestions && Array.isArray(realtime.suggestions) ?
+            {realtime?.suggestions && Array.isArray(realtime.suggestions) ? (
               realtime.suggestions.map((suggestion: string, index: number) => (
-                <Alert
-                  key={index}
-                  icon={<IconBell size={16} />}
-                  color="blue"
-                  title="学习建议"
-                >
+                <Alert key={index} icon={<IconBell size={16} />} color="blue" title="学习建议">
                   <Group justify="space-between">
                     <Text size="sm">{suggestion}</Text>
                     <Text size="xs" c="dimmed">
@@ -413,10 +446,12 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
                     </Text>
                   </Group>
                 </Alert>
-              )) : (
-                <Text c="dimmed" size="sm" ta="center">暂无通知</Text>
-              )
-            }
+              ))
+            ) : (
+              <Text c="dimmed" size="sm" ta="center">
+                暂无通知
+              </Text>
+            )}
           </Stack>
         </Tabs.Panel>
       </Tabs>
@@ -430,24 +465,30 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
       >
         <Stack gap="md">
           <div>
-            <Text size="sm" fw={500} mb="xs">学习提醒</Text>
+            <Text size="sm" fw={500} mb="xs">
+              学习提醒
+            </Text>
             <Stack gap="xs">
               <Group justify="space-between">
                 <Text size="sm">每日学习提醒</Text>
                 <Switch
-                  onChange={(event) => handleSetReminder('daily', event.currentTarget.checked)}
+                  onChange={event => handleSetReminder('daily', event.currentTarget.checked)}
                 />
               </Group>
               <Group justify="space-between">
                 <Text size="sm">目标截止提醒</Text>
                 <Switch
-                  onChange={(event) => handleSetReminder('goal_deadline', event.currentTarget.checked)}
+                  onChange={event =>
+                    handleSetReminder('goal_deadline', event.currentTarget.checked)
+                  }
                 />
               </Group>
               <Group justify="space-between">
                 <Text size="sm">表现下降提醒</Text>
                 <Switch
-                  onChange={(event) => handleSetReminder('performance_drop', event.currentTarget.checked)}
+                  onChange={event =>
+                    handleSetReminder('performance_drop', event.currentTarget.checked)
+                  }
                 />
               </Group>
             </Stack>
@@ -456,7 +497,9 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
           <Divider />
 
           <div>
-            <Text size="sm" fw={500} mb="xs">导出选项</Text>
+            <Text size="sm" fw={500} mb="xs">
+              导出选项
+            </Text>
             <Group>
               <Button
                 size="sm"

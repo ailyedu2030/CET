@@ -95,7 +95,6 @@ class SimpleSecurityService {
 
     // 启动使用时长计时器
     this.startUsageTimer()
-
   }
 
   /**
@@ -123,7 +122,6 @@ class SimpleSecurityService {
 
     // 保存使用时长
     this.saveDailyUsage()
-
   }
 
   /**
@@ -153,7 +151,6 @@ class SimpleSecurityService {
    * 处理会话超时
    */
   private handleSessionTimeout(): void {
-
     // 自动登出
     this.authStore.logout()
     this.endSession()
@@ -261,7 +258,6 @@ class SimpleSecurityService {
    * 强制时间限制
    */
   private enforceTimeLimit(): void {
-
     // 显示限制提示
     this.showTimeLimitNotification()
 
@@ -357,8 +353,7 @@ class SimpleSecurityService {
   /**
    * 显示时间限制通知
    */
-  private showTimeLimitNotification(): void {
-  }
+  private showTimeLimitNotification(): void {}
 
   /**
    * 获取会话信息

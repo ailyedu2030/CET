@@ -1,6 +1,6 @@
 /**
  * 需求16：双驱动机制面板组件
- * 
+ *
  * 实现学生端驱动和教师端驱动的可视化管理界面
  */
 
@@ -174,11 +174,7 @@ export function DualDrivePanel({ classId, courseId, onRefresh }: DualDrivePanelP
               onChange={value => setSelectedPeriod(value || '7')}
               w={120}
             />
-            <ActionIcon
-              variant="light"
-              onClick={() => refetch()}
-              loading={isLoading}
-            >
+            <ActionIcon variant="light" onClick={() => refetch()} loading={isLoading}>
               <IconRefresh size={16} />
             </ActionIcon>
           </Group>
@@ -252,9 +248,7 @@ export function DualDrivePanel({ classId, courseId, onRefresh }: DualDrivePanelP
           <Card withBorder p="md" h="100%">
             <Group justify="space-between" mb="md">
               <Text fw={500}>学生端驱动状态</Text>
-              <Badge color="blue">
-                {dualDriveData?.student_drive ? '活跃' : '待激活'}
-              </Badge>
+              <Badge color="blue">{dualDriveData?.student_drive ? '活跃' : '待激活'}</Badge>
             </Group>
 
             <Stack gap="sm">
@@ -337,15 +331,16 @@ export function DualDrivePanel({ classId, courseId, onRefresh }: DualDrivePanelP
           <Card withBorder p="md" h="100%">
             <Group justify="space-between" mb="md">
               <Text fw={500}>教师端驱动状态</Text>
-              <Badge color="green">
-                {dualDriveData?.teacher_drive ? '运行中' : '待启动'}
-              </Badge>
+              <Badge color="green">{dualDriveData?.teacher_drive ? '运行中' : '待启动'}</Badge>
             </Group>
 
             <Stack gap="sm">
               <Group justify="space-between">
                 <Text size="sm">数据看板</Text>
-                <Badge size="sm" color={dualDriveData?.teacher_drive?.data_dashboard ? 'green' : 'gray'}>
+                <Badge
+                  size="sm"
+                  color={dualDriveData?.teacher_drive?.data_dashboard ? 'green' : 'gray'}
+                >
                   {dualDriveData?.teacher_drive?.data_dashboard ? '已更新' : '待更新'}
                 </Badge>
               </Group>
@@ -419,7 +414,9 @@ export function DualDrivePanel({ classId, courseId, onRefresh }: DualDrivePanelP
         <Group justify="space-between" mb="md">
           <Text fw={500}>交互周期与闭环反馈</Text>
           <Group>
-            <Badge color={getSyncStatusColor(dualDriveData?.interaction_cycle?.sync_status || 'unknown')}>
+            <Badge
+              color={getSyncStatusColor(dualDriveData?.interaction_cycle?.sync_status || 'unknown')}
+            >
               {getSyncStatusText(dualDriveData?.interaction_cycle?.sync_status || 'unknown')}
             </Badge>
             <Text size="sm" c="dimmed">
@@ -433,8 +430,8 @@ export function DualDrivePanel({ classId, courseId, onRefresh }: DualDrivePanelP
             dualDriveData?.interaction_cycle?.sync_status === 'completed'
               ? 100
               : dualDriveData?.interaction_cycle?.sync_status === 'pending'
-              ? 60
-              : 0
+                ? 60
+                : 0
           }
           color={getSyncStatusColor(dualDriveData?.interaction_cycle?.sync_status || 'unknown')}
           size="lg"

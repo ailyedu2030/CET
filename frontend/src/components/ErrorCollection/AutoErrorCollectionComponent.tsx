@@ -55,7 +55,7 @@ export const AutoErrorCollectionComponent: React.FC<AutoErrorCollectionComponent
   // 自动归集错题
   const collectErrorMutation = useMutation({
     mutationFn: errorReinforcementApi.autoCollectError,
-    onSuccess: (result) => {
+    onSuccess: result => {
       if (result.collected) {
         notifications.show({
           title: '错题已自动归集',
@@ -79,7 +79,7 @@ export const AutoErrorCollectionComponent: React.FC<AutoErrorCollectionComponent
       queryClient.invalidateQueries({ queryKey: ['error-questions'] })
       queryClient.invalidateQueries({ queryKey: ['error-stats'] })
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '错题归集失败',
         message: error.message,
@@ -124,7 +124,12 @@ export const AutoErrorCollectionComponent: React.FC<AutoErrorCollectionComponent
 
   // 自动触发归集（当答题错误时）
   useEffect(() => {
-    if (autoTrigger && gradingResult && !gradingResult.is_correct && !collectErrorMutation.isPending) {
+    if (
+      autoTrigger &&
+      gradingResult &&
+      !gradingResult.is_correct &&
+      !collectErrorMutation.isPending
+    ) {
       // 延迟一点时间，让用户看到批改结果
       const timer = setTimeout(() => {
         handleManualCollect()
@@ -206,23 +211,21 @@ export const AutoErrorCollectionComponent: React.FC<AutoErrorCollectionComponent
           <Alert color="blue" title="正在归集错题...">
             <Stack gap="xs">
               <Progress value={50} animated />
-              <Text size="sm">
-                正在分析错误类型并归集到错题本...
-              </Text>
+              <Text size="sm">正在分析错误类型并归集到错题本...</Text>
             </Stack>
           </Alert>
         )}
 
         {collectErrorMutation.data && (
-          <Alert 
-            color={collectErrorMutation.data.collected ? "green" : "gray"} 
-            title={collectErrorMutation.data.collected ? "归集成功" : "未归集"}
-            icon={collectErrorMutation.data.collected ? <IconCheck size={16} /> : <IconX size={16} />}
+          <Alert
+            color={collectErrorMutation.data.collected ? 'green' : 'gray'}
+            title={collectErrorMutation.data.collected ? '归集成功' : '未归集'}
+            icon={
+              collectErrorMutation.data.collected ? <IconCheck size={16} /> : <IconX size={16} />
+            }
           >
             <Stack gap="xs">
-              <Text size="sm">
-                {collectErrorMutation.data.reason}
-              </Text>
+              <Text size="sm">{collectErrorMutation.data.reason}</Text>
               {collectErrorMutation.data.collected && (
                 <>
                   <Text size="sm">

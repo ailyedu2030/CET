@@ -1,6 +1,6 @@
 /**
  * 图片优化工具
- * 
+ *
  * 提供图片优化功能：
  * - 图片压缩
  * - 格式转换
@@ -57,12 +57,12 @@ class ImageOptimizationManager {
     }
 
     this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             const img = entry.target as HTMLImageElement
             const src = img.dataset['src']
-            
+
             if (src) {
               this.loadImage(img, src)
               this.observer?.unobserve(img)
@@ -80,12 +80,9 @@ class ImageOptimizationManager {
   /**
    * 压缩图片
    */
-  async compressImage(
-    file: File,
-    options: Partial<ImageOptimizationConfig> = {}
-  ): Promise<Blob> {
+  async compressImage(file: File, options: Partial<ImageOptimizationConfig> = {}): Promise<Blob> {
     const config = { ...this.config, ...options }
-    
+
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
@@ -108,7 +105,7 @@ class ImageOptimizationManager {
 
         // 转换为Blob
         canvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               resolve(blob)
             } else {
@@ -153,10 +150,7 @@ class ImageOptimizationManager {
   /**
    * 生成优化后的图片URL
    */
-  getOptimizedUrl(
-    originalUrl: string,
-    options: Partial<ImageOptimizationConfig> = {}
-  ): string {
+  getOptimizedUrl(originalUrl: string, options: Partial<ImageOptimizationConfig> = {}): string {
     const config = { ...this.config, ...options }
     const cacheKey = `${originalUrl}_${JSON.stringify(options)}`
 
@@ -180,24 +174,21 @@ class ImageOptimizationManager {
   /**
    * 构建CDN URL
    */
-  private buildCdnUrl(
-    originalUrl: string,
-    config: Required<ImageOptimizationConfig>
-  ): string {
+  private buildCdnUrl(originalUrl: string, config: Required<ImageOptimizationConfig>): string {
     const params = new URLSearchParams()
-    
+
     if (config.maxWidth) {
       params.set('w', config.maxWidth.toString())
     }
-    
+
     if (config.maxHeight) {
       params.set('h', config.maxHeight.toString())
     }
-    
+
     if (config.quality < 1) {
       params.set('q', Math.round(config.quality * 100).toString())
     }
-    
+
     if (config.format) {
       params.set('f', config.format)
     }
@@ -230,21 +221,21 @@ class ImageOptimizationManager {
    */
   private loadImage(img: HTMLImageElement, src: string): void {
     const optimizedSrc = this.getOptimizedUrl(src)
-    
+
     img.classList.add('loading')
-    
+
     const tempImg = new Image()
     tempImg.onload = () => {
       img.src = optimizedSrc
       img.classList.remove('lazy-loading', 'loading')
       img.classList.add('loaded')
     }
-    
+
     tempImg.onerror = () => {
       img.classList.remove('lazy-loading', 'loading')
       img.classList.add('error')
     }
-    
+
     tempImg.src = optimizedSrc
   }
 
@@ -254,21 +245,21 @@ class ImageOptimizationManager {
   private generatePlaceholder(width: number, height: number): string {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
-    
+
     canvas.width = width
     canvas.height = height
-    
+
     if (ctx) {
       // 绘制简单的占位符
       ctx.fillStyle = '#f0f0f0'
       ctx.fillRect(0, 0, width, height)
-      
+
       ctx.fillStyle = '#ccc'
       ctx.font = '14px Arial'
       ctx.textAlign = 'center'
       ctx.fillText('Loading...', width / 2, height / 2)
     }
-    
+
     return canvas.toDataURL()
   }
 
@@ -297,7 +288,7 @@ class ImageOptimizationManager {
    */
   async getImageInfo(src: string): Promise<ImageInfo> {
     const img = await this.preloadImage(src)
-    
+
     return {
       src,
       width: img.naturalWidth,
@@ -342,12 +333,13 @@ export const imageUtils = {
    * 检查浏览器是否支持WebP
    */
   supportsWebP(): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const webP = new Image()
       webP.onload = webP.onerror = () => {
         resolve(webP.height === 2)
       }
-      webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA'
+      webP.src =
+        'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA'
     })
   },
 

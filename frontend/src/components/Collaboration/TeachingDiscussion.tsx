@@ -79,11 +79,11 @@ interface DiscussionReply {
 const collaborationApi = {
   getDiscussionTopics: async (_params?: any) => ({
     topics: [] as DiscussionTopic[],
-    total: 0
+    total: 0,
   }),
   getDiscussionReplies: async (_topicId?: number) => [] as DiscussionReply[],
-  createDiscussionTopic: async (_topicData?: any) => ({} as DiscussionTopic),
-  addDiscussionReply: async (_replyData?: any) => ({} as DiscussionReply),
+  createDiscussionTopic: async (_topicData?: any) => ({}) as DiscussionTopic,
+  addDiscussionReply: async (_replyData?: any) => ({}) as DiscussionReply,
   likeDiscussionReply: async (_replyId?: number) => ({}),
   bookmarkDiscussionTopic: async (_topicId?: number) => ({}),
 }
@@ -105,7 +105,7 @@ export function TeachingDiscussion({
 }: TeachingDiscussionProps): JSX.Element {
   const { user } = useAuth()
   const queryClient = useQueryClient()
-  
+
   const [selectedTopic, setSelectedTopic] = useState<DiscussionTopic | null>(null)
   const [createModalOpened, setCreateModalOpened] = useState(false)
   const [replyText, setReplyText] = useState('')
@@ -132,9 +132,7 @@ export function TeachingDiscussion({
   })
 
   // 获取话题回复
-  const {
-    data: replies,
-  } = useQuery({
+  const { data: replies } = useQuery({
     queryKey: ['discussion', selectedTopic?.id, 'replies'],
     queryFn: () => collaborationApi.getDiscussionReplies(selectedTopic!.id),
     enabled: !!selectedTopic,
@@ -162,11 +160,8 @@ export function TeachingDiscussion({
 
   // 添加回复
   const addReplyMutation = useMutation({
-    mutationFn: (replyData: {
-      topicId: number
-      content: string
-      replyToId?: number
-    }) => collaborationApi.addDiscussionReply(replyData),
+    mutationFn: (replyData: { topicId: number; content: string; replyToId?: number }) =>
+      collaborationApi.addDiscussionReply(replyData),
     onSuccess: () => {
       notifications.show({
         title: '回复成功',
@@ -200,7 +195,7 @@ export function TeachingDiscussion({
 
   const handleAddReply = () => {
     if (!selectedTopic || !replyText.trim()) return
-    
+
     addReplyMutation.mutate({
       topicId: selectedTopic.id,
       content: replyText.trim(),
@@ -275,22 +270,18 @@ export function TeachingDiscussion({
               </Text>
             </div>
           </Group>
-          
+
           <Group gap="xs">
             {getStatusIcon(topic.status)}
             <ActionIcon
               variant="subtle"
               color={topic.isBookmarked ? 'yellow' : 'gray'}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation()
                 bookmarkTopicMutation.mutate(topic.id)
               }}
             >
-              {topic.isBookmarked ? (
-                <IconBookmarkFilled size={16} />
-              ) : (
-                <IconBookmark size={16} />
-              )}
+              {topic.isBookmarked ? <IconBookmarkFilled size={16} /> : <IconBookmark size={16} />}
             </ActionIcon>
           </Group>
         </Group>
@@ -301,17 +292,13 @@ export function TeachingDiscussion({
             <Title order={4} style={{ flex: 1 }}>
               {topic.title}
             </Title>
-            <Badge
-              size="sm"
-              color={getStatusColor(topic.status)}
-              variant="light"
-            >
+            <Badge size="sm" color={getStatusColor(topic.status)} variant="light">
               {topic.status === 'solved' && '已解决'}
               {topic.status === 'discussing' && '讨论中'}
               {topic.status === 'urgent' && '紧急'}
             </Badge>
           </Group>
-          
+
           <Text size="sm" c="dimmed" lineClamp={2}>
             {topic.content}
           </Text>
@@ -322,14 +309,10 @@ export function TeachingDiscussion({
           <Badge size="sm" variant="light" color="blue">
             {topic.subject}
           </Badge>
-          <Badge
-            size="sm"
-            variant="light"
-            color={getDifficultyColor(topic.difficulty)}
-          >
+          <Badge size="sm" variant="light" color={getDifficultyColor(topic.difficulty)}>
             难度: {topic.difficulty}
           </Badge>
-          {topic.tags.map((tag) => (
+          {topic.tags.map(tag => (
             <Chip key={tag} size="xs" variant="light">
               {tag}
             </Chip>
@@ -343,18 +326,18 @@ export function TeachingDiscussion({
               <IconMessage size={16} />
               <Text size="sm">{topic.replyCount} 回复</Text>
             </Group>
-            
+
             <Group gap="xs">
               <IconThumbUp size={16} />
               <Text size="sm">{topic.likeCount} 赞</Text>
             </Group>
-            
+
             <Group gap="xs">
               <IconBookmark size={16} />
               <Text size="sm">{topic.bookmarkCount} 收藏</Text>
             </Group>
           </Group>
-          
+
           {topic.lastReplyAt && (
             <Text size="xs" c="dimmed">
               最后回复: {formatTimeAgo(topic.lastReplyAt)}
@@ -381,7 +364,7 @@ export function TeachingDiscussion({
             </Text>
           </div>
         </Group>
-        
+
         <Group gap="xs">
           <ActionIcon
             variant="subtle"
@@ -393,16 +376,11 @@ export function TeachingDiscussion({
           <Text size="xs">{reply.likeCount}</Text>
         </Group>
       </Group>
-      
+
       <Text size="sm">{reply.content}</Text>
-      
+
       {reply.isSolution && (
-        <Alert
-          icon={<IconCircleCheck size={16} />}
-          color="green"
-          variant="light"
-          mt="xs"
-        >
+        <Alert icon={<IconCircleCheck size={16} />} color="green" variant="light" mt="xs">
           此回复被标记为解决方案
         </Alert>
       )}
@@ -414,15 +392,15 @@ export function TeachingDiscussion({
       {/* 头部工具栏 */}
       <Group justify="space-between" mb="md">
         <Title order={2}>教学难点讨论</Title>
-        
+
         <Group>
           <TextInput
             placeholder="搜索讨论..."
             leftSection={<IconSearch size={16} />}
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
           />
-          
+
           <Select
             placeholder="学科筛选"
             data={[
@@ -431,20 +409,17 @@ export function TeachingDiscussion({
               { value: 'chinese', label: '语文' },
             ]}
             value={filter.subject}
-            onChange={(value) => setFilter({ ...filter, subject: value || undefined })}
+            onChange={value => setFilter({ ...filter, subject: value || undefined })}
           />
-          
-          <Button
-            leftSection={<IconPlus size={16} />}
-            onClick={() => setCreateModalOpened(true)}
-          >
+
+          <Button leftSection={<IconPlus size={16} />} onClick={() => setCreateModalOpened(true)}>
             发起讨论
           </Button>
         </Group>
       </Group>
 
       {/* 状态标签页 */}
-      <Tabs value={activeTab} onChange={(value) => setActiveTab(value || 'all')} mb="md">
+      <Tabs value={activeTab} onChange={value => setActiveTab(value || 'all')} mb="md">
         <Tabs.List>
           <Tabs.Tab value="all">全部</Tabs.Tab>
           <Tabs.Tab value="discussing">讨论中</Tabs.Tab>
@@ -459,7 +434,7 @@ export function TeachingDiscussion({
             </Text>
           ) : (
             <Stack gap="md">
-              {topics?.topics.map((topic) => (
+              {topics?.topics.map(topic => (
                 <TopicCard key={topic.id} topic={topic} />
               ))}
             </Stack>
@@ -491,11 +466,11 @@ export function TeachingDiscussion({
                   </Text>
                 </div>
               </Group>
-              
+
               <Text>{selectedTopic.content}</Text>
-              
+
               <Group gap="xs" mt="sm">
-                {selectedTopic.tags.map((tag) => (
+                {selectedTopic.tags.map(tag => (
                   <Chip key={tag} size="xs" variant="light">
                     {tag}
                   </Chip>
@@ -510,13 +485,13 @@ export function TeachingDiscussion({
               <Title order={4} mb="md">
                 回复 ({replies?.length || 0})
               </Title>
-              
+
               {/* 添加回复 */}
               <Stack gap="sm" mb="md">
                 <Textarea
                   placeholder="分享您的见解..."
                   value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
+                  onChange={e => setReplyText(e.target.value)}
                   minRows={3}
                 />
                 <Group justify="flex-end">
@@ -534,7 +509,7 @@ export function TeachingDiscussion({
               {/* 回复列表 */}
               <ScrollArea h={400}>
                 <Stack gap="sm">
-                  {replies?.map((reply) => (
+                  {replies?.map(reply => (
                     <ReplyItem key={reply.id} reply={reply} />
                   ))}
                 </Stack>
@@ -552,19 +527,15 @@ export function TeachingDiscussion({
         size="md"
       >
         <Stack gap="md">
-          <TextInput
-            label="讨论标题"
-            placeholder="简洁描述您遇到的教学难点..."
-            required
-          />
-          
+          <TextInput label="讨论标题" placeholder="简洁描述您遇到的教学难点..." required />
+
           <Textarea
             label="详细描述"
             placeholder="详细描述遇到的问题、已尝试的方法等..."
             minRows={4}
             required
           />
-          
+
           <Group grow>
             <Select
               label="学科"
@@ -576,7 +547,7 @@ export function TeachingDiscussion({
               ]}
               required
             />
-            
+
             <Select
               label="难度等级"
               placeholder="选择难度"
@@ -588,17 +559,11 @@ export function TeachingDiscussion({
               required
             />
           </Group>
-          
-          <TextInput
-            label="标签"
-            placeholder="用逗号分隔多个标签，如：语法,时态,练习"
-          />
-          
+
+          <TextInput label="标签" placeholder="用逗号分隔多个标签，如：语法,时态,练习" />
+
           <Group justify="flex-end">
-            <Button
-              variant="subtle"
-              onClick={() => setCreateModalOpened(false)}
-            >
+            <Button variant="subtle" onClick={() => setCreateModalOpened(false)}>
               取消
             </Button>
             <Button

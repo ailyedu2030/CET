@@ -54,7 +54,7 @@ import {
 
 export function ClassManagementPage(): JSX.Element {
   const queryClient = useQueryClient()
-  
+
   // 状态管理
   const [page, setPage] = useState(1)
   const [courseFilter, setCourseFilter] = useState<string | null>(null)
@@ -64,12 +64,16 @@ export function ClassManagementPage(): JSX.Element {
   const [activeTab, setActiveTab] = useState('list')
 
   // 模态框状态
-  const [createModalOpened, { open: openCreateModal, close: closeCreateModal }] = useDisclosure(false)
+  const [createModalOpened, { open: openCreateModal, close: closeCreateModal }] =
+    useDisclosure(false)
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] = useDisclosure(false)
   const [batchModalOpened, { open: openBatchModal, close: closeBatchModal }] = useDisclosure(false)
-  const [detailModalOpened, { open: openDetailModal, close: closeDetailModal }] = useDisclosure(false)
-  const [resourceModalOpened, { open: openResourceModal, close: closeResourceModal }] = useDisclosure(false)
-  const [validationModalOpened, { open: openValidationModal, close: closeValidationModal }] = useDisclosure(false)
+  const [detailModalOpened, { open: openDetailModal, close: closeDetailModal }] =
+    useDisclosure(false)
+  const [resourceModalOpened, { open: openResourceModal, close: closeResourceModal }] =
+    useDisclosure(false)
+  const [validationModalOpened, { open: openValidationModal, close: closeValidationModal }] =
+    useDisclosure(false)
 
   // 绑定规则验证状态 - 需求8验收标准1
   const [validationResult, setValidationResult] = useState<any>(null)
@@ -88,9 +92,9 @@ export function ClassManagementPage(): JSX.Element {
       end_date: undefined,
     },
     validate: {
-      name: (value) => (value.length < 1 ? '班级名称不能为空' : null),
-      course_id: (value) => (value === 0 ? '请选择课程' : null),
-      max_students: (value) => (value < 1 || value > 200 ? '学生数量必须在1-200之间' : null),
+      name: value => (value.length < 1 ? '班级名称不能为空' : null),
+      course_id: value => (value === 0 ? '请选择课程' : null),
+      max_students: value => (value < 1 || value > 200 ? '学生数量必须在1-200之间' : null),
     },
   })
 
@@ -113,10 +117,11 @@ export function ClassManagementPage(): JSX.Element {
       end_date: undefined,
     },
     validate: {
-      course_id: (value) => (value === 0 ? '请选择课程' : null),
-      class_prefix: (value) => (value.length < 1 ? '班级前缀不能为空' : null),
-      class_count: (value) => (value < 1 || value > 20 ? '班级数量必须在1-20之间' : null),
-      max_students_per_class: (value) => (value < 1 || value > 200 ? '每班学生数必须在1-200之间' : null),
+      course_id: value => (value === 0 ? '请选择课程' : null),
+      class_prefix: value => (value.length < 1 ? '班级前缀不能为空' : null),
+      class_count: value => (value < 1 || value > 20 ? '班级数量必须在1-20之间' : null),
+      max_students_per_class: value =>
+        value < 1 || value > 200 ? '每班学生数必须在1-200之间' : null,
     },
   })
 
@@ -228,7 +233,7 @@ export function ClassManagementPage(): JSX.Element {
   // 批量创建班级
   const batchCreateMutation = useMutation({
     mutationFn: (data: ClassBatchCreate) => classManagementApi.batchCreateClasses(data),
-    onSuccess: (result) => {
+    onSuccess: result => {
       notifications.show({
         title: '批量创建成功',
         message: `成功创建 ${result.created_count} 个班级`,
@@ -254,7 +259,7 @@ export function ClassManagementPage(): JSX.Element {
         teacher_id: params.teacherId,
         course_id: params.courseId,
       }),
-    onSuccess: (result) => {
+    onSuccess: result => {
       setValidationResult(result)
       openValidationModal()
     },
@@ -326,22 +331,32 @@ export function ClassManagementPage(): JSX.Element {
   // 状态标签颜色映射
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'preparing': return 'blue'
-      case 'active': return 'green'
-      case 'completed': return 'gray'
-      case 'cancelled': return 'red'
-      default: return 'gray'
+      case 'preparing':
+        return 'blue'
+      case 'active':
+        return 'green'
+      case 'completed':
+        return 'gray'
+      case 'cancelled':
+        return 'red'
+      default:
+        return 'gray'
     }
   }
 
   // 状态标签文本映射
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'preparing': return '筹备中'
-      case 'active': return '进行中'
-      case 'completed': return '已完成'
-      case 'cancelled': return '已取消'
-      default: return status
+      case 'preparing':
+        return '筹备中'
+      case 'active':
+        return '进行中'
+      case 'completed':
+        return '已完成'
+      case 'cancelled':
+        return '已取消'
+      default:
+        return status
     }
   }
 
@@ -351,23 +366,16 @@ export function ClassManagementPage(): JSX.Element {
         <Group justify="space-between">
           <Title order={2}>班级管理与资源配置</Title>
           <Group>
-            <Button
-              leftSection={<IconCopy size={16} />}
-              variant="light"
-              onClick={openBatchModal}
-            >
+            <Button leftSection={<IconCopy size={16} />} variant="light" onClick={openBatchModal}>
               批量创建
             </Button>
-            <Button
-              leftSection={<IconPlus size={16} />}
-              onClick={handleCreateClass}
-            >
+            <Button leftSection={<IconPlus size={16} />} onClick={handleCreateClass}>
               创建班级
             </Button>
           </Group>
         </Group>
 
-        <Tabs value={activeTab} onChange={(value) => setActiveTab(value || 'list')}>
+        <Tabs value={activeTab} onChange={value => setActiveTab(value || 'list')}>
           <Tabs.List>
             <Tabs.Tab value="list" leftSection={<IconUsers size={16} />}>
               班级列表
@@ -564,11 +572,7 @@ export function ClassManagementPage(): JSX.Element {
               {/* 分页 */}
               {classesData && classesData.pages > 1 && (
                 <Group justify="center" p="md">
-                  <Pagination
-                    value={page}
-                    onChange={setPage}
-                    total={classesData.pages}
-                  />
+                  <Pagination value={page} onChange={setPage} total={classesData.pages} />
                 </Group>
               )}
             </Paper>
@@ -598,12 +602,7 @@ export function ClassManagementPage(): JSX.Element {
         </Tabs>
 
         {/* 创建班级模态框 - 需求4验收标准1 */}
-        <Modal
-          opened={createModalOpened}
-          onClose={closeCreateModal}
-          title="创建班级"
-          size="lg"
-        >
+        <Modal opened={createModalOpened} onClose={closeCreateModal} title="创建班级" size="lg">
           <form onSubmit={createForm.onSubmit(handleSubmitCreate)}>
             <Stack>
               <TextInput
@@ -630,7 +629,9 @@ export function ClassManagementPage(): JSX.Element {
                   })) || []
                 }
                 {...createForm.getInputProps('course_id')}
-                onChange={(value) => createForm.setFieldValue('course_id', value ? parseInt(value) : 0)}
+                onChange={value =>
+                  createForm.setFieldValue('course_id', value ? parseInt(value) : 0)
+                }
               />
 
               <Select
@@ -643,7 +644,9 @@ export function ClassManagementPage(): JSX.Element {
                   })) || []
                 }
                 {...createForm.getInputProps('teacher_id')}
-                onChange={(value) => createForm.setFieldValue('teacher_id', value ? parseInt(value) : undefined)}
+                onChange={value =>
+                  createForm.setFieldValue('teacher_id', value ? parseInt(value) : undefined)
+                }
                 clearable
               />
 
@@ -657,7 +660,9 @@ export function ClassManagementPage(): JSX.Element {
                   })) || []
                 }
                 {...createForm.getInputProps('classroom_id')}
-                onChange={(value) => createForm.setFieldValue('classroom_id', value ? parseInt(value) : undefined)}
+                onChange={value =>
+                  createForm.setFieldValue('classroom_id', value ? parseInt(value) : undefined)
+                }
                 clearable
               />
 
@@ -704,12 +709,7 @@ export function ClassManagementPage(): JSX.Element {
         </Modal>
 
         {/* 编辑班级模态框 */}
-        <Modal
-          opened={editModalOpened}
-          onClose={closeEditModal}
-          title="编辑班级"
-          size="md"
-        >
+        <Modal opened={editModalOpened} onClose={closeEditModal} title="编辑班级" size="md">
           <form onSubmit={editForm.onSubmit(handleSubmitEdit)}>
             <Stack>
               <TextInput
@@ -748,12 +748,7 @@ export function ClassManagementPage(): JSX.Element {
         </Modal>
 
         {/* 批量创建班级模态框 - 需求4验收标准2 */}
-        <Modal
-          opened={batchModalOpened}
-          onClose={closeBatchModal}
-          title="批量创建班级"
-          size="lg"
-        >
+        <Modal opened={batchModalOpened} onClose={closeBatchModal} title="批量创建班级" size="lg">
           <form onSubmit={batchForm.onSubmit(handleSubmitBatch)}>
             <Stack>
               <Alert color="blue">
@@ -773,7 +768,9 @@ export function ClassManagementPage(): JSX.Element {
                   })) || []
                 }
                 {...batchForm.getInputProps('course_id')}
-                onChange={(value) => batchForm.setFieldValue('course_id', value ? parseInt(value) : 0)}
+                onChange={value =>
+                  batchForm.setFieldValue('course_id', value ? parseInt(value) : 0)
+                }
               />
 
               <Select
@@ -786,7 +783,9 @@ export function ClassManagementPage(): JSX.Element {
                   })) || []
                 }
                 {...batchForm.getInputProps('teacher_id')}
-                onChange={(value) => batchForm.setFieldValue('teacher_id', value ? parseInt(value) : undefined)}
+                onChange={value =>
+                  batchForm.setFieldValue('teacher_id', value ? parseInt(value) : undefined)
+                }
                 clearable
               />
 
@@ -849,30 +848,27 @@ export function ClassManagementPage(): JSX.Element {
         </Modal>
 
         {/* 班级详情模态框 */}
-        <Modal
-          opened={detailModalOpened}
-          onClose={closeDetailModal}
-          title="班级详情"
-          size="lg"
-        >
+        <Modal opened={detailModalOpened} onClose={closeDetailModal} title="班级详情" size="lg">
           {selectedClass && (
             <Stack>
               <Card withBorder>
                 <Stack>
                   <Group justify="space-between">
-                    <Text fw={500} size="lg">{selectedClass.name}</Text>
+                    <Text fw={500} size="lg">
+                      {selectedClass.name}
+                    </Text>
                     <Badge color={getStatusColor(selectedClass.status)}>
                       {getStatusText(selectedClass.status)}
                     </Badge>
                   </Group>
 
                   {selectedClass.code && (
-                    <Text size="sm" c="dimmed">班级编号: {selectedClass.code}</Text>
+                    <Text size="sm" c="dimmed">
+                      班级编号: {selectedClass.code}
+                    </Text>
                   )}
 
-                  {selectedClass.description && (
-                    <Text size="sm">{selectedClass.description}</Text>
-                  )}
+                  {selectedClass.description && <Text size="sm">{selectedClass.description}</Text>}
 
                   <Group>
                     <Text size="sm">
@@ -885,7 +881,8 @@ export function ClassManagementPage(): JSX.Element {
 
                   <Group>
                     <Text size="sm">
-                      <strong>学生数:</strong> {selectedClass.current_students}/{selectedClass.max_students}
+                      <strong>学生数:</strong> {selectedClass.current_students}/
+                      {selectedClass.max_students}
                     </Text>
                     <Text size="sm">
                       <strong>完成率:</strong> {(selectedClass.completion_rate * 100).toFixed(1)}%
@@ -894,10 +891,12 @@ export function ClassManagementPage(): JSX.Element {
 
                   <Group>
                     <Text size="sm">
-                      <strong>创建时间:</strong> {new Date(selectedClass.created_at).toLocaleString()}
+                      <strong>创建时间:</strong>{' '}
+                      {new Date(selectedClass.created_at).toLocaleString()}
                     </Text>
                     <Text size="sm">
-                      <strong>更新时间:</strong> {new Date(selectedClass.updated_at).toLocaleString()}
+                      <strong>更新时间:</strong>{' '}
+                      {new Date(selectedClass.updated_at).toLocaleString()}
                     </Text>
                   </Group>
                 </Stack>
@@ -966,10 +965,12 @@ export function ClassManagementPage(): JSX.Element {
                   label="重新分配教师"
                   placeholder="选择新的教师"
                   data={
-                    teachersData?.filter(t => t.qualification_status === 'approved').map(teacher => ({
-                      value: teacher.id.toString(),
-                      label: `${teacher.real_name} - ${teacher.subject || '通用'}`,
-                    })) || []
+                    teachersData
+                      ?.filter(t => t.qualification_status === 'approved')
+                      .map(teacher => ({
+                        value: teacher.id.toString(),
+                        label: `${teacher.real_name} - ${teacher.subject || '通用'}`,
+                      })) || []
                   }
                   clearable
                 />
@@ -978,24 +979,23 @@ export function ClassManagementPage(): JSX.Element {
                   label="重新绑定教室"
                   placeholder="选择新的教室"
                   data={
-                    classroomsData?.filter(c => c.is_available).map(classroom => ({
-                      value: classroom.id.toString(),
-                      label: `${classroom.name} (${classroom.building_name}) - 容量${classroom.capacity}`,
-                    })) || []
+                    classroomsData
+                      ?.filter(c => c.is_available)
+                      .map(classroom => ({
+                        value: classroom.id.toString(),
+                        label: `${classroom.name} (${classroom.building_name}) - 容量${classroom.capacity}`,
+                      })) || []
                   }
                   clearable
                 />
 
-                <Textarea
-                  label="变更原因"
-                  placeholder="请输入资源变更的原因"
-                  rows={3}
-                />
+                <Textarea label="变更原因" placeholder="请输入资源变更的原因" rows={3} />
               </Stack>
 
               <Alert color="yellow">
                 <Text size="sm">
-                  <strong>绑定规则验证:</strong> 系统将自动验证1班级↔1教师、1班级↔1课程的绑定关系。
+                  <strong>绑定规则验证:</strong>{' '}
+                  系统将自动验证1班级↔1教师、1班级↔1课程的绑定关系。
                 </Text>
               </Alert>
 
@@ -1019,9 +1019,7 @@ export function ClassManagementPage(): JSX.Element {
                   <Button variant="light" onClick={closeResourceModal}>
                     取消
                   </Button>
-                  <Button>
-                    保存配置
-                  </Button>
+                  <Button>保存配置</Button>
                 </Group>
               </Group>
             </Stack>
@@ -1063,11 +1061,7 @@ export function ClassManagementPage(): JSX.Element {
                 <Button variant="light" onClick={closeValidationModal}>
                   关闭
                 </Button>
-                {!validationResult.is_valid && (
-                  <Button color="orange">
-                    申请规则豁免
-                  </Button>
-                )}
+                {!validationResult.is_valid && <Button color="orange">申请规则豁免</Button>}
               </Group>
             </Stack>
           )}

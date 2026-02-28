@@ -69,30 +69,30 @@ export function AppLayout(): JSX.Element {
           <Group gap="md">
             <PWAStatus />
             {user && (
-            <Menu shadow="md" width={200}>
-              <Menu.Target>
-                <UnstyledButton>
-                  <Group gap="sm">
-                    <Avatar size="sm" />
-                    <Text size="sm">{user.username}</Text>
-                    <IconChevronDown size={16} />
-                  </Group>
-                </UnstyledButton>
-              </Menu.Target>
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
+                  <UnstyledButton>
+                    <Group gap="sm">
+                      <Avatar size="sm" />
+                      <Text size="sm">{user.username}</Text>
+                      <IconChevronDown size={16} />
+                    </Group>
+                  </UnstyledButton>
+                </Menu.Target>
 
-              <Menu.Dropdown>
-                <Menu.Item leftSection={<IconUser size={16} />}>个人资料</Menu.Item>
-                <Menu.Item leftSection={<IconSettings size={16} />}>设置</Menu.Item>
-                <Menu.Divider />
-                <Menu.Item
-                  leftSection={<IconLogout size={16} />}
-                  onClick={handleLogout}
-                  color="red"
-                >
-                  退出登录
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+                <Menu.Dropdown>
+                  <Menu.Item leftSection={<IconUser size={16} />}>个人资料</Menu.Item>
+                  <Menu.Item leftSection={<IconSettings size={16} />}>设置</Menu.Item>
+                  <Menu.Divider />
+                  <Menu.Item
+                    leftSection={<IconLogout size={16} />}
+                    onClick={handleLogout}
+                    color="red"
+                  >
+                    退出登录
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
             )}
           </Group>
         </Group>

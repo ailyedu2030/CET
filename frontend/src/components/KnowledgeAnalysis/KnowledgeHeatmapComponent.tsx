@@ -14,10 +14,7 @@ import { useQuery } from '@tanstack/react-query'
 import { notifications } from '@mantine/notifications'
 import { IconRefresh, IconDownload } from '@tabler/icons-react'
 import * as d3 from 'd3'
-import {
-  knowledgeAnalysisApi,
-  type HeatmapData,
-} from '../../api/knowledgeAnalysis'
+import { knowledgeAnalysisApi, type HeatmapData } from '../../api/knowledgeAnalysis'
 
 // D3相关类型定义
 type KnowledgePointData = HeatmapData['knowledge_points'][0]
@@ -49,63 +46,76 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
   const [selectedPoint, setSelectedPoint] = useState<KnowledgePointData | null>(null)
 
   // 获取热力图数据
-  const { data: heatmapData, isLoading, error, refetch } = useQuery({
+  const {
+    data: heatmapData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['knowledge-heatmap', studentId, filters],
     queryFn: () => knowledgeAnalysisApi.getHeatmapData(studentId, filters),
     refetchInterval: autoRefresh ? 30000 : false, // 30秒自动刷新
   })
 
   // 渲染热力图
-  const renderHeatmap = useCallback((data: HeatmapData) => {
-    if (!svgRef.current) return
+  const renderHeatmap = useCallback(
+    (data: HeatmapData) => {
+      if (!svgRef.current) return
 
-    const svg = d3.select(svgRef.current)
-    svg.selectAll('*').remove() // 清除之前的内容
+      const svg = d3.select(svgRef.current)
+      svg.selectAll('*').remove() // 清除之前的内容
 
-    const margin = { top: 20, right: 20, bottom: 40, left: 60 }
-    const innerWidth = width - margin.left - margin.right
-    const innerHeight = height - margin.top - margin.bottom
+      const margin = { top: 20, right: 20, bottom: 40, left: 60 }
+      const innerWidth = width - margin.left - margin.right
+      const innerHeight = height - margin.top - margin.bottom
 
-    // 创建主容器
-    const g = svg
-      .attr('width', width)
-      .attr('height', height)
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`)
+      // 创建主容器
+      const g = svg
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`)
 
-    // 颜色比例尺
-    const colorScale = d3
-      .scaleSequential(d3.interpolateRdYlGn)
-      .domain([0, 100])
+      // 颜色比例尺
+      const colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([0, 100])
 
-    // 大小比例尺
-    const sizeScale = d3
-      .scaleSqrt()
-      .domain([0, d3.max(data.knowledge_points, d => d.metadata.practice_count) || 1])
-      .range([5, 25])
+      // 大小比例尺
+      const sizeScale = d3
+        .scaleSqrt()
+        .domain([0, d3.max(data.knowledge_points, d => d.metadata.practice_count) || 1])
+        .range([5, 25])
 
-    // 根据布局类型渲染
-    if (filters.layout === 'grid') {
-      renderGridLayout(g, data, innerWidth, innerHeight, colorScale, sizeScale)
-    } else if (filters.layout === 'tree') {
-      renderTreeLayout(g, data, innerWidth, innerHeight, colorScale, sizeScale)
-    } else {
-      renderForceLayout(g, data, innerWidth, innerHeight, colorScale, sizeScale)
-    }
+      // 根据布局类型渲染
+      if (filters.layout === 'grid') {
+        renderGridLayout(g, data, innerWidth, innerHeight, colorScale, sizeScale)
+      } else if (filters.layout === 'tree') {
+        renderTreeLayout(g, data, innerWidth, innerHeight, colorScale, sizeScale)
+      } else {
+        renderForceLayout(g, data, innerWidth, innerHeight, colorScale, sizeScale)
+      }
 
-    // 添加图例
-    addLegend(svg, colorScale, width, height, margin)
-
-  }, [width, height, filters.layout])
+      // 添加图例
+      addLegend(svg, colorScale, width, height, margin)
+    },
+    [width, height, filters.layout]
+  )
 
   // 网格布局
-  const renderGridLayout = (g: d3.Selection<SVGGElement, unknown, null, undefined>, data: HeatmapData, width: number, height: number, colorScale: d3.ScaleSequential<string, never>, sizeScale: d3.ScalePower<number, number, never>) => {
+  const renderGridLayout = (
+    g: d3.Selection<SVGGElement, unknown, null, undefined>,
+    data: HeatmapData,
+    width: number,
+    height: number,
+    colorScale: d3.ScaleSequential<string, never>,
+    sizeScale: d3.ScalePower<number, number, never>
+  ) => {
     const cols = Math.ceil(Math.sqrt(data.knowledge_points.length))
     const rows = Math.ceil(data.knowledge_points.length / cols)
     const cellWidth = width / cols
     const cellHeight = height / rows
 
-    const cells = g.selectAll('.knowledge-cell')
+    const cells = g
+      .selectAll('.knowledge-cell')
       .data(data.knowledge_points)
       .enter()
       .append('g')
@@ -113,13 +123,14 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
       .attr('transform', (_d: any, i: number) => {
         const col = i % cols
         const row = Math.floor(i / cols)
-        return `translate(${col * cellWidth + cellWidth/2}, ${row * cellHeight + cellHeight/2})`
+        return `translate(${col * cellWidth + cellWidth / 2}, ${row * cellHeight + cellHeight / 2})`
       })
 
     // 添加矩形背景
-    cells.append('rect')
-      .attr('x', -cellWidth/2 + 5)
-      .attr('y', -cellHeight/2 + 5)
+    cells
+      .append('rect')
+      .attr('x', -cellWidth / 2 + 5)
+      .attr('y', -cellHeight / 2 + 5)
       .attr('width', cellWidth - 10)
       .attr('height', cellHeight - 10)
       .attr('fill', (d: any) => colorScale(d.value))
@@ -132,24 +143,27 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
       .on('mouseout', handleMouseOut)
 
     // 添加圆点表示练习次数
-    cells.append('circle')
-      .attr('cx', cellWidth/2 - 15)
-      .attr('cy', -cellHeight/2 + 15)
+    cells
+      .append('circle')
+      .attr('cx', cellWidth / 2 - 15)
+      .attr('cy', -cellHeight / 2 + 15)
       .attr('r', (d: any) => sizeScale(d.metadata.practice_count))
       .attr('fill', '#333')
       .attr('opacity', 0.7)
 
     // 添加文本标签
-    cells.append('text')
+    cells
+      .append('text')
       .attr('text-anchor', 'middle')
       .attr('dy', '0.35em')
       .style('font-size', '12px')
       .style('font-weight', 'bold')
       .style('fill', '#333')
-      .text((d: any) => d.name.length > 8 ? d.name.substring(0, 8) + '...' : d.name)
+      .text((d: any) => (d.name.length > 8 ? d.name.substring(0, 8) + '...' : d.name))
 
     // 添加掌握度文本
-    cells.append('text')
+    cells
+      .append('text')
       .attr('text-anchor', 'middle')
       .attr('dy', '1.5em')
       .style('font-size', '10px')
@@ -158,15 +172,22 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
   }
 
   // 树形布局（简化版）
-  const renderTreeLayout = (g: d3.Selection<SVGGElement, unknown, null, undefined>, data: HeatmapData, _width: number, height: number, colorScale: d3.ScaleSequential<string, never>, sizeScale: d3.ScalePower<number, number, never>) => {
+  const renderTreeLayout = (
+    g: d3.Selection<SVGGElement, unknown, null, undefined>,
+    data: HeatmapData,
+    _width: number,
+    height: number,
+    colorScale: d3.ScaleSequential<string, never>,
+    sizeScale: d3.ScalePower<number, number, never>
+  ) => {
     // 按类别分组
     const categories = d3.group(data.knowledge_points, d => d.category)
     const categoryArray = Array.from(categories.entries())
-    
+
     categoryArray.forEach((category, categoryIndex) => {
       const [categoryName, points] = category
-      const categoryY = (categoryIndex + 1) * height / (categoryArray.length + 1)
-      
+      const categoryY = ((categoryIndex + 1) * height) / (categoryArray.length + 1)
+
       // 类别标签
       g.append('text')
         .attr('x', 10)
@@ -178,20 +199,23 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
 
       // 知识点
       points.forEach((point, pointIndex) => {
-        const pointX = 100 + (pointIndex * 80)
-        
-        const pointGroup = g.append('g')
+        const pointX = 100 + pointIndex * 80
+
+        const pointGroup = g
+          .append('g')
           .attr('transform', `translate(${pointX}, ${categoryY})`)
           .style('cursor', 'pointer')
           .on('click', () => handlePointClick(point))
 
-        pointGroup.append('circle')
+        pointGroup
+          .append('circle')
           .attr('r', sizeScale(point.metadata.practice_count))
           .attr('fill', colorScale(point.value))
           .attr('stroke', '#fff')
           .attr('stroke-width', 2)
 
-        pointGroup.append('text')
+        pointGroup
+          .append('text')
           .attr('text-anchor', 'middle')
           .attr('dy', '0.35em')
           .style('font-size', '10px')
@@ -202,13 +226,25 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
   }
 
   // 力导向布局（简化版）
-  const renderForceLayout = (g: d3.Selection<SVGGElement, unknown, null, undefined>, data: HeatmapData, width: number, height: number, colorScale: d3.ScaleSequential<string, never>, sizeScale: d3.ScalePower<number, number, never>) => {
-    const simulation = d3.forceSimulation(data.knowledge_points)
+  const renderForceLayout = (
+    g: d3.Selection<SVGGElement, unknown, null, undefined>,
+    data: HeatmapData,
+    width: number,
+    height: number,
+    colorScale: d3.ScaleSequential<string, never>,
+    sizeScale: d3.ScalePower<number, number, never>
+  ) => {
+    const simulation = d3
+      .forceSimulation(data.knowledge_points)
       .force('charge', d3.forceManyBody().strength(-100))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius((d: any) => sizeScale(d.metadata.practice_count) + 2))
+      .force(
+        'collision',
+        d3.forceCollide().radius((d: any) => sizeScale(d.metadata.practice_count) + 2)
+      )
 
-    const nodes = g.selectAll('.force-node')
+    const nodes = g
+      .selectAll('.force-node')
       .data(data.knowledge_points)
       .enter()
       .append('g')
@@ -216,13 +252,15 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
       .style('cursor', 'pointer')
       .on('click', handlePointClick)
 
-    nodes.append('circle')
+    nodes
+      .append('circle')
       .attr('r', (d: any) => sizeScale(d.metadata.practice_count))
       .attr('fill', (d: any) => colorScale(d.value))
       .attr('stroke', '#fff')
       .attr('stroke-width', 2)
 
-    nodes.append('text')
+    nodes
+      .append('text')
       .attr('text-anchor', 'middle')
       .attr('dy', '0.35em')
       .style('font-size', '10px')
@@ -235,23 +273,30 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
   }
 
   // 添加图例
-  const addLegend = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>, colorScale: d3.ScaleSequential<string, never>, width: number, height: number, margin: { top: number; right: number; bottom: number; left: number }) => {
+  const addLegend = (
+    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    colorScale: d3.ScaleSequential<string, never>,
+    width: number,
+    height: number,
+    margin: { top: number; right: number; bottom: number; left: number }
+  ) => {
     const legendWidth = 200
     const legendHeight = 20
     const legendX = width - legendWidth - margin.right
     const legendY = height - margin.bottom + 10
 
-    const legend = svg.append('g')
-      .attr('transform', `translate(${legendX}, ${legendY})`)
+    const legend = svg.append('g').attr('transform', `translate(${legendX}, ${legendY})`)
 
     // 渐变定义
-    const gradient = svg.append('defs')
+    const gradient = svg
+      .append('defs')
       .append('linearGradient')
       .attr('id', 'heatmap-gradient')
       .attr('x1', '0%')
       .attr('x2', '100%')
 
-    gradient.selectAll('stop')
+    gradient
+      .selectAll('stop')
       .data([0, 25, 50, 75, 100])
       .enter()
       .append('stop')
@@ -259,14 +304,16 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
       .attr('stop-color', (d: number) => colorScale(d))
 
     // 图例矩形
-    legend.append('rect')
+    legend
+      .append('rect')
       .attr('width', legendWidth)
       .attr('height', legendHeight)
       .style('fill', 'url(#heatmap-gradient)')
       .attr('stroke', '#ccc')
 
     // 图例标签
-    legend.selectAll('.legend-label')
+    legend
+      .selectAll('.legend-label')
       .data([0, 50, 100])
       .enter()
       .append('text')
@@ -277,7 +324,8 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
       .style('font-size', '12px')
       .text((d: number) => `${d}%`)
 
-    legend.append('text')
+    legend
+      .append('text')
       .attr('x', legendWidth / 2)
       .attr('y', -5)
       .attr('text-anchor', 'middle')
@@ -287,13 +335,16 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
   }
 
   // 处理点击事件
-  const handlePointClick = useCallback((event: KnowledgePointData | Event, d?: KnowledgePointData) => {
-    const point = d || (event as KnowledgePointData)
-    setSelectedPoint(point)
-    if (onPointClick) {
-      onPointClick(point)
-    }
-  }, [onPointClick])
+  const handlePointClick = useCallback(
+    (event: KnowledgePointData | Event, d?: KnowledgePointData) => {
+      const point = d || (event as KnowledgePointData)
+      setSelectedPoint(point)
+      if (onPointClick) {
+        onPointClick(point)
+      }
+    },
+    [onPointClick]
+  )
 
   // 处理鼠标悬停
   const handleMouseOver = useCallback((_event: any, _d: any) => {
@@ -319,7 +370,7 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
         include_heatmap: true,
         time_range: filters.time_range,
       })
-      
+
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -328,7 +379,7 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-      
+
       notifications.show({
         title: '导出成功',
         message: '知识点热力图已导出',
@@ -373,10 +424,12 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
             <Select
               label="时间范围"
               value={filters.time_range}
-              onChange={(value) => setFilters(prev => ({
-                ...prev,
-                time_range: (value as 'month' | 'week' | 'semester') || 'month'
-              }))}
+              onChange={value =>
+                setFilters(prev => ({
+                  ...prev,
+                  time_range: (value as 'month' | 'week' | 'semester') || 'month',
+                }))
+              }
               data={[
                 { value: 'week', label: '最近一周' },
                 { value: 'month', label: '最近一月' },
@@ -386,10 +439,12 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
             <Select
               label="布局方式"
               value={filters.layout}
-              onChange={(value) => setFilters(prev => ({
-                ...prev,
-                layout: (value as 'grid' | 'tree' | 'force') || 'grid'
-              }))}
+              onChange={value =>
+                setFilters(prev => ({
+                  ...prev,
+                  layout: (value as 'grid' | 'tree' | 'force') || 'grid',
+                }))
+              }
               data={[
                 { value: 'grid', label: '网格布局' },
                 { value: 'tree', label: '树形布局' },
@@ -431,7 +486,10 @@ export const KnowledgeHeatmapComponent: React.FC<KnowledgeHeatmapComponentProps>
                 正确率: <strong>{(selectedPoint.metadata.accuracy_rate * 100).toFixed(1)}%</strong>
               </Text>
               <Text size="sm">
-                最后练习: <strong>{new Date(selectedPoint.metadata.last_practiced).toLocaleDateString()}</strong>
+                最后练习:{' '}
+                <strong>
+                  {new Date(selectedPoint.metadata.last_practiced).toLocaleDateString()}
+                </strong>
               </Text>
             </Stack>
           </Alert>

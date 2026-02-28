@@ -1,6 +1,6 @@
 /**
  * 需求26：英语四级写作标准库 - 写作练习页面
- * 
+ *
  * 实现智能写作辅助和实时评分功能
  */
 
@@ -50,18 +50,16 @@ export function WritingPracticePage(): JSX.Element {
   const [grammarErrors, setGrammarErrors] = useState<GrammarError[]>([])
   const [writingHints, setWritingHints] = useState<string[]>([])
   const [wordCount, setWordCount] = useState(0)
-  
+
   const [taskModalOpened, { open: openTaskModal, close: closeTaskModal }] = useDisclosure(false)
-  const [submitModalOpened, { open: openSubmitModal, close: closeSubmitModal }] = useDisclosure(false)
-  
+  const [submitModalOpened, { open: openSubmitModal, close: closeSubmitModal }] =
+    useDisclosure(false)
+
   // const { user } = useAuthStore()
   const queryClient = useQueryClient()
 
   // 查询写作任务列表
-  const {
-    data: tasks,
-    isLoading: tasksLoading,
-  } = useQuery({
+  const { data: tasks, isLoading: tasksLoading } = useQuery({
     queryKey: ['writing-tasks'],
     queryFn: () => writingApi.getTasks({ limit: 50 }),
   })
@@ -69,7 +67,7 @@ export function WritingPracticePage(): JSX.Element {
   // 语法检测
   const grammarCheckMutation = useMutation({
     mutationFn: (text: string) => writingApi.checkGrammar(text),
-    onSuccess: (result) => {
+    onSuccess: result => {
       setGrammarErrors(result.errors)
       if (result.errors.length === 0) {
         notifications.show({
@@ -118,7 +116,10 @@ export function WritingPracticePage(): JSX.Element {
 
   // 计算字数
   useEffect(() => {
-    const words = essayContent.trim().split(/\s+/).filter(word => word.length > 0)
+    const words = essayContent
+      .trim()
+      .split(/\s+/)
+      .filter(word => word.length > 0)
     setWordCount(words.length)
   }, [essayContent])
 
@@ -137,7 +138,7 @@ export function WritingPracticePage(): JSX.Element {
   // 倒计时器
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null
-    
+
     if (isTimerActive && timeRemaining > 0) {
       interval = setInterval(() => {
         setTimeRemaining(time => {
@@ -178,7 +179,7 @@ export function WritingPracticePage(): JSX.Element {
     setGrammarErrors([])
     setWritingHints([])
     closeTaskModal()
-    
+
     // 加载草稿
     writingApi.getDraft(task.id).then(draft => {
       if (draft) {
@@ -209,9 +210,9 @@ export function WritingPracticePage(): JSX.Element {
   // 提交作文
   const handleSubmitEssay = () => {
     if (!selectedTask || !startTime) return
-    
+
     const writingTimeMinutes = Math.round((Date.now() - startTime.getTime()) / (1000 * 60))
-    
+
     submitEssayMutation.mutate({
       task_id: selectedTask.id,
       essay_content: essayContent,
@@ -261,7 +262,9 @@ export function WritingPracticePage(): JSX.Element {
             {/* 写作任务信息 */}
             <Card withBorder mb="md">
               <Group justify="space-between" mb="sm">
-                <Text fw={600} size="lg">{selectedTask.task_title}</Text>
+                <Text fw={600} size="lg">
+                  {selectedTask.task_title}
+                </Text>
                 <Group>
                   <Badge color="blue">{selectedTask.writing_type}</Badge>
                   <Badge color="orange">{selectedTask.difficulty}</Badge>
@@ -300,7 +303,9 @@ export function WritingPracticePage(): JSX.Element {
                   <Tooltip label="保存草稿">
                     <ActionIcon
                       variant="light"
-                      onClick={() => saveDraftMutation.mutate({ taskId: selectedTask.id, content: essayContent })}
+                      onClick={() =>
+                        saveDraftMutation.mutate({ taskId: selectedTask.id, content: essayContent })
+                      }
                       loading={saveDraftMutation.isPending}
                     >
                       <IconBook size={16} />
@@ -308,22 +313,24 @@ export function WritingPracticePage(): JSX.Element {
                   </Tooltip>
                 </Group>
               </Group>
-              
+
               <Progress value={getWritingProgress()} mb="sm" />
-              
+
               <Textarea
                 value={essayContent}
-                onChange={(event) => setEssayContent(event.currentTarget.value)}
+                onChange={event => setEssayContent(event.currentTarget.value)}
                 placeholder="在这里开始您的写作..."
                 minRows={15}
                 maxRows={20}
                 autosize
               />
-              
+
               {/* 语法错误提示 */}
               {grammarErrors.length > 0 && (
                 <Alert icon={<IconAlertCircle size={16} />} color="red" mt="sm">
-                  <Text size="sm" fw={600} mb="xs">发现 {grammarErrors.length} 个语法错误：</Text>
+                  <Text size="sm" fw={600} mb="xs">
+                    发现 {grammarErrors.length} 个语法错误：
+                  </Text>
                   <Stack gap="xs">
                     {grammarErrors.slice(0, 3).map((error, index) => (
                       <Text key={index} size="xs">
@@ -410,7 +417,9 @@ export function WritingPracticePage(): JSX.Element {
       ) : (
         // 任务选择界面
         <Card withBorder>
-          <Text size="lg" fw={600} mb="md">选择写作任务</Text>
+          <Text size="lg" fw={600} mb="md">
+            选择写作任务
+          </Text>
           <Text c="dimmed" mb="lg">
             请选择一个写作任务开始练习，系统将为您提供智能写作辅助
           </Text>
@@ -423,8 +432,14 @@ export function WritingPracticePage(): JSX.Element {
       {/* 任务选择模态框 */}
       <Modal opened={taskModalOpened} onClose={closeTaskModal} title="选择写作任务" size="lg">
         <Stack gap="md">
-          {tasks?.data?.map((task) => (
-            <Card key={task.id} withBorder p="md" style={{ cursor: 'pointer' }} onClick={() => startWritingTask(task)}>
+          {tasks?.data?.map(task => (
+            <Card
+              key={task.id}
+              withBorder
+              p="md"
+              style={{ cursor: 'pointer' }}
+              onClick={() => startWritingTask(task)}
+            >
               <Group justify="space-between" mb="sm">
                 <Text fw={600}>{task.task_title}</Text>
                 <Group>
@@ -453,9 +468,12 @@ export function WritingPracticePage(): JSX.Element {
         <Stack gap="md">
           <Text>确定要提交这篇作文吗？提交后将无法修改。</Text>
           <Group>
-            <Text size="sm" c="dimmed">字数: {wordCount}</Text>
             <Text size="sm" c="dimmed">
-              用时: {startTime ? Math.round((Date.now() - startTime.getTime()) / (1000 * 60)) : 0}分钟
+              字数: {wordCount}
+            </Text>
+            <Text size="sm" c="dimmed">
+              用时: {startTime ? Math.round((Date.now() - startTime.getTime()) / (1000 * 60)) : 0}
+              分钟
             </Text>
           </Group>
           <Group justify="flex-end">

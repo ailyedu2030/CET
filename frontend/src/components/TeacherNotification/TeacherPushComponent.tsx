@@ -91,14 +91,15 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
   // 获取班级薄弱点汇总
   const { data: classSummary, isLoading: summaryLoading } = useQuery({
     queryKey: ['class-weakness-summary', classId],
-    queryFn: () => classId ? teacherNotificationApi.getClassWeaknessSummary(classId) : Promise.resolve(null),
+    queryFn: () =>
+      classId ? teacherNotificationApi.getClassWeaknessSummary(classId) : Promise.resolve(null),
     enabled: !!classId && pushType === 'class',
   })
 
   // 推送个人薄弱环节分析
   const pushWeaknessMutation = useMutation({
     mutationFn: teacherNotificationApi.pushWeaknessAnalysis,
-    onSuccess: (result) => {
+    onSuccess: result => {
       notifications.show({
         title: '推送成功',
         message: `已向 ${result.pushed_to_teachers.length} 位教师推送薄弱环节分析`,
@@ -109,7 +110,7 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
         onPushComplete(result)
       }
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '推送失败',
         message: error.message,
@@ -122,7 +123,7 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
   // 推送班级汇总分析
   const pushClassSummaryMutation = useMutation({
     mutationFn: teacherNotificationApi.pushClassSummary,
-    onSuccess: (result) => {
+    onSuccess: result => {
       notifications.show({
         title: '班级推送成功',
         message: `已向 ${result.pushed_to_teachers.length} 位教师推送班级汇总分析`,
@@ -133,7 +134,7 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
         onPushComplete(result)
       }
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '推送失败',
         message: error.message,
@@ -156,7 +157,7 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
       queryClient.invalidateQueries({ queryKey: ['notification-settings', teacherId] })
       setSettingsModalOpen(false)
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '更新失败',
         message: error.message,
@@ -208,18 +209,20 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
       class_id: classId || 0,
       class_name: weaknessData.class_name || '未知班级',
       analysis_date: new Date().toISOString(),
-      weak_points: weaknessData.weak_points?.map((wp: WeakPoint) => ({
-        knowledge_point_name: wp.knowledge_point.name,
-        weakness_score: wp.weakness_score,
-        priority_level: wp.priority_level,
-        recommended_actions: wp.recommended_actions,
-        estimated_improvement_time: wp.estimated_improvement_time,
-      })) || [],
+      weak_points:
+        weaknessData.weak_points?.map((wp: WeakPoint) => ({
+          knowledge_point_name: wp.knowledge_point.name,
+          weakness_score: wp.weakness_score,
+          priority_level: wp.priority_level,
+          recommended_actions: wp.recommended_actions,
+          estimated_improvement_time: wp.estimated_improvement_time,
+        })) || [],
       overall_mastery: weaknessData.overall_mastery || 0,
       improvement_suggestions: weaknessData.improvement_suggestions || [],
-      requires_immediate_attention: weaknessData.weak_points?.some((wp: WeakPoint) =>
-        wp.priority_level === 'high' && wp.weakness_score > 80
-      ) || false,
+      requires_immediate_attention:
+        weaknessData.weak_points?.some(
+          (wp: WeakPoint) => wp.priority_level === 'high' && wp.weakness_score > 80
+        ) || false,
     }
 
     pushWeaknessMutation.mutate(pushData)
@@ -260,11 +263,12 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
   // 判断是否应该自动推送
   const shouldAutoPush = useCallback(() => {
     if (!settings || !weaknessData) return false
-    
-    const hasHighPriorityWeakness = weaknessData.weak_points?.some((wp: WeakPoint) =>
-      wp.priority_level === 'high' && wp.weakness_score >= settings.weakness_threshold
+
+    const hasHighPriorityWeakness = weaknessData.weak_points?.some(
+      (wp: WeakPoint) =>
+        wp.priority_level === 'high' && wp.weakness_score >= settings.weakness_threshold
     )
-    
+
     return hasHighPriorityWeakness && settings.push_frequency === 'immediate'
   }, [settings, weaknessData])
 
@@ -297,10 +301,7 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
               </Text>
             </Group>
             {showSettings && (
-              <ActionIcon
-                variant="outline"
-                onClick={() => setSettingsModalOpen(true)}
-              >
+              <ActionIcon variant="outline" onClick={() => setSettingsModalOpen(true)}>
                 <IconSettings size={16} />
               </ActionIcon>
             )}
@@ -352,9 +353,13 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
                         薄弱知识点: <strong>{weaknessData.weak_points?.length || 0}</strong> 个
                       </Text>
                       <Text size="sm">
-                        高优先级: <strong>
-                          {weaknessData.weak_points?.filter((wp: any) => wp.priority_level === 'high').length || 0}
-                        </strong> 个
+                        高优先级:{' '}
+                        <strong>
+                          {weaknessData.weak_points?.filter(
+                            (wp: any) => wp.priority_level === 'high'
+                          ).length || 0}
+                        </strong>{' '}
+                        个
                       </Text>
                     </Stack>
                   </Alert>
@@ -389,10 +394,12 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
                         学生总数: <strong>{classSummary.class_info.student_count}</strong>
                       </Text>
                       <Text size="sm">
-                        需要关注: <strong>{classSummary.overall_stats.students_needing_attention}</strong> 人
+                        需要关注:{' '}
+                        <strong>{classSummary.overall_stats.students_needing_attention}</strong> 人
                       </Text>
                       <Text size="sm">
-                        班级平均掌握度: <strong>{classSummary.overall_stats.average_mastery.toFixed(1)}%</strong>
+                        班级平均掌握度:{' '}
+                        <strong>{classSummary.overall_stats.average_mastery.toFixed(1)}%</strong>
                       </Text>
                       <Text size="sm">
                         共同薄弱点: <strong>{classSummary.common_weak_points.length}</strong> 个
@@ -417,15 +424,16 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
           {(pushWeaknessMutation.data || pushClassSummaryMutation.data) && (
             <Alert color="green" title="推送成功" icon={<IconCheck size={16} />}>
               <Stack gap="xs">
+                <Text size="sm">推送时间: {new Date().toLocaleString()}</Text>
                 <Text size="sm">
-                  推送时间: {new Date().toLocaleString()}
+                  通知教师数:{' '}
+                  {pushWeaknessMutation.data?.pushed_to_teachers.length ||
+                    pushClassSummaryMutation.data?.pushed_to_teachers.length ||
+                    0}
                 </Text>
                 <Text size="sm">
-                  通知教师数: {pushWeaknessMutation.data?.pushed_to_teachers.length || 
-                              pushClassSummaryMutation.data?.pushed_to_teachers.length || 0}
-                </Text>
-                <Text size="sm">
-                  推送渠道: {pushWeaknessMutation.data?.push_channels_used.join(', ') || '应用内通知'}
+                  推送渠道:{' '}
+                  {pushWeaknessMutation.data?.push_channels_used.join(', ') || '应用内通知'}
                 </Text>
               </Stack>
             </Alert>
@@ -462,28 +470,36 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
             />
 
             <Stack gap="xs">
-              <Text size="sm" fw={500}>推送渠道</Text>
+              <Text size="sm" fw={500}>
+                推送渠道
+              </Text>
               <Switch
                 label="应用内通知"
                 checked={settingsForm.values.push_channels?.includes('in_app')}
-                onChange={(event) => {
+                onChange={event => {
                   const channels = settingsForm.values.push_channels || []
                   if (event.currentTarget.checked) {
                     settingsForm.setFieldValue('push_channels', [...channels, 'in_app'])
                   } else {
-                    settingsForm.setFieldValue('push_channels', channels.filter(c => c !== 'in_app'))
+                    settingsForm.setFieldValue(
+                      'push_channels',
+                      channels.filter(c => c !== 'in_app')
+                    )
                   }
                 }}
               />
               <Switch
                 label="邮件通知"
                 checked={settingsForm.values.push_channels?.includes('email')}
-                onChange={(event) => {
+                onChange={event => {
                   const channels = settingsForm.values.push_channels || []
                   if (event.currentTarget.checked) {
                     settingsForm.setFieldValue('push_channels', [...channels, 'email'])
                   } else {
-                    settingsForm.setFieldValue('push_channels', channels.filter(c => c !== 'email'))
+                    settingsForm.setFieldValue(
+                      'push_channels',
+                      channels.filter(c => c !== 'email')
+                    )
                   }
                 }}
               />
@@ -509,10 +525,7 @@ export const TeacherPushComponent: React.FC<TeacherPushComponentProps> = ({
               <Button variant="outline" onClick={() => setSettingsModalOpen(false)}>
                 取消
               </Button>
-              <Button
-                type="submit"
-                loading={updateSettingsMutation.isPending}
-              >
+              <Button type="submit" loading={updateSettingsMutation.isPending}>
                 保存设置
               </Button>
             </Group>

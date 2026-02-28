@@ -1,6 +1,6 @@
 /**
  * 听力训练会话组件 - 需求22核心训练界面
- * 
+ *
  * 实现验收标准：
  * 1. 题型分类：支持所有四种听力题型的训练界面
  * 2. 训练特性：音频控制、字幕显示、跟读练习、听写功能
@@ -9,7 +9,6 @@
 
 /* eslint-disable no-console */
 import { useState, useRef, useEffect, useCallback } from 'react'
-
 
 import type { FC } from 'react'
 import {
@@ -133,9 +132,10 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
       setError(null)
 
       // 从会话数据中获取当前题目
-      const questions = session.exercise_id ? 
-        (await listeningApi.getExercise(session.exercise_id)).questions_data.questions : []
-      
+      const questions = session.exercise_id
+        ? (await listeningApi.getExercise(session.exercise_id)).questions_data.questions
+        : []
+
       if (questions.length > 0 && sessionState.currentQuestion <= questions.length) {
         const question = questions[sessionState.currentQuestion - 1]
         if (question) {
@@ -180,7 +180,7 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
       setSessionState(prev => ({
         ...prev,
         isAudioPlaying: false,
-        totalListeningTime: prev.totalListeningTime + (Date.now() - listeningStartTimeRef.current)
+        totalListeningTime: prev.totalListeningTime + (Date.now() - listeningStartTimeRef.current),
       }))
     }
   }, [])
@@ -193,7 +193,7 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
         ...prev,
         isAudioPlaying: false,
         currentAudioTime: 0,
-        totalListeningTime: prev.totalListeningTime + (Date.now() - listeningStartTimeRef.current)
+        totalListeningTime: prev.totalListeningTime + (Date.now() - listeningStartTimeRef.current),
       }))
     }
   }, [])
@@ -234,14 +234,14 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
       const mediaRecorder = new MediaRecorder(stream)
       const chunks: Blob[] = []
 
-      mediaRecorder.ondataavailable = (event) => {
+      mediaRecorder.ondataavailable = event => {
         chunks.push(event.data)
       }
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'audio/wav' })
         setSessionState(prev => ({ ...prev, recordingBlob: blob, isRecording: false }))
-        
+
         // 如果启用了发音练习，进行评估
         if (settings.pronunciation_practice && currentQuestionData) {
           evaluatePronunciation(blob)
@@ -273,61 +273,67 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
     }
   }, [sessionState.isRecording])
 
-  const evaluatePronunciation = useCallback(async (audioBlob: Blob) => {
-    if (!currentQuestionData) return
+  const evaluatePronunciation = useCallback(
+    async (audioBlob: Blob) => {
+      if (!currentQuestionData) return
 
-    try {
-      const result = await listeningApi.evaluatePronunciation(
-        audioBlob,
-        currentQuestionData.question_text
-      )
-      setSessionState(prev => ({
-        ...prev,
-        pronunciationResult: {
-          overall_score: result.overall_score,
-          pronunciation_score: result.pronunciation_score,
-          fluency_score: result.fluency_score,
-          accuracy_score: result.accuracy_score,
-          rhythm_score: 0,
-          intonation_score: 0,
-          detailed_feedback: result.detailed_feedback.map(item => ({
-            ...item,
-            phonetic: '',
-          })),
-        }
-      }))
-    } catch (err) {
-      // 静默处理发音评估错误
-    }
-  }, [currentQuestionData])
+      try {
+        const result = await listeningApi.evaluatePronunciation(
+          audioBlob,
+          currentQuestionData.question_text
+        )
+        setSessionState(prev => ({
+          ...prev,
+          pronunciationResult: {
+            overall_score: result.overall_score,
+            pronunciation_score: result.pronunciation_score,
+            fluency_score: result.fluency_score,
+            accuracy_score: result.accuracy_score,
+            rhythm_score: 0,
+            intonation_score: 0,
+            detailed_feedback: result.detailed_feedback.map(item => ({
+              ...item,
+              phonetic: '',
+            })),
+          },
+        }))
+      } catch (err) {
+        // 静默处理发音评估错误
+      }
+    },
+    [currentQuestionData]
+  )
 
   // ==================== 答题处理 ====================
 
-  const handleAnswerChange = useCallback((answer: string | string[]) => {
-    if (!currentQuestionData) return
+  const handleAnswerChange = useCallback(
+    (answer: string | string[]) => {
+      if (!currentQuestionData) return
 
-    const currentTime = Date.now()
-    const timeSpent = currentTime - answeringStartTimeRef.current
-    const existingAnswer = sessionState.answers[currentQuestionData.id]
-    const attemptCount = existingAnswer ? existingAnswer.attempt_count + 1 : 1
+      const currentTime = Date.now()
+      const timeSpent = currentTime - answeringStartTimeRef.current
+      const existingAnswer = sessionState.answers[currentQuestionData.id]
+      const attemptCount = existingAnswer ? existingAnswer.attempt_count + 1 : 1
 
-    const answerData: ListeningAnswer = {
-      question_id: currentQuestionData.id,
-      answer,
-      confidence_level: 3, // 默认中等信心
-      time_spent: timeSpent,
-      attempt_count: attemptCount,
-      audio_replays: sessionState.audioProgress.play_count,
-    }
+      const answerData: ListeningAnswer = {
+        question_id: currentQuestionData.id,
+        answer,
+        confidence_level: 3, // 默认中等信心
+        time_spent: timeSpent,
+        attempt_count: attemptCount,
+        audio_replays: sessionState.audioProgress.play_count,
+      }
 
-    setSessionState(prev => ({
-      ...prev,
-      answers: {
-        ...prev.answers,
-        [currentQuestionData.id]: answerData,
-      },
-    }))
-  }, [currentQuestionData, sessionState.answers, sessionState.audioProgress.play_count])
+      setSessionState(prev => ({
+        ...prev,
+        answers: {
+          ...prev.answers,
+          [currentQuestionData.id]: answerData,
+        },
+      }))
+    },
+    [currentQuestionData, sessionState.answers, sessionState.audioProgress.play_count]
+  )
 
   const handleNextQuestion = useCallback(() => {
     if (sessionState.currentQuestion < session.total_questions) {
@@ -354,7 +360,8 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
 
   const handleCompleteTraining = useCallback(() => {
     const totalTime = Date.now() - sessionState.startTime
-    const totalAnsweringTime = sessionState.totalAnsweringTime + (Date.now() - answeringStartTimeRef.current)
+    const totalAnsweringTime =
+      sessionState.totalAnsweringTime + (Date.now() - answeringStartTimeRef.current)
 
     onComplete({
       answers: sessionState.answers,
@@ -472,9 +479,7 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
           <Text size="sm" fw={500}>
             训练进度：{sessionState.currentQuestion} / {session.total_questions}
           </Text>
-          <Badge color="blue">
-            {Math.round(progress)}%
-          </Badge>
+          <Badge color="blue">{Math.round(progress)}%</Badge>
         </Group>
         <Progress value={progress} size="lg" />
       </Card>
@@ -500,7 +505,11 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
             color="blue"
             onClick={sessionState.isAudioPlaying ? handleAudioPause : handleAudioPlay}
           >
-            {sessionState.isAudioPlaying ? <IconPlayerPause size={24} /> : <IconPlayerPlay size={24} />}
+            {sessionState.isAudioPlaying ? (
+              <IconPlayerPause size={24} />
+            ) : (
+              <IconPlayerPlay size={24} />
+            )}
           </ActionIcon>
           <ActionIcon size="lg" variant="light" onClick={handleAudioStop}>
             <IconPlayerStop size={20} />
@@ -519,12 +528,16 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
         <Slider
           value={sessionState.currentAudioTime}
           max={sessionState.audioProgress.total_time || 100}
-          onChange={(value) => {
+          onChange={value => {
             if (audioRef.current) {
               audioRef.current.currentTime = value
             }
           }}
-          label={(value) => `${Math.floor(value / 60)}:${Math.floor(value % 60).toString().padStart(2, '0')}`}
+          label={value =>
+            `${Math.floor(value / 60)}:${Math.floor(value % 60)
+              .toString()
+              .padStart(2, '0')}`
+          }
           mb="md"
         />
 
@@ -574,8 +587,12 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
         {sessionState.showSubtitles && currentQuestionData.audio_start_time !== undefined && (
           <Paper p="md" bg="gray.0" mb="md">
             <Group justify="space-between" mb="xs">
-              <Text size="sm" fw={500}>听力原文</Text>
-              <Badge size="sm" color="blue">字幕辅助</Badge>
+              <Text size="sm" fw={500}>
+                听力原文
+              </Text>
+              <Badge size="sm" color="blue">
+                字幕辅助
+              </Badge>
             </Group>
             <Text size="sm" style={{ lineHeight: 1.6 }}>
               {/* 这里应该显示对应时间段的听力原文 */}
@@ -588,8 +605,8 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
         <Stack gap="md">
           {currentQuestionData.question_type === 'single_choice' && (
             <Radio.Group
-              value={sessionState.answers[currentQuestionData.id]?.answer as string || ''}
-              onChange={(value) => handleAnswerChange(value)}
+              value={(sessionState.answers[currentQuestionData.id]?.answer as string) || ''}
+              onChange={value => handleAnswerChange(value)}
             >
               <Stack gap="xs">
                 {currentQuestionData.options.map((option, index) => (
@@ -601,8 +618,8 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
 
           {currentQuestionData.question_type === 'multiple_choice' && (
             <Checkbox.Group
-              value={sessionState.answers[currentQuestionData.id]?.answer as string[] || []}
-              onChange={(value) => handleAnswerChange(value)}
+              value={(sessionState.answers[currentQuestionData.id]?.answer as string[]) || []}
+              onChange={value => handleAnswerChange(value)}
             >
               <Stack gap="xs">
                 {currentQuestionData.options.map((option, index) => (
@@ -612,11 +629,12 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
             </Checkbox.Group>
           )}
 
-          {(currentQuestionData.question_type === 'fill_blank' || currentQuestionData.question_type === 'dictation') && (
+          {(currentQuestionData.question_type === 'fill_blank' ||
+            currentQuestionData.question_type === 'dictation') && (
             <Textarea
-              placeholder={settings.dictation_mode ? "请输入听到的内容..." : "请填写答案..."}
-              value={sessionState.answers[currentQuestionData.id]?.answer as string || ''}
-              onChange={(event) => handleAnswerChange(event.currentTarget.value)}
+              placeholder={settings.dictation_mode ? '请输入听到的内容...' : '请填写答案...'}
+              value={(sessionState.answers[currentQuestionData.id]?.answer as string) || ''}
+              onChange={event => handleAnswerChange(event.currentTarget.value)}
               minRows={3}
             />
           )}
@@ -632,7 +650,13 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
 
             <Group justify="center" mb="md">
               <Button
-                leftSection={sessionState.isRecording ? <IconMicrophoneOff size={16} /> : <IconMicrophone size={16} />}
+                leftSection={
+                  sessionState.isRecording ? (
+                    <IconMicrophoneOff size={16} />
+                  ) : (
+                    <IconMicrophone size={16} />
+                  )
+                }
                 color={sessionState.isRecording ? 'red' : 'blue'}
                 onClick={sessionState.isRecording ? stopRecording : startRecording}
                 loading={sessionState.isRecording}
@@ -645,7 +669,11 @@ export const ListeningTrainingSession: FC<ListeningTrainingSessionProps> = ({
               <Stack gap="xs">
                 <Group justify="space-between">
                   <Text size="sm">总体得分</Text>
-                  <Badge color={sessionState.pronunciationResult.overall_score >= 80 ? 'green' : 'orange'}>
+                  <Badge
+                    color={
+                      sessionState.pronunciationResult.overall_score >= 80 ? 'green' : 'orange'
+                    }
+                  >
                     {sessionState.pronunciationResult.overall_score}分
                   </Badge>
                 </Group>

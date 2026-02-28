@@ -1,6 +1,6 @@
 /**
  * 离线教案编辑器
- * 
+ *
  * 支持离线编辑教案的组件：
  * - 离线数据存储
  * - 自动保存
@@ -73,13 +73,10 @@ export function OfflineLessonPlanEditor({
     update,
     isCreating,
     isUpdating,
-  } = useOfflineData<LessonPlan>(
-    lessonPlanId ? ['lessonPlan', lessonPlanId] : ['lessonPlans'],
-    {
-      storeType: STORES.LESSON_PLANS,
-      enableSync: true,
-    }
-  )
+  } = useOfflineData<LessonPlan>(lessonPlanId ? ['lessonPlan', lessonPlanId] : ['lessonPlans'], {
+    storeType: STORES.LESSON_PLANS,
+    enableSync: true,
+  })
 
   // 表单管理
   const form = useForm<Omit<LessonPlan, 'id' | 'lastModified' | 'version'>>({
@@ -91,8 +88,8 @@ export function OfflineLessonPlanEditor({
       duration: 45,
     },
     validate: {
-      title: (value) => (value.length < 2 ? '标题至少需要2个字符' : null),
-      content: (value) => (value.length < 10 ? '内容至少需要10个字符' : null),
+      title: value => (value.length < 2 ? '标题至少需要2个字符' : null),
+      content: value => (value.length < 10 ? '内容至少需要10个字符' : null),
     },
   })
 
@@ -167,7 +164,7 @@ export function OfflineLessonPlanEditor({
 
       setHasUnsavedChanges(false)
       setLastSaved(new Date())
-      
+
       if (onSave) {
         onSave(saveData)
       }
@@ -179,38 +176,54 @@ export function OfflineLessonPlanEditor({
   // 获取状态显示
   const getStatusBadge = () => {
     if (isSync) {
-      return <Badge color="blue" leftSection={<IconCloudUpload size={12} />}>同步中</Badge>
+      return (
+        <Badge color="blue" leftSection={<IconCloudUpload size={12} />}>
+          同步中
+        </Badge>
+      )
     }
-    
+
     if (isOffline) {
-      return <Badge color="orange" leftSection={<IconWifiOff size={12} />}>离线模式</Badge>
+      return (
+        <Badge color="orange" leftSection={<IconWifiOff size={12} />}>
+          离线模式
+        </Badge>
+      )
     }
-    
+
     if (hasUnsavedChanges) {
-      return <Badge color="yellow" leftSection={<IconAlertTriangle size={12} />}>未保存</Badge>
+      return (
+        <Badge color="yellow" leftSection={<IconAlertTriangle size={12} />}>
+          未保存
+        </Badge>
+      )
     }
-    
+
     if (lastSaved) {
-      return <Badge color="green" leftSection={<IconCheck size={12} />}>已保存</Badge>
+      return (
+        <Badge color="green" leftSection={<IconCheck size={12} />}>
+          已保存
+        </Badge>
+      )
     }
-    
+
     return null
   }
 
   return (
     <Card withBorder>
       <LoadingOverlay visible={isLoading} />
-      
+
       <Stack gap="md">
         {/* 头部状态栏 */}
         <Group justify="space-between">
           <Text size="lg" fw={600}>
             {lessonPlanId ? '编辑教案' : '新建教案'}
           </Text>
-          
+
           <Group gap="xs">
             {getStatusBadge()}
-            
+
             {pendingItems > 0 && (
               <Tooltip label={`${pendingItems} 项待同步`}>
                 <Badge color="orange" variant="outline">
@@ -275,7 +288,7 @@ export function OfflineLessonPlanEditor({
                   取消
                 </Button>
               )}
-              
+
               <Group gap="xs">
                 <ActionIcon
                   variant="outline"
@@ -286,7 +299,7 @@ export function OfflineLessonPlanEditor({
                     <IconDeviceFloppy size={16} />
                   </Tooltip>
                 </ActionIcon>
-                
+
                 <Button
                   type="submit"
                   loading={isCreating || isUpdating}

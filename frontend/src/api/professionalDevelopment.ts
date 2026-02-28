@@ -127,7 +127,9 @@ export const professionalDevelopmentApi = {
    * 报名培训课程
    */
   async enrollTraining(trainingId: number): Promise<{ success: boolean; message: string }> {
-    const response = await apiClient.post(`/api/v1/professional-development/training/${trainingId}/enroll`)
+    const response = await apiClient.post(
+      `/api/v1/professional-development/training/${trainingId}/enroll`
+    )
     return response.data
   },
 
@@ -140,7 +142,9 @@ export const professionalDevelopmentApi = {
     totalLessons: number
     lastAccessedAt: string
   }> {
-    const response = await apiClient.get(`/api/v1/professional-development/training/${trainingId}/progress`)
+    const response = await apiClient.get(
+      `/api/v1/professional-development/training/${trainingId}/progress`
+    )
     return response.data
   },
 
@@ -152,10 +156,13 @@ export const professionalDevelopmentApi = {
     lessonId: number,
     progress: number
   ): Promise<{ success: boolean }> {
-    const response = await apiClient.post(`/api/v1/professional-development/training/${trainingId}/progress`, {
-      lessonId,
-      progress,
-    })
+    const response = await apiClient.post(
+      `/api/v1/professional-development/training/${trainingId}/progress`,
+      {
+        lessonId,
+        progress,
+      }
+    )
     return response.data
   },
 
@@ -176,9 +183,12 @@ export const professionalDevelopmentApi = {
     page: number
     pageSize: number
   }> {
-    const response = await apiClient.get('/api/v1/professional-development/certification/materials', {
-      params,
-    })
+    const response = await apiClient.get(
+      '/api/v1/professional-development/certification/materials',
+      {
+        params,
+      }
+    )
     return response.data
   },
 
@@ -186,7 +196,9 @@ export const professionalDevelopmentApi = {
    * 下载认证材料
    */
   async downloadCertificationMaterial(materialId: number): Promise<{ downloadUrl: string }> {
-    const response = await apiClient.post(`/api/v1/professional-development/certification/materials/${materialId}/download`)
+    const response = await apiClient.post(
+      `/api/v1/professional-development/certification/materials/${materialId}/download`
+    )
     return response.data
   },
 
@@ -198,10 +210,13 @@ export const professionalDevelopmentApi = {
     rating: number,
     comment?: string
   ): Promise<{ success: boolean }> {
-    const response = await apiClient.post(`/api/v1/professional-development/certification/materials/${materialId}/rate`, {
-      rating,
-      comment,
-    })
+    const response = await apiClient.post(
+      `/api/v1/professional-development/certification/materials/${materialId}/rate`,
+      {
+        rating,
+        comment,
+      }
+    )
     return response.data
   },
 
@@ -237,7 +252,10 @@ export const professionalDevelopmentApi = {
     category: string
     tags: string[]
   }): Promise<CommunityPost> {
-    const response = await apiClient.post('/api/v1/professional-development/community/posts', postData)
+    const response = await apiClient.post(
+      '/api/v1/professional-development/community/posts',
+      postData
+    )
     return response.data
   },
 
@@ -245,25 +263,33 @@ export const professionalDevelopmentApi = {
    * 点赞帖子
    */
   async likeCommunityPost(postId: number): Promise<{ success: boolean; isLiked: boolean }> {
-    const response = await apiClient.post(`/api/v1/professional-development/community/posts/${postId}/like`)
+    const response = await apiClient.post(
+      `/api/v1/professional-development/community/posts/${postId}/like`
+    )
     return response.data
   },
 
   /**
    * 获取帖子回复
    */
-  async getCommunityReplies(postId: number, params: {
-    page?: number
-    pageSize?: number
-  }): Promise<{
+  async getCommunityReplies(
+    postId: number,
+    params: {
+      page?: number
+      pageSize?: number
+    }
+  ): Promise<{
     replies: CommunityReply[]
     total: number
     page: number
     pageSize: number
   }> {
-    const response = await apiClient.get(`/api/v1/professional-development/community/posts/${postId}/replies`, {
-      params,
-    })
+    const response = await apiClient.get(
+      `/api/v1/professional-development/community/posts/${postId}/replies`,
+      {
+        params,
+      }
+    )
     return response.data
   },
 
@@ -271,9 +297,12 @@ export const professionalDevelopmentApi = {
    * 回复帖子
    */
   async replyCommunityPost(postId: number, content: string): Promise<CommunityReply> {
-    const response = await apiClient.post(`/api/v1/professional-development/community/posts/${postId}/replies`, {
-      content,
-    })
+    const response = await apiClient.post(
+      `/api/v1/professional-development/community/posts/${postId}/replies`,
+      {
+        content,
+      }
+    )
     return response.data
   },
 
@@ -307,15 +336,21 @@ export const professionalDevelopmentApi = {
    * 标记研究动态为已读
    */
   async markResearchUpdateAsRead(updateId: number): Promise<{ success: boolean }> {
-    const response = await apiClient.post(`/api/v1/professional-development/research/updates/${updateId}/read`)
+    const response = await apiClient.post(
+      `/api/v1/professional-development/research/updates/${updateId}/read`
+    )
     return response.data
   },
 
   /**
    * 收藏研究动态
    */
-  async bookmarkResearchUpdate(updateId: number): Promise<{ success: boolean; isBookmarked: boolean }> {
-    const response = await apiClient.post(`/api/v1/professional-development/research/updates/${updateId}/bookmark`)
+  async bookmarkResearchUpdate(
+    updateId: number
+  ): Promise<{ success: boolean; isBookmarked: boolean }> {
+    const response = await apiClient.post(
+      `/api/v1/professional-development/research/updates/${updateId}/bookmark`
+    )
     return response.data
   },
 
@@ -332,8 +367,13 @@ export const professionalDevelopmentApi = {
   /**
    * 更新通知设置
    */
-  async updateNotificationSettings(settings: Partial<NotificationSettings>): Promise<{ success: boolean }> {
-    const response = await apiClient.put('/api/v1/professional-development/notifications/settings', settings)
+  async updateNotificationSettings(
+    settings: Partial<NotificationSettings>
+  ): Promise<{ success: boolean }> {
+    const response = await apiClient.put(
+      '/api/v1/professional-development/notifications/settings',
+      settings
+    )
     return response.data
   },
 

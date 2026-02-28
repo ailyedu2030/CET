@@ -139,9 +139,7 @@ export interface ProgressExportOptions {
     start_date: string
     end_date: string
   }
-  sections: Array<
-    'overview' | 'timeline' | 'knowledge_points' | 'comparisons' | 'predictions'
-  >
+  sections: Array<'overview' | 'timeline' | 'knowledge_points' | 'comparisons' | 'predictions'>
 }
 
 export interface ProgressDashboardConfig {

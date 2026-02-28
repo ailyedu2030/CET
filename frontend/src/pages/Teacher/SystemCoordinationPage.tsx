@@ -34,11 +34,7 @@ import {
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { notifications } from '@mantine/notifications'
 
-import {
-  notificationApi,
-  permissionApi,
-  systemHealthApi,
-} from '@/api/systemCoordination'
+import { notificationApi, permissionApi, systemHealthApi } from '@/api/systemCoordination'
 import { usePermissions } from '@/utils/permissions'
 
 export function SystemCoordinationPage(): JSX.Element {
@@ -61,10 +57,7 @@ export function SystemCoordinationPage(): JSX.Element {
   })
 
   // 查询系统能力
-  const {
-    data: _systemCapabilities,
-    isLoading: capabilitiesLoading,
-  } = useQuery({
+  const { data: _systemCapabilities, isLoading: capabilitiesLoading } = useQuery({
     queryKey: ['system-capabilities'],
     queryFn: () => systemHealthApi.getSystemCapabilities(),
   })
@@ -111,8 +104,6 @@ export function SystemCoordinationPage(): JSX.Element {
     setRefreshKey(prev => prev + 1)
     refetchHealth()
   }
-
-
 
   // 权限检查
   if (!hasTeacherPermission()) {

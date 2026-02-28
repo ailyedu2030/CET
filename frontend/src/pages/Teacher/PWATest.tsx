@@ -1,6 +1,6 @@
 /**
  * PWA功能测试页面
- * 
+ *
  * 用于测试和演示PWA功能：
  * - PWA状态显示
  * - 安装功能测试
@@ -8,25 +8,25 @@
  * - 缓存状态查看
  */
 
-import { 
-  Card, 
-  Container, 
-  Title, 
-  Text, 
-  Button, 
-  Group, 
-  Stack, 
+import {
+  Card,
+  Container,
+  Title,
+  Text,
+  Button,
+  Group,
+  Stack,
   Badge,
   Alert,
   Code,
-  Divider
+  Divider,
 } from '@mantine/core'
-import { 
-  IconInfoCircle, 
-  IconDownload, 
+import {
+  IconInfoCircle,
+  IconDownload,
   IconRefresh,
   IconWifi,
-  IconWifiOff
+  IconWifiOff,
 } from '@tabler/icons-react'
 import { useState, useEffect } from 'react'
 
@@ -72,7 +72,7 @@ export function PWATest(): JSX.Element {
     <Container size="md" py="xl">
       <Stack gap="lg">
         <Title order={2}>PWA功能测试</Title>
-        
+
         <Alert icon={<IconInfoCircle size={16} />} color="blue">
           此页面用于测试和演示PWA（渐进式Web应用）功能
         </Alert>
@@ -81,27 +81,19 @@ export function PWATest(): JSX.Element {
         <Card withBorder>
           <Stack gap="md">
             <Title order={3}>PWA状态</Title>
-            
+
             <Group>
               <Badge color={status.isOffline ? 'orange' : 'green'}>
                 {status.isOffline ? '离线模式' : '在线模式'}
               </Badge>
-              
-              {pwaUtils.isRunningAsPWA() && (
-                <Badge color="blue">PWA模式运行</Badge>
-              )}
-              
-              {status.isInstalled && (
-                <Badge color="green">已安装</Badge>
-              )}
-              
-              {status.isInstallable && (
-                <Badge color="orange">可安装</Badge>
-              )}
-              
-              {status.hasUpdate && (
-                <Badge color="red">有更新</Badge>
-              )}
+
+              {pwaUtils.isRunningAsPWA() && <Badge color="blue">PWA模式运行</Badge>}
+
+              {status.isInstalled && <Badge color="green">已安装</Badge>}
+
+              {status.isInstallable && <Badge color="orange">可安装</Badge>}
+
+              {status.hasUpdate && <Badge color="red">有更新</Badge>}
             </Group>
 
             <Divider />
@@ -114,10 +106,12 @@ export function PWATest(): JSX.Element {
                 <strong>移动设备:</strong> {pwaUtils.isMobile() ? '✅ 是' : '❌ 否'}
               </Text>
               <Text size="sm">
-                <strong>通知支持:</strong> {pwaUtils.supportsNotifications() ? '✅ 支持' : '❌ 不支持'}
+                <strong>通知支持:</strong>{' '}
+                {pwaUtils.supportsNotifications() ? '✅ 支持' : '❌ 不支持'}
               </Text>
               <Text size="sm">
-                <strong>网络状态:</strong> {pwaUtils.getNetworkStatus() === 'online' ? '🌐 在线' : '📱 离线'}
+                <strong>网络状态:</strong>{' '}
+                {pwaUtils.getNetworkStatus() === 'online' ? '🌐 在线' : '📱 离线'}
               </Text>
             </Stack>
           </Stack>
@@ -127,7 +121,7 @@ export function PWATest(): JSX.Element {
         <Card withBorder>
           <Stack gap="md">
             <Title order={3}>PWA操作</Title>
-            
+
             <Group>
               {status.isInstallable && !status.isInstalled && (
                 <Button
@@ -138,7 +132,7 @@ export function PWATest(): JSX.Element {
                   安装到桌面
                 </Button>
               )}
-              
+
               {status.hasUpdate && (
                 <Button
                   leftSection={<IconRefresh size={16} />}
@@ -149,7 +143,7 @@ export function PWATest(): JSX.Element {
                   应用更新
                 </Button>
               )}
-              
+
               <Button
                 leftSection={status.isOffline ? <IconWifiOff size={16} /> : <IconWifi size={16} />}
                 variant="outline"
@@ -165,23 +159,25 @@ export function PWATest(): JSX.Element {
         <Card withBorder>
           <Stack gap="md">
             <Title order={3}>技术信息</Title>
-            
+
             <Stack gap="xs">
               <Text size="sm">
                 <strong>User Agent:</strong>
               </Text>
               <Code block>{navigator.userAgent}</Code>
-              
+
               <Text size="sm">
-                <strong>Service Worker状态:</strong> {'serviceWorker' in navigator ? '✅ 支持' : '❌ 不支持'}
+                <strong>Service Worker状态:</strong>{' '}
+                {'serviceWorker' in navigator ? '✅ 支持' : '❌ 不支持'}
               </Text>
-              
+
               <Text size="sm">
                 <strong>当前URL:</strong> {window.location.href}
               </Text>
-              
+
               <Text size="sm">
-                <strong>显示模式:</strong> {window.matchMedia('(display-mode: standalone)').matches ? 'Standalone' : 'Browser'}
+                <strong>显示模式:</strong>{' '}
+                {window.matchMedia('(display-mode: standalone)').matches ? 'Standalone' : 'Browser'}
               </Text>
             </Stack>
           </Stack>

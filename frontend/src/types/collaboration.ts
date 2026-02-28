@@ -27,34 +27,34 @@ export interface LessonPlan {
   author: User
   createdAt: string
   updatedAt: string
-  
+
   // 互动数据
   likeCount: number
   commentCount: number
   favoriteCount: number
   downloadCount: number
   viewCount: number
-  
+
   // 用户状态
   isLiked: boolean
   isFavorited: boolean
   isBookmarked: boolean
-  
+
   // 评分
   averageRating: number
   ratingCount: number
-  
+
   // 分享信息
   shareLevel: 'private' | 'department' | 'school' | 'public'
   isShared: boolean
   sharedAt?: string
-  
+
   // 附件
   attachments: LessonPlanAttachment[]
-  
+
   // 标签
   tags: string[]
-  
+
   // 版本信息
   version: string
   parentPlanId?: number
@@ -77,11 +77,11 @@ export interface LessonPlanComment {
   rating?: number
   createdAt: string
   updatedAt: string
-  
+
   // 互动数据
   likeCount: number
   isLiked: boolean
-  
+
   // 回复
   replyToId?: number
   replies: LessonPlanComment[]
@@ -94,7 +94,7 @@ export interface LessonPlanShare {
   shareLevel: 'department' | 'school' | 'public'
   description?: string
   sharedAt: string
-  
+
   // 统计
   viewCount: number
   downloadCount: number
@@ -112,29 +112,29 @@ export interface DiscussionTopic {
   author: User
   createdAt: string
   updatedAt: string
-  
+
   // 互动数据
   replyCount: number
   likeCount: number
   bookmarkCount: number
   viewCount: number
-  
+
   // 用户状态
   isLiked: boolean
   isBookmarked: boolean
-  
+
   // 标签
   tags: string[]
-  
+
   // 解决方案
   solutionReplyId?: number
   solvedAt?: string
   solvedBy?: User
-  
+
   // 最后活动
   lastReplyAt?: string
   lastReplyBy?: User
-  
+
   // 紧急程度
   urgencyLevel: 'low' | 'medium' | 'high' | 'urgent'
 }
@@ -146,21 +146,21 @@ export interface DiscussionReply {
   content: string
   createdAt: string
   updatedAt: string
-  
+
   // 互动数据
   likeCount: number
   isLiked: boolean
-  
+
   // 回复关系
   replyToId?: number
   replyTo?: DiscussionReply
   replies: DiscussionReply[]
-  
+
   // 解决方案标记
   isSolution: boolean
   markedAsSolutionAt?: string
   markedBy?: User
-  
+
   // 附件
   attachments: DiscussionAttachment[]
 }
@@ -182,17 +182,17 @@ export interface TeachingDifficulty {
   grade: string
   difficulty: 'low' | 'medium' | 'high'
   category: string
-  
+
   // 解决方案
   solutions: TeachingSolution[]
-  
+
   // 统计
   encounterCount: number
   solvedCount: number
-  
+
   // 标签
   tags: string[]
-  
+
   // 创建信息
   createdBy: User
   createdAt: string
@@ -207,16 +207,16 @@ export interface TeachingSolution {
   steps: string[]
   resources: string[]
   effectiveness: number
-  
+
   // 作者
   author: User
   createdAt: string
-  
+
   // 验证
   verifiedBy?: User
   verifiedAt?: string
   isVerified: boolean
-  
+
   // 反馈
   feedbacks: SolutionFeedback[]
   averageRating: number
@@ -244,33 +244,33 @@ export interface ExcellentCase {
   author: User
   createdAt: string
   updatedAt: string
-  
+
   // 互动数据
   likeCount: number
   favoriteCount: number
   viewCount: number
   downloadCount: number
-  
+
   // 用户状态
   isLiked: boolean
   isFavorited: boolean
-  
+
   // 评分
   averageRating: number
   ratingCount: number
-  
+
   // 附件
   attachments: CaseAttachment[]
-  
+
   // 标签
   tags: string[]
-  
+
   // 审核状态
   status: 'pending' | 'approved' | 'rejected'
   reviewedBy?: User
   reviewedAt?: string
   reviewComments?: string
-  
+
   // 特色标记
   isFeatured: boolean
   featuredAt?: string
@@ -293,11 +293,11 @@ export interface CaseComment {
   content: string
   rating?: number
   createdAt: string
-  
+
   // 互动
   likeCount: number
   isLiked: boolean
-  
+
   // 回复
   replyToId?: number
   replies: CaseComment[]
@@ -311,25 +311,25 @@ export interface CollaborationSession {
   description: string
   type: 'lesson_plan' | 'syllabus' | 'document' | 'discussion'
   status: 'active' | 'paused' | 'completed' | 'cancelled'
-  
+
   // 参与者
   creator: User
   participants: CollaborationParticipant[]
   maxParticipants: number
-  
+
   // 时间
   createdAt: string
   startedAt?: string
   endedAt?: string
   lastActivityAt: string
-  
+
   // 内容
   content: any
   version: number
-  
+
   // 权限
   permissions: CollaborationPermissions
-  
+
   // 活动记录
   activities: CollaborationActivity[]
 }
@@ -340,7 +340,7 @@ export interface CollaborationParticipant {
   joinedAt: string
   lastActiveAt: string
   isOnline: boolean
-  
+
   // 权限
   canEdit: boolean
   canComment: boolean
@@ -364,7 +364,7 @@ export interface CollaborationActivity {
   action: 'join' | 'leave' | 'edit' | 'comment' | 'save' | 'invite'
   description: string
   timestamp: string
-  
+
   // 详细信息
   details?: {
     changes?: any
@@ -391,12 +391,12 @@ export interface PermissionRequest {
   permission: string
   reason: string
   status: 'pending' | 'approved' | 'rejected'
-  
+
   // 审核信息
   reviewedBy?: User
   reviewedAt?: string
   reviewComments?: string
-  
+
   // 时间
   requestedAt: string
   expiresAt?: string
@@ -409,7 +409,7 @@ export interface CollaborationStats {
   totalDiscussions: number
   totalCases: number
   totalSessions: number
-  
+
   // 用户贡献
   myContributions: {
     plansShared: number
@@ -418,10 +418,10 @@ export interface CollaborationStats {
     casesSubmitted: number
     sessionsCreated: number
   }
-  
+
   // 最近活动
   recentActivity: CollaborationActivity[]
-  
+
   // 热门内容
   popularPlans: LessonPlan[]
   hotDiscussions: DiscussionTopic[]
@@ -438,15 +438,15 @@ export interface UserCollaborationProfile {
     totalLikes: number
     totalViews: number
   }
-  
+
   // 徽章和成就
   badges: CollaborationBadge[]
   achievements: CollaborationAchievement[]
-  
+
   // 专长领域
   expertise: string[]
   interests: string[]
-  
+
   // 活动历史
   recentActivities: CollaborationActivity[]
 }
@@ -517,11 +517,11 @@ export interface CollaborationNotification {
   data: any
   isRead: boolean
   createdAt: string
-  
+
   // 相关资源
   resourceType?: string
   resourceId?: number
-  
+
   // 发送者
   sender?: User
 }

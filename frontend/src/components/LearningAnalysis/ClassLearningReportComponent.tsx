@@ -1,6 +1,6 @@
 /**
  * 班级学情分析报告组件
- * 
+ *
  * 功能：
  * 1. 整体水平评估仪表盘
  * 2. 知识点掌握分布图
@@ -45,10 +45,7 @@ import {
 } from '@tabler/icons-react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { notifications } from '@mantine/notifications'
-import {
-  classReportApi,
-  type ClassLearningReport,
-} from '../../api/learningAnalysisReport'
+import { classReportApi, type ClassLearningReport } from '../../api/learningAnalysisReport'
 
 // 常量定义将在后续版本中使用
 
@@ -101,7 +98,7 @@ const ClassLearningReportComponent: React.FC<ClassLearningReportComponentProps> 
       })
       refetch()
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '报告生成失败',
         message: error instanceof Error ? error.message : '生成报告时发生错误',
@@ -182,7 +179,9 @@ const ClassLearningReportComponent: React.FC<ClassLearningReportComponentProps> 
       <Card withBorder padding="xl">
         <Stack align="center" gap="md">
           <IconUsers size={48} color="gray" />
-          <Text size="lg" c="dimmed">暂无班级学情分析报告</Text>
+          <Text size="lg" c="dimmed">
+            暂无班级学情分析报告
+          </Text>
           <Button onClick={handleGenerateReport} loading={generateReportMutation.isPending}>
             生成报告
           </Button>
@@ -203,17 +202,18 @@ const ClassLearningReportComponent: React.FC<ClassLearningReportComponentProps> 
             <div>
               <Title order={3}>{report.class_name} 班级学情分析报告</Title>
               <Text size="sm" c="dimmed">
-                任课教师：{report.teacher_name} | 学生人数：{report.overall_assessment.total_students}人 | 
-                报告时间：{new Date(report.report_date).toLocaleDateString()}
+                任课教师：{report.teacher_name} | 学生人数：
+                {report.overall_assessment.total_students}人 | 报告时间：
+                {new Date(report.report_date).toLocaleDateString()}
               </Text>
             </div>
           </Group>
-          
+
           {showControls && (
             <Group>
               <Select
                 value={selectedTimeRange}
-                onChange={(value) => setSelectedTimeRange(value || '30')}
+                onChange={value => setSelectedTimeRange(value || '30')}
                 data={[
                   { value: '7', label: '最近7天' },
                   { value: '30', label: '最近30天' },
@@ -223,11 +223,7 @@ const ClassLearningReportComponent: React.FC<ClassLearningReportComponentProps> 
                 w={120}
               />
               <Tooltip label="刷新数据">
-                <ActionIcon
-                  variant="light"
-                  onClick={handleRefresh}
-                  loading={refreshing}
-                >
+                <ActionIcon variant="light" onClick={handleRefresh} loading={refreshing}>
                   <IconRefresh size={16} />
                 </ActionIcon>
               </Tooltip>
@@ -246,7 +242,7 @@ const ClassLearningReportComponent: React.FC<ClassLearningReportComponentProps> 
       </Card>
 
       {/* 报告内容 */}
-      <Tabs value={activeTab} onChange={(value) => setActiveTab(value || 'overview')}>
+      <Tabs value={activeTab} onChange={value => setActiveTab(value || 'overview')}>
         <Tabs.List>
           <Tabs.Tab value="overview" leftSection={<IconEye size={16} />}>
             总览
@@ -275,42 +271,62 @@ const ClassLearningReportComponent: React.FC<ClassLearningReportComponentProps> 
               <ThemeIcon size="xl" variant="light" color="blue" mx="auto" mb="sm">
                 <IconUsers size={24} />
               </ThemeIcon>
-              <Text size="xl" fw={700}>{report.overall_assessment.total_students}</Text>
-              <Text size="sm" c="dimmed">学生总数</Text>
+              <Text size="xl" fw={700}>
+                {report.overall_assessment.total_students}
+              </Text>
+              <Text size="sm" c="dimmed">
+                学生总数
+              </Text>
             </Card>
-            
+
             <Card withBorder padding="md" style={{ textAlign: 'center' }}>
               <ThemeIcon size="xl" variant="light" color="green" mx="auto" mb="sm">
                 <IconAward size={24} />
               </ThemeIcon>
-              <Text size="xl" fw={700}>{report.overall_assessment.average_scores.overall_score}</Text>
-              <Text size="sm" c="dimmed">班级平均分</Text>
+              <Text size="xl" fw={700}>
+                {report.overall_assessment.average_scores.overall_score}
+              </Text>
+              <Text size="sm" c="dimmed">
+                班级平均分
+              </Text>
             </Card>
-            
+
             <Card withBorder padding="md" style={{ textAlign: 'center' }}>
               <ThemeIcon size="xl" variant="light" color="orange" mx="auto" mb="sm">
                 <IconTrendingUp size={24} />
               </ThemeIcon>
-              <Text size="xl" fw={700}>{report.overall_assessment.improvement_rate}%</Text>
-              <Text size="sm" c="dimmed">月提升率</Text>
+              <Text size="xl" fw={700}>
+                {report.overall_assessment.improvement_rate}%
+              </Text>
+              <Text size="sm" c="dimmed">
+                月提升率
+              </Text>
             </Card>
-            
+
             <Card withBorder padding="md" style={{ textAlign: 'center' }}>
               <ThemeIcon size="xl" variant="light" color="purple" mx="auto" mb="sm">
                 <IconChartBar size={24} />
               </ThemeIcon>
-              <Text size="xl" fw={700}>{report.overall_assessment.class_ranking.percentile}%</Text>
-              <Text size="sm" c="dimmed">年级排名百分位</Text>
+              <Text size="xl" fw={700}>
+                {report.overall_assessment.class_ranking.percentile}%
+              </Text>
+              <Text size="sm" c="dimmed">
+                年级排名百分位
+              </Text>
             </Card>
           </SimpleGrid>
-          
+
           <Grid mt="md">
             <Grid.Col span={{ base: 12, md: 8 }}>
               <Card withBorder padding="md">
-                <Title order={4} mb="md">关键成就与挑战</Title>
+                <Title order={4} mb="md">
+                  关键成就与挑战
+                </Title>
                 <Grid>
                   <Grid.Col span={6}>
-                    <Text fw={500} c="green" mb="xs">主要成就</Text>
+                    <Text fw={500} c="green" mb="xs">
+                      主要成就
+                    </Text>
                     <List size="sm" spacing="xs">
                       {report.summary.key_achievements.slice(0, 3).map((achievement, index) => (
                         <List.Item key={index}>{achievement}</List.Item>
@@ -318,7 +334,9 @@ const ClassLearningReportComponent: React.FC<ClassLearningReportComponentProps> 
                     </List>
                   </Grid.Col>
                   <Grid.Col span={6}>
-                    <Text fw={500} c="orange" mb="xs">主要挑战</Text>
+                    <Text fw={500} c="orange" mb="xs">
+                      主要挑战
+                    </Text>
                     <List size="sm" spacing="xs">
                       {report.summary.main_challenges.slice(0, 3).map((challenge, index) => (
                         <List.Item key={index}>{challenge}</List.Item>
@@ -328,10 +346,12 @@ const ClassLearningReportComponent: React.FC<ClassLearningReportComponentProps> 
                 </Grid>
               </Card>
             </Grid.Col>
-            
+
             <Grid.Col span={{ base: 12, md: 4 }}>
               <Card withBorder padding="md">
-                <Title order={4} mb="md">学习进度概览</Title>
+                <Title order={4} mb="md">
+                  学习进度概览
+                </Title>
                 <Center>
                   <RingProgress
                     size={150}

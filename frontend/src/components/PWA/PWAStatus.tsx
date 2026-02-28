@@ -1,6 +1,6 @@
 /**
  * PWA状态组件
- * 
+ *
  * 显示PWA相关状态和操作：
  * - 安装提示
  * - 更新通知
@@ -9,12 +9,12 @@
  */
 
 import { ActionIcon, Badge, Group, Tooltip } from '@mantine/core'
-import { 
-  IconDownload, 
-  IconRefresh, 
-  IconWifi, 
+import {
+  IconDownload,
+  IconRefresh,
+  IconWifi,
   IconWifiOff,
-  IconDeviceMobile
+  IconDeviceMobile,
 } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 
@@ -103,12 +103,7 @@ export function PWAStatus(): JSX.Element {
       {/* 安装按钮 */}
       {status.isInstallable && !status.isInstalled && (
         <Tooltip label="安装到桌面">
-          <ActionIcon
-            variant="light"
-            color="blue"
-            loading={isInstalling}
-            onClick={handleInstall}
-          >
+          <ActionIcon variant="light" color="blue" loading={isInstalling} onClick={handleInstall}>
             <IconDownload size={16} />
           </ActionIcon>
         </Tooltip>
@@ -117,12 +112,7 @@ export function PWAStatus(): JSX.Element {
       {/* 更新按钮 */}
       {status.hasUpdate && (
         <Tooltip label="应用更新">
-          <ActionIcon
-            variant="light"
-            color="orange"
-            loading={isUpdating}
-            onClick={handleUpdate}
-          >
+          <ActionIcon variant="light" color="orange" loading={isUpdating} onClick={handleUpdate}>
             <IconRefresh size={16} />
           </ActionIcon>
         </Tooltip>

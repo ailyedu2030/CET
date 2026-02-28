@@ -1,6 +1,6 @@
 /**
  * 用户激活页面
- * 
+ *
  * 实现🔥需求20验收标准5：
  * - 激活链接处理
  * - 24小时有效期
@@ -14,7 +14,6 @@ import {
   Title,
   Text,
   Button,
-
   Center,
   Loader,
   Group,
@@ -39,7 +38,9 @@ import {
 export function ActivationPage(): JSX.Element {
   const navigate = useNavigate()
   const { token } = useParams<{ token: string }>()
-  const [activationStatus, setActivationStatus] = useState<'checking' | 'valid' | 'invalid' | 'expired' | 'activated'>('checking')
+  const [activationStatus, setActivationStatus] = useState<
+    'checking' | 'valid' | 'invalid' | 'expired' | 'activated'
+  >('checking')
   const [showResendForm, setShowResendForm] = useState(false)
 
   // 重发激活邮件表单
@@ -66,7 +67,7 @@ export function ActivationPage(): JSX.Element {
   // 激活用户
   const activationMutation = useMutation<ActivationResponse, Error, ActivationRequest>({
     mutationFn: activateUser,
-    onSuccess: (data) => {
+    onSuccess: data => {
       if (data.success) {
         setActivationStatus('activated')
         notifications.show({
@@ -89,7 +90,7 @@ export function ActivationPage(): JSX.Element {
         })
       }
     },
-    onError: (error) => {
+    onError: error => {
       setActivationStatus('invalid')
       notifications.show({
         title: '激活失败',
@@ -103,7 +104,7 @@ export function ActivationPage(): JSX.Element {
   // 重发激活邮件
   const resendMutation = useMutation<ActivationResponse, Error, ResendActivationRequest>({
     mutationFn: resendActivationEmail,
-    onSuccess: (data) => {
+    onSuccess: data => {
       if (data.success) {
         notifications.show({
           title: '发送成功',
@@ -121,7 +122,7 @@ export function ActivationPage(): JSX.Element {
         })
       }
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '发送失败',
         message: error.message || '网络错误，请稍后重试',
@@ -173,10 +174,10 @@ export function ActivationPage(): JSX.Element {
           <Card withBorder shadow="md" p="xl" radius="md" w="100%">
             <Stack gap="md" ta="center">
               <IconAlertCircle size={48} color="var(--mantine-color-red-6)" />
-              <Title order={2} c="red">激活链接无效</Title>
-              <Text c="dimmed">
-                激活链接格式不正确，请检查邮件中的链接是否完整。
-              </Text>
+              <Title order={2} c="red">
+                激活链接无效
+              </Title>
+              <Text c="dimmed">激活链接格式不正确，请检查邮件中的链接是否完整。</Text>
               <Button onClick={handleBackToHome} leftSection={<IconArrowLeft size={16} />}>
                 返回首页
               </Button>
@@ -210,10 +211,10 @@ export function ActivationPage(): JSX.Element {
           {activationStatus === 'valid' && (
             <Stack gap="md" ta="center">
               <IconCheck size={48} color="var(--mantine-color-green-6)" />
-              <Title order={2} c="green">准备激活账号</Title>
-              <Text c="dimmed">
-                您的激活链接有效，点击下方按钮完成账号激活。
-              </Text>
+              <Title order={2} c="green">
+                准备激活账号
+              </Title>
+              <Text c="dimmed">您的激活链接有效，点击下方按钮完成账号激活。</Text>
               <Button
                 size="lg"
                 onClick={handleActivate}
@@ -231,10 +232,10 @@ export function ActivationPage(): JSX.Element {
           {activationStatus === 'activated' && (
             <Stack gap="md" ta="center">
               <IconCheck size={48} color="var(--mantine-color-green-6)" />
-              <Title order={2} c="green">激活成功</Title>
-              <Text c="dimmed">
-                恭喜！您的账号已成功激活，现在可以登录系统开始学习了。
-              </Text>
+              <Title order={2} c="green">
+                激活成功
+              </Title>
+              <Text c="dimmed">恭喜！您的账号已成功激活，现在可以登录系统开始学习了。</Text>
               <Button size="lg" onClick={handleBackToLogin}>
                 立即登录
               </Button>
@@ -247,11 +248,11 @@ export function ActivationPage(): JSX.Element {
           {activationStatus === 'expired' && (
             <Stack gap="md" ta="center">
               <IconAlertCircle size={48} color="var(--mantine-color-orange-6)" />
-              <Title order={2} c="orange">激活链接已过期</Title>
-              <Text c="dimmed">
-                您的激活链接已过期（有效期24小时）。请重新发送激活邮件。
-              </Text>
-              
+              <Title order={2} c="orange">
+                激活链接已过期
+              </Title>
+              <Text c="dimmed">您的激活链接已过期（有效期24小时）。请重新发送激活邮件。</Text>
+
               {!showResendForm ? (
                 <Group justify="center" gap="md">
                   <Button
@@ -300,14 +301,12 @@ export function ActivationPage(): JSX.Element {
           {activationStatus === 'invalid' && (
             <Stack gap="md" ta="center">
               <IconAlertCircle size={48} color="var(--mantine-color-red-6)" />
-              <Title order={2} c="red">激活链接无效</Title>
-              <Text c="dimmed">
-                激活链接无效或已被使用。如需帮助，请联系系统管理员。
-              </Text>
+              <Title order={2} c="red">
+                激活链接无效
+              </Title>
+              <Text c="dimmed">激活链接无效或已被使用。如需帮助，请联系系统管理员。</Text>
               <Group justify="center" gap="md">
-                <Button onClick={handleBackToLogin}>
-                  前往登录
-                </Button>
+                <Button onClick={handleBackToLogin}>前往登录</Button>
                 <Button variant="outline" onClick={handleBackToHome}>
                   返回首页
                 </Button>

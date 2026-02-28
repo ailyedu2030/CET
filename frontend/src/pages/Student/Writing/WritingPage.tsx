@@ -1,6 +1,6 @@
 /**
  * 需求26：英语四级写作标准库 - 主页面
- * 
+ *
  * 实现写作训练的主要功能界面
  */
 
@@ -51,30 +51,21 @@ export function WritingPage(): JSX.Element {
   const { user } = useAuthStore()
 
   // 查询写作统计
-  const {
-    data: statistics,
-    isLoading: statisticsLoading,
-  } = useQuery({
+  const { data: statistics, isLoading: statisticsLoading } = useQuery({
     queryKey: ['writing-statistics', user?.id],
     queryFn: () => writingApi.getStatistics(),
     enabled: !!user?.id,
   })
 
   // 查询写作推荐
-  const {
-    data: recommendations,
-    isLoading: recommendationsLoading,
-  } = useQuery({
+  const { data: recommendations, isLoading: recommendationsLoading } = useQuery({
     queryKey: ['writing-recommendations', user?.id],
     queryFn: () => writingApi.getRecommendations(),
     enabled: !!user?.id,
   })
 
   // 查询最近的写作提交
-  const {
-    data: recentSubmissions,
-    isLoading: submissionsLoading,
-  } = useQuery({
+  const { data: recentSubmissions, isLoading: submissionsLoading } = useQuery({
     queryKey: ['writing-submissions', user?.id],
     queryFn: () => writingApi.getMySubmissions({ limit: 5 }),
     enabled: !!user?.id,
@@ -108,7 +99,7 @@ export function WritingPage(): JSX.Element {
         </Group>
       </Group>
 
-      <Tabs value={activeTab} onChange={(value) => setActiveTab(value || 'overview')}>
+      <Tabs value={activeTab} onChange={value => setActiveTab(value || 'overview')}>
         <Tabs.List>
           <Tabs.Tab value="overview" leftSection={<IconChartLine size={16} />}>
             概览
@@ -146,7 +137,12 @@ export function WritingPage(): JSX.Element {
                     <RingProgress
                       size={60}
                       thickness={6}
-                      sections={[{ value: Math.min((statistics?.total_submissions || 0) * 2, 100), color: 'blue' }]}
+                      sections={[
+                        {
+                          value: Math.min((statistics?.total_submissions || 0) * 2, 100),
+                          color: 'blue',
+                        },
+                      ]}
                       label={
                         <Center>
                           <IconFileText size={16} color="blue" />
@@ -171,7 +167,9 @@ export function WritingPage(): JSX.Element {
                     <RingProgress
                       size={60}
                       thickness={6}
-                      sections={[{ value: (statistics?.average_score || 0) * 100 / 15, color: 'green' }]}
+                      sections={[
+                        { value: ((statistics?.average_score || 0) * 100) / 15, color: 'green' },
+                      ]}
                       label={
                         <Center>
                           <IconStar size={16} color="green" />
@@ -196,7 +194,9 @@ export function WritingPage(): JSX.Element {
                     <RingProgress
                       size={60}
                       thickness={6}
-                      sections={[{ value: (statistics?.strengths?.length || 0) * 20, color: 'orange' }]}
+                      sections={[
+                        { value: (statistics?.strengths?.length || 0) * 20, color: 'orange' },
+                      ]}
                       label={
                         <Center>
                           <IconTarget size={16} color="orange" />
@@ -221,7 +221,12 @@ export function WritingPage(): JSX.Element {
                     <RingProgress
                       size={60}
                       thickness={6}
-                      sections={[{ value: Math.max(100 - (statistics?.weaknesses?.length || 0) * 20, 20), color: 'red' }]}
+                      sections={[
+                        {
+                          value: Math.max(100 - (statistics?.weaknesses?.length || 0) * 20, 20),
+                          color: 'red',
+                        },
+                      ]}
                       label={
                         <Center>
                           <IconAlertCircle size={16} color="red" />
@@ -244,9 +249,9 @@ export function WritingPage(): JSX.Element {
                 </Group>
                 <Badge color="purple">AI推荐</Badge>
               </Group>
-              
+
               <Grid>
-                {recommendations?.recommended_templates?.slice(0, 4).map((template) => (
+                {recommendations?.recommended_templates?.slice(0, 4).map(template => (
                   <Grid.Col key={template.id} span={3}>
                     <Card withBorder p="sm" h="100%">
                       <Stack gap="xs">
@@ -298,18 +303,17 @@ export function WritingPage(): JSX.Element {
                   查看全部
                 </Button>
               </Group>
-              
+
               <Timeline active={1} bulletSize={24} lineWidth={2}>
-                {recentSubmissions?.data?.map((submission) => (
+                {recentSubmissions?.data?.map(submission => (
                   <Timeline.Item
                     key={submission.id}
                     bullet={<IconCheck size={12} />}
                     title={`写作练习 #${submission.id}`}
                   >
                     <Text size="sm" c="dimmed">
-                      分数: {submission.total_score}/15 | 
-                      字数: {submission.word_count} | 
-                      用时: {submission.writing_time_minutes}分钟
+                      分数: {submission.total_score}/15 | 字数: {submission.word_count} | 用时:{' '}
+                      {submission.writing_time_minutes}分钟
                     </Text>
                     <Text size="xs" c="dimmed">
                       {new Date(submission.submitted_at).toLocaleDateString()}

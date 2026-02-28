@@ -1,6 +1,6 @@
 /**
  * 验证码API客户端
- * 
+ *
  * 实现🔥需求20验收标准3：
  * - 手机号验证码验证
  * - 验证码有效期5分钟
@@ -44,7 +44,10 @@ export async function sendRegistrationSMS(data: SendSMSRequest): Promise<Verific
  * 验证短信验证码（注册专用，无需认证）
  */
 export async function verifyRegistrationSMS(data: VerifySMSRequest): Promise<VerificationResponse> {
-  const response = await apiClient.post<VerificationResponse>('/api/v1/registration/sms/verify', data)
+  const response = await apiClient.post<VerificationResponse>(
+    '/api/v1/registration/sms/verify',
+    data
+  )
   return response.data
 }
 

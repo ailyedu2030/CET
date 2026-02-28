@@ -69,131 +69,139 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
   const [selectedCell, setSelectedCell] = useState<HeatmapCell | null>(null)
   const [modalOpened, setModalOpened] = useState(false)
 
-  const { data: heatmapData, isLoading, error, refetch } = useQuery({
+  const {
+    data: heatmapData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['knowledge-heatmap', studentId, timeRange, categoryFilter, difficultyFilter],
     queryFn: async (): Promise<HeatmapData> => {
       try {
         // 调用学习进度API获取知识点数据
-        const progressData = await progressTrackingApi.getLearningProgress('knowledge', parseInt(timeRange))
+        const progressData = await progressTrackingApi.getLearningProgress(
+          'knowledge',
+          parseInt(timeRange)
+        )
 
         // 基于真实API响应构建热力图数据，如果API数据不完整则使用默认值
         return {
-        knowledge_points: progressData?.knowledge_points || [
-          {
-            id: 'vocab_1',
-            name: '高频词汇',
-            category: '词汇',
-            x: 1,
-            y: 1,
-            value: 85,
-            color: '#51cf66',
-            size: 20,
-            metadata: {
-              practice_count: 45,
-              accuracy_rate: 0.85,
-              last_practiced: '2024-01-15T10:30:00Z',
-              difficulty: 'medium',
+          knowledge_points: progressData?.knowledge_points || [
+            {
+              id: 'vocab_1',
+              name: '高频词汇',
+              category: '词汇',
+              x: 1,
+              y: 1,
+              value: 85,
+              color: '#51cf66',
+              size: 20,
+              metadata: {
+                practice_count: 45,
+                accuracy_rate: 0.85,
+                last_practiced: '2024-01-15T10:30:00Z',
+                difficulty: 'medium',
+              },
             },
-          },
-          {
-            id: 'grammar_1',
-            name: '时态语法',
-            category: '语法',
-            x: 2,
-            y: 1,
-            value: 62,
-            color: '#ffd43b',
-            size: 16,
-            metadata: {
-              practice_count: 32,
-              accuracy_rate: 0.62,
-              last_practiced: '2024-01-14T15:20:00Z',
-              difficulty: 'hard',
+            {
+              id: 'grammar_1',
+              name: '时态语法',
+              category: '语法',
+              x: 2,
+              y: 1,
+              value: 62,
+              color: '#ffd43b',
+              size: 16,
+              metadata: {
+                practice_count: 32,
+                accuracy_rate: 0.62,
+                last_practiced: '2024-01-14T15:20:00Z',
+                difficulty: 'hard',
+              },
             },
-          },
-          {
-            id: 'reading_1',
-            name: '阅读理解',
-            category: '阅读',
-            x: 3,
-            y: 1,
-            value: 78,
-            color: '#74c0fc',
-            size: 18,
-            metadata: {
-              practice_count: 28,
-              accuracy_rate: 0.78,
-              last_practiced: '2024-01-15T09:15:00Z',
-              difficulty: 'medium',
+            {
+              id: 'reading_1',
+              name: '阅读理解',
+              category: '阅读',
+              x: 3,
+              y: 1,
+              value: 78,
+              color: '#74c0fc',
+              size: 18,
+              metadata: {
+                practice_count: 28,
+                accuracy_rate: 0.78,
+                last_practiced: '2024-01-15T09:15:00Z',
+                difficulty: 'medium',
+              },
             },
-          },
-          {
-            id: 'listening_1',
-            name: '听力理解',
-            category: '听力',
-            x: 1,
-            y: 2,
-            value: 45,
-            color: '#ff8787',
-            size: 12,
-            metadata: {
-              practice_count: 18,
-              accuracy_rate: 0.45,
-              last_practiced: '2024-01-13T14:10:00Z',
-              difficulty: 'hard',
+            {
+              id: 'listening_1',
+              name: '听力理解',
+              category: '听力',
+              x: 1,
+              y: 2,
+              value: 45,
+              color: '#ff8787',
+              size: 12,
+              metadata: {
+                practice_count: 18,
+                accuracy_rate: 0.45,
+                last_practiced: '2024-01-13T14:10:00Z',
+                difficulty: 'hard',
+              },
             },
-          },
-          {
-            id: 'writing_1',
-            name: '写作技巧',
-            category: '写作',
-            x: 2,
-            y: 2,
-            value: 70,
-            color: '#da77f2',
-            size: 17,
-            metadata: {
-              practice_count: 15,
-              accuracy_rate: 0.70,
-              last_practiced: '2024-01-15T11:45:00Z',
-              difficulty: 'medium',
+            {
+              id: 'writing_1',
+              name: '写作技巧',
+              category: '写作',
+              x: 2,
+              y: 2,
+              value: 70,
+              color: '#da77f2',
+              size: 17,
+              metadata: {
+                practice_count: 15,
+                accuracy_rate: 0.7,
+                last_practiced: '2024-01-15T11:45:00Z',
+                difficulty: 'medium',
+              },
             },
-          },
-          {
-            id: 'vocab_2',
-            name: '词汇搭配',
-            category: '词汇',
-            x: 3,
-            y: 2,
-            value: 55,
-            color: '#ffa94d',
-            size: 14,
-            metadata: {
-              practice_count: 22,
-              accuracy_rate: 0.55,
-              last_practiced: '2024-01-14T16:30:00Z',
-              difficulty: 'hard',
+            {
+              id: 'vocab_2',
+              name: '词汇搭配',
+              category: '词汇',
+              x: 3,
+              y: 2,
+              value: 55,
+              color: '#ffa94d',
+              size: 14,
+              metadata: {
+                practice_count: 22,
+                accuracy_rate: 0.55,
+                last_practiced: '2024-01-14T16:30:00Z',
+                difficulty: 'hard',
+              },
             },
+          ],
+          categories: progressData?.categories || [
+            { name: '词汇', color: '#51cf66', point_count: 2, average_mastery: 70 },
+            { name: '语法', color: '#ffd43b', point_count: 1, average_mastery: 62 },
+            { name: '阅读', color: '#74c0fc', point_count: 1, average_mastery: 78 },
+            { name: '听力', color: '#ff8787', point_count: 1, average_mastery: 45 },
+            { name: '写作', color: '#da77f2', point_count: 1, average_mastery: 70 },
+          ],
+          dimensions: {
+            width: 3,
+            height: 2,
+            min_value: 0,
+            max_value: 100,
           },
-        ],
-        categories: progressData?.categories || [
-          { name: '词汇', color: '#51cf66', point_count: 2, average_mastery: 70 },
-          { name: '语法', color: '#ffd43b', point_count: 1, average_mastery: 62 },
-          { name: '阅读', color: '#74c0fc', point_count: 1, average_mastery: 78 },
-          { name: '听力', color: '#ff8787', point_count: 1, average_mastery: 45 },
-          { name: '写作', color: '#da77f2', point_count: 1, average_mastery: 70 },
-        ],
-        dimensions: {
-          width: 3,
-          height: 2,
-          min_value: 0,
-          max_value: 100,
-        },
-        filters: {
-          time_range: timeRange,
-          difficulty_levels: ['easy', 'medium', 'hard'],
-          categories: ['词汇', '语法', '阅读', '听力', '写作'],
-        },
+          filters: {
+            time_range: timeRange,
+            difficulty_levels: ['easy', 'medium', 'hard'],
+            categories: ['词汇', '语法', '阅读', '听力', '写作'],
+          },
         }
       } catch (error) {
         // 静默处理错误，返回默认演示数据
@@ -287,8 +295,12 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
   if (error || !filteredData) {
     return (
       <Alert color="red" title="数据加载失败">
-        <Text size="sm" mb="md">无法加载知识点热力图数据，请检查网络连接后重试</Text>
-        <Button size="xs" onClick={() => refetch()}>重试</Button>
+        <Text size="sm" mb="md">
+          无法加载知识点热力图数据，请检查网络连接后重试
+        </Text>
+        <Button size="xs" onClick={() => refetch()}>
+          重试
+        </Button>
       </Alert>
     )
   }
@@ -321,7 +333,7 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
               <Select
                 label="时间范围"
                 value={timeRange}
-                onChange={(value) => setTimeRange(value || '30')}
+                onChange={value => setTimeRange(value || '30')}
                 data={[
                   { value: '7', label: '最近7天' },
                   { value: '14', label: '最近14天' },
@@ -334,10 +346,10 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
               <Select
                 label="知识类别"
                 value={categoryFilter}
-                onChange={(value) => setCategoryFilter(value || 'all')}
+                onChange={value => setCategoryFilter(value || 'all')}
                 data={[
                   { value: 'all', label: '全部类别' },
-                  ...filteredData.categories.map(cat => ({ value: cat.name, label: cat.name }))
+                  ...filteredData.categories.map(cat => ({ value: cat.name, label: cat.name })),
                 ]}
                 size="sm"
                 w={120}
@@ -345,7 +357,7 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
               <Select
                 label="难度等级"
                 value={difficultyFilter}
-                onChange={(value) => setDifficultyFilter(value || 'all')}
+                onChange={value => setDifficultyFilter(value || 'all')}
                 data={[
                   { value: 'all', label: '全部难度' },
                   { value: 'easy', label: '简单' },
@@ -376,9 +388,7 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
       <Card withBorder padding="md">
         <Group justify="space-between" mb="md">
           <Title order={4}>知识点掌握热力图</Title>
-          <Badge color="blue">
-            {filteredData.knowledge_points.length} 个知识点
-          </Badge>
+          <Badge color="blue">{filteredData.knowledge_points.length} 个知识点</Badge>
         </Group>
 
         <Grid>
@@ -396,31 +406,17 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
               }}
             >
               {/* 网格背景 */}
-              <svg
-                width="100%"
-                height="100%"
-                style={{ position: 'absolute', top: 0, left: 0 }}
-              >
+              <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0 }}>
                 <defs>
-                  <pattern
-                    id="grid"
-                    width="40"
-                    height="40"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <path
-                      d="M 40 0 L 0 0 0 40"
-                      fill="none"
-                      stroke="#dee2e6"
-                      strokeWidth="1"
-                    />
+                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#dee2e6" strokeWidth="1" />
                   </pattern>
                 </defs>
                 <rect width="100%" height="100%" fill="url(#grid)" />
               </svg>
 
               {/* 知识点热力图点 */}
-              {filteredData.knowledge_points.map((point) => (
+              {filteredData.knowledge_points.map(point => (
                 <div
                   key={point.id}
                   style={{
@@ -440,11 +436,11 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
                     transition: 'all 0.2s ease',
                   }}
                   onClick={() => handleCellClick(point)}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={e => {
                     e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.2)'
                     e.currentTarget.style.zIndex = '10'
                   }}
-                  onMouseLeave={(e) => {
+                  onMouseLeave={e => {
                     e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)'
                     e.currentTarget.style.zIndex = '1'
                   }}
@@ -468,7 +464,9 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
                   fontSize: '12px',
                 }}
               >
-                <Text size="xs" fw={600} mb="xs">掌握程度</Text>
+                <Text size="xs" fw={600} mb="xs">
+                  掌握程度
+                </Text>
                 <Stack gap="xs">
                   <Group gap="xs">
                     <ColorSwatch color="#51cf66" size={12} />
@@ -494,19 +492,27 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
           {/* 统计信息 */}
           <Grid.Col span={{ base: 12, md: 4 }}>
             <Stack gap="md">
-              <Text size="sm" fw={600}>类别统计</Text>
+              <Text size="sm" fw={600}>
+                类别统计
+              </Text>
               {filteredData.categories.map((category, index) => (
                 <Card key={index} withBorder padding="xs">
                   <Group justify="space-between" mb="xs">
                     <Group gap="xs">
                       <ColorSwatch color={category.color} size={16} />
-                      <Text size="sm" fw={600}>{category.name}</Text>
+                      <Text size="sm" fw={600}>
+                        {category.name}
+                      </Text>
                     </Group>
                     <Badge size="sm">{category.point_count}个</Badge>
                   </Group>
                   <Group justify="space-between" mb="xs">
-                    <Text size="xs" c="dimmed">平均掌握度</Text>
-                    <Text size="xs" fw={600}>{category.average_mastery}%</Text>
+                    <Text size="xs" c="dimmed">
+                      平均掌握度
+                    </Text>
+                    <Text size="xs" fw={600}>
+                      {category.average_mastery}%
+                    </Text>
                   </Group>
                   <Progress value={category.average_mastery} color={category.color} size="xs" />
                 </Card>
@@ -514,7 +520,9 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
 
               <Divider />
 
-              <Text size="sm" fw={600}>薄弱环节</Text>
+              <Text size="sm" fw={600}>
+                薄弱环节
+              </Text>
               {filteredData.knowledge_points
                 .filter(point => point.value < 60)
                 .sort((a, b) => a.value - b.value)
@@ -522,11 +530,17 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
                 .map((point, index) => (
                   <Card key={index} withBorder padding="xs">
                     <Group justify="space-between" mb="xs">
-                      <Text size="sm" fw={600}>{point.name}</Text>
-                      <Badge color="red" size="sm">{point.value}%</Badge>
+                      <Text size="sm" fw={600}>
+                        {point.name}
+                      </Text>
+                      <Badge color="red" size="sm">
+                        {point.value}%
+                      </Badge>
                     </Group>
                     <Group justify="space-between">
-                      <Text size="xs" c="dimmed">练习次数: {point.metadata.practice_count}</Text>
+                      <Text size="xs" c="dimmed">
+                        练习次数: {point.metadata.practice_count}
+                      </Text>
                       {getTrendIcon(point.value)}
                     </Group>
                   </Card>
@@ -557,7 +571,9 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
                 <Stack gap="xs">
                   <Group justify="space-between">
                     <Text size="sm">掌握程度</Text>
-                    <Text size="sm" fw={600}>{selectedCell.value}%</Text>
+                    <Text size="sm" fw={600}>
+                      {selectedCell.value}%
+                    </Text>
                   </Group>
                   <Progress value={selectedCell.value} color={selectedCell.color} />
                 </Stack>
@@ -566,7 +582,9 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
                 <Stack gap="xs">
                   <Group justify="space-between">
                     <Text size="sm">准确率</Text>
-                    <Text size="sm" fw={600}>{(selectedCell.metadata.accuracy_rate * 100).toFixed(1)}%</Text>
+                    <Text size="sm" fw={600}>
+                      {(selectedCell.metadata.accuracy_rate * 100).toFixed(1)}%
+                    </Text>
                   </Group>
                   <Progress value={selectedCell.metadata.accuracy_rate * 100} color="blue" />
                 </Stack>
@@ -575,13 +593,31 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
 
             <Grid>
               <Grid.Col span={6}>
-                <Text size="sm" c="dimmed">练习次数</Text>
-                <Text size="lg" fw={700}>{selectedCell.metadata.practice_count}</Text>
+                <Text size="sm" c="dimmed">
+                  练习次数
+                </Text>
+                <Text size="lg" fw={700}>
+                  {selectedCell.metadata.practice_count}
+                </Text>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" c="dimmed">难度等级</Text>
-                <Badge color={selectedCell.metadata.difficulty === 'hard' ? 'red' : selectedCell.metadata.difficulty === 'medium' ? 'orange' : 'green'}>
-                  {selectedCell.metadata.difficulty === 'hard' ? '困难' : selectedCell.metadata.difficulty === 'medium' ? '中等' : '简单'}
+                <Text size="sm" c="dimmed">
+                  难度等级
+                </Text>
+                <Badge
+                  color={
+                    selectedCell.metadata.difficulty === 'hard'
+                      ? 'red'
+                      : selectedCell.metadata.difficulty === 'medium'
+                        ? 'orange'
+                        : 'green'
+                  }
+                >
+                  {selectedCell.metadata.difficulty === 'hard'
+                    ? '困难'
+                    : selectedCell.metadata.difficulty === 'medium'
+                      ? '中等'
+                      : '简单'}
                 </Badge>
               </Grid.Col>
             </Grid>
@@ -590,15 +626,11 @@ export const KnowledgeHeatmap: React.FC<KnowledgeHeatmapProps> = ({
               最后练习: {new Date(selectedCell.metadata.last_practiced).toLocaleString()}
             </Text>
 
-            <Alert
-              color={selectedCell.value < 60 ? 'orange' : 'green'}
-              title="学习建议"
-            >
+            <Alert color={selectedCell.value < 60 ? 'orange' : 'green'} title="学习建议">
               <Text size="sm">
-                {selectedCell.value < 60 ? 
-                  `该知识点掌握程度较低，建议增加练习频率，重点关注错误类型分析。` :
-                  `该知识点掌握良好，可以适当增加难度或拓展相关知识点。`
-                }
+                {selectedCell.value < 60
+                  ? `该知识点掌握程度较低，建议增加练习频率，重点关注错误类型分析。`
+                  : `该知识点掌握良好，可以适当增加难度或拓展相关知识点。`}
               </Text>
             </Alert>
           </Stack>

@@ -1,6 +1,6 @@
 /**
  * PWA工具函数
- * 
+ *
  * 提供PWA相关功能：
  * - Service Worker注册和管理
  * - 离线状态检测
@@ -43,7 +43,7 @@ class PWAManager {
    */
   private initializePWA(): void {
     // 监听安装提示事件
-    window.addEventListener('beforeinstallprompt', (e) => {
+    window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault()
       this.installPrompt = e as BeforeInstallPromptEvent
       this.notifyInstallAvailable()
@@ -84,7 +84,7 @@ class PWAManager {
     if ('serviceWorker' in navigator) {
       try {
         this.registration = await navigator.serviceWorker.register('/sw.js')
-        
+
         // 监听更新
         this.registration.addEventListener('updatefound', () => {
           const newWorker = this.registration?.installing
@@ -123,7 +123,7 @@ class PWAManager {
     try {
       await this.installPrompt.prompt()
       const choiceResult = await this.installPrompt.userChoice
-      
+
       if (choiceResult.outcome === 'accepted') {
         this.installPrompt = null
         return true
@@ -209,8 +209,10 @@ export const pwaUtils = {
    * 检查是否在PWA模式下运行
    */
   isRunningAsPWA(): boolean {
-    return window.matchMedia('(display-mode: standalone)').matches ||
-           (window.navigator as any).standalone === true
+    return (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as any).standalone === true
+    )
   },
 
   /**

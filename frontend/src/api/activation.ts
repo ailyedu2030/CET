@@ -1,6 +1,6 @@
 /**
  * 用户激活API客户端
- * 
+ *
  * 实现🔥需求20验收标准5：
  * - 激活链接处理
  * - 24小时有效期
@@ -47,7 +47,9 @@ export async function activateUser(data: ActivationRequest): Promise<ActivationR
 /**
  * 重发激活邮件
  */
-export async function resendActivationEmail(data: ResendActivationRequest): Promise<ActivationResponse> {
+export async function resendActivationEmail(
+  data: ResendActivationRequest
+): Promise<ActivationResponse> {
   const response = await apiClient.post<ActivationResponse>('/api/v1/activation/resend', data)
   return response.data
 }
@@ -56,6 +58,8 @@ export async function resendActivationEmail(data: ResendActivationRequest): Prom
  * 检查激活链接状态
  */
 export async function checkActivationStatus(token: string): Promise<ActivationStatusResponse> {
-  const response = await apiClient.get<ActivationStatusResponse>(`/api/v1/activation/status/${token}`)
+  const response = await apiClient.get<ActivationStatusResponse>(
+    `/api/v1/activation/status/${token}`
+  )
   return response.data
 }

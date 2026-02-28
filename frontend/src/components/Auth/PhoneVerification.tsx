@@ -1,22 +1,13 @@
 /**
  * 手机验证码组件
- * 
+ *
  * 实现🔥需求20验收标准3：
  * - 手机号验证码验证
  * - 验证码有效期5分钟
  * - 60秒内重发限制
  */
 
-import {
-  TextInput,
-  Button,
-  Group,
-  Stack,
-  Text,
-  Alert,
-  PinInput,
-  Paper,
-} from '@mantine/core'
+import { TextInput, Button, Group, Stack, Text, Alert, PinInput, Paper } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { IconPhone, IconClock, IconCheck, IconAlertCircle } from '@tabler/icons-react'
@@ -28,7 +19,7 @@ import {
   verifyRegistrationSMS,
   type SendSMSRequest,
   type VerifySMSRequest,
-  type VerificationResponse
+  type VerificationResponse,
 } from '../../api/verification'
 
 // 组件属性接口
@@ -67,7 +58,7 @@ export function PhoneVerification({
   // 发送验证码
   const sendSMSMutation = useMutation<VerificationResponse, Error, SendSMSRequest>({
     mutationFn: sendRegistrationSMS,
-    onSuccess: (data) => {
+    onSuccess: data => {
       if (data.success) {
         notifications.show({
           title: '验证码发送成功',
@@ -87,7 +78,7 @@ export function PhoneVerification({
         })
       }
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '发送失败',
         message: error.message || '网络错误，请稍后重试',
@@ -100,7 +91,7 @@ export function PhoneVerification({
   // 验证验证码
   const verifySMSMutation = useMutation<VerificationResponse, Error, VerifySMSRequest>({
     mutationFn: verifyRegistrationSMS,
-    onSuccess: (data) => {
+    onSuccess: data => {
       if (data.success) {
         notifications.show({
           title: '验证成功',
@@ -121,7 +112,7 @@ export function PhoneVerification({
         }
       }
     },
-    onError: (error) => {
+    onError: error => {
       const errorMessage = error.message || '验证失败，请稍后重试'
       notifications.show({
         title: '验证失败',
@@ -151,12 +142,15 @@ export function PhoneVerification({
   }, [countdown])
 
   // 发送验证码
-  const handleSendCode = useCallback((values: { phone: string }) => {
-    sendSMSMutation.mutate({
-      phone_number: values.phone,
-      purpose,
-    })
-  }, [sendSMSMutation, purpose])
+  const handleSendCode = useCallback(
+    (values: { phone: string }) => {
+      sendSMSMutation.mutate({
+        phone_number: values.phone,
+        purpose,
+      })
+    },
+    [sendSMSMutation, purpose]
+  )
 
   // 重新发送验证码
   const handleResendCode = useCallback(() => {
@@ -281,9 +275,7 @@ export function PhoneVerification({
         )}
 
         <Alert color="orange" icon={<IconClock size={16} />}>
-          <Text size="sm">
-            验证码有效期为5分钟，请及时输入。输入完成后将自动验证。
-          </Text>
+          <Text size="sm">验证码有效期为5分钟，请及时输入。输入完成后将自动验证。</Text>
         </Alert>
       </Stack>
     </Paper>

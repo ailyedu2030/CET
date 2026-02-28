@@ -196,38 +196,52 @@ export const courseResourcesApi = {
    * 获取词汇库列表 - 需求11验收标准1
    */
   async getVocabularyLibraries(courseId: number): Promise<VocabularyLibrary[]> {
-    const response = await apiClient.get(`/api/v1/resources/courses/${courseId}/vocabulary-libraries`)
+    const response = await apiClient.get(
+      `/api/v1/resources/courses/${courseId}/vocabulary-libraries`
+    )
     return response.data
   },
 
   /**
    * 创建词汇库
    */
-  async createVocabularyLibrary(courseId: number, data: {
-    name: string
-    description: string
-    permission: 'private' | 'class' | 'public'
-  }): Promise<VocabularyLibrary> {
-    const response = await apiClient.post(`/api/v1/resources/courses/${courseId}/vocabulary-libraries`, data)
+  async createVocabularyLibrary(
+    courseId: number,
+    data: {
+      name: string
+      description: string
+      permission: 'private' | 'class' | 'public'
+    }
+  ): Promise<VocabularyLibrary> {
+    const response = await apiClient.post(
+      `/api/v1/resources/courses/${courseId}/vocabulary-libraries`,
+      data
+    )
     return response.data
   },
 
   /**
    * 获取词汇库中的词汇
    */
-  async getVocabularyItems(libraryId: number, params?: {
-    page?: number
-    pageSize?: number
-    search?: string
-    category?: string
-    difficultyLevel?: number
-  }): Promise<{
+  async getVocabularyItems(
+    libraryId: number,
+    params?: {
+      page?: number
+      pageSize?: number
+      search?: string
+      category?: string
+      difficultyLevel?: number
+    }
+  ): Promise<{
     items: VocabularyItem[]
     total: number
     page: number
     pageSize: number
   }> {
-    const response = await apiClient.get(`/api/v1/resources/vocabulary-libraries/${libraryId}/items`, { params })
+    const response = await apiClient.get(
+      `/api/v1/resources/vocabulary-libraries/${libraryId}/items`,
+      { params }
+    )
     return response.data
   },
 
@@ -237,12 +251,16 @@ export const courseResourcesApi = {
   async importVocabulary(libraryId: number, file: File): Promise<ImportResult> {
     const formData = new FormData()
     formData.append('file', file)
-    
-    const response = await apiClient.post(`/api/v1/resources/vocabulary-libraries/${libraryId}/import`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+
+    const response = await apiClient.post(
+      `/api/v1/resources/vocabulary-libraries/${libraryId}/import`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
     return response.data
   },
 
@@ -262,38 +280,52 @@ export const courseResourcesApi = {
    * 获取知识点库列表 - 需求11验收标准2
    */
   async getKnowledgeLibraries(courseId: number): Promise<KnowledgeLibrary[]> {
-    const response = await apiClient.get(`/api/v1/resources/courses/${courseId}/knowledge-libraries`)
+    const response = await apiClient.get(
+      `/api/v1/resources/courses/${courseId}/knowledge-libraries`
+    )
     return response.data
   },
 
   /**
    * 创建知识点库
    */
-  async createKnowledgeLibrary(courseId: number, data: {
-    name: string
-    description: string
-    permission: 'private' | 'class' | 'public'
-  }): Promise<KnowledgeLibrary> {
-    const response = await apiClient.post(`/api/v1/resources/courses/${courseId}/knowledge-libraries`, data)
+  async createKnowledgeLibrary(
+    courseId: number,
+    data: {
+      name: string
+      description: string
+      permission: 'private' | 'class' | 'public'
+    }
+  ): Promise<KnowledgeLibrary> {
+    const response = await apiClient.post(
+      `/api/v1/resources/courses/${courseId}/knowledge-libraries`,
+      data
+    )
     return response.data
   },
 
   /**
    * 获取知识点
    */
-  async getKnowledgePoints(libraryId: number, params?: {
-    page?: number
-    pageSize?: number
-    search?: string
-    category?: string
-    difficultyLevel?: number
-  }): Promise<{
+  async getKnowledgePoints(
+    libraryId: number,
+    params?: {
+      page?: number
+      pageSize?: number
+      search?: string
+      category?: string
+      difficultyLevel?: number
+    }
+  ): Promise<{
     items: KnowledgePoint[]
     total: number
     page: number
     pageSize: number
   }> {
-    const response = await apiClient.get(`/api/v1/resources/knowledge-libraries/${libraryId}/points`, { params })
+    const response = await apiClient.get(
+      `/api/v1/resources/knowledge-libraries/${libraryId}/points`,
+      { params }
+    )
     return response.data
   },
 
@@ -303,12 +335,16 @@ export const courseResourcesApi = {
   async importKnowledgePoints(libraryId: number, file: File): Promise<ImportResult> {
     const formData = new FormData()
     formData.append('file', file)
-    
-    const response = await apiClient.post(`/api/v1/resources/knowledge-libraries/${libraryId}/import`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+
+    const response = await apiClient.post(
+      `/api/v1/resources/knowledge-libraries/${libraryId}/import`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
     return response.data
   },
 
@@ -325,16 +361,19 @@ export const courseResourcesApi = {
   /**
    * 添加教材
    */
-  async addMaterial(courseId: number, data: {
-    title: string
-    isbn?: string
-    publisher: string
-    edition: string
-    authors: string[]
-    publicationYear: number
-    description: string
-    isCustom: boolean
-  }): Promise<Material> {
+  async addMaterial(
+    courseId: number,
+    data: {
+      title: string
+      isbn?: string
+      publisher: string
+      edition: string
+      authors: string[]
+      publicationYear: number
+      description: string
+      isCustom: boolean
+    }
+  ): Promise<Material> {
     const response = await apiClient.post(`/api/v1/resources/courses/${courseId}/materials`, data)
     return response.data
   },
@@ -342,20 +381,28 @@ export const courseResourcesApi = {
   /**
    * 上传自编教材
    */
-  async uploadCustomMaterial(courseId: number, file: File, metadata: {
-    title: string
-    description: string
-    authors: string[]
-  }): Promise<Material> {
+  async uploadCustomMaterial(
+    courseId: number,
+    file: File,
+    metadata: {
+      title: string
+      description: string
+      authors: string[]
+    }
+  ): Promise<Material> {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('metadata', JSON.stringify(metadata))
-    
-    const response = await apiClient.post(`/api/v1/resources/courses/${courseId}/materials/upload`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+
+    const response = await apiClient.post(
+      `/api/v1/resources/courses/${courseId}/materials/upload`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
     return response.data
   },
 
@@ -372,12 +419,15 @@ export const courseResourcesApi = {
   /**
    * 创建考纲
    */
-  async createSyllabus(courseId: number, data: {
-    title: string
-    description: string
-    objectives: string[]
-    knowledgePoints: Omit<SyllabusKnowledgePoint, 'id'>[]
-  }): Promise<Syllabus> {
+  async createSyllabus(
+    courseId: number,
+    data: {
+      title: string
+      description: string
+      objectives: string[]
+      knowledgePoints: Omit<SyllabusKnowledgePoint, 'id'>[]
+    }
+  ): Promise<Syllabus> {
     const response = await apiClient.post(`/api/v1/resources/courses/${courseId}/syllabus`, data)
     return response.data
   },
@@ -411,7 +461,9 @@ export const courseResourcesApi = {
   /**
    * 获取共享资源
    */
-  async getSharedResources(resourceType: 'vocabulary' | 'knowledge' | 'material' | 'syllabus'): Promise<any[]> {
+  async getSharedResources(
+    resourceType: 'vocabulary' | 'knowledge' | 'material' | 'syllabus'
+  ): Promise<any[]> {
     const response = await apiClient.get(`/api/v1/resources/shared/${resourceType}`)
     return response.data
   },
@@ -429,10 +481,17 @@ export const courseResourcesApi = {
   /**
    * 回滚到指定版本
    */
-  async rollbackToVersion(resourceType: string, resourceId: number, versionId: number): Promise<{ success: boolean }> {
-    const response = await apiClient.post(`/api/v1/resources/${resourceType}/${resourceId}/rollback`, {
-      versionId,
-    })
+  async rollbackToVersion(
+    resourceType: string,
+    resourceId: number,
+    versionId: number
+  ): Promise<{ success: boolean }> {
+    const response = await apiClient.post(
+      `/api/v1/resources/${resourceType}/${resourceId}/rollback`,
+      {
+        versionId,
+      }
+    )
     return response.data
   },
 }

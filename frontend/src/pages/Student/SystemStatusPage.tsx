@@ -1,6 +1,6 @@
 /**
  * 学生系统状态页面
- * 
+ *
  * 集成SystemStatusPanel组件，提供系统状态监控功能
  */
 
@@ -20,7 +20,7 @@ const SystemStatusPage: React.FC = () => {
             实时监控系统性能、网络状态、安全会话和批量处理状态
           </Text>
         </div>
-        
+
         <SystemStatusPanel />
       </Stack>
     </Container>

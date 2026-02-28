@@ -1,6 +1,6 @@
 /**
  * 冲突解决组件
- * 
+ *
  * 处理离线同步冲突：
  * - 显示冲突详情
  * - 提供解决选项
@@ -56,7 +56,7 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
     data?: any
   ) => {
     setIsResolving(true)
-    
+
     try {
       switch (resolution) {
         case 'local':
@@ -71,7 +71,7 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
           }
           break
       }
-      
+
       setSelectedConflict(null)
       _setMergeData(null)
     } catch (error) {
@@ -84,20 +84,21 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
   // 生成合并数据
   const generateMergeData = (conflict: ConflictItem) => {
     const merged = { ...conflict.serverData }
-    
+
     // 简单的合并策略：优先使用最新的字段
     Object.keys(conflict.localData).forEach(key => {
       if (conflict.conflictFields.includes(key)) {
         // 冲突字段，需要用户选择
-        merged[key] = conflict.localTimestamp > conflict.serverTimestamp 
-          ? conflict.localData[key] 
-          : conflict.serverData[key]
+        merged[key] =
+          conflict.localTimestamp > conflict.serverTimestamp
+            ? conflict.localData[key]
+            : conflict.serverData[key]
       } else {
         // 非冲突字段，使用本地数据
         merged[key] = conflict.localData[key]
       }
     })
-    
+
     return merged
   }
 
@@ -113,12 +114,8 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
       resources: 'green',
       students: 'orange',
     }
-    
-    return (
-      <Badge color={colors[type as keyof typeof colors] || 'gray'}>
-        {type}
-      </Badge>
-    )
+
+    return <Badge color={colors[type as keyof typeof colors] || 'gray'}>{type}</Badge>
   }
 
   return (
@@ -143,15 +140,18 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
                   <Text fw={600}>冲突列表</Text>
                   <Badge color="red">{conflicts.length} 个冲突</Badge>
                 </Group>
-                
+
                 <Stack gap="xs">
-                  {conflicts.map((conflict) => (
+                  {conflicts.map(conflict => (
                     <Card
                       key={conflict.id}
                       withBorder
                       style={{
                         cursor: 'pointer',
-                        backgroundColor: selectedConflict?.id === conflict.id ? 'var(--mantine-color-blue-0)' : undefined,
+                        backgroundColor:
+                          selectedConflict?.id === conflict.id
+                            ? 'var(--mantine-color-blue-0)'
+                            : undefined,
                       }}
                       onClick={() => setSelectedConflict(conflict)}
                     >
@@ -162,19 +162,19 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
                             {conflict.id}
                           </Text>
                         </Group>
-                        
+
                         <Group gap="xs">
                           <Tooltip label="冲突字段数量">
                             <Badge variant="outline" size="sm">
                               {conflict.conflictFields.length} 字段
                             </Badge>
                           </Tooltip>
-                          
+
                           <ActionIcon
                             size="sm"
                             variant="light"
                             color="blue"
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation()
                               setSelectedConflict(conflict)
                             }}
@@ -195,10 +195,7 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
                 <Stack gap="md">
                   <Group justify="space-between">
                     <Text fw={600}>冲突详情</Text>
-                    <ActionIcon
-                      variant="subtle"
-                      onClick={() => setSelectedConflict(null)}
-                    >
+                    <ActionIcon variant="subtle" onClick={() => setSelectedConflict(null)}>
                       <IconX size={16} />
                     </ActionIcon>
                   </Group>
@@ -221,7 +218,9 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
                             <Stack gap="xs">
                               <Group gap="xs">
                                 <IconUser size={16} />
-                                <Text fw={600} size="sm">本地数据</Text>
+                                <Text fw={600} size="sm">
+                                  本地数据
+                                </Text>
                                 <Badge size="xs" color="blue">
                                   {formatTime(selectedConflict.localTimestamp)}
                                 </Badge>
@@ -237,7 +236,9 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
                             <Stack gap="xs">
                               <Group gap="xs">
                                 <IconServer size={16} />
-                                <Text fw={600} size="sm">服务器数据</Text>
+                                <Text fw={600} size="sm">
+                                  服务器数据
+                                </Text>
                                 <Badge size="xs" color="green">
                                   {formatTime(selectedConflict.serverTimestamp)}
                                 </Badge>
@@ -251,7 +252,9 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
 
                         {/* 冲突字段 */}
                         <Alert color="orange" icon={<IconAlertTriangle size={16} />}>
-                          <Text size="sm" fw={600}>冲突字段：</Text>
+                          <Text size="sm" fw={600}>
+                            冲突字段：
+                          </Text>
                           <Group gap="xs" mt="xs">
                             {selectedConflict.conflictFields.map(field => (
                               <Badge key={field} color="orange" variant="outline">
@@ -266,24 +269,32 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
                     <Tabs.Panel value="details" pt="md">
                       <Stack gap="md">
                         <Group>
-                          <Text size="sm" fw={600}>数据类型：</Text>
+                          <Text size="sm" fw={600}>
+                            数据类型：
+                          </Text>
                           {getConflictTypeBadge(selectedConflict.type)}
                         </Group>
-                        
+
                         <Group>
-                          <Text size="sm" fw={600}>数据ID：</Text>
+                          <Text size="sm" fw={600}>
+                            数据ID：
+                          </Text>
                           <Code>{selectedConflict.id}</Code>
                         </Group>
-                        
+
                         <Divider />
-                        
+
                         <Group>
-                          <Text size="sm" fw={600}>本地修改时间：</Text>
+                          <Text size="sm" fw={600}>
+                            本地修改时间：
+                          </Text>
                           <Text size="sm">{formatTime(selectedConflict.localTimestamp)}</Text>
                         </Group>
-                        
+
                         <Group>
-                          <Text size="sm" fw={600}>服务器修改时间：</Text>
+                          <Text size="sm" fw={600}>
+                            服务器修改时间：
+                          </Text>
                           <Text size="sm">{formatTime(selectedConflict.serverTimestamp)}</Text>
                         </Group>
                       </Stack>
@@ -292,7 +303,7 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
 
                   {/* 解决选项 */}
                   <Divider />
-                  
+
                   <Group justify="center" gap="md">
                     <Button
                       variant="outline"
@@ -303,7 +314,7 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
                     >
                       使用本地数据
                     </Button>
-                    
+
                     <Button
                       variant="outline"
                       color="green"
@@ -313,7 +324,7 @@ export function ConflictResolver({ opened, onClose }: ConflictResolverProps): JS
                     >
                       使用服务器数据
                     </Button>
-                    
+
                     <Button
                       variant="outline"
                       color="orange"

@@ -38,10 +38,7 @@ export function VirtualList<T>({
   // 计算可见范围
   const { startIndex, endIndex } = useMemo(() => {
     const start = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan)
-    const end = Math.min(
-      items.length - 1,
-      Math.ceil((scrollTop + height) / itemHeight) + overscan
-    )
+    const end = Math.min(items.length - 1, Math.ceil((scrollTop + height) / itemHeight) + overscan)
     return { startIndex: start, endIndex: end }
   }, [scrollTop, height, itemHeight, overscan, items.length])
 

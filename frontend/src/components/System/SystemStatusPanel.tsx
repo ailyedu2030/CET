@@ -1,6 +1,6 @@
 /**
  * 系统状态面板
- * 
+ *
  * 集成展示🔥需求31的所有功能：
  * - 网络状态和优化
  * - 安全会话管理
@@ -77,11 +77,16 @@ const SystemStatusPanel: React.FC<SystemStatusPanelProps> = ({ className }) => {
 
   const getNetworkQualityColor = (quality: string) => {
     switch (quality) {
-      case 'excellent': return 'green'
-      case 'good': return 'blue'
-      case 'fair': return 'yellow'
-      case 'poor': return 'red'
-      default: return 'gray'
+      case 'excellent':
+        return 'green'
+      case 'good':
+        return 'blue'
+      case 'fair':
+        return 'yellow'
+      case 'poor':
+        return 'red'
+      default:
+        return 'gray'
     }
   }
 
@@ -98,13 +103,12 @@ const SystemStatusPanel: React.FC<SystemStatusPanelProps> = ({ className }) => {
   return (
     <Card className={className} padding="lg" radius="md" withBorder>
       <Group justify="space-between" mb="md">
-        <Text size="lg" fw={600}>系统状态监控</Text>
+        <Text size="lg" fw={600}>
+          系统状态监控
+        </Text>
         <Group gap="xs">
           <Tooltip label="刷新状态">
-            <ActionIcon 
-              variant="light" 
-              onClick={() => window.location.reload()}
-            >
+            <ActionIcon variant="light" onClick={() => window.location.reload()}>
               <IconRefresh size={16} />
             </ActionIcon>
           </Tooltip>
@@ -129,29 +133,30 @@ const SystemStatusPanel: React.FC<SystemStatusPanelProps> = ({ className }) => {
                 )}
                 <Text fw={500}>网络状态</Text>
               </Group>
-              <Badge 
-                color={getNetworkQualityColor(networkStatus.quality)}
-                variant="light"
-              >
+              <Badge color={getNetworkQualityColor(networkStatus.quality)} variant="light">
                 {networkStatus.quality}
               </Badge>
             </Group>
-            
+
             <Stack gap="xs">
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">连接状态</Text>
-                <Text size="sm">
-                  {networkStatus.isOnline ? '已连接' : '已断开'}
+                <Text size="sm" c="dimmed">
+                  连接状态
                 </Text>
+                <Text size="sm">{networkStatus.isOnline ? '已连接' : '已断开'}</Text>
               </Group>
-              
+
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">网络质量</Text>
+                <Text size="sm" c="dimmed">
+                  网络质量
+                </Text>
                 <Text size="sm">{networkStatus.quality}</Text>
               </Group>
-              
+
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">最后检测</Text>
+                <Text size="sm" c="dimmed">
+                  最后检测
+                </Text>
                 <Text size="sm">{formatTime(networkStatus.lastCheck)}</Text>
               </Group>
             </Stack>
@@ -166,35 +171,35 @@ const SystemStatusPanel: React.FC<SystemStatusPanelProps> = ({ className }) => {
                 <IconShield size={20} color="blue" />
                 <Text fw={500}>安全会话</Text>
               </Group>
-              <Badge 
-                color={sessionInfo.isActive ? 'green' : 'gray'}
-                variant="light"
-              >
+              <Badge color={sessionInfo.isActive ? 'green' : 'gray'} variant="light">
                 {sessionInfo.isActive ? '活跃' : '非活跃'}
               </Badge>
             </Group>
-            
+
             <Stack gap="xs">
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">会话开始</Text>
+                <Text size="sm" c="dimmed">
+                  会话开始
+                </Text>
                 <Text size="sm">{formatTime(sessionInfo.startTime)}</Text>
               </Group>
-              
+
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">最后活动</Text>
+                <Text size="sm" c="dimmed">
+                  最后活动
+                </Text>
                 <Text size="sm">{formatTime(sessionInfo.lastActivity)}</Text>
               </Group>
-              
+
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">今日使用</Text>
+                <Text size="sm" c="dimmed">
+                  今日使用
+                </Text>
                 <Text size="sm">{formatDuration(sessionInfo.dailyUsage)}</Text>
               </Group>
 
               {sessionInfo.dailyUsage > 60 && (
-                <Alert
-                  icon={<IconClock size={16} />}
-                  color="yellow"
-                >
+                <Alert icon={<IconClock size={16} />} color="yellow">
                   学习时间较长，建议适当休息
                 </Alert>
               )}
@@ -210,40 +215,42 @@ const SystemStatusPanel: React.FC<SystemStatusPanelProps> = ({ className }) => {
                 <IconActivity size={20} color="purple" />
                 <Text fw={500}>批量处理</Text>
               </Group>
-              <Badge 
-                color={queueStatus.queueLength > 0 ? 'orange' : 'green'}
-                variant="light"
-              >
+              <Badge color={queueStatus.queueLength > 0 ? 'orange' : 'green'} variant="light">
                 {queueStatus.queueLength > 0 ? '处理中' : '空闲'}
               </Badge>
             </Group>
-            
+
             <Stack gap="xs">
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">队列长度</Text>
+                <Text size="sm" c="dimmed">
+                  队列长度
+                </Text>
                 <Text size="sm">{queueStatus.queueLength}</Text>
               </Group>
-              
+
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">高优先级</Text>
+                <Text size="sm" c="dimmed">
+                  高优先级
+                </Text>
                 <Text size="sm">{queueStatus.highPriorityCount}</Text>
               </Group>
-              
+
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">总请求数</Text>
+                <Text size="sm" c="dimmed">
+                  总请求数
+                </Text>
                 <Text size="sm">{batchStats.totalRequests}</Text>
               </Group>
-              
+
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">成功率</Text>
+                <Text size="sm" c="dimmed">
+                  成功率
+                </Text>
                 <Text size="sm">{(batchStats.successRate * 100).toFixed(1)}%</Text>
               </Group>
 
               {queueStatus.queueLength > 5 && (
-                <Alert
-                  icon={<IconAlertTriangle size={16} />}
-                  color="orange"
-                >
+                <Alert icon={<IconAlertTriangle size={16} />} color="orange">
                   请求队列较长，可能影响响应速度
                 </Alert>
               )}
@@ -260,42 +267,48 @@ const SystemStatusPanel: React.FC<SystemStatusPanelProps> = ({ className }) => {
                 <Text fw={500}>性能指标</Text>
               </Group>
             </Group>
-            
+
             <Stack gap="xs">
               <div>
                 <Group justify="space-between" mb={4}>
-                  <Text size="sm" c="dimmed">批处理效率</Text>
+                  <Text size="sm" c="dimmed">
+                    批处理效率
+                  </Text>
                   <Text size="sm">
-                    {batchStats.batchedRequests > 0 
+                    {batchStats.batchedRequests > 0
                       ? `${((batchStats.batchedRequests / batchStats.totalRequests) * 100).toFixed(1)}%`
-                      : '0%'
-                    }
+                      : '0%'}
                   </Text>
                 </Group>
-                <Progress 
-                  value={batchStats.batchedRequests > 0 
-                    ? (batchStats.batchedRequests / batchStats.totalRequests) * 100
-                    : 0
-                  } 
-                  size="sm" 
-                  color="teal" 
+                <Progress
+                  value={
+                    batchStats.batchedRequests > 0
+                      ? (batchStats.batchedRequests / batchStats.totalRequests) * 100
+                      : 0
+                  }
+                  size="sm"
+                  color="teal"
                 />
               </div>
-              
+
               <div>
                 <Group justify="space-between" mb={4}>
-                  <Text size="sm" c="dimmed">系统稳定性</Text>
+                  <Text size="sm" c="dimmed">
+                    系统稳定性
+                  </Text>
                   <Text size="sm">{(batchStats.successRate * 100).toFixed(1)}%</Text>
                 </Group>
-                <Progress 
-                  value={batchStats.successRate * 100} 
-                  size="sm" 
-                  color={batchStats.successRate > 0.9 ? 'green' : 'yellow'} 
+                <Progress
+                  value={batchStats.successRate * 100}
+                  size="sm"
+                  color={batchStats.successRate > 0.9 ? 'green' : 'yellow'}
                 />
               </div>
-              
+
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">平均批次大小</Text>
+                <Text size="sm" c="dimmed">
+                  平均批次大小
+                </Text>
                 <Text size="sm">{batchStats.averageBatchSize.toFixed(1)}</Text>
               </Group>
             </Stack>
@@ -307,28 +320,20 @@ const SystemStatusPanel: React.FC<SystemStatusPanelProps> = ({ className }) => {
 
       {/* 快速操作 */}
       <Group justify="center">
-        <Button 
-          variant="light" 
+        <Button
+          variant="light"
           size="sm"
           onClick={() => batchProcessor.flush()}
           disabled={queueStatus.queueLength === 0}
         >
           立即处理队列
         </Button>
-        
-        <Button 
-          variant="light" 
-          size="sm"
-          onClick={() => networkOptimizer.detectNetworkQuality()}
-        >
+
+        <Button variant="light" size="sm" onClick={() => networkOptimizer.detectNetworkQuality()}>
           检测网络质量
         </Button>
-        
-        <Button 
-          variant="light" 
-          size="sm"
-          onClick={() => securityService.updateActivity()}
-        >
+
+        <Button variant="light" size="sm" onClick={() => securityService.updateActivity()}>
           更新活动状态
         </Button>
       </Group>

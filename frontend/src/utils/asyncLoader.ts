@@ -1,6 +1,6 @@
 /**
  * 异步加载工具
- * 
+ *
  * 提供异步资源加载功能：
  * - 动态模块加载
  * - 资源预加载
@@ -117,14 +117,14 @@ class AsyncLoaderManager {
 
     try {
       const data = await loadPromise
-      
+
       // 缓存结果
       if (finalConfig.cache) {
         this.cache.set(key, data)
       }
-      
+
       this.loadingPromises.delete(key)
-      
+
       return {
         data,
         state: 'loaded',
@@ -132,7 +132,7 @@ class AsyncLoaderManager {
       }
     } catch (error) {
       this.loadingPromises.delete(key)
-      
+
       return {
         data: null,
         state: 'error',
@@ -159,11 +159,11 @@ class AsyncLoaderManager {
 
         const loadPromise = moduleFactory()
         const result = await Promise.race([loadPromise, timeoutPromise])
-        
+
         return result
       } catch (error) {
         lastError = error as Error
-        
+
         // 如果不是最后一次尝试，等待后重试
         if (attempt < config.retryCount) {
           await this.delay(config.retryDelay * (attempt + 1)) // 指数退避
@@ -205,10 +205,8 @@ class AsyncLoaderManager {
       config?: LoadConfig
     }>
   ): Promise<void> {
-    const promises = items.map(item => 
-      this.preload(item.factory, item.key, item.config)
-    )
-    
+    const promises = items.map(item => this.preload(item.factory, item.key, item.config))
+
     await Promise.allSettled(promises)
   }
 
@@ -217,13 +215,14 @@ class AsyncLoaderManager {
    */
   async loadScript(src: string, config: LoadConfig = {}): Promise<LoadResult<void>> {
     return this.loadModule(
-      () => new Promise<void>((resolve, reject) => {
-        const script = document.createElement('script')
-        script.src = src
-        script.onload = () => resolve()
-        script.onerror = () => reject(new Error(`Failed to load script: ${src}`))
-        document.head.appendChild(script)
-      }),
+      () =>
+        new Promise<void>((resolve, reject) => {
+          const script = document.createElement('script')
+          script.src = src
+          script.onload = () => resolve()
+          script.onerror = () => reject(new Error(`Failed to load script: ${src}`))
+          document.head.appendChild(script)
+        }),
       `script_${src}`,
       config
     )
@@ -234,14 +233,15 @@ class AsyncLoaderManager {
    */
   async loadCSS(href: string, config: LoadConfig = {}): Promise<LoadResult<void>> {
     return this.loadModule(
-      () => new Promise<void>((resolve, reject) => {
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = href
-        link.onload = () => resolve()
-        link.onerror = () => reject(new Error(`Failed to load CSS: ${href}`))
-        document.head.appendChild(link)
-      }),
+      () =>
+        new Promise<void>((resolve, reject) => {
+          const link = document.createElement('link')
+          link.rel = 'stylesheet'
+          link.href = href
+          link.onload = () => resolve()
+          link.onerror = () => reject(new Error(`Failed to load CSS: ${href}`))
+          document.head.appendChild(link)
+        }),
       `css_${href}`,
       config
     )
@@ -317,7 +317,7 @@ export function useAsyncLoader<T>(
 
   const load = useCallback(async () => {
     setResult(prev => ({ ...prev, state: 'loading', error: null }))
-    
+
     const loadResult = await asyncLoader.loadModule(moduleFactory, key, config)
     setResult(loadResult)
   }, [moduleFactory, key, config])
@@ -370,7 +370,7 @@ export const loadUtils = {
    */
   estimateLoadTime(size: number, bandwidth: number = 1000000): number {
     // 带宽单位：字节/秒，默认1MB/s
-    return Math.ceil(size / bandwidth * 1000) // 返回毫秒
+    return Math.ceil((size / bandwidth) * 1000) // 返回毫秒
   },
 }
 

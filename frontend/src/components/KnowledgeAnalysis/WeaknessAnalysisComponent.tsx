@@ -26,9 +26,7 @@ import {
   IconBrain,
   IconCheck,
 } from '@tabler/icons-react'
-import {
-  knowledgeAnalysisApi,
-} from '../../api/knowledgeAnalysis'
+import { knowledgeAnalysisApi } from '../../api/knowledgeAnalysis'
 
 interface WeaknessAnalysisComponentProps {
   studentId: number
@@ -50,7 +48,11 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
   })
 
   // 获取薄弱环节分析
-  const { data: weaknessData, isLoading: weaknessLoading, refetch: refetchWeakness } = useQuery({
+  const {
+    data: weaknessData,
+    isLoading: weaknessLoading,
+    refetch: refetchWeakness,
+  } = useQuery({
     queryKey: ['weakness-analysis', studentId, filters],
     queryFn: () => knowledgeAnalysisApi.getWeaknessAnalysis(studentId, filters),
     refetchInterval: autoRefresh ? 60000 : false, // 1分钟自动刷新
@@ -65,14 +67,14 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
   // 生成学习路径
   const generatePathMutation = useMutation({
     mutationFn: (data: any) => knowledgeAnalysisApi.generateLearningPath(studentId, data),
-    onSuccess: (result) => {
+    onSuccess: result => {
       notifications.show({
         title: '学习路径生成成功',
         message: `已生成包含 ${result.learning_sequence.length} 个知识点的学习路径`,
         color: 'green',
       })
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '生成失败',
         message: error.message,
@@ -89,7 +91,7 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
         include_recommendations: true,
         time_range: 'month',
       })
-      
+
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -98,7 +100,7 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-      
+
       notifications.show({
         title: '导出成功',
         message: '薄弱环节分析报告已导出',
@@ -139,10 +141,14 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
   // 获取优先级颜色
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'red'
-      case 'medium': return 'yellow'
-      case 'low': return 'green'
-      default: return 'gray'
+      case 'high':
+        return 'red'
+      case 'medium':
+        return 'yellow'
+      case 'low':
+        return 'green'
+      default:
+        return 'gray'
     }
   }
 
@@ -224,7 +230,8 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
 
             <Stack gap="xs">
               <Text size="sm" fw={500}>
-                总体掌握率: {((statsData.mastered_points / statsData.total_points) * 100).toFixed(1)}%
+                总体掌握率:{' '}
+                {((statsData.mastered_points / statsData.total_points) * 100).toFixed(1)}%
               </Text>
               <Progress
                 value={(statsData.mastered_points / statsData.total_points) * 100}
@@ -240,7 +247,7 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
       <Card withBorder padding="lg">
         <Stack gap="md">
           <LoadingOverlay visible={isLoading} />
-          
+
           <Group justify="space-between" align="center">
             <Text fw={500} size="lg">
               薄弱环节分析
@@ -261,10 +268,12 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
             <NumberInput
               label="最低薄弱分数"
               value={filters.min_weakness_score}
-              onChange={(value) => setFilters(prev => ({ 
-                ...prev, 
-                min_weakness_score: typeof value === 'number' ? value : 60 
-              }))}
+              onChange={value =>
+                setFilters(prev => ({
+                  ...prev,
+                  min_weakness_score: typeof value === 'number' ? value : 60,
+                }))
+              }
               min={0}
               max={100}
               style={{ width: 150 }}
@@ -272,10 +281,12 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
             <NumberInput
               label="显示数量"
               value={filters.limit}
-              onChange={(value) => setFilters(prev => ({ 
-                ...prev, 
-                limit: typeof value === 'number' ? value : 10 
-              }))}
+              onChange={value =>
+                setFilters(prev => ({
+                  ...prev,
+                  limit: typeof value === 'number' ? value : 10,
+                }))
+              }
               min={1}
               max={50}
               style={{ width: 120 }}
@@ -294,7 +305,8 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
                     发现 <strong>{weaknessData.weak_points.length}</strong> 个薄弱知识点
                   </Text>
                   <Text size="sm">
-                    建议下次复习时间: <strong>{new Date(weaknessData.next_review_date).toLocaleDateString()}</strong>
+                    建议下次复习时间:{' '}
+                    <strong>{new Date(weaknessData.next_review_date).toLocaleDateString()}</strong>
                   </Text>
                 </Stack>
               </Alert>
@@ -302,7 +314,9 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
               {/* 重点关注领域 */}
               {weaknessData.focus_areas.length > 0 && (
                 <Group gap="xs">
-                  <Text size="sm" fw={500}>重点关注领域:</Text>
+                  <Text size="sm" fw={500}>
+                    重点关注领域:
+                  </Text>
                   {weaknessData.focus_areas.map(area => (
                     <Badge key={area} color="orange" variant="light">
                       {area}
@@ -319,12 +333,13 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
                       <Accordion.Control>
                         <Group justify="space-between" style={{ width: '100%' }}>
                           <Group gap="sm">
-                            <Text fw={500}>
-                              {weakPoint.knowledge_point.name}
-                            </Text>
+                            <Text fw={500}>{weakPoint.knowledge_point.name}</Text>
                             <Badge color={getPriorityColor(weakPoint.priority_level)} size="sm">
-                              {weakPoint.priority_level === 'high' ? '高优先级' :
-                               weakPoint.priority_level === 'medium' ? '中优先级' : '低优先级'}
+                              {weakPoint.priority_level === 'high'
+                                ? '高优先级'
+                                : weakPoint.priority_level === 'medium'
+                                  ? '中优先级'
+                                  : '低优先级'}
                             </Badge>
                           </Group>
                           <Group gap="xs">
@@ -360,7 +375,9 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
 
                           {weakPoint.error_patterns.length > 0 && (
                             <div>
-                              <Text size="sm" fw={500} mb="xs">错误模式:</Text>
+                              <Text size="sm" fw={500} mb="xs">
+                                错误模式:
+                              </Text>
                               <Group gap="xs">
                                 {weakPoint.error_patterns.map(pattern => (
                                   <Badge key={pattern} color="red" variant="outline" size="sm">
@@ -373,7 +390,9 @@ export const WeaknessAnalysisComponent: React.FC<WeaknessAnalysisComponentProps>
 
                           {weakPoint.recommended_actions.length > 0 && (
                             <div>
-                              <Text size="sm" fw={500} mb="xs">建议行动:</Text>
+                              <Text size="sm" fw={500} mb="xs">
+                                建议行动:
+                              </Text>
                               <Timeline active={-1} bulletSize={16}>
                                 {weakPoint.recommended_actions.map((action, actionIndex) => (
                                   <Timeline.Item

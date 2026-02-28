@@ -55,9 +55,7 @@ export function PermissionAuditPage(): JSX.Element {
   })
 
   // 获取审计日志
-  const {
-    data: auditData,
-  } = useQuery({
+  const { data: auditData } = useQuery({
     queryKey: ['audit-logs', page, searchForm.values],
     queryFn: async () => {
       return await auditApi.getAuditLogs({
@@ -95,7 +93,9 @@ export function PermissionAuditPage(): JSX.Element {
   const handleExportReport = async (format: 'pdf' | 'excel') => {
     try {
       const blob = await auditApi.generateAuditReport({
-        start_date: searchForm.values.start_date?.toISOString() || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        start_date:
+          searchForm.values.start_date?.toISOString() ||
+          new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
         end_date: searchForm.values.end_date?.toISOString() || new Date().toISOString(),
         format,
       })
@@ -140,8 +140,6 @@ export function PermissionAuditPage(): JSX.Element {
         return 'blue'
     }
   }
-
-
 
   return (
     <Container size="xl" py="lg">
@@ -290,7 +288,11 @@ export function PermissionAuditPage(): JSX.Element {
         <Alert color="red" icon={<IconAlertTriangle size={16} />} mb="lg">
           <Text fw={500}>检测到 {securityEvents.length} 个安全事件</Text>
           <Text size="sm">
-            最新事件：{securityEvents[0]?.description} ({securityEvents[0]?.created_at ? new Date(securityEvents[0].created_at).toLocaleString() : '未知时间'})
+            最新事件：{securityEvents[0]?.description} (
+            {securityEvents[0]?.created_at
+              ? new Date(securityEvents[0].created_at).toLocaleString()
+              : '未知时间'}
+            )
           </Text>
         </Alert>
       )}
@@ -360,11 +362,7 @@ export function PermissionAuditPage(): JSX.Element {
 
         {auditData && auditData.total > 20 && (
           <Group justify="center" p="md">
-            <Pagination
-              value={page}
-              onChange={setPage}
-              total={Math.ceil(auditData.total / 20)}
-            />
+            <Pagination value={page} onChange={setPage} total={Math.ceil(auditData.total / 20)} />
           </Group>
         )}
       </Paper>

@@ -41,9 +41,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <Paper shadow="md" p="xl" radius="md">
             <Stack gap="md">
               <Title order={3}>出现了一些问题</Title>
-              <Text c="dimmed">
-                应用程序遇到了一个意外错误。请尝试重新加载页面。
-              </Text>
+              <Text c="dimmed">应用程序遇到了一个意外错误。请尝试重新加载页面。</Text>
               {this.state.error && (
                 <Text size="sm" c="red" style={{ fontFamily: 'monospace' }}>
                   {this.state.error.message}

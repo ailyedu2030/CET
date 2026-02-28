@@ -148,26 +148,37 @@ export const resourceLibraryApi = {
    * 上传教学素材
    */
   async uploadTeachingMaterial(formData: FormData): Promise<TeachingMaterial> {
-    const response = await apiClient.post('/api/v1/resource-library/teaching-materials/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+    const response = await apiClient.post(
+      '/api/v1/resource-library/teaching-materials/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
     return response.data
   },
 
   /**
    * 批量分类教学素材
    */
-  async batchCategorizeTeachingMaterials(materialIds: number[], category: string, tags: string[]): Promise<{
+  async batchCategorizeTeachingMaterials(
+    materialIds: number[],
+    category: string,
+    tags: string[]
+  ): Promise<{
     success: boolean
     updatedCount: number
   }> {
-    const response = await apiClient.post('/api/v1/resource-library/teaching-materials/batch-categorize', {
-      materialIds,
-      category,
-      tags,
-    })
+    const response = await apiClient.post(
+      '/api/v1/resource-library/teaching-materials/batch-categorize',
+      {
+        materialIds,
+        category,
+        tags,
+      }
+    )
     return response.data
   },
 
@@ -179,7 +190,9 @@ export const resourceLibraryApi = {
     suggestedTags: string[]
     confidence: number
   }> {
-    const response = await apiClient.post(`/api/v1/resource-library/teaching-materials/${materialId}/auto-categorize`)
+    const response = await apiClient.post(
+      `/api/v1/resource-library/teaching-materials/${materialId}/auto-categorize`
+    )
     return response.data
   },
 
@@ -214,7 +227,20 @@ export const resourceLibraryApi = {
   /**
    * 创建教案模板
    */
-  async createLessonTemplate(templateData: Omit<LessonTemplate, 'id' | 'author' | 'usageCount' | 'rating' | 'ratingCount' | 'createdAt' | 'updatedAt' | 'isBookmarked' | 'isFavorited'>): Promise<LessonTemplate> {
+  async createLessonTemplate(
+    templateData: Omit<
+      LessonTemplate,
+      | 'id'
+      | 'author'
+      | 'usageCount'
+      | 'rating'
+      | 'ratingCount'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'isBookmarked'
+      | 'isFavorited'
+    >
+  ): Promise<LessonTemplate> {
     const response = await apiClient.post('/api/v1/resource-library/lesson-templates', templateData)
     return response.data
   },
@@ -222,22 +248,35 @@ export const resourceLibraryApi = {
   /**
    * 共享教案模板
    */
-  async shareLessonTemplate(templateId: number, shareLevel: 'department' | 'school' | 'public', message?: string): Promise<{
+  async shareLessonTemplate(
+    templateId: number,
+    shareLevel: 'department' | 'school' | 'public',
+    message?: string
+  ): Promise<{
     success: boolean
     shareUrl: string
   }> {
-    const response = await apiClient.post(`/api/v1/resource-library/lesson-templates/${templateId}/share`, {
-      shareLevel,
-      message,
-    })
+    const response = await apiClient.post(
+      `/api/v1/resource-library/lesson-templates/${templateId}/share`,
+      {
+        shareLevel,
+        message,
+      }
+    )
     return response.data
   },
 
   /**
    * 复制教案模板
    */
-  async copyLessonTemplate(templateId: number, customizations?: Partial<LessonTemplate>): Promise<LessonTemplate> {
-    const response = await apiClient.post(`/api/v1/resource-library/lesson-templates/${templateId}/copy`, customizations)
+  async copyLessonTemplate(
+    templateId: number,
+    customizations?: Partial<LessonTemplate>
+  ): Promise<LessonTemplate> {
+    const response = await apiClient.post(
+      `/api/v1/resource-library/lesson-templates/${templateId}/copy`,
+      customizations
+    )
     return response.data
   },
 
@@ -254,7 +293,9 @@ export const resourceLibraryApi = {
       isOnline: boolean
     }>
   }> {
-    const response = await apiClient.post(`/api/v1/resource-library/lesson-templates/${templateId}/collaborate`)
+    const response = await apiClient.post(
+      `/api/v1/resource-library/lesson-templates/${templateId}/collaborate`
+    )
     return response.data
   },
 
@@ -288,30 +329,43 @@ export const resourceLibraryApi = {
   /**
    * 上传多媒体资源
    */
-  async uploadMultimediaResource(formData: FormData, onProgress?: (progress: number) => void): Promise<MultimediaResource> {
-    const response = await apiClient.post('/api/v1/resource-library/multimedia-resources/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      onUploadProgress: (progressEvent) => {
-        if (onProgress && progressEvent.total) {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          onProgress(progress)
-        }
-      },
-    })
+  async uploadMultimediaResource(
+    formData: FormData,
+    onProgress?: (progress: number) => void
+  ): Promise<MultimediaResource> {
+    const response = await apiClient.post(
+      '/api/v1/resource-library/multimedia-resources/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: progressEvent => {
+          if (onProgress && progressEvent.total) {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            onProgress(progress)
+          }
+        },
+      }
+    )
     return response.data
   },
 
   /**
    * 生成视频缩略图
    */
-  async generateVideoThumbnail(resourceId: number, timestamp: number): Promise<{
+  async generateVideoThumbnail(
+    resourceId: number,
+    timestamp: number
+  ): Promise<{
     thumbnailUrl: string
   }> {
-    const response = await apiClient.post(`/api/v1/resource-library/multimedia-resources/${resourceId}/thumbnail`, {
-      timestamp,
-    })
+    const response = await apiClient.post(
+      `/api/v1/resource-library/multimedia-resources/${resourceId}/thumbnail`,
+      {
+        timestamp,
+      }
+    )
     return response.data
   },
 
@@ -323,7 +377,9 @@ export const resourceLibraryApi = {
     confidence: number
     language: string
   }> {
-    const response = await apiClient.post(`/api/v1/resource-library/multimedia-resources/${resourceId}/transcribe`)
+    const response = await apiClient.post(
+      `/api/v1/resource-library/multimedia-resources/${resourceId}/transcribe`
+    )
     return response.data
   },
 
@@ -354,7 +410,12 @@ export const resourceLibraryApi = {
   /**
    * 记录资源使用行为
    */
-  async recordUsage(resourceType: 'material' | 'template' | 'multimedia', resourceId: number, action: 'view' | 'download' | 'bookmark' | 'rate' | 'share', duration?: number): Promise<{
+  async recordUsage(
+    resourceType: 'material' | 'template' | 'multimedia',
+    resourceId: number,
+    action: 'view' | 'download' | 'bookmark' | 'rate' | 'share',
+    duration?: number
+  ): Promise<{
     success: boolean
   }> {
     const response = await apiClient.post('/api/v1/resource-library/usage', {
@@ -413,26 +474,39 @@ export const resourceLibraryApi = {
   /**
    * 收藏资源
    */
-  async bookmarkResource(resourceType: 'material' | 'template' | 'multimedia', resourceId: number): Promise<{
+  async bookmarkResource(
+    resourceType: 'material' | 'template' | 'multimedia',
+    resourceId: number
+  ): Promise<{
     success: boolean
     isBookmarked: boolean
   }> {
-    const response = await apiClient.post(`/api/v1/resource-library/${resourceType}s/${resourceId}/bookmark`)
+    const response = await apiClient.post(
+      `/api/v1/resource-library/${resourceType}s/${resourceId}/bookmark`
+    )
     return response.data
   },
 
   /**
    * 评价资源
    */
-  async rateResource(resourceType: 'material' | 'template' | 'multimedia', resourceId: number, rating: number, comment?: string): Promise<{
+  async rateResource(
+    resourceType: 'material' | 'template' | 'multimedia',
+    resourceId: number,
+    rating: number,
+    comment?: string
+  ): Promise<{
     success: boolean
     averageRating: number
     ratingCount: number
   }> {
-    const response = await apiClient.post(`/api/v1/resource-library/${resourceType}s/${resourceId}/rate`, {
-      rating,
-      comment,
-    })
+    const response = await apiClient.post(
+      `/api/v1/resource-library/${resourceType}s/${resourceId}/rate`,
+      {
+        rating,
+        comment,
+      }
+    )
     return response.data
   },
 

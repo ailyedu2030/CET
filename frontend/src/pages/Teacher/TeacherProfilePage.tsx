@@ -80,7 +80,8 @@ export function TeacherProfilePage(): JSX.Element {
   const { user } = useAuthStore()
   const queryClient = useQueryClient()
   const [editMode, setEditMode] = useState(false)
-  const [passwordModalOpened, { open: openPasswordModal, close: closePasswordModal }] = useDisclosure(false)
+  const [passwordModalOpened, { open: openPasswordModal, close: closePasswordModal }] =
+    useDisclosure(false)
 
   // 获取教师个人信息
   const { data: profile, isLoading } = useQuery<TeacherProfile>({
@@ -140,7 +141,8 @@ export function TeacherProfilePage(): JSX.Element {
         if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) return '密码需包含大小写字母和数字'
         return null
       },
-      confirm_password: (value, values) => (value !== values.new_password ? '两次密码输入不一致' : null),
+      confirm_password: (value, values) =>
+        value !== values.new_password ? '两次密码输入不一致' : null,
     },
   })
 
@@ -226,7 +228,9 @@ export function TeacherProfilePage(): JSX.Element {
     if (!profile?.last_password_change) return true
     const lastChange = new Date(profile.last_password_change)
     const now = new Date()
-    const daysSinceChange = Math.floor((now.getTime() - lastChange.getTime()) / (1000 * 60 * 60 * 24))
+    const daysSinceChange = Math.floor(
+      (now.getTime() - lastChange.getTime()) / (1000 * 60 * 60 * 24)
+    )
     return daysSinceChange > 90 // 90天提醒更新密码
   }
 
@@ -273,13 +277,7 @@ export function TeacherProfilePage(): JSX.Element {
             <Text size="sm">
               为了账户安全，建议您定期更新密码。您的密码已超过90天未更新，请考虑修改密码。
             </Text>
-            <Button
-              size="xs"
-              variant="outline"
-              color="orange"
-              mt="xs"
-              onClick={openPasswordModal}
-            >
+            <Button size="xs" variant="outline" color="orange" mt="xs" onClick={openPasswordModal}>
               立即修改
             </Button>
           </Alert>
@@ -403,20 +401,34 @@ export function TeacherProfilePage(): JSX.Element {
 
             <Group justify="space-between">
               <Text fw={500}>注册时间：</Text>
-              <Text>{profile?.created_at ? new Date(profile.created_at).toLocaleDateString('zh-CN') : '未知'}</Text>
+              <Text>
+                {profile?.created_at
+                  ? new Date(profile.created_at).toLocaleDateString('zh-CN')
+                  : '未知'}
+              </Text>
             </Group>
 
             <Group justify="space-between">
               <Text fw={500}>最后更新：</Text>
-              <Text>{profile?.updated_at ? new Date(profile.updated_at).toLocaleDateString('zh-CN') : '未知'}</Text>
+              <Text>
+                {profile?.updated_at
+                  ? new Date(profile.updated_at).toLocaleDateString('zh-CN')
+                  : '未知'}
+              </Text>
             </Group>
 
             <Group justify="space-between">
               <Text fw={500}>密码更新：</Text>
               <Group>
-                <Text>{profile?.last_password_change ? new Date(profile.last_password_change).toLocaleDateString('zh-CN') : '未知'}</Text>
+                <Text>
+                  {profile?.last_password_change
+                    ? new Date(profile.last_password_change).toLocaleDateString('zh-CN')
+                    : '未知'}
+                </Text>
                 {shouldShowPasswordReminder() && (
-                  <Badge color="orange" size="sm">需要更新</Badge>
+                  <Badge color="orange" size="sm">
+                    需要更新
+                  </Badge>
                 )}
               </Group>
             </Group>
@@ -432,18 +444,11 @@ export function TeacherProfilePage(): JSX.Element {
       </Stack>
 
       {/* 密码修改模态框 */}
-      <Modal
-        opened={passwordModalOpened}
-        onClose={closePasswordModal}
-        title="修改密码"
-        size="md"
-      >
+      <Modal opened={passwordModalOpened} onClose={closePasswordModal} title="修改密码" size="md">
         <form onSubmit={passwordForm.onSubmit(handlePasswordSubmit)}>
           <Stack gap="md">
             <Alert icon={<IconShield size={16} />} color="blue">
-              <Text size="sm">
-                为了账户安全，请设置包含大小写字母、数字的强密码，长度至少8位。
-              </Text>
+              <Text size="sm">为了账户安全，请设置包含大小写字母、数字的强密码，长度至少8位。</Text>
             </Alert>
 
             <TextInput

@@ -1,6 +1,6 @@
 /**
  * 离线功能测试页面
- * 
+ *
  * 用于测试和演示离线功能：
  * - 离线数据操作
  * - 同步状态监控
@@ -67,13 +67,10 @@ export function OfflineTest(): JSX.Element {
     isLoading: lessonPlansLoading,
     create: createLessonPlan,
     delete: deleteLessonPlan,
-  } = useOfflineData<any>(
-    ['lessonPlans'],
-    {
-      storeType: STORES.LESSON_PLANS,
-      enableSync: true,
-    }
-  )
+  } = useOfflineData<any>(['lessonPlans'], {
+    storeType: STORES.LESSON_PLANS,
+    enableSync: true,
+  })
 
   // 创建测试教案
   const handleCreateTestLessonPlan = async () => {
@@ -103,18 +100,18 @@ export function OfflineTest(): JSX.Element {
             <Title order={2}>离线功能测试</Title>
             <Text c="dimmed">测试和演示离线数据存储、同步和冲突处理功能</Text>
           </div>
-          
+
           <Group gap="xs">
             <Badge color={isOffline ? 'orange' : 'green'}>
               {isOffline ? '离线模式' : '在线模式'}
             </Badge>
-            
-            {pendingItems > 0 && (
-              <Badge color="blue">{pendingItems} 待同步</Badge>
-            )}
-            
+
+            {pendingItems > 0 && <Badge color="blue">{pendingItems} 待同步</Badge>}
+
             {isSync && (
-              <Badge color="blue" variant="light">同步中</Badge>
+              <Badge color="blue" variant="light">
+                同步中
+              </Badge>
             )}
           </Group>
         </Group>
@@ -151,14 +148,16 @@ export function OfflineTest(): JSX.Element {
                   <Card withBorder>
                     <Stack gap="md">
                       <Text fw={600}>离线功能特性</Text>
-                      
+
                       <Grid>
                         <Grid.Col span={6}>
                           <Card withBorder>
                             <Stack gap="xs">
                               <Group gap="xs">
                                 <IconDatabase size={16} color="blue" />
-                                <Text size="sm" fw={600}>本地存储</Text>
+                                <Text size="sm" fw={600}>
+                                  本地存储
+                                </Text>
                               </Group>
                               <Text size="xs" c="dimmed">
                                 使用IndexedDB存储离线数据，支持大容量数据缓存
@@ -166,13 +165,15 @@ export function OfflineTest(): JSX.Element {
                             </Stack>
                           </Card>
                         </Grid.Col>
-                        
+
                         <Grid.Col span={6}>
                           <Card withBorder>
                             <Stack gap="xs">
                               <Group gap="xs">
                                 <IconCloudUpload size={16} color="green" />
-                                <Text size="sm" fw={600}>自动同步</Text>
+                                <Text size="sm" fw={600}>
+                                  自动同步
+                                </Text>
                               </Group>
                               <Text size="xs" c="dimmed">
                                 网络恢复后自动同步离线期间的所有操作
@@ -180,13 +181,15 @@ export function OfflineTest(): JSX.Element {
                             </Stack>
                           </Card>
                         </Grid.Col>
-                        
+
                         <Grid.Col span={6}>
                           <Card withBorder>
                             <Stack gap="xs">
                               <Group gap="xs">
                                 <IconAlertTriangle size={16} color="orange" />
-                                <Text size="sm" fw={600}>冲突处理</Text>
+                                <Text size="sm" fw={600}>
+                                  冲突处理
+                                </Text>
                               </Group>
                               <Text size="xs" c="dimmed">
                                 智能检测数据冲突，提供多种解决方案
@@ -194,13 +197,15 @@ export function OfflineTest(): JSX.Element {
                             </Stack>
                           </Card>
                         </Grid.Col>
-                        
+
                         <Grid.Col span={6}>
                           <Card withBorder>
                             <Stack gap="xs">
                               <Group gap="xs">
                                 <IconEdit size={16} color="purple" />
-                                <Text size="sm" fw={600}>离线编辑</Text>
+                                <Text size="sm" fw={600}>
+                                  离线编辑
+                                </Text>
                               </Group>
                               <Text size="xs" c="dimmed">
                                 支持教案编辑、资源查看等核心功能离线使用
@@ -215,7 +220,7 @@ export function OfflineTest(): JSX.Element {
                   <Card withBorder>
                     <Stack gap="md">
                       <Text fw={600}>测试步骤</Text>
-                      
+
                       <Stack gap="xs">
                         <Text size="sm">1. 在在线状态下创建或编辑教案</Text>
                         <Text size="sm">2. 断开网络连接（关闭WiFi或拔掉网线）</Text>
@@ -242,7 +247,7 @@ export function OfflineTest(): JSX.Element {
                             打开编辑器
                           </Button>
                         </Group>
-                        
+
                         <Text size="sm" c="dimmed">
                           点击打开编辑器，体验离线编辑功能。编辑器支持自动保存、
                           离线存储和网络恢复后的自动同步。
@@ -281,46 +286,55 @@ export function OfflineTest(): JSX.Element {
                       </Group>
 
                       {lessonPlansLoading ? (
-                        <Text size="sm" c="dimmed">加载中...</Text>
+                        <Text size="sm" c="dimmed">
+                          加载中...
+                        </Text>
                       ) : (
                         <Stack gap="xs">
-                          {(!lessonPlans || (Array.isArray(lessonPlans) && lessonPlans.length === 0)) ? (
-                            <Text size="sm" c="dimmed">暂无离线教案数据</Text>
+                          {!lessonPlans ||
+                          (Array.isArray(lessonPlans) && lessonPlans.length === 0) ? (
+                            <Text size="sm" c="dimmed">
+                              暂无离线教案数据
+                            </Text>
                           ) : (
-                            (Array.isArray(lessonPlans) ? lessonPlans : [lessonPlans]).map((plan: any) => (
-                              <Card key={plan.id} withBorder>
-                                <Group justify="space-between">
-                                  <div>
-                                    <Text size="sm" fw={600}>{plan.title}</Text>
-                                    <Text size="xs" c="dimmed">
-                                      {new Date(plan.lastModified).toLocaleString()}
-                                    </Text>
-                                  </div>
+                            (Array.isArray(lessonPlans) ? lessonPlans : [lessonPlans]).map(
+                              (plan: any) => (
+                                <Card key={plan.id} withBorder>
+                                  <Group justify="space-between">
+                                    <div>
+                                      <Text size="sm" fw={600}>
+                                        {plan.title}
+                                      </Text>
+                                      <Text size="xs" c="dimmed">
+                                        {new Date(plan.lastModified).toLocaleString()}
+                                      </Text>
+                                    </div>
 
-                                  <Group gap="xs">
-                                    <Button
-                                      size="xs"
-                                      variant="outline"
-                                      onClick={() => {
-                                        setEditingLessonPlan(plan.id)
-                                        setShowEditor(true)
-                                        setActiveTab('editor')
-                                      }}
-                                    >
-                                      编辑
-                                    </Button>
-                                    <Button
-                                      size="xs"
-                                      variant="outline"
-                                      color="red"
-                                      onClick={() => handleDeleteLessonPlan(plan.id)}
-                                    >
-                                      删除
-                                    </Button>
+                                    <Group gap="xs">
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        onClick={() => {
+                                          setEditingLessonPlan(plan.id)
+                                          setShowEditor(true)
+                                          setActiveTab('editor')
+                                        }}
+                                      >
+                                        编辑
+                                      </Button>
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        color="red"
+                                        onClick={() => handleDeleteLessonPlan(plan.id)}
+                                      >
+                                        删除
+                                      </Button>
+                                    </Group>
                                   </Group>
-                                </Group>
-                              </Card>
-                            ))
+                                </Card>
+                              )
+                            )
                           )}
                         </Stack>
                       )}
@@ -361,8 +375,12 @@ export function OfflineTest(): JSX.Element {
                             <Card withBorder p="sm">
                               <Group justify="space-between">
                                 <div>
-                                  <Text size="sm" fw={600}>{item.title}</Text>
-                                  <Text size="xs" c="dimmed">{item.description}</Text>
+                                  <Text size="sm" fw={600}>
+                                    {item.title}
+                                  </Text>
+                                  <Text size="xs" c="dimmed">
+                                    {item.description}
+                                  </Text>
                                 </div>
                                 <Badge size="sm" variant="outline">
                                   {item.type}
@@ -387,7 +405,9 @@ export function OfflineTest(): JSX.Element {
                       <Grid>
                         <Grid.Col span={6}>
                           <Stack gap="xs">
-                            <Text size="sm" fw={600}>普通图片</Text>
+                            <Text size="sm" fw={600}>
+                              普通图片
+                            </Text>
                             <img
                               src="https://picsum.photos/300/200?random=1"
                               alt="普通图片"
@@ -398,7 +418,9 @@ export function OfflineTest(): JSX.Element {
 
                         <Grid.Col span={6}>
                           <Stack gap="xs">
-                            <Text size="sm" fw={600}>优化图片</Text>
+                            <Text size="sm" fw={600}>
+                              优化图片
+                            </Text>
                             <OptimizedImage
                               src="https://picsum.photos/300/200?random=2"
                               alt="优化图片"
@@ -411,7 +433,9 @@ export function OfflineTest(): JSX.Element {
                         </Grid.Col>
                       </Grid>
 
-                      <Text size="sm" fw={600}>响应式图片网格</Text>
+                      <Text size="sm" fw={600}>
+                        响应式图片网格
+                      </Text>
                       <ImageGrid
                         images={[
                           { id: '1', src: 'https://picsum.photos/300/300?random=3', alt: '图片1' },

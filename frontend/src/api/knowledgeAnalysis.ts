@@ -93,31 +93,49 @@ export interface KnowledgeStats {
 
 export const knowledgeAnalysisApi = {
   // 获取学生知识点薄弱环节分析
-  getWeaknessAnalysis: async (studentId: number, params?: {
-    include_categories?: string[]
-    min_weakness_score?: number
-    limit?: number
-  }): Promise<WeaknessAnalysis> => {
-    const response = await apiClient.get(`/api/v1/ai/analysis/knowledge-points/${studentId}/weakness`, { params })
+  getWeaknessAnalysis: async (
+    studentId: number,
+    params?: {
+      include_categories?: string[]
+      min_weakness_score?: number
+      limit?: number
+    }
+  ): Promise<WeaknessAnalysis> => {
+    const response = await apiClient.get(
+      `/api/v1/ai/analysis/knowledge-points/${studentId}/weakness`,
+      { params }
+    )
     return response.data
   },
 
   // 获取知识点掌握热力图数据
-  getHeatmapData: async (studentId: number, params?: {
-    time_range?: 'week' | 'month' | 'semester'
-    categories?: string[]
-    difficulty_levels?: string[]
-    layout?: 'grid' | 'tree' | 'force'
-  }): Promise<HeatmapData> => {
-    const response = await apiClient.get(`/api/v1/ai/analysis/knowledge-points/${studentId}/heatmap`, { params })
+  getHeatmapData: async (
+    studentId: number,
+    params?: {
+      time_range?: 'week' | 'month' | 'semester'
+      categories?: string[]
+      difficulty_levels?: string[]
+      layout?: 'grid' | 'tree' | 'force'
+    }
+  ): Promise<HeatmapData> => {
+    const response = await apiClient.get(
+      `/api/v1/ai/analysis/knowledge-points/${studentId}/heatmap`,
+      { params }
+    )
     return response.data
   },
 
   // 获取知识点统计
-  getKnowledgeStats: async (studentId: number, params?: {
-    period?: 'week' | 'month' | 'semester'
-  }): Promise<KnowledgeStats> => {
-    const response = await apiClient.get(`/api/v1/ai/analysis/knowledge-points/${studentId}/stats`, { params })
+  getKnowledgeStats: async (
+    studentId: number,
+    params?: {
+      period?: 'week' | 'month' | 'semester'
+    }
+  ): Promise<KnowledgeStats> => {
+    const response = await apiClient.get(
+      `/api/v1/ai/analysis/knowledge-points/${studentId}/stats`,
+      { params }
+    )
     return response.data
   },
 
@@ -148,17 +166,23 @@ export const knowledgeAnalysisApi = {
     mastery_change: number
     next_review_date: string
   }> => {
-    const response = await apiClient.post('/api/v1/ai/analysis/knowledge-points/update-mastery', data)
+    const response = await apiClient.post(
+      '/api/v1/ai/analysis/knowledge-points/update-mastery',
+      data
+    )
     return response.data
   },
 
   // 生成个性化学习路径
-  generateLearningPath: async (studentId: number, data: {
-    target_knowledge_points?: string[]
-    time_constraint?: number // 天数
-    difficulty_preference?: 'gradual' | 'challenging'
-    focus_weak_points?: boolean
-  }): Promise<{
+  generateLearningPath: async (
+    studentId: number,
+    data: {
+      target_knowledge_points?: string[]
+      time_constraint?: number // 天数
+      difficulty_preference?: 'gradual' | 'challenging'
+      focus_weak_points?: boolean
+    }
+  ): Promise<{
     path_id: string
     learning_sequence: Array<{
       knowledge_point: KnowledgePoint
@@ -170,15 +194,21 @@ export const knowledgeAnalysisApi = {
     total_estimated_time: number
     completion_date: string
   }> => {
-    const response = await apiClient.post(`/api/v1/ai/analysis/knowledge-points/${studentId}/learning-path`, data)
+    const response = await apiClient.post(
+      `/api/v1/ai/analysis/knowledge-points/${studentId}/learning-path`,
+      data
+    )
     return response.data
   },
 
   // 比较学生知识点掌握情况
-  compareStudents: async (studentIds: number[], params?: {
-    knowledge_point_ids?: string[]
-    categories?: string[]
-  }): Promise<{
+  compareStudents: async (
+    studentIds: number[],
+    params?: {
+      knowledge_point_ids?: string[]
+      categories?: string[]
+    }
+  ): Promise<{
     comparison_data: Array<{
       student_id: number
       student_name: string
@@ -203,34 +233,49 @@ export const knowledgeAnalysisApi = {
   },
 
   // 导出知识点分析报告
-  exportAnalysisReport: async (studentId: number, params: {
-    format: 'pdf' | 'excel' | 'json'
-    include_heatmap?: boolean
-    include_recommendations?: boolean
-    time_range?: string
-  }): Promise<Blob> => {
-    const response = await apiClient.post(`/api/v1/ai/analysis/knowledge-points/${studentId}/export`, params, {
-      responseType: 'blob',
-    })
+  exportAnalysisReport: async (
+    studentId: number,
+    params: {
+      format: 'pdf' | 'excel' | 'json'
+      include_heatmap?: boolean
+      include_recommendations?: boolean
+      time_range?: string
+    }
+  ): Promise<Blob> => {
+    const response = await apiClient.post(
+      `/api/v1/ai/analysis/knowledge-points/${studentId}/export`,
+      params,
+      {
+        responseType: 'blob',
+      }
+    )
     return response.data
   },
 
   // 获取知识点关联关系
-  getKnowledgeRelations: async (knowledgePointId: string): Promise<{
+  getKnowledgeRelations: async (
+    knowledgePointId: string
+  ): Promise<{
     prerequisites: KnowledgePoint[]
     dependents: KnowledgePoint[]
     related: KnowledgePoint[]
     difficulty_progression: KnowledgePoint[]
   }> => {
-    const response = await apiClient.get(`/api/v1/ai/analysis/knowledge-points/${knowledgePointId}/relations`)
+    const response = await apiClient.get(
+      `/api/v1/ai/analysis/knowledge-points/${knowledgePointId}/relations`
+    )
     return response.data
   },
 
   // 预测知识点掌握趋势
-  predictMasteryTrend: async (studentId: number, knowledgePointIds: string[], params?: {
-    prediction_days?: number
-    include_interventions?: boolean
-  }): Promise<{
+  predictMasteryTrend: async (
+    studentId: number,
+    knowledgePointIds: string[],
+    params?: {
+      prediction_days?: number
+      include_interventions?: boolean
+    }
+  ): Promise<{
     predictions: Array<{
       knowledge_point_id: string
       current_mastery: number
@@ -244,10 +289,13 @@ export const knowledgeAnalysisApi = {
     overall_trend: 'improving' | 'stable' | 'declining'
     risk_points: string[]
   }> => {
-    const response = await apiClient.post(`/api/v1/ai/analysis/knowledge-points/${studentId}/predict`, {
-      knowledge_point_ids: knowledgePointIds,
-      ...params,
-    })
+    const response = await apiClient.post(
+      `/api/v1/ai/analysis/knowledge-points/${studentId}/predict`,
+      {
+        knowledge_point_ids: knowledgePointIds,
+        ...params,
+      }
+    )
     return response.data
   },
 }

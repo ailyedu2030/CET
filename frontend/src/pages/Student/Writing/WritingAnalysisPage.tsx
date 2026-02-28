@@ -1,6 +1,6 @@
 /**
  * 需求26：英语四级写作标准库 - 写作分析页面
- * 
+ *
  * 实现写作成绩分析和进步跟踪功能
  */
 
@@ -38,7 +38,20 @@ import {
   IconX,
 } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts'
 
 import { writingApi, WritingType, WritingScoreLevel } from '@/api/writing'
 import { useAuthStore } from '@/stores/authStore'
@@ -49,20 +62,14 @@ export function WritingAnalysisPage(): JSX.Element {
   const { user } = useAuthStore()
 
   // 查询写作统计
-  const {
-    data: statistics,
-    isLoading: statisticsLoading,
-  } = useQuery({
+  const { data: statistics, isLoading: statisticsLoading } = useQuery({
     queryKey: ['writing-statistics', user?.id],
     queryFn: () => writingApi.getStatistics(),
     enabled: !!user?.id,
   })
 
   // 查询写作提交历史
-  const {
-    data: submissions,
-    isLoading: submissionsLoading,
-  } = useQuery({
+  const { data: submissions, isLoading: submissionsLoading } = useQuery({
     queryKey: ['writing-submissions', user?.id],
     queryFn: () => writingApi.getMySubmissions({ limit: 50 }),
     enabled: !!user?.id,
@@ -105,26 +112,29 @@ export function WritingAnalysisPage(): JSX.Element {
   }
 
   // 准备图表数据
-  const scoreDistributionData = statistics?.score_distribution ? 
-    Object.entries(statistics.score_distribution).map(([level, count]) => ({
-      name: getScoreLevelLabel(level as WritingScoreLevel),
-      value: count,
-      color: getScoreLevelColor(level as WritingScoreLevel),
-    })) : []
+  const scoreDistributionData = statistics?.score_distribution
+    ? Object.entries(statistics.score_distribution).map(([level, count]) => ({
+        name: getScoreLevelLabel(level as WritingScoreLevel),
+        value: count,
+        color: getScoreLevelColor(level as WritingScoreLevel),
+      }))
+    : []
 
-  const typePerformanceData = statistics?.writing_type_performance ?
-    Object.entries(statistics.writing_type_performance).map(([type, data]) => ({
-      name: getWritingTypeLabel(type as WritingType),
-      count: data.count,
-      average_score: data.average_score,
-      improvement_rate: data.improvement_rate,
-    })) : []
+  const typePerformanceData = statistics?.writing_type_performance
+    ? Object.entries(statistics.writing_type_performance).map(([type, data]) => ({
+        name: getWritingTypeLabel(type as WritingType),
+        count: data.count,
+        average_score: data.average_score,
+        improvement_rate: data.improvement_rate,
+      }))
+    : []
 
-  const recentPerformanceData = statistics?.recent_performance?.map(item => ({
-    date: new Date(item.date).toLocaleDateString(),
-    score: item.average_score,
-    submissions: item.submissions,
-  })) || []
+  const recentPerformanceData =
+    statistics?.recent_performance?.map(item => ({
+      date: new Date(item.date).toLocaleDateString(),
+      score: item.average_score,
+      submissions: item.submissions,
+    })) || []
 
   const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#8dd1e1']
 
@@ -142,7 +152,7 @@ export function WritingAnalysisPage(): JSX.Element {
         </div>
         <Select
           value={selectedPeriod}
-          onChange={(value) => setSelectedPeriod(value || '30')}
+          onChange={value => setSelectedPeriod(value || '30')}
           data={[
             { value: '7', label: '最近7天' },
             { value: '30', label: '最近30天' },
@@ -177,14 +187,27 @@ export function WritingAnalysisPage(): JSX.Element {
               <Card withBorder p="md">
                 <Group justify="space-between">
                   <div>
-                    <Text size="sm" c="dimmed">总提交数</Text>
-                    <Text size="xl" fw={700}>{statistics?.total_submissions || 0}</Text>
+                    <Text size="sm" c="dimmed">
+                      总提交数
+                    </Text>
+                    <Text size="xl" fw={700}>
+                      {statistics?.total_submissions || 0}
+                    </Text>
                   </div>
                   <RingProgress
                     size={60}
                     thickness={6}
-                    sections={[{ value: Math.min((statistics?.total_submissions || 0) * 2, 100), color: 'blue' }]}
-                    label={<Center><IconPencil size={16} /></Center>}
+                    sections={[
+                      {
+                        value: Math.min((statistics?.total_submissions || 0) * 2, 100),
+                        color: 'blue',
+                      },
+                    ]}
+                    label={
+                      <Center>
+                        <IconPencil size={16} />
+                      </Center>
+                    }
                   />
                 </Group>
               </Card>
@@ -194,14 +217,24 @@ export function WritingAnalysisPage(): JSX.Element {
               <Card withBorder p="md">
                 <Group justify="space-between">
                   <div>
-                    <Text size="sm" c="dimmed">平均分数</Text>
-                    <Text size="xl" fw={700}>{Math.round((statistics?.average_score || 0) * 10) / 10}</Text>
+                    <Text size="sm" c="dimmed">
+                      平均分数
+                    </Text>
+                    <Text size="xl" fw={700}>
+                      {Math.round((statistics?.average_score || 0) * 10) / 10}
+                    </Text>
                   </div>
                   <RingProgress
                     size={60}
                     thickness={6}
-                    sections={[{ value: (statistics?.average_score || 0) * 100 / 15, color: 'green' }]}
-                    label={<Center><IconStar size={16} /></Center>}
+                    sections={[
+                      { value: ((statistics?.average_score || 0) * 100) / 15, color: 'green' },
+                    ]}
+                    label={
+                      <Center>
+                        <IconStar size={16} />
+                      </Center>
+                    }
                   />
                 </Group>
               </Card>
@@ -211,14 +244,24 @@ export function WritingAnalysisPage(): JSX.Element {
               <Card withBorder p="md">
                 <Group justify="space-between">
                   <div>
-                    <Text size="sm" c="dimmed">优势领域</Text>
-                    <Text size="xl" fw={700}>{statistics?.strengths?.length || 0}</Text>
+                    <Text size="sm" c="dimmed">
+                      优势领域
+                    </Text>
+                    <Text size="xl" fw={700}>
+                      {statistics?.strengths?.length || 0}
+                    </Text>
                   </div>
                   <RingProgress
                     size={60}
                     thickness={6}
-                    sections={[{ value: (statistics?.strengths?.length || 0) * 20, color: 'orange' }]}
-                    label={<Center><IconCheck size={16} /></Center>}
+                    sections={[
+                      { value: (statistics?.strengths?.length || 0) * 20, color: 'orange' },
+                    ]}
+                    label={
+                      <Center>
+                        <IconCheck size={16} />
+                      </Center>
+                    }
                   />
                 </Group>
               </Card>
@@ -228,14 +271,27 @@ export function WritingAnalysisPage(): JSX.Element {
               <Card withBorder p="md">
                 <Group justify="space-between">
                   <div>
-                    <Text size="sm" c="dimmed">改进空间</Text>
-                    <Text size="xl" fw={700}>{statistics?.weaknesses?.length || 0}</Text>
+                    <Text size="sm" c="dimmed">
+                      改进空间
+                    </Text>
+                    <Text size="xl" fw={700}>
+                      {statistics?.weaknesses?.length || 0}
+                    </Text>
                   </div>
                   <RingProgress
                     size={60}
                     thickness={6}
-                    sections={[{ value: Math.max(100 - (statistics?.weaknesses?.length || 0) * 20, 20), color: 'red' }]}
-                    label={<Center><IconAlertCircle size={16} /></Center>}
+                    sections={[
+                      {
+                        value: Math.max(100 - (statistics?.weaknesses?.length || 0) * 20, 20),
+                        color: 'red',
+                      },
+                    ]}
+                    label={
+                      <Center>
+                        <IconAlertCircle size={16} />
+                      </Center>
+                    }
                   />
                 </Group>
               </Card>
@@ -244,7 +300,9 @@ export function WritingAnalysisPage(): JSX.Element {
             {/* 分数分布 */}
             <Grid.Col span={6}>
               <Card withBorder p="md" h={300}>
-                <Text fw={600} mb="md">分数分布</Text>
+                <Text fw={600} mb="md">
+                  分数分布
+                </Text>
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -269,7 +327,9 @@ export function WritingAnalysisPage(): JSX.Element {
             {/* 近期表现趋势 */}
             <Grid.Col span={6}>
               <Card withBorder p="md" h={300}>
-                <Text fw={600} mb="md">近期表现趋势</Text>
+                <Text fw={600} mb="md">
+                  近期表现趋势
+                </Text>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={recentPerformanceData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -290,7 +350,9 @@ export function WritingAnalysisPage(): JSX.Element {
             {/* 各类型表现 */}
             <Grid.Col span={12}>
               <Card withBorder p="md">
-                <Text fw={600} mb="md">各写作类型表现</Text>
+                <Text fw={600} mb="md">
+                  各写作类型表现
+                </Text>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={typePerformanceData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -307,25 +369,32 @@ export function WritingAnalysisPage(): JSX.Element {
             {/* 难度表现 */}
             <Grid.Col span={6}>
               <Card withBorder p="md">
-                <Text fw={600} mb="md">各难度表现</Text>
+                <Text fw={600} mb="md">
+                  各难度表现
+                </Text>
                 <Stack gap="md">
-                  {statistics?.difficulty_performance && Object.entries(statistics.difficulty_performance).map(([difficulty, data]) => (
-                    <Paper key={difficulty} p="sm" withBorder>
-                      <Group justify="space-between" mb="xs">
-                        <Text fw={500}>{difficulty}</Text>
-                        <Badge color="blue">{data.count}次</Badge>
-                      </Group>
-                      <Group justify="space-between" mb="xs">
-                        <Text size="sm" c="dimmed">平均分数</Text>
-                        <Text size="sm">{Math.round(data.average_score * 10) / 10}/15</Text>
-                      </Group>
-                      <Progress value={(data.average_score / 15) * 100} />
-                      <Group justify="space-between" mt="xs">
-                        <Text size="sm" c="dimmed">成功率</Text>
-                        <Text size="sm">{Math.round(data.success_rate * 100)}%</Text>
-                      </Group>
-                    </Paper>
-                  ))}
+                  {statistics?.difficulty_performance &&
+                    Object.entries(statistics.difficulty_performance).map(([difficulty, data]) => (
+                      <Paper key={difficulty} p="sm" withBorder>
+                        <Group justify="space-between" mb="xs">
+                          <Text fw={500}>{difficulty}</Text>
+                          <Badge color="blue">{data.count}次</Badge>
+                        </Group>
+                        <Group justify="space-between" mb="xs">
+                          <Text size="sm" c="dimmed">
+                            平均分数
+                          </Text>
+                          <Text size="sm">{Math.round(data.average_score * 10) / 10}/15</Text>
+                        </Group>
+                        <Progress value={(data.average_score / 15) * 100} />
+                        <Group justify="space-between" mt="xs">
+                          <Text size="sm" c="dimmed">
+                            成功率
+                          </Text>
+                          <Text size="sm">{Math.round(data.success_rate * 100)}%</Text>
+                        </Group>
+                      </Paper>
+                    ))}
                 </Stack>
               </Card>
             </Grid.Col>
@@ -372,7 +441,9 @@ export function WritingAnalysisPage(): JSX.Element {
               <Card withBorder p="md">
                 <Group mb="md">
                   <IconBulb size={24} color="orange" />
-                  <Text fw={600} size="lg">个性化改进建议</Text>
+                  <Text fw={600} size="lg">
+                    个性化改进建议
+                  </Text>
                 </Group>
                 <Stack gap="md">
                   {statistics?.recommendations?.map((recommendation, index) => (
@@ -393,9 +464,11 @@ export function WritingAnalysisPage(): JSX.Element {
         {/* 历史记录 */}
         <Tabs.Panel value="history" pt="lg">
           <Card withBorder p="md">
-            <Text fw={600} mb="md">写作历史记录</Text>
+            <Text fw={600} mb="md">
+              写作历史记录
+            </Text>
             <Timeline active={submissions?.data?.length || 0} bulletSize={24} lineWidth={2}>
-              {submissions?.data?.map((submission) => (
+              {submissions?.data?.map(submission => (
                 <Timeline.Item
                   key={submission.id}
                   bullet={<IconPencil size={12} />}
@@ -403,7 +476,9 @@ export function WritingAnalysisPage(): JSX.Element {
                 >
                   <Group gap="md" mb="xs">
                     <Badge color="blue" size="sm">
-                      {submission.score_level ? getScoreLevelLabel(submission.score_level) : '未评分'}
+                      {submission.score_level
+                        ? getScoreLevelLabel(submission.score_level)
+                        : '未评分'}
                     </Badge>
                     <Text size="sm">分数: {submission.total_score}/15</Text>
                     <Text size="sm">字数: {submission.word_count}</Text>

@@ -370,37 +370,55 @@ export function ProfessionalDevelopmentPage(): JSX.Element {
           <Grid>
             <Grid.Col span={{ base: 12, md: 4 }}>
               <Card withBorder>
-                <Text fw={500} mb="sm">教师资格证</Text>
+                <Text fw={500} mb="sm">
+                  教师资格证
+                </Text>
                 <Text size="sm" c="dimmed" mb="md">
                   教师资格证考试辅导材料和模拟试题
                 </Text>
                 <Group justify="space-between">
-                  <Badge variant="light" color="blue">热门</Badge>
-                  <Button size="sm" variant="light">查看资料</Button>
+                  <Badge variant="light" color="blue">
+                    热门
+                  </Badge>
+                  <Button size="sm" variant="light">
+                    查看资料
+                  </Button>
                 </Group>
               </Card>
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 4 }}>
               <Card withBorder>
-                <Text fw={500} mb="sm">英语专业八级</Text>
+                <Text fw={500} mb="sm">
+                  英语专业八级
+                </Text>
                 <Text size="sm" c="dimmed" mb="md">
                   专业八级考试备考指南和练习题库
                 </Text>
                 <Group justify="space-between">
-                  <Badge variant="light" color="green">推荐</Badge>
-                  <Button size="sm" variant="light">查看资料</Button>
+                  <Badge variant="light" color="green">
+                    推荐
+                  </Badge>
+                  <Button size="sm" variant="light">
+                    查看资料
+                  </Button>
                 </Group>
               </Card>
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 4 }}>
               <Card withBorder>
-                <Text fw={500} mb="sm">TESOL认证</Text>
+                <Text fw={500} mb="sm">
+                  TESOL认证
+                </Text>
                 <Text size="sm" c="dimmed" mb="md">
                   国际英语教师资格认证培训材料
                 </Text>
                 <Group justify="space-between">
-                  <Badge variant="light" color="orange">新增</Badge>
-                  <Button size="sm" variant="light">查看资料</Button>
+                  <Badge variant="light" color="orange">
+                    新增
+                  </Badge>
+                  <Button size="sm" variant="light">
+                    查看资料
+                  </Button>
                 </Group>
               </Card>
             </Grid.Col>
@@ -420,15 +438,23 @@ export function ProfessionalDevelopmentPage(): JSX.Element {
                   <Group>
                     <Avatar src={post.avatar} size="sm" />
                     <div>
-                      <Text size="sm" fw={500}>{post.author}</Text>
-                      <Text size="xs" c="dimmed">{post.createdAt}</Text>
+                      <Text size="sm" fw={500}>
+                        {post.author}
+                      </Text>
+                      <Text size="xs" c="dimmed">
+                        {post.createdAt}
+                      </Text>
                     </div>
                   </Group>
                   <Badge variant="light">{post.category}</Badge>
                 </Group>
 
-                <Text fw={500} mb="xs">{post.title}</Text>
-                <Text size="sm" c="dimmed" mb="md">{post.content}</Text>
+                <Text fw={500} mb="xs">
+                  {post.title}
+                </Text>
+                <Text size="sm" c="dimmed" mb="md">
+                  {post.content}
+                </Text>
 
                 <Group justify="space-between">
                   <Group>
@@ -483,7 +509,9 @@ export function ProfessionalDevelopmentPage(): JSX.Element {
                   {update.summary}
                 </Text>
                 <Group>
-                  <Badge variant="outline" size="sm">{update.category}</Badge>
+                  <Badge variant="outline" size="sm">
+                    {update.category}
+                  </Badge>
                   <Anchor size="sm">阅读全文</Anchor>
                   <ActionIcon variant="light" size="sm">
                     <IconDownload size={14} />

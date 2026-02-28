@@ -1,6 +1,6 @@
 /**
  * 离线同步服务
- * 
+ *
  * 提供离线数据同步功能：
  * - 自动同步机制
  * - 冲突检测和解决
@@ -17,7 +17,7 @@ import {
   type SyncQueueItem,
   type ConflictItem,
   type OfflineData,
-  type StoreType
+  type StoreType,
 } from './offlineStorage'
 
 // 同步状态
@@ -46,7 +46,7 @@ class OfflineSyncManager {
     conflicts: [],
     errors: [],
   }
-  
+
   private syncInterval: number | null = null
   private listeners: Array<(status: SyncStatus) => void> = []
 
@@ -55,21 +55,21 @@ class OfflineSyncManager {
    */
   async initialize(): Promise<void> {
     await offlineStorage.initialize()
-    
+
     // 监听网络状态变化
     window.addEventListener('online', () => {
       this.handleNetworkOnline()
     })
-    
+
     window.addEventListener('offline', () => {
       this.handleNetworkOffline()
     })
-    
+
     // 如果当前在线，启动同步
     if (navigator.onLine) {
       this.startAutoSync()
     }
-    
+
     // 更新初始状态
     await this.updateSyncStatus()
   }
@@ -105,7 +105,7 @@ class OfflineSyncManager {
     if (!navigator.onLine) {
       throw new Error('网络未连接，无法同步')
     }
-    
+
     await this.performSync()
   }
 
@@ -125,10 +125,10 @@ class OfflineSyncManager {
       timestamp: Date.now(),
       retryCount: 0,
     }
-    
+
     await offlineStorage.addToSyncQueue(queueItem)
     await this.updateSyncStatus()
-    
+
     // 如果在线，立即尝试同步
     if (navigator.onLine) {
       this.performSync().catch(() => {
@@ -146,7 +146,7 @@ class OfflineSyncManager {
       message: '正在同步离线期间的数据...',
       color: 'green',
     })
-    
+
     this.startAutoSync()
     await this.performSync()
   }
@@ -160,7 +160,7 @@ class OfflineSyncManager {
       message: '应用将在离线模式下继续工作',
       color: 'orange',
     })
-    
+
     this.stopAutoSync()
   }
 
@@ -169,7 +169,7 @@ class OfflineSyncManager {
    */
   private startAutoSync(): void {
     if (this.syncInterval) return
-    
+
     this.syncInterval = window.setInterval(() => {
       if (navigator.onLine) {
         this.performSync().catch(() => {
@@ -194,38 +194,37 @@ class OfflineSyncManager {
    */
   private async performSync(): Promise<void> {
     if (this.syncStatus.isSync) return
-    
+
     this.syncStatus.isSync = true
     this.notifyListeners()
-    
+
     try {
       const syncQueue = await offlineStorage.getSyncQueue()
-      
+
       if (syncQueue.length === 0) {
         this.syncStatus.lastSyncTime = Date.now()
         return
       }
-      
+
       // 分批处理同步项目
       const batches = this.createBatches(syncQueue, SYNC_CONFIG.BATCH_SIZE)
-      
+
       for (const batch of batches) {
         await this.processBatch(batch)
       }
-      
+
       this.syncStatus.lastSyncTime = Date.now()
       this.syncStatus.errors = []
-      
+
       notifications.show({
         title: '同步完成',
         message: `成功同步 ${syncQueue.length} 项数据`,
         color: 'green',
       })
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '同步失败'
       this.syncStatus.errors.push(errorMessage)
-      
+
       notifications.show({
         title: '同步失败',
         message: errorMessage,
@@ -251,7 +250,7 @@ class OfflineSyncManager {
   private async processSyncItem(item: SyncQueueItem): Promise<void> {
     try {
       let response: any
-      
+
       switch (item.action) {
         case 'create':
           response = await this.createOnServer(item)
@@ -263,20 +262,19 @@ class OfflineSyncManager {
           response = await this.deleteOnServer(item)
           break
       }
-      
+
       // 同步成功，从队列中移除
       await offlineStorage.delete(STORES.SYNC_QUEUE, item.id)
-      
+
       // 更新本地数据
       if (response && item.action !== 'delete') {
         await this.updateLocalData(item.type, response)
       }
-      
     } catch (error) {
       // 增加重试次数
       item.retryCount++
       item.lastError = error instanceof Error ? error.message : 'Unknown error'
-      
+
       if (item.retryCount >= SYNC_CONFIG.MAX_RETRY_COUNT) {
         // 达到最大重试次数，检查是否为冲突
         if (this.isConflictError(error)) {
@@ -353,7 +351,7 @@ class OfflineSyncManager {
       version: serverData.version || 1,
       needsSync: false,
     }
-    
+
     await offlineStorage.store(type, offlineData)
   }
 
@@ -377,9 +375,9 @@ class OfflineSyncManager {
       serverTimestamp: error.serverTimestamp || Date.now(),
       conflictFields: error.conflictFields || [],
     }
-    
+
     this.syncStatus.conflicts.push(conflict)
-    
+
     // 从同步队列中移除冲突项目
     await offlineStorage.delete(STORES.SYNC_QUEUE, item.id)
   }

@@ -50,23 +50,22 @@ import {
 } from '@tabler/icons-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import {
-  systemMonitoringApi,
-  type ReportGenerationRequest,
-} from '../../api/systemMonitoring'
+import { systemMonitoringApi, type ReportGenerationRequest } from '../../api/systemMonitoring'
 
 export function SystemMonitoringPage(): JSX.Element {
   const queryClient = useQueryClient()
-  
+
   // 状态管理
   const [activeTab, setActiveTab] = useState('overview')
   const [selectedTimeRange, setSelectedTimeRange] = useState('7d')
   const [_selectedAlert, setSelectedAlert] = useState<string | null>(null)
 
   // 模态框状态
-  const [reportModalOpened, { open: openReportModal, close: closeReportModal }] = useDisclosure(false)
+  const [reportModalOpened, { open: openReportModal, close: closeReportModal }] =
+    useDisclosure(false)
   const [alertModalOpened, { open: openAlertModal, close: closeAlertModal }] = useDisclosure(false)
-  const [settingsModalOpened, { open: openSettingsModal, close: closeSettingsModal }] = useDisclosure(false)
+  const [settingsModalOpened, { open: openSettingsModal, close: closeSettingsModal }] =
+    useDisclosure(false)
 
   // 表单管理
   const reportForm = useForm({
@@ -88,30 +87,23 @@ export function SystemMonitoringPage(): JSX.Element {
   // ===== 数据查询 =====
 
   // 获取教学监控数据
-  const {
-    data: teachingData,
-    refetch: refetchTeaching,
-  } = useQuery({
+  const { data: teachingData, refetch: refetchTeaching } = useQuery({
     queryKey: ['teaching-monitoring', selectedTimeRange],
-    queryFn: () => systemMonitoringApi.getTeachingMonitoringDashboard(
-      selectedTimeRange === '7d' ? 7 : selectedTimeRange === '30d' ? 30 : 90
-    ),
+    queryFn: () =>
+      systemMonitoringApi.getTeachingMonitoringDashboard(
+        selectedTimeRange === '7d' ? 7 : selectedTimeRange === '30d' ? 30 : 90
+      ),
   })
 
   // 获取系统运维监控数据
-  const {
-    data: systemData,
-    refetch: refetchSystem,
-  } = useQuery({
+  const { data: systemData, refetch: refetchSystem } = useQuery({
     queryKey: ['system-monitoring'],
     queryFn: () => systemMonitoringApi.getSystemOperationsMonitoring(),
     refetchInterval: 30000, // 30秒刷新一次
   })
 
   // 获取实时监控大屏数据
-  const {
-    data: dashboardData,
-  } = useQuery({
+  const { data: dashboardData } = useQuery({
     queryKey: ['real-time-dashboard'],
     queryFn: () => systemMonitoringApi.getRealTimeMonitoringDashboard(),
     refetchInterval: 10000, // 10秒刷新一次
@@ -185,21 +177,30 @@ export function SystemMonitoringPage(): JSX.Element {
   // 获取系统健康状态颜色
   const getHealthColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'green'
-      case 'warning': return 'yellow'
-      case 'critical': return 'red'
-      default: return 'gray'
+      case 'healthy':
+        return 'green'
+      case 'warning':
+        return 'yellow'
+      case 'critical':
+        return 'red'
+      default:
+        return 'gray'
     }
   }
 
   // 获取告警严重性颜色
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'red'
-      case 'high': return 'orange'
-      case 'medium': return 'yellow'
-      case 'low': return 'blue'
-      default: return 'gray'
+      case 'critical':
+        return 'red'
+      case 'high':
+        return 'orange'
+      case 'medium':
+        return 'yellow'
+      case 'low':
+        return 'blue'
+      default:
+        return 'gray'
     }
   }
 
@@ -211,7 +212,7 @@ export function SystemMonitoringPage(): JSX.Element {
           <Group>
             <Select
               value={selectedTimeRange}
-              onChange={(value) => setSelectedTimeRange(value || '7d')}
+              onChange={value => setSelectedTimeRange(value || '7d')}
               data={[
                 { value: '7d', label: '最近7天' },
                 { value: '30d', label: '最近30天' },
@@ -233,16 +234,13 @@ export function SystemMonitoringPage(): JSX.Element {
             >
               设置
             </Button>
-            <Button
-              leftSection={<IconRefresh size={16} />}
-              onClick={handleRefreshData}
-            >
+            <Button leftSection={<IconRefresh size={16} />} onClick={handleRefreshData}>
               刷新数据
             </Button>
           </Group>
         </Group>
 
-        <Tabs value={activeTab} onChange={(value) => setActiveTab(value || 'overview')}>
+        <Tabs value={activeTab} onChange={value => setActiveTab(value || 'overview')}>
           <Tabs.List>
             <Tabs.Tab value="overview" leftSection={<IconActivity size={16} />}>
               总览
@@ -271,7 +269,9 @@ export function SystemMonitoringPage(): JSX.Element {
                 <Card withBorder>
                   <Stack gap="xs">
                     <Group justify="space-between">
-                      <Text size="sm" c="dimmed">在线用户</Text>
+                      <Text size="sm" c="dimmed">
+                        在线用户
+                      </Text>
                       <IconUsers size={16} />
                     </Group>
                     <Text size="xl" fw={700}>
@@ -288,7 +288,9 @@ export function SystemMonitoringPage(): JSX.Element {
                 <Card withBorder>
                   <Stack gap="xs">
                     <Group justify="space-between">
-                      <Text size="sm" c="dimmed">系统负载</Text>
+                      <Text size="sm" c="dimmed">
+                        系统负载
+                      </Text>
                       <IconCpu size={16} />
                     </Group>
                     <RingProgress
@@ -297,7 +299,8 @@ export function SystemMonitoringPage(): JSX.Element {
                       sections={[
                         {
                           value: dashboardData?.system_overview.system_load || 0,
-                          color: (dashboardData?.system_overview.system_load || 0) > 80 ? 'red' : 'blue',
+                          color:
+                            (dashboardData?.system_overview.system_load || 0) > 80 ? 'red' : 'blue',
                         },
                       ]}
                       label={
@@ -314,7 +317,9 @@ export function SystemMonitoringPage(): JSX.Element {
                 <Card withBorder>
                   <Stack gap="xs">
                     <Group justify="space-between">
-                      <Text size="sm" c="dimmed">响应时间</Text>
+                      <Text size="sm" c="dimmed">
+                        响应时间
+                      </Text>
                       <IconNetwork size={16} />
                     </Group>
                     <Text size="xl" fw={700}>
@@ -331,7 +336,9 @@ export function SystemMonitoringPage(): JSX.Element {
                 <Card withBorder>
                   <Stack gap="xs">
                     <Group justify="space-between">
-                      <Text size="sm" c="dimmed">告警状态</Text>
+                      <Text size="sm" c="dimmed">
+                        告警状态
+                      </Text>
                       <IconAlertTriangle size={16} />
                     </Group>
                     <Group>
@@ -352,11 +359,15 @@ export function SystemMonitoringPage(): JSX.Element {
 
             {/* 系统健康状态 */}
             <Paper withBorder p="md" mt="md">
-              <Title order={4} mb="md">系统健康状态</Title>
+              <Title order={4} mb="md">
+                系统健康状态
+              </Title>
               <Grid>
                 <Grid.Col span={3}>
                   <Stack gap="xs">
-                    <Text size="sm" fw={500}>CPU使用率</Text>
+                    <Text size="sm" fw={500}>
+                      CPU使用率
+                    </Text>
                     <Progress
                       value={dashboardData?.system_metrics.cpu_usage || 0}
                       color={(dashboardData?.system_metrics.cpu_usage || 0) > 80 ? 'red' : 'blue'}
@@ -370,10 +381,14 @@ export function SystemMonitoringPage(): JSX.Element {
 
                 <Grid.Col span={3}>
                   <Stack gap="xs">
-                    <Text size="sm" fw={500}>内存使用率</Text>
+                    <Text size="sm" fw={500}>
+                      内存使用率
+                    </Text>
                     <Progress
                       value={dashboardData?.system_metrics.memory_usage || 0}
-                      color={(dashboardData?.system_metrics.memory_usage || 0) > 80 ? 'red' : 'green'}
+                      color={
+                        (dashboardData?.system_metrics.memory_usage || 0) > 80 ? 'red' : 'green'
+                      }
                       size="lg"
                     />
                     <Text size="xs" c="dimmed">
@@ -384,7 +399,9 @@ export function SystemMonitoringPage(): JSX.Element {
 
                 <Grid.Col span={3}>
                   <Stack gap="xs">
-                    <Text size="sm" fw={500}>磁盘使用率</Text>
+                    <Text size="sm" fw={500}>
+                      磁盘使用率
+                    </Text>
                     <Progress
                       value={dashboardData?.system_metrics.disk_usage || 0}
                       color={(dashboardData?.system_metrics.disk_usage || 0) > 90 ? 'red' : 'blue'}
@@ -398,7 +415,9 @@ export function SystemMonitoringPage(): JSX.Element {
 
                 <Grid.Col span={3}>
                   <Stack gap="xs">
-                    <Text size="sm" fw={500}>网络吞吐量</Text>
+                    <Text size="sm" fw={500}>
+                      网络吞吐量
+                    </Text>
                     <Text size="lg" fw={700}>
                       {dashboardData?.system_metrics.network_throughput || 0} MB/s
                     </Text>
@@ -416,11 +435,15 @@ export function SystemMonitoringPage(): JSX.Element {
             <Grid>
               <Grid.Col span={6}>
                 <Card withBorder>
-                  <Title order={5} mb="md">教师质量统计</Title>
+                  <Title order={5} mb="md">
+                    教师质量统计
+                  </Title>
                   <Stack>
                     <Group justify="space-between">
                       <Text size="sm">教师总数</Text>
-                      <Text fw={500}>{teachingData?.teacher_quality_stats.total_teachers || 0}</Text>
+                      <Text fw={500}>
+                        {teachingData?.teacher_quality_stats.total_teachers || 0}
+                      </Text>
                     </Group>
                     <Group justify="space-between">
                       <Text size="sm">平均评分</Text>
@@ -439,7 +462,9 @@ export function SystemMonitoringPage(): JSX.Element {
                     <Group justify="space-between">
                       <Text size="sm">学生满意度</Text>
                       <Text fw={500} c="green">
-                        {teachingData?.teacher_quality_stats.student_satisfaction?.toFixed(1) || '0.0'}%
+                        {teachingData?.teacher_quality_stats.student_satisfaction?.toFixed(1) ||
+                          '0.0'}
+                        %
                       </Text>
                     </Group>
                   </Stack>
@@ -448,11 +473,15 @@ export function SystemMonitoringPage(): JSX.Element {
 
               <Grid.Col span={6}>
                 <Card withBorder>
-                  <Title order={5} mb="md">学生进度统计</Title>
+                  <Title order={5} mb="md">
+                    学生进度统计
+                  </Title>
                   <Stack>
                     <Group justify="space-between">
                       <Text size="sm">学生总数</Text>
-                      <Text fw={500}>{teachingData?.student_progress_stats.total_students || 0}</Text>
+                      <Text fw={500}>
+                        {teachingData?.student_progress_stats.total_students || 0}
+                      </Text>
                     </Group>
                     <Group justify="space-between">
                       <Text size="sm">平均进度</Text>
@@ -471,7 +500,9 @@ export function SystemMonitoringPage(): JSX.Element {
                     <Group justify="space-between">
                       <Text size="sm">知识掌握率</Text>
                       <Text fw={500} c="green">
-                        {teachingData?.student_progress_stats.knowledge_mastery_rate?.toFixed(1) || '0.0'}%
+                        {teachingData?.student_progress_stats.knowledge_mastery_rate?.toFixed(1) ||
+                          '0.0'}
+                        %
                       </Text>
                     </Group>
                   </Stack>
@@ -480,7 +511,9 @@ export function SystemMonitoringPage(): JSX.Element {
 
               <Grid.Col span={12}>
                 <Card withBorder>
-                  <Title order={5} mb="md">教学告警</Title>
+                  <Title order={5} mb="md">
+                    教学告警
+                  </Title>
                   <Table striped>
                     <Table.Thead>
                       <Table.Tr>
@@ -503,9 +536,7 @@ export function SystemMonitoringPage(): JSX.Element {
                             </Badge>
                           </Table.Td>
                           <Table.Td>
-                            <Badge color={getSeverityColor(alert.severity)}>
-                              {alert.severity}
-                            </Badge>
+                            <Badge color={getSeverityColor(alert.severity)}>{alert.severity}</Badge>
                           </Table.Td>
                           <Table.Td>{alert.message}</Table.Td>
                           <Table.Td>{alert.affected_count}</Table.Td>
@@ -535,7 +566,9 @@ export function SystemMonitoringPage(): JSX.Element {
             <Grid>
               <Grid.Col span={6}>
                 <Card withBorder>
-                  <Title order={5} mb="md">系统健康状态</Title>
+                  <Title order={5} mb="md">
+                    系统健康状态
+                  </Title>
                   <Stack>
                     <Group justify="space-between">
                       <Text size="sm">CPU使用率</Text>
@@ -551,13 +584,19 @@ export function SystemMonitoringPage(): JSX.Element {
                     </Group>
                     <Group justify="space-between">
                       <Text size="sm">网络状态</Text>
-                      <Badge color={getHealthColor(systemData?.system_health.network_status || 'healthy')}>
+                      <Badge
+                        color={getHealthColor(
+                          systemData?.system_health.network_status || 'healthy'
+                        )}
+                      >
                         {systemData?.system_health.network_status || 'healthy'}
                       </Badge>
                     </Group>
                     <Group justify="space-between">
                       <Text size="sm">运行时间</Text>
-                      <Text fw={500}>{Math.floor((systemData?.system_health.uptime || 0) / 3600)}小时</Text>
+                      <Text fw={500}>
+                        {Math.floor((systemData?.system_health.uptime || 0) / 3600)}小时
+                      </Text>
                     </Group>
                   </Stack>
                 </Card>
@@ -565,7 +604,9 @@ export function SystemMonitoringPage(): JSX.Element {
 
               <Grid.Col span={6}>
                 <Card withBorder>
-                  <Title order={5} mb="md">API统计</Title>
+                  <Title order={5} mb="md">
+                    API统计
+                  </Title>
                   <Stack>
                     <Group justify="space-between">
                       <Text size="sm">总调用次数</Text>
@@ -579,7 +620,9 @@ export function SystemMonitoringPage(): JSX.Element {
                     </Group>
                     <Group justify="space-between">
                       <Text size="sm">平均响应时间</Text>
-                      <Text fw={500}>{systemData?.api_statistics.average_response_time || 0}ms</Text>
+                      <Text fw={500}>
+                        {systemData?.api_statistics.average_response_time || 0}ms
+                      </Text>
                     </Group>
                     <Group justify="space-between">
                       <Text size="sm">错误率</Text>
@@ -590,14 +633,19 @@ export function SystemMonitoringPage(): JSX.Element {
                     <Divider />
                     <Group justify="space-between">
                       <Text size="sm">DeepSeek API调用</Text>
-                      <Text fw={500}>{systemData?.api_statistics.deepseek_api_usage.total_calls || 0}</Text>
+                      <Text fw={500}>
+                        {systemData?.api_statistics.deepseek_api_usage.total_calls || 0}
+                      </Text>
                     </Group>
                     <Group justify="space-between">
                       <Text size="sm">预算使用率</Text>
                       <Progress
-                        value={systemData?.api_statistics.deepseek_api_usage.budget_usage_percentage || 0}
+                        value={
+                          systemData?.api_statistics.deepseek_api_usage.budget_usage_percentage || 0
+                        }
                         color={
-                          (systemData?.api_statistics.deepseek_api_usage.budget_usage_percentage || 0) > 80
+                          (systemData?.api_statistics.deepseek_api_usage.budget_usage_percentage ||
+                            0) > 80
                             ? 'red'
                             : 'blue'
                         }
@@ -611,7 +659,9 @@ export function SystemMonitoringPage(): JSX.Element {
 
               <Grid.Col span={12}>
                 <Card withBorder>
-                  <Title order={5} mb="md">系统告警</Title>
+                  <Title order={5} mb="md">
+                    系统告警
+                  </Title>
                   <Table striped>
                     <Table.Thead>
                       <Table.Tr>
@@ -634,9 +684,7 @@ export function SystemMonitoringPage(): JSX.Element {
                             </Badge>
                           </Table.Td>
                           <Table.Td>
-                            <Badge color={getSeverityColor(alert.severity)}>
-                              {alert.severity}
-                            </Badge>
+                            <Badge color={getSeverityColor(alert.severity)}>{alert.severity}</Badge>
                           </Table.Td>
                           <Table.Td>{alert.message}</Table.Td>
                           <Table.Td>
@@ -681,18 +729,23 @@ export function SystemMonitoringPage(): JSX.Element {
             <Grid>
               <Grid.Col span={6}>
                 <Card withBorder>
-                  <Title order={5} mb="md">硬件预测</Title>
+                  <Title order={5} mb="md">
+                    硬件预测
+                  </Title>
                   <Stack>
                     {predictiveData?.hardware_predictions.map((prediction, index) => (
                       <Paper key={index} withBorder p="sm">
                         <Group justify="space-between">
-                          <Text size="sm" fw={500}>{prediction.component}</Text>
+                          <Text size="sm" fw={500}>
+                            {prediction.component}
+                          </Text>
                           <Badge color={prediction.failure_probability > 0.7 ? 'red' : 'yellow'}>
                             {(prediction.failure_probability * 100).toFixed(1)}%
                           </Badge>
                         </Group>
                         <Text size="xs" c="dimmed">
-                          预计故障时间: {new Date(prediction.predicted_failure_date).toLocaleDateString('zh-CN')}
+                          预计故障时间:{' '}
+                          {new Date(prediction.predicted_failure_date).toLocaleDateString('zh-CN')}
                         </Text>
                         <Text size="xs" c="dimmed">
                           置信度: {(prediction.confidence_level * 100).toFixed(1)}%
@@ -705,17 +758,21 @@ export function SystemMonitoringPage(): JSX.Element {
 
               <Grid.Col span={6}>
                 <Card withBorder>
-                  <Title order={5} mb="md">安全扫描结果</Title>
+                  <Title order={5} mb="md">
+                    安全扫描结果
+                  </Title>
                   <Stack>
                     {predictiveData?.security_scan_results.map((result, index) => (
                       <Paper key={index} withBorder p="sm">
                         <Group justify="space-between">
-                          <Text size="sm" fw={500}>{result.vulnerability_type}</Text>
-                          <Badge color={getSeverityColor(result.severity)}>
-                            {result.severity}
-                          </Badge>
+                          <Text size="sm" fw={500}>
+                            {result.vulnerability_type}
+                          </Text>
+                          <Badge color={getSeverityColor(result.severity)}>{result.severity}</Badge>
                         </Group>
-                        <Text size="xs" c="dimmed">{result.description}</Text>
+                        <Text size="xs" c="dimmed">
+                          {result.description}
+                        </Text>
                         <Text size="xs" c="dimmed">
                           影响组件: {result.affected_components.join(', ')}
                         </Text>
@@ -758,8 +815,12 @@ export function SystemMonitoringPage(): JSX.Element {
                         <Table.Tr key={alert.id}>
                           <Table.Td>
                             <Stack gap="xs">
-                              <Text size="sm" fw={500}>{alert.title}</Text>
-                              <Text size="xs" c="dimmed">{alert.description}</Text>
+                              <Text size="sm" fw={500}>
+                                {alert.title}
+                              </Text>
+                              <Text size="xs" c="dimmed">
+                                {alert.description}
+                              </Text>
                             </Stack>
                           </Table.Td>
                           <Table.Td>
@@ -771,15 +832,18 @@ export function SystemMonitoringPage(): JSX.Element {
                             </Badge>
                           </Table.Td>
                           <Table.Td>
-                            <Badge color={getSeverityColor(alert.severity)}>
-                              {alert.severity}
-                            </Badge>
+                            <Badge color={getSeverityColor(alert.severity)}>{alert.severity}</Badge>
                           </Table.Td>
                           <Table.Td>
-                            <Badge color={
-                              alert.status === 'resolved' ? 'green' :
-                              alert.status === 'acknowledged' ? 'yellow' : 'red'
-                            }>
+                            <Badge
+                              color={
+                                alert.status === 'resolved'
+                                  ? 'green'
+                                  : alert.status === 'acknowledged'
+                                    ? 'yellow'
+                                    : 'red'
+                              }
+                            >
                               {alert.status === 'active' && '活跃'}
                               {alert.status === 'acknowledged' && '已确认'}
                               {alert.status === 'resolved' && '已解决'}
@@ -822,12 +886,7 @@ export function SystemMonitoringPage(): JSX.Element {
         </Tabs>
 
         {/* 生成报表模态框 - 需求6验收标准3 */}
-        <Modal
-          opened={reportModalOpened}
-          onClose={closeReportModal}
-          title="生成智能报表"
-          size="lg"
-        >
+        <Modal opened={reportModalOpened} onClose={closeReportModal} title="生成智能报表" size="lg">
           <form onSubmit={reportForm.onSubmit(handleGenerateReport)}>
             <Stack>
               <Select
@@ -901,64 +960,35 @@ export function SystemMonitoringPage(): JSX.Element {
         </Modal>
 
         {/* 告警规则模态框 */}
-        <Modal
-          opened={alertModalOpened}
-          onClose={closeAlertModal}
-          title="创建告警规则"
-          size="md"
-        >
+        <Modal opened={alertModalOpened} onClose={closeAlertModal} title="创建告警规则" size="md">
           <Stack>
-            <TextInput
-              label="规则名称"
-              placeholder="请输入规则名称"
-              required
-            />
+            <TextInput label="规则名称" placeholder="请输入规则名称" required />
 
-            <Textarea
-              label="触发条件"
-              placeholder="请输入触发条件"
-              rows={3}
-              required
-            />
+            <Textarea label="触发条件" placeholder="请输入触发条件" rows={3} required />
 
-            <NumberInput
-              label="阈值"
-              placeholder="请输入阈值"
-              required
-            />
+            <NumberInput label="阈值" placeholder="请输入阈值" required />
 
             <Group justify="flex-end">
               <Button variant="light" onClick={closeAlertModal}>
                 取消
               </Button>
-              <Button>
-                创建规则
-              </Button>
+              <Button>创建规则</Button>
             </Group>
           </Stack>
         </Modal>
 
         {/* 设置模态框 */}
-        <Modal
-          opened={settingsModalOpened}
-          onClose={closeSettingsModal}
-          title="监控设置"
-          size="md"
-        >
+        <Modal opened={settingsModalOpened} onClose={closeSettingsModal} title="监控设置" size="md">
           <Stack>
             <Alert color="blue">
-              <Text size="sm">
-                监控设置功能正在开发中，将提供告警阈值、通知设置等配置选项。
-              </Text>
+              <Text size="sm">监控设置功能正在开发中，将提供告警阈值、通知设置等配置选项。</Text>
             </Alert>
 
             <Group justify="flex-end">
               <Button variant="light" onClick={closeSettingsModal}>
                 关闭
               </Button>
-              <Button>
-                保存设置
-              </Button>
+              <Button>保存设置</Button>
             </Group>
           </Stack>
         </Modal>

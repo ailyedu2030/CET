@@ -80,11 +80,11 @@ interface LessonPlanComment {
 const collaborationApi = {
   getSharedLessonPlans: async (_params?: any) => ({
     plans: [] as LessonPlan[],
-    total: 0
+    total: 0,
   }),
   getMyLessonPlans: async () => ({
     plans: [] as LessonPlan[],
-    total: 0
+    total: 0,
   }),
   getLessonPlanComments: async (_planId?: number) => [] as LessonPlanComment[],
   shareLessonPlan: async (_planData?: any) => ({}),
@@ -111,7 +111,7 @@ export function LessonPlanSharing({
 }: LessonPlanSharingProps): JSX.Element {
   const { user } = useAuth()
   const queryClient = useQueryClient()
-  
+
   const [selectedPlan, setSelectedPlan] = useState<LessonPlan | null>(null)
   const [shareModalOpened, setShareModalOpened] = useState(false)
   const [commentText, setCommentText] = useState('')
@@ -137,19 +137,14 @@ export function LessonPlanSharing({
   })
 
   // 获取我的教案列表
-  const {
-    data: myPlans,
-    isLoading: myPlansLoading,
-  } = useQuery({
+  const { data: myPlans, isLoading: myPlansLoading } = useQuery({
     queryKey: ['lessonPlans', 'my'],
     queryFn: () => collaborationApi.getMyLessonPlans(),
     enabled: !!user && teacherView,
   })
 
   // 获取教案评论
-  const {
-    data: comments,
-  } = useQuery({
+  const { data: comments } = useQuery({
     queryKey: ['lessonPlan', selectedPlan?.id, 'comments'],
     queryFn: () => collaborationApi.getLessonPlanComments(selectedPlan!.id),
     enabled: !!selectedPlan,
@@ -175,11 +170,8 @@ export function LessonPlanSharing({
 
   // 添加评论
   const addCommentMutation = useMutation({
-    mutationFn: (commentData: {
-      planId: number
-      content: string
-      rating?: number
-    }) => collaborationApi.addLessonPlanComment(commentData),
+    mutationFn: (commentData: { planId: number; content: string; rating?: number }) =>
+      collaborationApi.addLessonPlanComment(commentData),
     onSuccess: () => {
       notifications.show({
         title: '评论成功',
@@ -208,8 +200,6 @@ export function LessonPlanSharing({
       queryClient.invalidateQueries({ queryKey: ['lessonPlans'] })
     },
   })
-
-
 
   const handleAddComment = () => {
     if (!selectedPlan || !commentText.trim()) return
@@ -257,29 +247,26 @@ export function LessonPlanSharing({
               </Text>
             </div>
           </Group>
-          
+
           <Menu position="bottom-end">
             <Menu.Target>
               <ActionIcon variant="subtle">
                 <IconDots size={16} />
               </ActionIcon>
             </Menu.Target>
-            
+
             <Menu.Dropdown>
-              <Menu.Item
-                leftSection={<IconEye size={14} />}
-                onClick={() => setSelectedPlan(plan)}
-              >
+              <Menu.Item leftSection={<IconEye size={14} />} onClick={() => setSelectedPlan(plan)}>
                 查看详情
               </Menu.Item>
-              
+
               <Menu.Item
                 leftSection={<IconDownload size={14} />}
                 onClick={() => collaborationApi.downloadLessonPlan(plan.id)}
               >
                 下载教案
               </Menu.Item>
-              
+
               {teacherView && plan.author.id === Number(user?.id) && (
                 <>
                   <Menu.Item
@@ -291,7 +278,7 @@ export function LessonPlanSharing({
                   >
                     分享教案
                   </Menu.Item>
-                  
+
                   <Menu.Item
                     leftSection={<IconEdit size={14} />}
                     onClick={() => {
@@ -339,38 +326,30 @@ export function LessonPlanSharing({
                 color={plan.isLiked ? 'red' : 'gray'}
                 onClick={() => likePlanMutation.mutate(plan.id)}
               >
-                {plan.isLiked ? (
-                  <IconHeartFilled size={16} />
-                ) : (
-                  <IconHeart size={16} />
-                )}
+                {plan.isLiked ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
               </ActionIcon>
               <Text size="sm">{plan.likeCount}</Text>
             </Group>
-            
+
             <Group gap="xs">
               <ActionIcon variant="subtle">
                 <IconMessage size={16} />
               </ActionIcon>
               <Text size="sm">{plan.commentCount}</Text>
             </Group>
-            
+
             <Group gap="xs">
               <ActionIcon
                 variant="subtle"
                 color={plan.isFavorited ? 'yellow' : 'gray'}
                 onClick={() => favoritePlanMutation.mutate(plan.id)}
               >
-                {plan.isFavorited ? (
-                  <IconStarFilled size={16} />
-                ) : (
-                  <IconStar size={16} />
-                )}
+                {plan.isFavorited ? <IconStarFilled size={16} /> : <IconStar size={16} />}
               </ActionIcon>
               <Text size="sm">{plan.favoriteCount}</Text>
             </Group>
           </Group>
-          
+
           <Rating value={plan.averageRating} readOnly size="sm" />
         </Group>
       </Stack>
@@ -393,12 +372,10 @@ export function LessonPlanSharing({
             </Text>
           </div>
         </Group>
-        
-        {comment.rating && (
-          <Rating value={comment.rating} readOnly size="sm" />
-        )}
+
+        {comment.rating && <Rating value={comment.rating} readOnly size="sm" />}
       </Group>
-      
+
       <Text size="sm">{comment.content}</Text>
     </Paper>
   )
@@ -408,15 +385,15 @@ export function LessonPlanSharing({
       {/* 头部工具栏 */}
       <Group justify="space-between" mb="md">
         <Title order={2}>教案共享中心</Title>
-        
+
         <Group>
           <TextInput
             placeholder="搜索教案..."
             leftSection={<IconSearch size={16} />}
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
           />
-          
+
           <Select
             placeholder="学科筛选"
             data={[
@@ -425,9 +402,9 @@ export function LessonPlanSharing({
               { value: 'chinese', label: '语文' },
             ]}
             value={filter.subject}
-            onChange={(value) => setFilter({ ...filter, subject: value || undefined })}
+            onChange={value => setFilter({ ...filter, subject: value || undefined })}
           />
-          
+
           {teacherView && (
             <Button
               leftSection={<IconPlus size={16} />}
@@ -442,7 +419,7 @@ export function LessonPlanSharing({
       </Group>
 
       {/* 标签页 */}
-      <Tabs value={activeTab} onChange={(value) => setActiveTab(value || 'shared')} mb="md">
+      <Tabs value={activeTab} onChange={value => setActiveTab(value || 'shared')} mb="md">
         <Tabs.List>
           <Tabs.Tab value="shared">共享教案</Tabs.Tab>
           {teacherView && <Tabs.Tab value="my">我的教案</Tabs.Tab>}
@@ -456,7 +433,7 @@ export function LessonPlanSharing({
             </Text>
           ) : (
             <Stack gap="md">
-              {sharedPlans?.plans.map((plan) => (
+              {sharedPlans?.plans.map(plan => (
                 <LessonPlanCard key={plan.id} plan={plan} />
               ))}
             </Stack>
@@ -471,7 +448,7 @@ export function LessonPlanSharing({
               </Text>
             ) : (
               <Stack gap="md">
-                {myPlans?.plans.map((plan) => (
+                {myPlans?.plans.map(plan => (
                   <LessonPlanCard key={plan.id} plan={plan} />
                 ))}
               </Stack>
@@ -510,13 +487,13 @@ export function LessonPlanSharing({
               <Title order={4} mb="md">
                 评论 ({comments?.length || 0})
               </Title>
-              
+
               {/* 添加评论 */}
               <Stack gap="sm" mb="md">
                 <Textarea
                   placeholder="写下您的评论..."
                   value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
+                  onChange={e => setCommentText(e.target.value)}
                   minRows={3}
                 />
                 <Group justify="flex-end">
@@ -534,7 +511,7 @@ export function LessonPlanSharing({
               {/* 评论列表 */}
               <ScrollArea h={300}>
                 <Stack gap="sm">
-                  {comments?.map((comment) => (
+                  {comments?.map(comment => (
                     <CommentItem key={comment.id} comment={comment} />
                   ))}
                 </Stack>
@@ -545,11 +522,7 @@ export function LessonPlanSharing({
       </Modal>
 
       {/* 分享教案模态框 */}
-      <Modal
-        opened={shareModalOpened}
-        onClose={() => setShareModalOpened(false)}
-        title="分享教案"
-      >
+      <Modal opened={shareModalOpened} onClose={() => setShareModalOpened(false)} title="分享教案">
         <Stack gap="md">
           <Select
             label="分享范围"
@@ -560,18 +533,11 @@ export function LessonPlanSharing({
               { value: 'public', label: '公开' },
             ]}
           />
-          
-          <Textarea
-            label="分享说明"
-            placeholder="简单介绍一下这个教案..."
-            minRows={3}
-          />
-          
+
+          <Textarea label="分享说明" placeholder="简单介绍一下这个教案..." minRows={3} />
+
           <Group justify="flex-end">
-            <Button
-              variant="subtle"
-              onClick={() => setShareModalOpened(false)}
-            >
+            <Button variant="subtle" onClick={() => setShareModalOpened(false)}>
               取消
             </Button>
             <Button

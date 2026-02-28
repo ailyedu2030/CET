@@ -1,6 +1,6 @@
 /**
  * 智能预加载服务
- * 
+ *
  * 基于用户行为预测和预加载资源：
  * - 用户行为分析
  * - 智能预测算法
@@ -67,12 +67,12 @@ class SmartPreloaderManager {
    */
   private initializeEventListeners(): void {
     // 监听点击事件
-    document.addEventListener('click', (event) => {
+    document.addEventListener('click', event => {
       this.recordAction('click', this.getElementSelector(event.target as Element))
     })
 
     // 监听悬停事件
-    document.addEventListener('mouseover', (event) => {
+    document.addEventListener('mouseover', event => {
       this.recordAction('hover', this.getElementSelector(event.target as Element))
     })
 
@@ -98,12 +98,12 @@ class SmartPreloaderManager {
    */
   private getElementSelector(element: Element): string {
     if (!element) return 'unknown'
-    
+
     // 优先使用ID
     if (element.id) {
       return `#${element.id}`
     }
-    
+
     // 使用类名
     if (element.className) {
       const classes = element.className.split(' ').filter(Boolean)
@@ -111,7 +111,7 @@ class SmartPreloaderManager {
         return `.${classes[0]}`
       }
     }
-    
+
     // 使用标签名
     return element.tagName.toLowerCase()
   }
@@ -172,10 +172,11 @@ class SmartPreloaderManager {
    */
   private performPrediction(): void {
     const predictions = this.generatePredictions()
-    
+
     // 根据预测结果添加预加载项目
     predictions.forEach(prediction => {
-      if (prediction.probability > 0.6) { // 概率阈值
+      if (prediction.probability > 0.6) {
+        // 概率阈值
         this.addToPreloadQueue(prediction.item)
       }
     })
@@ -193,10 +194,10 @@ class SmartPreloaderManager {
 
     // 基于序列模式预测
     predictions.push(...this.predictBySequence(recentActions))
-    
+
     // 基于频率模式预测
     predictions.push(...this.predictByFrequency())
-    
+
     // 基于时间模式预测
     predictions.push(...this.predictByTime())
 
@@ -289,7 +290,7 @@ class SmartPreloaderManager {
     const predictions: PredictionResult[] = []
     const now = new Date()
     const currentHour = now.getHours()
-    
+
     // 分析相同时间段的行为模式
     const sameHourActions = this.actionHistory.filter(record => {
       const recordTime = new Date(record.timestamp)
@@ -315,7 +316,7 @@ class SmartPreloaderManager {
    */
   private getMostCommonAction(actions: ActionRecord[]): ActionRecord | null {
     const counts = new Map<string, { record: ActionRecord; count: number }>()
-    
+
     actions.forEach(action => {
       const key = `${action.action}:${action.target}`
       const existing = counts.get(key)
@@ -328,7 +329,7 @@ class SmartPreloaderManager {
 
     let maxCount = 0
     let mostCommon: ActionRecord | null = null
-    
+
     counts.forEach(({ record, count }) => {
       if (count > maxCount) {
         maxCount = count
@@ -425,7 +426,7 @@ class SmartPreloaderManager {
       scroll: 10,
       route_change: 40,
     }
-    
+
     return baseScore + (actionWeights[action.action] || 0)
   }
 
@@ -457,16 +458,18 @@ class SmartPreloaderManager {
    */
   private addToPreloadQueue(item: PreloadItem): void {
     // 检查是否已经加载或在队列中
-    if (this.loadedItems.has(item.id) || 
-        this.preloadQueue.some(queueItem => queueItem.id === item.id)) {
+    if (
+      this.loadedItems.has(item.id) ||
+      this.preloadQueue.some(queueItem => queueItem.id === item.id)
+    ) {
       return
     }
 
     this.preloadQueue.push(item)
-    
+
     // 按优先级排序
     this.preloadQueue.sort((a, b) => b.priority - a.priority)
-    
+
     // 限制队列大小
     if (this.preloadQueue.length > this.maxQueueSize) {
       this.preloadQueue = this.preloadQueue.slice(0, this.maxQueueSize)
@@ -515,10 +518,7 @@ class SmartPreloaderManager {
         break
       case 'route':
       case 'component':
-        await asyncLoader.preload(
-          () => import(/* webpackChunkName: "preload" */ item.url),
-          item.id
-        )
+        await asyncLoader.preload(() => import(/* webpackChunkName: "preload" */ item.url), item.id)
         break
     }
   }
@@ -527,8 +527,11 @@ class SmartPreloaderManager {
    * 获取网络状态
    */
   private getNetworkStatus(): NetworkStatus {
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection
-    
+    const connection =
+      (navigator as any).connection ||
+      (navigator as any).mozConnection ||
+      (navigator as any).webkitConnection
+
     if (connection) {
       return {
         effectiveType: connection.effectiveType || 'unknown',

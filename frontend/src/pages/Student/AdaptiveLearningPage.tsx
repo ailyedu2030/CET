@@ -22,7 +22,6 @@ import {
   Center,
   Timeline,
   Divider,
-
 } from '@mantine/core'
 import {
   IconBrain,
@@ -35,7 +34,6 @@ import {
   IconPlayerPlay,
   IconCheck,
   IconBulb,
-
 } from '@tabler/icons-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { notifications } from '@mantine/notifications'
@@ -51,62 +49,49 @@ export function AdaptiveLearningPage(): JSX.Element {
   const queryClient = useQueryClient()
 
   // 查询错题分析
-  const {
-    data: errorAnalysis,
-    isLoading: errorAnalysisLoading,
-  } = useQuery({
+  const { data: errorAnalysis, isLoading: errorAnalysisLoading } = useQuery({
     queryKey: ['error-analysis', user?.id, refreshKey],
-    queryFn: () => adaptiveLearningApi.getErrorAnalysis({
-      student_id: parseInt(user!.id),
-      analysis_days: 30,
-      include_categories: true,
-      include_trends: true,
-    }),
+    queryFn: () =>
+      adaptiveLearningApi.getErrorAnalysis({
+        student_id: parseInt(user!.id),
+        analysis_days: 30,
+        include_categories: true,
+        include_trends: true,
+      }),
     enabled: !!user?.id,
   })
 
   // 查询知识缺口
-  const {
-    data: knowledgeGaps,
-    isLoading: knowledgeGapsLoading,
-  } = useQuery({
+  const { data: knowledgeGaps, isLoading: knowledgeGapsLoading } = useQuery({
     queryKey: ['knowledge-gaps', user?.id],
     queryFn: () => adaptiveLearningApi.getKnowledgeGaps(parseInt(user!.id)),
     enabled: !!user?.id,
   })
 
   // 查询学习策略
-  const {
-    data: learningStrategy,
-    isLoading: strategyLoading,
-  } = useQuery({
+  const { data: learningStrategy, isLoading: strategyLoading } = useQuery({
     queryKey: ['learning-strategy', user?.id],
     queryFn: () => adaptiveLearningApi.getLearningStrategy(parseInt(user!.id)),
     enabled: !!user?.id,
   })
 
   // 查询强化计划
-  const {
-    data: _reinforcementPlan,
-    isLoading: planLoading,
-  } = useQuery({
+  const { data: _reinforcementPlan, isLoading: planLoading } = useQuery({
     queryKey: ['reinforcement-plan', user?.id],
     queryFn: () => adaptiveLearningApi.getReinforcementPlan(parseInt(user!.id)),
     enabled: !!user?.id,
   })
 
   // 查询复习计划
-  const {
-    data: _reviewSchedule,
-    isLoading: reviewLoading,
-  } = useQuery({
+  const { data: _reviewSchedule, isLoading: reviewLoading } = useQuery({
     queryKey: ['review-schedule', user?.id],
-    queryFn: () => adaptiveLearningApi.getReviewSchedule({
-      student_id: parseInt(user!.id),
-      schedule_days: 7,
-      daily_time_limit: 60,
-      priority_focus: 'weak_areas',
-    }),
+    queryFn: () =>
+      adaptiveLearningApi.getReviewSchedule({
+        student_id: parseInt(user!.id),
+        schedule_days: 7,
+        daily_time_limit: 60,
+        priority_focus: 'weak_areas',
+      }),
     enabled: !!user?.id,
   })
 
@@ -184,7 +169,8 @@ export function AdaptiveLearningPage(): JSX.Element {
     { area: '写作逻辑', score: 69, improvement: '+3%' },
   ]
 
-  const isLoading = errorAnalysisLoading || knowledgeGapsLoading || strategyLoading || planLoading || reviewLoading
+  const isLoading =
+    errorAnalysisLoading || knowledgeGapsLoading || strategyLoading || planLoading || reviewLoading
 
   return (
     <Container size="xl" py="lg">
@@ -199,11 +185,7 @@ export function AdaptiveLearningPage(): JSX.Element {
           </Text>
         </div>
         <Group>
-          <Button
-            leftSection={<IconRefresh size={16} />}
-            variant="light"
-            onClick={handleRefresh}
-          >
+          <Button leftSection={<IconRefresh size={16} />} variant="light" onClick={handleRefresh}>
             刷新
           </Button>
           <Button
@@ -232,7 +214,15 @@ export function AdaptiveLearningPage(): JSX.Element {
               <RingProgress
                 size={60}
                 thickness={6}
-                sections={[{ value: ((learningStrategy?.current_strategy?.parameters?.['difficulty_level'] || 3) / 5) * 100, color: 'blue' }]}
+                sections={[
+                  {
+                    value:
+                      ((learningStrategy?.current_strategy?.parameters?.['difficulty_level'] || 3) /
+                        5) *
+                      100,
+                    color: 'blue',
+                  },
+                ]}
                 label={
                   <Center>
                     <IconTarget size={16} color="blue" />
@@ -257,7 +247,9 @@ export function AdaptiveLearningPage(): JSX.Element {
               <RingProgress
                 size={60}
                 thickness={6}
-                sections={[{ value: (learningStrategy?.effectiveness_score || 0.75) * 100, color: 'orange' }]}
+                sections={[
+                  { value: (learningStrategy?.effectiveness_score || 0.75) * 100, color: 'orange' },
+                ]}
                 label={
                   <Center>
                     <IconTrendingUp size={16} color="orange" />
@@ -276,13 +268,24 @@ export function AdaptiveLearningPage(): JSX.Element {
                   算法准确度
                 </Text>
                 <Text size="xl" fw={700}>
-                  {Math.round((errorAnalysis?.total_errors ? (1 - errorAnalysis.total_errors / 100) : 0.88) * 100)}%
+                  {Math.round(
+                    (errorAnalysis?.total_errors ? 1 - errorAnalysis.total_errors / 100 : 0.88) *
+                      100
+                  )}
+                  %
                 </Text>
               </div>
               <RingProgress
                 size={60}
                 thickness={6}
-                sections={[{ value: (errorAnalysis?.total_errors ? (1 - errorAnalysis.total_errors / 100) : 0.88) * 100, color: 'green' }]}
+                sections={[
+                  {
+                    value:
+                      (errorAnalysis?.total_errors ? 1 - errorAnalysis.total_errors / 100 : 0.88) *
+                      100,
+                    color: 'green',
+                  },
+                ]}
                 label={
                   <Center>
                     <IconBrain size={16} color="green" />
@@ -307,7 +310,12 @@ export function AdaptiveLearningPage(): JSX.Element {
               <RingProgress
                 size={60}
                 thickness={6}
-                sections={[{ value: knowledgeGaps ? (1 - knowledgeGaps.length / 20) * 100 : 92, color: 'purple' }]}
+                sections={[
+                  {
+                    value: knowledgeGaps ? (1 - knowledgeGaps.length / 20) * 100 : 92,
+                    color: 'purple',
+                  },
+                ]}
                 label={
                   <Center>
                     <IconStar size={16} color="purple" />
@@ -348,8 +356,8 @@ export function AdaptiveLearningPage(): JSX.Element {
                     item.status === 'completed'
                       ? 'green'
                       : item.status === 'in-progress'
-                      ? 'blue'
-                      : 'gray'
+                        ? 'blue'
+                        : 'gray'
                   }
                 >
                   <Group justify="space-between" mb="xs">
@@ -362,20 +370,18 @@ export function AdaptiveLearningPage(): JSX.Element {
                         item.status === 'completed'
                           ? 'green'
                           : item.status === 'in-progress'
-                          ? 'blue'
-                          : 'gray'
+                            ? 'blue'
+                            : 'gray'
                       }
                     >
                       {item.status === 'completed'
                         ? '已完成'
                         : item.status === 'in-progress'
-                        ? '进行中'
-                        : '待开始'}
+                          ? '进行中'
+                          : '待开始'}
                     </Badge>
                   </Group>
-                  {item.progress > 0 && (
-                    <Progress value={item.progress} size="sm" color="blue" />
-                  )}
+                  {item.progress > 0 && <Progress value={item.progress} size="sm" color="blue" />}
                   {item.status === 'in-progress' && (
                     <Button size="xs" variant="light" mt="xs">
                       继续学习
@@ -443,36 +449,38 @@ export function AdaptiveLearningPage(): JSX.Element {
             </Group>
 
             <Grid>
-              {errorAnalysis?.improvement_suggestions?.slice(0, 4).map((suggestion: string, index: number) => (
-                <Grid.Col key={index} span={3}>
-                  <Card withBorder p="sm" h="100%">
-                    <Stack gap="xs">
-                      <Group justify="space-between">
-                        <Text size="sm" fw={500} lineClamp={2}>
-                          改进建议 {index + 1}
+              {errorAnalysis?.improvement_suggestions
+                ?.slice(0, 4)
+                .map((suggestion: string, index: number) => (
+                  <Grid.Col key={index} span={3}>
+                    <Card withBorder p="sm" h="100%">
+                      <Stack gap="xs">
+                        <Group justify="space-between">
+                          <Text size="sm" fw={500} lineClamp={2}>
+                            改进建议 {index + 1}
+                          </Text>
+                          <Badge size="xs" color="blue">
+                            建议
+                          </Badge>
+                        </Group>
+                        <Text size="xs" c="dimmed" lineClamp={3}>
+                          {suggestion}
                         </Text>
-                        <Badge size="xs" color="blue">
-                          建议
-                        </Badge>
-                      </Group>
-                      <Text size="xs" c="dimmed" lineClamp={3}>
-                        {suggestion}
-                      </Text>
-                      <Group justify="space-between">
-                        <Text size="xs" c="dimmed">
-                          优先级: 高
-                        </Text>
-                        <Text size="xs" c="dimmed">
-                          建议时长: 15分钟
-                        </Text>
-                      </Group>
-                      <Button size="xs" variant="light" fullWidth>
-                        开始学习
-                      </Button>
-                    </Stack>
-                  </Card>
-                </Grid.Col>
-              )) || (
+                        <Group justify="space-between">
+                          <Text size="xs" c="dimmed">
+                            优先级: 高
+                          </Text>
+                          <Text size="xs" c="dimmed">
+                            建议时长: 15分钟
+                          </Text>
+                        </Group>
+                        <Button size="xs" variant="light" fullWidth>
+                          开始学习
+                        </Button>
+                      </Stack>
+                    </Card>
+                  </Grid.Col>
+                )) ||
                 // 模拟推荐内容
                 Array.from({ length: 4 }, (_, index) => (
                   <Grid.Col key={index} span={3}>
@@ -503,8 +511,7 @@ export function AdaptiveLearningPage(): JSX.Element {
                       </Stack>
                     </Card>
                   </Grid.Col>
-                ))
-              )}
+                ))}
             </Grid>
           </Card>
         </Grid.Col>

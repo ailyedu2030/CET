@@ -1,6 +1,6 @@
 /**
  * 性能监控组件
- * 
+ *
  * 显示性能优化状态和统计：
  * - 加载性能指标
  * - 虚拟滚动状态
@@ -85,26 +85,27 @@ export function PerformanceMonitor(): JSX.Element {
     // 获取性能数据
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
     const paint = performance.getEntriesByType('paint')
-    
+
     const loadTime = navigation ? navigation.loadEventEnd - navigation.loadEventStart : 0
-    const renderTime = paint.length > 0 ? (paint[paint.length - 1]?.startTime || 0) : 0
-    
+    const renderTime = paint.length > 0 ? paint[paint.length - 1]?.startTime || 0 : 0
+
     // 获取内存使用情况（如果支持）
     const memory = (performance as any).memory
     const memoryUsage = memory ? (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100 : 0
-    
+
     // 获取缓存统计
     const cache = asyncLoader.getCacheStats()
     const cacheHitRate = cache.size > 0 ? Math.random() * 100 : 0 // 模拟缓存命中率
-    
+
     // 获取网络速度
     const connection = (navigator as any).connection
     const networkSpeed = connection ? connection.downlink || 0 : 0
-    
+
     // 计算预加载效率
-    const preloadEfficiency = preloadStats.loadedCount > 0 
-      ? (preloadStats.loadedCount / (preloadStats.queueSize + preloadStats.loadedCount)) * 100 
-      : 0
+    const preloadEfficiency =
+      preloadStats.loadedCount > 0
+        ? (preloadStats.loadedCount / (preloadStats.queueSize + preloadStats.loadedCount)) * 100
+        : 0
 
     setMetrics({
       loadTime,
@@ -121,12 +122,12 @@ export function PerformanceMonitor(): JSX.Element {
   // 更新网络信息
   const updateNetworkInfo = () => {
     const connection = (navigator as any).connection
-    
+
     if (connection) {
       const type = connection.effectiveType || 'unknown'
       const speed = connection.downlink || 0
       const saveData = connection.saveData || false
-      
+
       let quality: NetworkInfo['quality'] = 'good'
       if (speed >= 10) quality = 'excellent'
       else if (speed >= 1.5) quality = 'good'
@@ -163,8 +164,6 @@ export function PerformanceMonitor(): JSX.Element {
     return `${(ms / 1000).toFixed(1)}s`
   }
 
-
-
   // 获取质量颜色
   const getQualityColor = (value: number, thresholds: [number, number, number]) => {
     if (value >= thresholds[0]) return 'green'
@@ -181,7 +180,7 @@ export function PerformanceMonitor(): JSX.Element {
             <IconSpeedboat size={20} />
             <Text fw={600}>性能监控</Text>
           </Group>
-          
+
           <ActionIcon
             variant="outline"
             size="sm"
@@ -202,53 +201,56 @@ export function PerformanceMonitor(): JSX.Element {
               <Stack gap="xs">
                 <Group gap="xs">
                   <IconChartLine size={16} />
-                  <Text size="sm" fw={600}>加载性能</Text>
+                  <Text size="sm" fw={600}>
+                    加载性能
+                  </Text>
                 </Group>
-                
+
                 <Group justify="space-between">
-                  <Text size="xs" c="dimmed">页面加载</Text>
-                  <Badge 
-                    size="xs" 
-                    color={getQualityColor(metrics.loadTime, [2000, 1000, 500])}
-                  >
+                  <Text size="xs" c="dimmed">
+                    页面加载
+                  </Text>
+                  <Badge size="xs" color={getQualityColor(metrics.loadTime, [2000, 1000, 500])}>
                     {formatTime(metrics.loadTime)}
                   </Badge>
                 </Group>
-                
+
                 <Group justify="space-between">
-                  <Text size="xs" c="dimmed">渲染时间</Text>
-                  <Badge 
-                    size="xs" 
-                    color={getQualityColor(metrics.renderTime, [1000, 500, 200])}
-                  >
+                  <Text size="xs" c="dimmed">
+                    渲染时间
+                  </Text>
+                  <Badge size="xs" color={getQualityColor(metrics.renderTime, [1000, 500, 200])}>
                     {formatTime(metrics.renderTime)}
                   </Badge>
                 </Group>
               </Stack>
             </Card>
           </Grid.Col>
-          
+
           <Grid.Col span={6}>
             <Card withBorder>
               <Stack gap="xs">
                 <Group gap="xs">
                   <IconWifi size={16} />
-                  <Text size="sm" fw={600}>网络状态</Text>
+                  <Text size="sm" fw={600}>
+                    网络状态
+                  </Text>
                 </Group>
-                
+
                 <Group justify="space-between">
-                  <Text size="xs" c="dimmed">连接类型</Text>
+                  <Text size="xs" c="dimmed">
+                    连接类型
+                  </Text>
                   <Badge size="xs" variant="outline">
                     {networkInfo.type.toUpperCase()}
                   </Badge>
                 </Group>
-                
+
                 <Group justify="space-between">
-                  <Text size="xs" c="dimmed">下载速度</Text>
-                  <Badge 
-                    size="xs" 
-                    color={getQualityColor(networkInfo.speed, [10, 1.5, 0.5])}
-                  >
+                  <Text size="xs" c="dimmed">
+                    下载速度
+                  </Text>
+                  <Badge size="xs" color={getQualityColor(networkInfo.speed, [10, 1.5, 0.5])}>
                     {networkInfo.speed.toFixed(1)} Mbps
                   </Badge>
                 </Group>
@@ -260,41 +262,51 @@ export function PerformanceMonitor(): JSX.Element {
         {/* 内存和缓存 */}
         <Card withBorder>
           <Stack gap="md">
-            <Text fw={600} size="sm">内存与缓存</Text>
-            
+            <Text fw={600} size="sm">
+              内存与缓存
+            </Text>
+
             <Grid>
               <Grid.Col span={6}>
                 <Stack gap="xs">
                   <Group justify="space-between">
-                    <Text size="xs" c="dimmed">内存使用率</Text>
+                    <Text size="xs" c="dimmed">
+                      内存使用率
+                    </Text>
                     <Text size="xs">{metrics.memoryUsage.toFixed(1)}%</Text>
                   </Group>
-                  <Progress 
-                    value={metrics.memoryUsage} 
+                  <Progress
+                    value={metrics.memoryUsage}
                     color={getQualityColor(100 - metrics.memoryUsage, [70, 50, 30])}
                     size="sm"
                   />
                 </Stack>
               </Grid.Col>
-              
+
               <Grid.Col span={6}>
                 <Stack gap="xs">
                   <Group justify="space-between">
-                    <Text size="xs" c="dimmed">缓存命中率</Text>
+                    <Text size="xs" c="dimmed">
+                      缓存命中率
+                    </Text>
                     <Text size="xs">{metrics.cacheHitRate.toFixed(1)}%</Text>
                   </Group>
-                  <Progress 
-                    value={metrics.cacheHitRate} 
+                  <Progress
+                    value={metrics.cacheHitRate}
                     color={getQualityColor(metrics.cacheHitRate, [80, 60, 40])}
                     size="sm"
                   />
                 </Stack>
               </Grid.Col>
             </Grid>
-            
+
             <Group justify="space-between">
-              <Text size="xs" c="dimmed">缓存项目数</Text>
-              <Badge size="xs" variant="outline">{cacheStats.size}</Badge>
+              <Text size="xs" c="dimmed">
+                缓存项目数
+              </Text>
+              <Badge size="xs" variant="outline">
+                {cacheStats.size}
+              </Badge>
             </Group>
           </Stack>
         </Card>
@@ -305,43 +317,58 @@ export function PerformanceMonitor(): JSX.Element {
             <Group justify="space-between">
               <Group gap="xs">
                 <IconCloudDownload size={16} />
-                <Text fw={600} size="sm">智能预加载</Text>
+                <Text fw={600} size="sm">
+                  智能预加载
+                </Text>
               </Group>
-              
-              <Badge 
-                size="xs" 
-                color={getQualityColor(metrics.preloadEfficiency, [80, 60, 40])}
-              >
+
+              <Badge size="xs" color={getQualityColor(metrics.preloadEfficiency, [80, 60, 40])}>
                 {metrics.preloadEfficiency.toFixed(1)}% 效率
               </Badge>
             </Group>
-            
+
             <Grid>
               <Grid.Col span={6}>
                 <Group justify="space-between">
-                  <Text size="xs" c="dimmed">用户行为</Text>
-                  <Badge size="xs" variant="outline">{preloadStats.actionCount}</Badge>
+                  <Text size="xs" c="dimmed">
+                    用户行为
+                  </Text>
+                  <Badge size="xs" variant="outline">
+                    {preloadStats.actionCount}
+                  </Badge>
                 </Group>
               </Grid.Col>
-              
+
               <Grid.Col span={6}>
                 <Group justify="space-between">
-                  <Text size="xs" c="dimmed">识别模式</Text>
-                  <Badge size="xs" variant="outline">{preloadStats.patternCount}</Badge>
+                  <Text size="xs" c="dimmed">
+                    识别模式
+                  </Text>
+                  <Badge size="xs" variant="outline">
+                    {preloadStats.patternCount}
+                  </Badge>
                 </Group>
               </Grid.Col>
-              
+
               <Grid.Col span={6}>
                 <Group justify="space-between">
-                  <Text size="xs" c="dimmed">预加载队列</Text>
-                  <Badge size="xs" variant="outline">{preloadStats.queueSize}</Badge>
+                  <Text size="xs" c="dimmed">
+                    预加载队列
+                  </Text>
+                  <Badge size="xs" variant="outline">
+                    {preloadStats.queueSize}
+                  </Badge>
                 </Group>
               </Grid.Col>
-              
+
               <Grid.Col span={6}>
                 <Group justify="space-between">
-                  <Text size="xs" c="dimmed">已加载项目</Text>
-                  <Badge size="xs" variant="outline">{preloadStats.loadedCount}</Badge>
+                  <Text size="xs" c="dimmed">
+                    已加载项目
+                  </Text>
+                  <Badge size="xs" variant="outline">
+                    {preloadStats.loadedCount}
+                  </Badge>
                 </Group>
               </Grid.Col>
             </Grid>
@@ -351,9 +378,7 @@ export function PerformanceMonitor(): JSX.Element {
         {/* 省流量模式提示 */}
         {networkInfo.saveData && (
           <Alert color="orange" icon={<IconInfoCircle size={16} />}>
-            <Text size="sm">
-              检测到省流量模式，部分性能优化功能已自动调整
-            </Text>
+            <Text size="sm">检测到省流量模式，部分性能优化功能已自动调整</Text>
           </Alert>
         )}
 
@@ -361,26 +386,28 @@ export function PerformanceMonitor(): JSX.Element {
 
         {/* 性能建议 */}
         <Stack gap="xs">
-          <Text size="sm" fw={600}>性能建议</Text>
-          
+          <Text size="sm" fw={600}>
+            性能建议
+          </Text>
+
           {metrics.loadTime > 3000 && (
             <Text size="xs" c="dimmed">
               • 页面加载时间较长，建议启用更多缓存策略
             </Text>
           )}
-          
+
           {metrics.memoryUsage > 80 && (
             <Text size="xs" c="dimmed">
               • 内存使用率较高，建议清理不必要的缓存
             </Text>
           )}
-          
+
           {networkInfo.quality === 'poor' && (
             <Text size="xs" c="dimmed">
               • 网络质量较差，已自动优化加载策略
             </Text>
           )}
-          
+
           {metrics.cacheHitRate < 50 && (
             <Text size="xs" c="dimmed">
               • 缓存命中率较低，建议增加预加载范围

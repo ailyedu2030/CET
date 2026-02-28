@@ -1,6 +1,6 @@
 /**
  * 需求25：错题强化与自适应学习 - API接口
- * 
+ *
  * 实现与后端自适应学习API的完整对接
  */
 
@@ -167,73 +167,108 @@ export interface ReviewScheduleRequest {
 export const adaptiveLearningApi = {
   // 错题分析
   getErrorAnalysis: async (params: ErrorAnalysisRequest): Promise<ErrorAnalysisResponse> => {
-    const response = await apiClient.get(`/api/v1/training/adaptive-learning/error-analysis/${params.student_id}`, {
-      params: {
-        analysis_days: params.analysis_days,
-        include_categories: params.include_categories,
-        include_trends: params.include_trends,
-      },
-    })
+    const response = await apiClient.get(
+      `/api/v1/training/adaptive-learning/error-analysis/${params.student_id}`,
+      {
+        params: {
+          analysis_days: params.analysis_days,
+          include_categories: params.include_categories,
+          include_trends: params.include_trends,
+        },
+      }
+    )
     return response.data
   },
 
   // 知识缺口分析
   getKnowledgeGaps: async (studentId: number): Promise<KnowledgeGapResponse[]> => {
-    const response = await apiClient.get(`/api/v1/training/adaptive-learning/knowledge-gaps/${studentId}`)
+    const response = await apiClient.get(
+      `/api/v1/training/adaptive-learning/knowledge-gaps/${studentId}`
+    )
     return response.data
   },
 
   // 遗忘曲线分析
-  getForgettingCurve: async (studentId: number, questionId: number): Promise<ForgettingCurveResponse> => {
-    const response = await apiClient.get(`/api/v1/training/adaptive-learning/forgetting-curve/${studentId}/${questionId}`)
+  getForgettingCurve: async (
+    studentId: number,
+    questionId: number
+  ): Promise<ForgettingCurveResponse> => {
+    const response = await apiClient.get(
+      `/api/v1/training/adaptive-learning/forgetting-curve/${studentId}/${questionId}`
+    )
     return response.data
   },
 
   // 学习策略
   getLearningStrategy: async (studentId: number): Promise<LearningStrategyResponse> => {
-    const response = await apiClient.get(`/api/v1/training/adaptive-learning/learning-strategy/${studentId}`)
+    const response = await apiClient.get(
+      `/api/v1/training/adaptive-learning/learning-strategy/${studentId}`
+    )
     return response.data
   },
 
-  updateLearningStrategy: async (params: LearningStrategyRequest): Promise<LearningStrategyResponse> => {
-    const response = await apiClient.post(`/api/v1/training/adaptive-learning/learning-strategy/${params.student_id}`, params)
+  updateLearningStrategy: async (
+    params: LearningStrategyRequest
+  ): Promise<LearningStrategyResponse> => {
+    const response = await apiClient.post(
+      `/api/v1/training/adaptive-learning/learning-strategy/${params.student_id}`,
+      params
+    )
     return response.data
   },
 
   // 强化训练计划
   getReinforcementPlan: async (studentId: number): Promise<ReinforcementPlanResponse> => {
-    const response = await apiClient.get(`/api/v1/training/adaptive-learning/reinforcement-plan/${studentId}`)
+    const response = await apiClient.get(
+      `/api/v1/training/adaptive-learning/reinforcement-plan/${studentId}`
+    )
     return response.data
   },
 
-  generateReinforcementPlan: async (params: ReinforcementPlanRequest): Promise<ReinforcementPlanResponse> => {
-    const response = await apiClient.post(`/api/v1/training/adaptive-learning/reinforcement-plan/${params.student_id}`, params)
+  generateReinforcementPlan: async (
+    params: ReinforcementPlanRequest
+  ): Promise<ReinforcementPlanResponse> => {
+    const response = await apiClient.post(
+      `/api/v1/training/adaptive-learning/reinforcement-plan/${params.student_id}`,
+      params
+    )
     return response.data
   },
 
   // 复习计划
   getReviewSchedule: async (params: ReviewScheduleRequest): Promise<ReviewScheduleResponse> => {
-    const response = await apiClient.get(`/api/v1/training/adaptive-learning/review-schedule/${params.student_id}`, {
-      params: {
-        schedule_days: params.schedule_days,
-        daily_time_limit: params.daily_time_limit,
-        priority_focus: params.priority_focus,
-      },
-    })
+    const response = await apiClient.get(
+      `/api/v1/training/adaptive-learning/review-schedule/${params.student_id}`,
+      {
+        params: {
+          schedule_days: params.schedule_days,
+          daily_time_limit: params.daily_time_limit,
+          priority_focus: params.priority_focus,
+        },
+      }
+    )
     return response.data
   },
 
   // 触发自适应调整
   triggerAdaptation: async (studentId: number): Promise<{ success: boolean; message: string }> => {
-    const response = await apiClient.post(`/api/v1/training/adaptive-learning/trigger-adaptation/${studentId}`)
+    const response = await apiClient.post(
+      `/api/v1/training/adaptive-learning/trigger-adaptation/${studentId}`
+    )
     return response.data
   },
 
   // 获取学习效果评估
-  getLearningEffectiveness: async (studentId: number, evaluationDays: number = 30): Promise<any> => {
-    const response = await apiClient.get(`/api/v1/training/adaptive-learning/learning-effectiveness/${studentId}`, {
-      params: { evaluation_days: evaluationDays },
-    })
+  getLearningEffectiveness: async (
+    studentId: number,
+    evaluationDays: number = 30
+  ): Promise<any> => {
+    const response = await apiClient.get(
+      `/api/v1/training/adaptive-learning/learning-effectiveness/${studentId}`,
+      {
+        params: { evaluation_days: evaluationDays },
+      }
+    )
     return response.data
   },
 }

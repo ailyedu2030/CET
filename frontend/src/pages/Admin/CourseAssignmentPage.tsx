@@ -54,18 +54,22 @@ import {
 
 export function CourseAssignmentPage(): JSX.Element {
   const queryClient = useQueryClient()
-  
+
   // 状态管理
   const [page, setPage] = useState(1)
   const [courseFilter, setCourseFilter] = useState<string | null>(null)
   const [teacherFilter, setTeacherFilter] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
-  const [_selectedAssignment, setSelectedAssignment] = useState<CourseAssignmentResponse | null>(null)
+  const [_selectedAssignment, setSelectedAssignment] = useState<CourseAssignmentResponse | null>(
+    null
+  )
   const [activeTab, setActiveTab] = useState('assignments')
 
   // 模态框状态
-  const [assignModalOpened, { open: openAssignModal, close: closeAssignModal }] = useDisclosure(false)
-  const [workloadModalOpened, { open: openWorkloadModal, close: closeWorkloadModal }] = useDisclosure(false)
+  const [assignModalOpened, { open: openAssignModal, close: closeAssignModal }] =
+    useDisclosure(false)
+  const [workloadModalOpened, { open: openWorkloadModal, close: closeWorkloadModal }] =
+    useDisclosure(false)
   const [rulesModalOpened, { open: openRulesModal, close: closeRulesModal }] = useDisclosure(false)
 
   // 表单管理
@@ -81,11 +85,11 @@ export function CourseAssignmentPage(): JSX.Element {
       notes: '',
     },
     validate: {
-      course_id: (value) => (value === 0 ? '请选择课程' : null),
-      teacher_ids: (value) => (value.length === 0 ? '请选择至少一个教师' : null),
-      class_ids: (value) => (value.length === 0 ? '请选择至少一个班级' : null),
-      start_date: (value) => (!value ? '请选择开始日期' : null),
-      end_date: (value) => (!value ? '请选择结束日期' : null),
+      course_id: value => (value === 0 ? '请选择课程' : null),
+      teacher_ids: value => (value.length === 0 ? '请选择至少一个教师' : null),
+      class_ids: value => (value.length === 0 ? '请选择至少一个班级' : null),
+      start_date: value => (!value ? '请选择开始日期' : null),
+      end_date: value => (!value ? '请选择结束日期' : null),
     },
   })
 
@@ -205,22 +209,32 @@ export function CourseAssignmentPage(): JSX.Element {
   // 状态标签颜色映射
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'green'
-      case 'pending': return 'yellow'
-      case 'completed': return 'blue'
-      case 'cancelled': return 'red'
-      default: return 'gray'
+      case 'active':
+        return 'green'
+      case 'pending':
+        return 'yellow'
+      case 'completed':
+        return 'blue'
+      case 'cancelled':
+        return 'red'
+      default:
+        return 'gray'
     }
   }
 
   // 状态标签文本映射
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'active': return '进行中'
-      case 'pending': return '待开始'
-      case 'completed': return '已完成'
-      case 'cancelled': return '已取消'
-      default: return status
+      case 'active':
+        return '进行中'
+      case 'pending':
+        return '待开始'
+      case 'completed':
+        return '已完成'
+      case 'cancelled':
+        return '已取消'
+      default:
+        return status
     }
   }
 
@@ -251,16 +265,13 @@ export function CourseAssignmentPage(): JSX.Element {
             >
               排课规则
             </Button>
-            <Button
-              leftSection={<IconPlus size={16} />}
-              onClick={handleCreateAssignment}
-            >
+            <Button leftSection={<IconPlus size={16} />} onClick={handleCreateAssignment}>
               创建分配
             </Button>
           </Group>
         </Group>
 
-        <Tabs value={activeTab} onChange={(value) => setActiveTab(value || 'assignments')}>
+        <Tabs value={activeTab} onChange={value => setActiveTab(value || 'assignments')}>
           <Tabs.List>
             <Tabs.Tab value="assignments" leftSection={<IconSchool size={16} />}>
               分配管理
@@ -355,7 +366,11 @@ export function CourseAssignmentPage(): JSX.Element {
                             <Text key={teacher.id} size="sm">
                               {teacher.real_name}
                             </Text>
-                          )) || <Text size="sm" c="dimmed">未分配教师</Text>}
+                          )) || (
+                            <Text size="sm" c="dimmed">
+                              未分配教师
+                            </Text>
+                          )}
                         </Stack>
                       </Table.Td>
 
@@ -365,7 +380,11 @@ export function CourseAssignmentPage(): JSX.Element {
                             <Text key={cls.id} size="sm">
                               {cls.name} ({cls.current_students}/{cls.max_students})
                             </Text>
-                          )) || <Text size="sm" c="dimmed">未分配班级</Text>}
+                          )) || (
+                            <Text size="sm" c="dimmed">
+                              未分配班级
+                            </Text>
+                          )}
                         </Stack>
                       </Table.Td>
 
@@ -437,11 +456,7 @@ export function CourseAssignmentPage(): JSX.Element {
               {/* 分页 */}
               {assignmentsData && assignmentsData.pages > 1 && (
                 <Group justify="center" p="md">
-                  <Pagination
-                    value={page}
-                    onChange={setPage}
-                    total={assignmentsData.pages}
-                  />
+                  <Pagination value={page} onChange={setPage} total={assignmentsData.pages} />
                 </Group>
               )}
             </Paper>
@@ -528,7 +543,7 @@ export function CourseAssignmentPage(): JSX.Element {
 
                     <Switch
                       checked={rule.enabled}
-                      onChange={(event) => {
+                      onChange={event => {
                         // TODO: 更新规则状态
                         void event.currentTarget.checked
                       }}
@@ -541,12 +556,7 @@ export function CourseAssignmentPage(): JSX.Element {
         </Tabs>
 
         {/* 创建分配模态框 - 需求5验收标准1&2 */}
-        <Modal
-          opened={assignModalOpened}
-          onClose={closeAssignModal}
-          title="创建课程分配"
-          size="lg"
-        >
+        <Modal opened={assignModalOpened} onClose={closeAssignModal} title="创建课程分配" size="lg">
           <form onSubmit={assignForm.onSubmit(handleSubmitAssign)}>
             <Stack>
               <Select
@@ -555,7 +565,9 @@ export function CourseAssignmentPage(): JSX.Element {
                 required
                 data={[]} // TODO: 从API获取课程列表
                 {...assignForm.getInputProps('course_id')}
-                onChange={(value) => assignForm.setFieldValue('course_id', value ? parseInt(value) : 0)}
+                onChange={value =>
+                  assignForm.setFieldValue('course_id', value ? parseInt(value) : 0)
+                }
               />
 
               <Select
@@ -576,7 +588,12 @@ export function CourseAssignmentPage(): JSX.Element {
                 required
                 multiple
                 data={[]} // TODO: 从API获取教师列表
-                onChange={(value) => assignForm.setFieldValue('teacher_ids', Array.isArray(value) ? value.map((v: string) => parseInt(v)) : [])}
+                onChange={value =>
+                  assignForm.setFieldValue(
+                    'teacher_ids',
+                    Array.isArray(value) ? value.map((v: string) => parseInt(v)) : []
+                  )
+                }
               />
 
               <Select
@@ -585,7 +602,12 @@ export function CourseAssignmentPage(): JSX.Element {
                 required
                 multiple
                 data={[]} // TODO: 从API获取班级列表
-                onChange={(value) => assignForm.setFieldValue('class_ids', Array.isArray(value) ? value.map((v: string) => parseInt(v)) : [])}
+                onChange={value =>
+                  assignForm.setFieldValue(
+                    'class_ids',
+                    Array.isArray(value) ? value.map((v: string) => parseInt(v)) : []
+                  )
+                }
               />
 
               <Group grow>
@@ -612,9 +634,7 @@ export function CourseAssignmentPage(): JSX.Element {
               />
 
               <Alert color="blue">
-                <Text size="sm">
-                  系统将自动检查教师资质匹配、工作量平衡和时间冲突。
-                </Text>
+                <Text size="sm">系统将自动检查教师资质匹配、工作量平衡和时间冲突。</Text>
               </Alert>
 
               <Group justify="flex-end">
@@ -638,9 +658,7 @@ export function CourseAssignmentPage(): JSX.Element {
         >
           <Stack>
             <Alert color="blue">
-              <Text size="sm">
-                工作量平衡功能可以分析教师工作负荷，提供平衡分配建议。
-              </Text>
+              <Text size="sm">工作量平衡功能可以分析教师工作负荷，提供平衡分配建议。</Text>
             </Alert>
 
             <Divider label="工作量统计" />
@@ -650,7 +668,9 @@ export function CourseAssignmentPage(): JSX.Element {
                 <Grid.Col key={workload.teacher_id} span={4}>
                   <Card withBorder>
                     <Stack gap="xs">
-                      <Text size="sm" fw={500}>教师 {workload.teacher_id}</Text>
+                      <Text size="sm" fw={500}>
+                        教师 {workload.teacher_id}
+                      </Text>
                       <Progress
                         value={workload.workload_percentage}
                         color={getWorkloadColor(workload.workload_percentage)}
@@ -669,9 +689,7 @@ export function CourseAssignmentPage(): JSX.Element {
               <Button variant="light" onClick={closeWorkloadModal}>
                 关闭
               </Button>
-              <Button>
-                生成平衡方案
-              </Button>
+              <Button>生成平衡方案</Button>
             </Group>
           </Stack>
         </Modal>
@@ -685,9 +703,7 @@ export function CourseAssignmentPage(): JSX.Element {
         >
           <Stack>
             <Alert color="blue">
-              <Text size="sm">
-                管理教室排课规则，包括基础规则和高级规则配置。
-              </Text>
+              <Text size="sm">管理教室排课规则，包括基础规则和高级规则配置。</Text>
             </Alert>
 
             <Divider label="规则列表" />
@@ -699,7 +715,11 @@ export function CourseAssignmentPage(): JSX.Element {
                     <Stack gap="xs">
                       <Group>
                         <Text fw={500}>{rule.rule_name}</Text>
-                        <Badge size="sm" variant="light" color={rule.rule_type === 'basic' ? 'blue' : 'purple'}>
+                        <Badge
+                          size="sm"
+                          variant="light"
+                          color={rule.rule_type === 'basic' ? 'blue' : 'purple'}
+                        >
                           {rule.rule_type === 'basic' ? '基础' : '高级'}
                         </Badge>
                       </Group>
@@ -718,7 +738,7 @@ export function CourseAssignmentPage(): JSX.Element {
                     <Group>
                       <Switch
                         checked={rule.enabled}
-                        onChange={(event) => {
+                        onChange={event => {
                           // TODO: 更新规则状态
                           void event.currentTarget.checked
                         }}
@@ -742,9 +762,7 @@ export function CourseAssignmentPage(): JSX.Element {
               <Button variant="light" onClick={closeRulesModal}>
                 关闭
               </Button>
-              <Button>
-                保存规则
-              </Button>
+              <Button>保存规则</Button>
             </Group>
           </Stack>
         </Modal>

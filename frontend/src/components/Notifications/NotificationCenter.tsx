@@ -64,22 +64,25 @@ interface NotificationStats {
 
 // 临时API对象
 const notificationApi = {
-  getNotifications: async (_params?: any) => ({
-    notifications: [] as NotificationResponse[],
-    total: 0,
-    unread_count: 0,
-  } as NotificationListResponse),
-  getNotificationList: async (_params?: any) => ({
-    notifications: [] as NotificationResponse[],
-    total: 0,
-    unread_count: 0,
-  } as NotificationListResponse),
-  getNotificationStats: async () => ({
-    total: 0,
-    unread: 0,
-    by_type: {},
-    by_priority: {},
-  } as NotificationStats),
+  getNotifications: async (_params?: any) =>
+    ({
+      notifications: [] as NotificationResponse[],
+      total: 0,
+      unread_count: 0,
+    }) as NotificationListResponse,
+  getNotificationList: async (_params?: any) =>
+    ({
+      notifications: [] as NotificationResponse[],
+      total: 0,
+      unread_count: 0,
+    }) as NotificationListResponse,
+  getNotificationStats: async () =>
+    ({
+      total: 0,
+      unread: 0,
+      by_type: {},
+      by_priority: {},
+    }) as NotificationStats,
   markAsRead: async (_id: number) => ({}),
   markAllAsRead: async () => ({}),
   updateNotification: async (_id: number, _data: any) => ({}),
@@ -111,10 +114,7 @@ export function NotificationCenter({
   const [selectedNotifications, setSelectedNotifications] = useState<number[]>([])
 
   // 获取通知列表
-  const {
-    data: notificationData,
-    isLoading,
-  } = useQuery<NotificationListResponse>({
+  const { data: notificationData, isLoading } = useQuery<NotificationListResponse>({
     queryKey: ['notifications', 'list'],
     queryFn: () =>
       notificationApi.getNotificationList({
@@ -164,20 +164,23 @@ export function NotificationCenter({
   // WebSocket实时通知
   const { isConnected } = useWebSocket({
     url: user ? `/api/v1/notifications/ws/${user.id}` : null,
-    onMessage: useCallback((message: any) => {
-      if (message.type === 'notification') {
-        // 收到新通知，刷新列表
-        queryClient.invalidateQueries({ queryKey: ['notifications'] })
-        
-        // 显示通知提示
-        notifications.show({
-          title: message.notification.title,
-          message: message.notification.content,
-          color: getPriorityColor(message.notification.priority),
-          icon: <IconBellRinging size={16} />,
-        })
-      }
-    }, [queryClient]),
+    onMessage: useCallback(
+      (message: any) => {
+        if (message.type === 'notification') {
+          // 收到新通知，刷新列表
+          queryClient.invalidateQueries({ queryKey: ['notifications'] })
+
+          // 显示通知提示
+          notifications.show({
+            title: message.notification.title,
+            message: message.notification.content,
+            color: getPriorityColor(message.notification.priority),
+            icon: <IconBellRinging size={16} />,
+          })
+        }
+      },
+      [queryClient]
+    ),
   })
 
   const notifications_list = notificationData?.notifications || []
@@ -188,11 +191,9 @@ export function NotificationCenter({
   }
 
   const handleMarkAllRead = () => {
-    const unreadIds = notifications_list
-      .filter((n) => !n.is_read)
-      .map((n) => n.id)
-    
-    unreadIds.forEach((id) => {
+    const unreadIds = notifications_list.filter(n => !n.is_read).map(n => n.id)
+
+    unreadIds.forEach(id => {
       markReadMutation.mutate(id)
     })
   }
@@ -207,7 +208,7 @@ export function NotificationCenter({
     if (!notification.is_read) {
       handleMarkRead(notification.id)
     }
-    
+
     // 根据通知类型执行相应操作
     handleNotificationAction(notification)
   }
@@ -286,30 +287,26 @@ export function NotificationCenter({
           <div style={{ color: getPriorityColor(notification.priority) }}>
             {getPriorityIcon(notification.priority)}
           </div>
-          
+
           <Stack gap="xs" style={{ flex: 1 }}>
             <Group justify="space-between">
               <Text size="sm" fw={notification.is_read ? 400 : 600}>
                 {notification.title}
               </Text>
-              <Badge
-                size="xs"
-                color={getPriorityColor(notification.priority)}
-                variant="light"
-              >
+              <Badge size="xs" color={getPriorityColor(notification.priority)} variant="light">
                 {notification.priority}
               </Badge>
             </Group>
-            
+
             <Text size="xs" c="dimmed" lineClamp={2}>
               {notification.content}
             </Text>
-            
+
             <Group justify="space-between">
               <Text size="xs" c="dimmed">
                 {formatTimeAgo(notification.created_at)}
               </Text>
-              
+
               {!notification.is_read && (
                 <Badge size="xs" color="blue" variant="filled">
                   未读
@@ -321,20 +318,16 @@ export function NotificationCenter({
 
         <Menu position="bottom-end">
           <Menu.Target>
-            <ActionIcon
-              variant="subtle"
-              size="sm"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <ActionIcon variant="subtle" size="sm" onClick={e => e.stopPropagation()}>
               <IconDots size={14} />
             </ActionIcon>
           </Menu.Target>
-          
+
           <Menu.Dropdown>
             {!notification.is_read && (
               <Menu.Item
                 leftSection={<IconEye size={14} />}
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation()
                   handleMarkRead(notification.id)
                 }}
@@ -342,11 +335,11 @@ export function NotificationCenter({
                 标记已读
               </Menu.Item>
             )}
-            
+
             <Menu.Item
               leftSection={<IconTrash size={14} />}
               color="red"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation()
                 batchDeleteMutation.mutate([notification.id])
               }}
@@ -372,14 +365,14 @@ export function NotificationCenter({
               </Badge>
             </Tooltip>
           )}
-          
+
           <Menu position="bottom-end">
             <Menu.Target>
               <ActionIcon variant="subtle">
                 <IconSettings size={16} />
               </ActionIcon>
             </Menu.Target>
-            
+
             <Menu.Dropdown>
               <Menu.Item
                 leftSection={<IconCheck size={14} />}
@@ -388,7 +381,7 @@ export function NotificationCenter({
               >
                 全部标记已读
               </Menu.Item>
-              
+
               <Menu.Item
                 leftSection={<IconTrash size={14} />}
                 color="red"
@@ -416,11 +409,8 @@ export function NotificationCenter({
           </Text>
         ) : (
           <Stack gap="xs">
-            {notifications_list.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-              />
+            {notifications_list.map(notification => (
+              <NotificationItem key={notification.id} notification={notification} />
             ))}
           </Stack>
         )}
@@ -448,12 +438,7 @@ export function NotificationCenter({
 
   if (asPopover) {
     return (
-      <Popover
-        width={400}
-        position="bottom-end"
-        opened={opened}
-        onChange={setOpened}
-      >
+      <Popover width={400} position="bottom-end" opened={opened} onChange={setOpened}>
         <Popover.Target>
           <UnstyledButton onClick={() => setOpened(!opened)}>
             <Indicator
@@ -468,7 +453,7 @@ export function NotificationCenter({
             </Indicator>
           </UnstyledButton>
         </Popover.Target>
-        
+
         <Popover.Dropdown p="md">
           <NotificationContent />
         </Popover.Dropdown>

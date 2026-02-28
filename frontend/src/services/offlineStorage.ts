@@ -1,6 +1,6 @@
 /**
  * 离线存储服务
- * 
+ *
  * 提供离线数据存储和管理功能：
  * - IndexedDB数据库操作
  * - 离线数据缓存
@@ -21,7 +21,7 @@ export const STORES = {
   METADATA: 'metadata',
 } as const
 
-export type StoreType = typeof STORES[keyof typeof STORES]
+export type StoreType = (typeof STORES)[keyof typeof STORES]
 
 // 数据类型定义
 export interface OfflineData {
@@ -79,7 +79,7 @@ class OfflineStorageManager {
         resolve()
       }
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result
 
         // 创建教案存储
@@ -122,13 +122,13 @@ class OfflineStorageManager {
    */
   async store(storeName: StoreType, data: OfflineData): Promise<void> {
     await this.ensureInitialized()
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([storeName], 'readwrite')
       const store = transaction.objectStore(storeName)
-      
+
       const request = store.put(data)
-      
+
       request.onsuccess = () => resolve()
       request.onerror = () => reject(new Error(`Failed to store data in ${storeName}`))
     })
@@ -139,13 +139,13 @@ class OfflineStorageManager {
    */
   async get(storeName: StoreType, id: string): Promise<OfflineData | null> {
     await this.ensureInitialized()
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([storeName], 'readonly')
       const store = transaction.objectStore(storeName)
-      
+
       const request = store.get(id)
-      
+
       request.onsuccess = () => {
         resolve(request.result || null)
       }
@@ -158,13 +158,13 @@ class OfflineStorageManager {
    */
   async getAll(storeName: StoreType): Promise<OfflineData[]> {
     await this.ensureInitialized()
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([storeName], 'readonly')
       const store = transaction.objectStore(storeName)
-      
+
       const request = store.getAll()
-      
+
       request.onsuccess = () => resolve(request.result)
       request.onerror = () => reject(new Error(`Failed to get all data from ${storeName}`))
     })
@@ -175,13 +175,13 @@ class OfflineStorageManager {
    */
   async delete(storeName: StoreType, id: string): Promise<void> {
     await this.ensureInitialized()
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([storeName], 'readwrite')
       const store = transaction.objectStore(storeName)
-      
+
       const request = store.delete(id)
-      
+
       request.onsuccess = () => resolve()
       request.onerror = () => reject(new Error(`Failed to delete data from ${storeName}`))
     })
@@ -214,13 +214,13 @@ class OfflineStorageManager {
    */
   async clearSyncQueue(): Promise<void> {
     await this.ensureInitialized()
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([STORES.SYNC_QUEUE], 'readwrite')
       const store = transaction.objectStore(STORES.SYNC_QUEUE)
-      
+
       const request = store.clear()
-      
+
       request.onsuccess = () => resolve()
       request.onerror = () => reject(new Error('Failed to clear sync queue'))
     })
@@ -231,14 +231,14 @@ class OfflineStorageManager {
    */
   async getStorageStats(): Promise<Record<string, number>> {
     const stats: Record<string, number> = {}
-    
+
     const storeNames = Object.keys(STORES) as Array<keyof typeof STORES>
     for (const storeKey of storeNames) {
       const storeName = STORES[storeKey]
       const items = await this.getAll(storeName)
       stats[storeName] = items.length
     }
-    
+
     return stats
   }
 

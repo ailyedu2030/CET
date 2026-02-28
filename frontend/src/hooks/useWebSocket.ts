@@ -85,44 +85,44 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
 
       const newSocket = new WebSocket(wsUrl)
 
-      newSocket.onopen = (event) => {
+      newSocket.onopen = event => {
         // WebSocket连接已建立
         setIsConnected(true)
         setIsConnecting(false)
         setError(null)
         setReconnectCount(0)
-        
+
         // 启动心跳
         startHeartbeat(newSocket)
-        
+
         onOpen?.(event)
       }
 
-      newSocket.onmessage = (event) => {
+      newSocket.onmessage = event => {
         try {
           const message = JSON.parse(event.data)
-          
+
           // 处理心跳响应
           if (message.type === 'heartbeat') {
             // 收到心跳响应
             return
           }
-          
+
           onMessage?.(message)
         } catch (err) {
           // 解析WebSocket消息失败
         }
       }
 
-      newSocket.onclose = (event) => {
+      newSocket.onclose = event => {
         // WebSocket连接已关闭
         setIsConnected(false)
         setIsConnecting(false)
         setSocket(null)
-        
+
         // 清理心跳
         stopHeartbeat()
-        
+
         onClose?.(event)
 
         // 自动重连
@@ -140,7 +140,7 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
         }
       }
 
-      newSocket.onerror = (event) => {
+      newSocket.onerror = event => {
         // WebSocket连接错误
         setError('WebSocket连接失败')
         setIsConnecting(false)
@@ -169,55 +169,63 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
 
   const disconnect = useCallback(() => {
     shouldReconnectRef.current = false
-    
+
     // 清理重连定时器
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current)
     }
-    
+
     // 清理心跳
     stopHeartbeat()
-    
+
     // 关闭连接
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.close(1000, '手动断开连接')
     }
-    
+
     setSocket(null)
     setIsConnected(false)
     setIsConnecting(false)
     setReconnectCount(0)
   }, [socket])
 
-  const sendMessage = useCallback((message: any) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      try {
-        const messageStr = typeof message === 'string' ? message : JSON.stringify(message)
-        socket.send(messageStr)
-      } catch (err) {
-        // 发送WebSocket消息失败
-        setError('发送消息失败')
+  const sendMessage = useCallback(
+    (message: any) => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        try {
+          const messageStr = typeof message === 'string' ? message : JSON.stringify(message)
+          socket.send(messageStr)
+        } catch (err) {
+          // 发送WebSocket消息失败
+          setError('发送消息失败')
+        }
+      } else {
+        // WebSocket未连接，无法发送消息
+        setError('WebSocket未连接')
       }
-    } else {
-      // WebSocket未连接，无法发送消息
-      setError('WebSocket未连接')
-    }
-  }, [socket])
+    },
+    [socket]
+  )
 
-  const startHeartbeat = useCallback((ws: WebSocket) => {
-    const sendHeartbeat = () => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-          type: 'heartbeat',
-          timestamp: new Date().toISOString(),
-        }))
-        
-        heartbeatTimeoutRef.current = window.setTimeout(sendHeartbeat, heartbeatInterval)
+  const startHeartbeat = useCallback(
+    (ws: WebSocket) => {
+      const sendHeartbeat = () => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(
+            JSON.stringify({
+              type: 'heartbeat',
+              timestamp: new Date().toISOString(),
+            })
+          )
+
+          heartbeatTimeoutRef.current = window.setTimeout(sendHeartbeat, heartbeatInterval)
+        }
       }
-    }
-    
-    heartbeatTimeoutRef.current = window.setTimeout(sendHeartbeat, heartbeatInterval)
-  }, [heartbeatInterval])
+
+      heartbeatTimeoutRef.current = window.setTimeout(sendHeartbeat, heartbeatInterval)
+    },
+    [heartbeatInterval]
+  )
 
   const stopHeartbeat = useCallback(() => {
     if (heartbeatTimeoutRef.current) {
@@ -253,7 +261,7 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
-    
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
@@ -286,13 +294,13 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
   useEffect(() => {
     return () => {
       shouldReconnectRef.current = false
-      
+
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current)
       }
-      
+
       stopHeartbeat()
-      
+
       if (socket) {
         socket.close(1000, '组件卸载')
       }
@@ -314,7 +322,7 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
 // 便捷的通知WebSocket Hook
 export function useNotificationWebSocket() {
   const { user } = useAuth()
-  
+
   return useWebSocket({
     url: user ? `/api/v1/notifications/ws/${user.id}` : null,
     autoReconnect: true,
@@ -323,5 +331,3 @@ export function useNotificationWebSocket() {
     heartbeatInterval: 30000,
   })
 }
-
-

@@ -1,6 +1,6 @@
 /**
  * 离线数据Hook
- * 
+ *
  * 提供离线数据操作的React Hook：
  * - 离线数据查询
  * - 离线数据修改
@@ -15,13 +15,9 @@ import {
   offlineStorage,
   type OfflineData,
   type ConflictItem,
-  type StoreType
+  type StoreType,
 } from '@/services/offlineStorage'
-import {
-  offlineSync,
-  conflictResolver,
-  type SyncStatus
-} from '@/services/offlineSync'
+import { offlineSync, conflictResolver, type SyncStatus } from '@/services/offlineSync'
 
 // Hook选项
 interface UseOfflineDataOptions {
@@ -31,10 +27,7 @@ interface UseOfflineDataOptions {
 }
 
 // 离线数据查询Hook
-export function useOfflineData<T = any>(
-  key: string | string[],
-  options: UseOfflineDataOptions
-) {
+export function useOfflineData<T = any>(key: string | string[], options: UseOfflineDataOptions) {
   const queryClient = useQueryClient()
   const queryKey = Array.isArray(key) ? key : [key]
   const cacheKey = ['offline', options.storeType, ...queryKey]
@@ -44,7 +37,7 @@ export function useOfflineData<T = any>(
     queryKey: cacheKey,
     queryFn: async () => {
       await offlineStorage.initialize()
-      
+
       if (queryKey.length === 2 && queryKey[1]) {
         // 查询单个项目
         const item = await offlineStorage.get(options.storeType, queryKey[1])
@@ -71,13 +64,13 @@ export function useOfflineData<T = any>(
         version: 1,
         needsSync: true,
       }
-      
+
       await offlineStorage.store(options.storeType, offlineData)
-      
+
       if (options.enableSync && navigator.onLine) {
         await offlineSync.addOfflineOperation('create', options.storeType, offlineData.data)
       }
-      
+
       return offlineData.data
     },
     onSuccess: () => {
@@ -92,7 +85,7 @@ export function useOfflineData<T = any>(
       if (!existing) {
         throw new Error('Item not found')
       }
-      
+
       const updatedData = { ...existing.data, ...data }
       const offlineData: OfflineData = {
         ...existing,
@@ -101,13 +94,13 @@ export function useOfflineData<T = any>(
         version: existing.version + 1,
         needsSync: true,
       }
-      
+
       await offlineStorage.store(options.storeType, offlineData)
-      
+
       if (options.enableSync && navigator.onLine) {
         await offlineSync.addOfflineOperation('update', options.storeType, updatedData)
       }
-      
+
       return updatedData
     },
     onSuccess: () => {
@@ -122,13 +115,13 @@ export function useOfflineData<T = any>(
       if (!existing) {
         throw new Error('Item not found')
       }
-      
+
       await offlineStorage.delete(options.storeType, id)
-      
+
       if (options.enableSync && navigator.onLine) {
         await offlineSync.addOfflineOperation('delete', options.storeType, { id })
       }
-      
+
       return id
     },
     onSuccess: () => {
@@ -160,7 +153,7 @@ export function useSyncStatus() {
     }
 
     offlineSync.addStatusListener(handleStatusChange)
-    
+
     return () => {
       offlineSync.removeStatusListener(handleStatusChange)
     }
@@ -186,7 +179,7 @@ export function useConflictResolver() {
     }
 
     offlineSync.addStatusListener(handleStatusChange)
-    
+
     return () => {
       offlineSync.removeStatusListener(handleStatusChange)
     }
@@ -197,12 +190,12 @@ export function useConflictResolver() {
       await conflictResolver.resolveWithLocal(conflict)
       setConflicts(prev => prev.filter(c => c.id !== conflict.id))
     },
-    
+
     withServer: async (conflict: ConflictItem) => {
       await conflictResolver.resolveWithServer(conflict)
       setConflicts(prev => prev.filter(c => c.id !== conflict.id))
     },
-    
+
     withMerge: async (conflict: ConflictItem, mergedData: any) => {
       await conflictResolver.resolveWithMerge(conflict, mergedData)
       setConflicts(prev => prev.filter(c => c.id !== conflict.id))

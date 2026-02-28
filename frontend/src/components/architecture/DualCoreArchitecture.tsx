@@ -3,7 +3,7 @@
  * 数据层+智能层构成教学资源底座，支持缓存机制和增量更新
  */
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Card,
   Grid,
@@ -19,7 +19,7 @@ import {
   Modal,
   Select,
   Textarea,
-} from '@mantine/core';
+} from '@mantine/core'
 import {
   IconDatabase,
   IconBrain,
@@ -27,50 +27,51 @@ import {
   IconChartBar,
   IconSettings,
   IconSearch,
-} from '@tabler/icons-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { notifications } from '@mantine/notifications';
-import { useDisclosure } from '@mantine/hooks';
+} from '@tabler/icons-react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { notifications } from '@mantine/notifications'
+import { useDisclosure } from '@mantine/hooks'
 
 interface ResourceBase {
   course_resources: Array<{
-    id: number;
-    name: string;
-    description: string;
-    category: string;
-    resource_type: string;
-    permission_level: string;
-    download_count: number;
-    updated_at: string;
-  }>;
+    id: number
+    name: string
+    description: string
+    category: string
+    resource_type: string
+    permission_level: string
+    download_count: number
+    updated_at: string
+  }>
   hotspot_pool: Array<{
-    id: number;
-    title: string;
-    content: string;
-    popularity_score: number;
-    source_type: string;
-    source_url: string;
-    created_at: string;
-  }>;
+    id: number
+    title: string
+    content: string
+    popularity_score: number
+    source_type: string
+    source_url: string
+    created_at: string
+  }>
   metadata: {
-    total_resources: number;
-    total_hotspots: number;
-    last_updated: string;
-    cache_key: string;
-  };
+    total_resources: number
+    total_hotspots: number
+    last_updated: string
+    cache_key: string
+  }
 }
 
 const DualCoreArchitecture: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string | null>('resource-base');
+  const [activeTab, setActiveTab] = useState<string | null>('resource-base')
   const [filters, setFilters] = useState({
     subject: '',
     grade: '',
     useCache: true,
-  });
-  const [contentModalOpened, { open: openContentModal, close: closeContentModal }] = useDisclosure(false);
-  const [syllabusData, setSyllabusData] = useState('');
+  })
+  const [contentModalOpened, { open: openContentModal, close: closeContentModal }] =
+    useDisclosure(false)
+  const [syllabusData, setSyllabusData] = useState('')
 
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   // 获取教学资源底座
   const {
@@ -81,25 +82,25 @@ const DualCoreArchitecture: React.FC = () => {
   } = useQuery<ResourceBase>({
     queryKey: ['resource-base', filters],
     queryFn: async () => {
-      const params = new URLSearchParams();
-      if (filters.subject) params.append('subject', filters.subject);
-      if (filters.grade) params.append('grade', filters.grade);
-      params.append('use_cache', filters.useCache.toString());
+      const params = new URLSearchParams()
+      if (filters.subject) params.append('subject', filters.subject)
+      if (filters.grade) params.append('grade', filters.grade)
+      params.append('use_cache', filters.useCache.toString())
 
       const response = await fetch(`/api/v1/architecture/resource-base?${params}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-      });
+      })
 
       if (!response.ok) {
-        throw new Error('获取教学资源底座失败');
+        throw new Error('获取教学资源底座失败')
       }
 
-      const result = await response.json();
-      return result.data;
+      const result = await response.json()
+      return result.data
     },
-  });
+  })
 
   // 增量更新资源底座
   const updateResourceBaseMutation = useMutation({
@@ -108,33 +109,33 @@ const DualCoreArchitecture: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify(data),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error('增量更新失败');
+        throw new Error('增量更新失败')
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: () => {
       notifications.show({
         title: '更新成功',
         message: '教学资源底座已成功更新',
         color: 'green',
-      });
-      queryClient.invalidateQueries({ queryKey: ['resource-base'] });
+      })
+      queryClient.invalidateQueries({ queryKey: ['resource-base'] })
     },
     onError: (error: Error) => {
       notifications.show({
         title: '更新失败',
         message: error.message,
         color: 'red',
-      });
+      })
     },
-  });
+  })
 
   // 生成智能教学内容
   const generateContentMutation = useMutation({
@@ -143,32 +144,32 @@ const DualCoreArchitecture: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify(data),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error('生成智能教学内容失败');
+        throw new Error('生成智能教学内容失败')
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: () => {
       notifications.show({
         title: '生成成功',
         message: '智能教学内容已生成',
         color: 'green',
-      });
+      })
     },
     onError: (error: Error) => {
       notifications.show({
         title: '生成失败',
         message: error.message,
         color: 'red',
-      });
+      })
     },
-  });
+  })
 
   const handleIncrementalUpdate = () => {
     // 示例更新数据
@@ -187,10 +188,10 @@ const DualCoreArchitecture: React.FC = () => {
           popularity_score: 95,
         },
       ],
-    };
+    }
 
-    updateResourceBaseMutation.mutate(updateData);
-  };
+    updateResourceBaseMutation.mutate(updateData)
+  }
 
   const handleGenerateContent = () => {
     if (!syllabusData || !resourceBase) {
@@ -198,30 +199,32 @@ const DualCoreArchitecture: React.FC = () => {
         title: '参数不完整',
         message: '请输入教学大纲数据',
         color: 'orange',
-      });
-      return;
+      })
+      return
     }
 
     try {
-      const parsedSyllabus = JSON.parse(syllabusData);
+      const parsedSyllabus = JSON.parse(syllabusData)
       generateContentMutation.mutate({
         syllabus_data: parsedSyllabus,
         resource_base: resourceBase,
-      });
-      closeContentModal();
+      })
+      closeContentModal()
     } catch (error) {
       notifications.show({
         title: '数据格式错误',
         message: '请输入有效的JSON格式数据',
         color: 'red',
-      });
+      })
     }
-  };
+  }
 
   return (
     <Stack gap="md">
       <Group justify="space-between">
-        <Text size="xl" fw={700}>双核驱动架构</Text>
+        <Text size="xl" fw={700}>
+          双核驱动架构
+        </Text>
         <Group>
           <Button
             leftSection={<IconBrain size={16} />}
@@ -254,7 +257,7 @@ const DualCoreArchitecture: React.FC = () => {
             label="学科"
             placeholder="选择学科"
             value={filters.subject}
-            onChange={(value) => setFilters(prev => ({ ...prev, subject: value || '' }))}
+            onChange={value => setFilters(prev => ({ ...prev, subject: value || '' }))}
             data={[
               { value: 'english', label: '英语' },
               { value: 'math', label: '数学' },
@@ -266,7 +269,7 @@ const DualCoreArchitecture: React.FC = () => {
             label="年级"
             placeholder="选择年级"
             value={filters.grade}
-            onChange={(value) => setFilters(prev => ({ ...prev, grade: value || '' }))}
+            onChange={value => setFilters(prev => ({ ...prev, grade: value || '' }))}
             data={[
               { value: 'grade1', label: '一年级' },
               { value: 'grade2', label: '二年级' },
@@ -274,10 +277,7 @@ const DualCoreArchitecture: React.FC = () => {
             ]}
             clearable
           />
-          <Button
-            leftSection={<IconSearch size={16} />}
-            onClick={() => refetchResourceBase()}
-          >
+          <Button leftSection={<IconSearch size={16} />} onClick={() => refetchResourceBase()}>
             应用筛选
           </Button>
         </Group>
@@ -321,12 +321,16 @@ const DualCoreArchitecture: React.FC = () => {
                       最后更新: {new Date(resourceBase.metadata.last_updated).toLocaleString()}
                     </Text>
                     <Stack gap="xs" mah={300} style={{ overflow: 'auto' }}>
-                      {resourceBase.course_resources.slice(0, 10).map((resource) => (
+                      {resourceBase.course_resources.slice(0, 10).map(resource => (
                         <Card key={resource.id} withBorder p="xs">
                           <Group justify="space-between">
                             <div>
-                              <Text size="sm" fw={500}>{resource.name}</Text>
-                              <Text size="xs" c="dimmed">{resource.category}</Text>
+                              <Text size="sm" fw={500}>
+                                {resource.name}
+                              </Text>
+                              <Text size="xs" c="dimmed">
+                                {resource.category}
+                              </Text>
                             </div>
                             <Badge size="xs" color="green">
                               {resource.download_count} 下载
@@ -347,12 +351,16 @@ const DualCoreArchitecture: React.FC = () => {
                       <Badge color="orange">{resourceBase.metadata.total_hotspots} 个热点</Badge>
                     </Group>
                     <Stack gap="xs" mah={300} style={{ overflow: 'auto' }}>
-                      {resourceBase.hotspot_pool.slice(0, 10).map((hotspot) => (
+                      {resourceBase.hotspot_pool.slice(0, 10).map(hotspot => (
                         <Card key={hotspot.id} withBorder p="xs">
                           <Group justify="space-between">
                             <div>
-                              <Text size="sm" fw={500}>{hotspot.title}</Text>
-                              <Text size="xs" c="dimmed">{hotspot.source_type}</Text>
+                              <Text size="sm" fw={500}>
+                                {hotspot.title}
+                              </Text>
+                              <Text size="xs" c="dimmed">
+                                {hotspot.source_type}
+                              </Text>
                             </div>
                             <Badge size="xs" color="red">
                               热度 {hotspot.popularity_score}
@@ -375,23 +383,35 @@ const DualCoreArchitecture: React.FC = () => {
               <Grid>
                 <Grid.Col span={4}>
                   <Card withBorder p="md">
-                    <Text size="sm" c="dimmed">L1缓存命中率</Text>
+                    <Text size="sm" c="dimmed">
+                      L1缓存命中率
+                    </Text>
                     <Progress value={85} color="green" size="lg" />
-                    <Text size="lg" fw={700}>85%</Text>
+                    <Text size="lg" fw={700}>
+                      85%
+                    </Text>
                   </Card>
                 </Grid.Col>
                 <Grid.Col span={4}>
                   <Card withBorder p="md">
-                    <Text size="sm" c="dimmed">L2缓存命中率</Text>
+                    <Text size="sm" c="dimmed">
+                      L2缓存命中率
+                    </Text>
                     <Progress value={72} color="blue" size="lg" />
-                    <Text size="lg" fw={700}>72%</Text>
+                    <Text size="lg" fw={700}>
+                      72%
+                    </Text>
                   </Card>
                 </Grid.Col>
                 <Grid.Col span={4}>
                   <Card withBorder p="md">
-                    <Text size="sm" c="dimmed">总体命中率</Text>
+                    <Text size="sm" c="dimmed">
+                      总体命中率
+                    </Text>
                     <Progress value={78} color="orange" size="lg" />
-                    <Text size="lg" fw={700}>78%</Text>
+                    <Text size="lg" fw={700}>
+                      78%
+                    </Text>
                   </Card>
                 </Grid.Col>
               </Grid>
@@ -405,20 +425,36 @@ const DualCoreArchitecture: React.FC = () => {
               <Text fw={600}>系统性能指标</Text>
               <Grid>
                 <Grid.Col span={3}>
-                  <Text size="sm" c="dimmed">响应时间</Text>
-                  <Text size="xl" fw={700}>120ms</Text>
+                  <Text size="sm" c="dimmed">
+                    响应时间
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    120ms
+                  </Text>
                 </Grid.Col>
                 <Grid.Col span={3}>
-                  <Text size="sm" c="dimmed">并发用户</Text>
-                  <Text size="xl" fw={700}>1,247</Text>
+                  <Text size="sm" c="dimmed">
+                    并发用户
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    1,247
+                  </Text>
                 </Grid.Col>
                 <Grid.Col span={3}>
-                  <Text size="sm" c="dimmed">API调用量</Text>
-                  <Text size="xl" fw={700}>15,432</Text>
+                  <Text size="sm" c="dimmed">
+                    API调用量
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    15,432
+                  </Text>
                 </Grid.Col>
                 <Grid.Col span={3}>
-                  <Text size="sm" c="dimmed">错误率</Text>
-                  <Text size="xl" fw={700} c="green">0.02%</Text>
+                  <Text size="sm" c="dimmed">
+                    错误率
+                  </Text>
+                  <Text size="xl" fw={700} c="green">
+                    0.02%
+                  </Text>
                 </Grid.Col>
               </Grid>
             </Stack>
@@ -438,7 +474,7 @@ const DualCoreArchitecture: React.FC = () => {
             label="教学大纲数据 (JSON格式)"
             placeholder='{"course": "英语四级", "objectives": ["提高听力", "增强阅读"]}'
             value={syllabusData}
-            onChange={(event) => setSyllabusData(event.currentTarget.value)}
+            onChange={event => setSyllabusData(event.currentTarget.value)}
             minRows={6}
             required
           />
@@ -446,17 +482,14 @@ const DualCoreArchitecture: React.FC = () => {
             <Button variant="light" onClick={closeContentModal}>
               取消
             </Button>
-            <Button
-              onClick={handleGenerateContent}
-              loading={generateContentMutation.isPending}
-            >
+            <Button onClick={handleGenerateContent} loading={generateContentMutation.isPending}>
               生成内容
             </Button>
           </Group>
         </Stack>
       </Modal>
     </Stack>
-  );
-};
+  )
+}
 
-export default DualCoreArchitecture;
+export default DualCoreArchitecture

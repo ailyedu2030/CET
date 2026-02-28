@@ -58,14 +58,15 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
       custom_requirements: '',
     },
     validate: {
-      count: (value) => (value && value > 0 && value <= 50 ? null : '题目数量必须在1-50之间'),
+      count: value => (value && value > 0 && value <= 50 ? null : '题目数量必须在1-50之间'),
     },
   })
 
   // 获取词汇库信息
   const { data: vocabularyInfo } = useQuery({
     queryKey: ['vocabulary-info', courseId],
-    queryFn: () => courseId ? questionGenerationApi.getVocabularyInfo(courseId) : Promise.resolve(null),
+    queryFn: () =>
+      courseId ? questionGenerationApi.getVocabularyInfo(courseId) : Promise.resolve(null),
     enabled: !!courseId,
   })
 
@@ -78,7 +79,7 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
   // 预览生成
   const previewMutation = useMutation({
     mutationFn: questionGenerationApi.previewGeneration,
-    onSuccess: (data) => {
+    onSuccess: data => {
       setPreviewData(data)
       notifications.show({
         title: '预览生成',
@@ -86,7 +87,7 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
         color: 'blue',
       })
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '预览失败',
         message: error.message,
@@ -98,7 +99,7 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
   // 题目生成
   const generateMutation = useMutation({
     mutationFn: questionGenerationApi.generateQuestions,
-    onSuccess: (data) => {
+    onSuccess: data => {
       setGeneratedQuestions(data.questions)
       if (onQuestionsGenerated) {
         onQuestionsGenerated(data.questions)
@@ -109,7 +110,7 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
         color: 'green',
       })
     },
-    onError: (error) => {
+    onError: error => {
       if (onError) {
         onError(error instanceof Error ? error : new Error('题目生成失败'))
       }
@@ -123,16 +124,16 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
 
   // 保存题目
   const saveMutation = useMutation({
-    mutationFn: (questions: GeneratedQuestion[]) => 
+    mutationFn: (questions: GeneratedQuestion[]) =>
       questionGenerationApi.saveGeneratedQuestions(questions),
-    onSuccess: (data) => {
+    onSuccess: data => {
       notifications.show({
         title: '保存成功',
         message: `成功保存 ${data.saved_count} 道题目`,
         color: 'green',
       })
     },
-    onError: (error) => {
+    onError: error => {
       notifications.show({
         title: '保存失败',
         message: error.message,
@@ -167,11 +168,11 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
 
   const handleExport = useCallback(async () => {
     if (generatedQuestions.length === 0) return
-    
+
     try {
       const questionIds = generatedQuestions.map(q => q.id)
       const blob = await questionGenerationApi.exportQuestions(questionIds, 'json')
-      
+
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -180,7 +181,7 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-      
+
       notifications.show({
         title: '导出成功',
         message: '题目已导出到本地',
@@ -324,11 +325,7 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
 
             {generatedQuestions.length > 0 && (
               <Group gap="xs">
-                <Button
-                  variant="outline"
-                  onClick={handleSave}
-                  loading={saveMutation.isPending}
-                >
+                <Button variant="outline" onClick={handleSave} loading={saveMutation.isPending}>
                   保存题目
                 </Button>
                 <Tooltip label="导出题目">
@@ -353,9 +350,7 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
                   预计用时: <strong>{previewData.generation_time_estimate}</strong>
                 </Text>
                 {previewData.hot_topics_available.length > 0 && (
-                  <Text size="sm">
-                    可用热点: {previewData.hot_topics_available.join(', ')}
-                  </Text>
+                  <Text size="sm">可用热点: {previewData.hot_topics_available.join(', ')}</Text>
                 )}
               </Stack>
             </Alert>
@@ -397,7 +392,9 @@ export const QuestionGeneratorComponent: React.FC<QuestionGeneratorComponentProp
                     </Text>
                     {question.vocabulary_used.length > 0 && (
                       <Group gap="xs">
-                        <Text size="xs" c="dimmed">词汇:</Text>
+                        <Text size="xs" c="dimmed">
+                          词汇:
+                        </Text>
                         {question.vocabulary_used.slice(0, 5).map(word => (
                           <Badge key={word} size="xs" variant="outline">
                             {word}

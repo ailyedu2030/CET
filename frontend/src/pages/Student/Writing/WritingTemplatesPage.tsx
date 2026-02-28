@@ -1,6 +1,6 @@
 /**
  * 需求26：英语四级写作标准库 - 写作模板页面
- * 
+ *
  * 实现写作模板库的浏览和使用功能
  */
 
@@ -54,31 +54,33 @@ export function WritingTemplatesPage(): JSX.Element {
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedTemplate, setSelectedTemplate] = useState<WritingTemplate | null>(null)
-  
-  const [templateModalOpened, { open: openTemplateModal, close: closeTemplateModal }] = useDisclosure(false)
+
+  const [templateModalOpened, { open: openTemplateModal, close: closeTemplateModal }] =
+    useDisclosure(false)
 
   const pageSize = 12
 
   // 查询写作模板列表
-  const {
-    data: templatesData,
-    isLoading: templatesLoading,
-  } = useQuery({
+  const { data: templatesData, isLoading: templatesLoading } = useQuery({
     queryKey: ['writing-templates', selectedType, selectedDifficulty, currentPage],
-    queryFn: () => writingApi.getTemplates({
-      skip: (currentPage - 1) * pageSize,
-      limit: pageSize,
-      writing_type: selectedType === 'all' ? undefined : selectedType as WritingType,
-      difficulty: selectedDifficulty === 'all' ? undefined : selectedDifficulty as WritingDifficulty,
-    }),
+    queryFn: () =>
+      writingApi.getTemplates({
+        skip: (currentPage - 1) * pageSize,
+        limit: pageSize,
+        writing_type: selectedType === 'all' ? undefined : (selectedType as WritingType),
+        difficulty:
+          selectedDifficulty === 'all' ? undefined : (selectedDifficulty as WritingDifficulty),
+      }),
   })
 
   // 过滤模板
-  const filteredTemplates = templatesData?.data?.filter(template =>
-    searchQuery === '' || 
-    template.template_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    template.usage_instructions?.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || []
+  const filteredTemplates =
+    templatesData?.data?.filter(
+      template =>
+        searchQuery === '' ||
+        template.template_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        template.usage_instructions?.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || []
 
   // 查看模板详情
   const viewTemplate = (template: WritingTemplate) => {
@@ -175,7 +177,7 @@ ${template.key_phrases?.map(phrase => `• ${phrase}`).join('\n') || ''}
               label="写作类型"
               placeholder="选择类型"
               value={selectedType}
-              onChange={(value) => setSelectedType(value || 'all')}
+              onChange={value => setSelectedType(value || 'all')}
               data={[
                 { value: 'all', label: '全部类型' },
                 { value: WritingType.ARGUMENTATIVE, label: '议论文' },
@@ -192,7 +194,7 @@ ${template.key_phrases?.map(phrase => `• ${phrase}`).join('\n') || ''}
               label="难度等级"
               placeholder="选择难度"
               value={selectedDifficulty}
-              onChange={(value) => setSelectedDifficulty(value || 'all')}
+              onChange={value => setSelectedDifficulty(value || 'all')}
               data={[
                 { value: 'all', label: '全部难度' },
                 { value: WritingDifficulty.BASIC, label: '基础级' },
@@ -208,7 +210,7 @@ ${template.key_phrases?.map(phrase => `• ${phrase}`).join('\n') || ''}
               label="搜索模板"
               placeholder="输入模板名称或关键词"
               value={searchQuery}
-              onChange={(event) => setSearchQuery(event.currentTarget.value)}
+              onChange={event => setSearchQuery(event.currentTarget.value)}
               leftSection={<IconSearch size={16} />}
             />
           </Grid.Col>
@@ -217,7 +219,7 @@ ${template.key_phrases?.map(phrase => `• ${phrase}`).join('\n') || ''}
 
       {/* 模板列表 */}
       <Grid>
-        {filteredTemplates.map((template) => (
+        {filteredTemplates.map(template => (
           <Grid.Col key={template.id} span={4}>
             <Card withBorder h="100%" p="md">
               <Stack gap="sm" h="100%">
@@ -270,11 +272,7 @@ ${template.key_phrases?.map(phrase => `• ${phrase}`).join('\n') || ''}
                   >
                     查看详情
                   </Button>
-                  <ActionIcon
-                    variant="light"
-                    size="sm"
-                    onClick={() => copyTemplate(template)}
-                  >
+                  <ActionIcon variant="light" size="sm" onClick={() => copyTemplate(template)}>
                     <IconCopy size={14} />
                   </ActionIcon>
                 </Group>
@@ -302,9 +300,7 @@ ${template.key_phrases?.map(phrase => `• ${phrase}`).join('\n') || ''}
           <Text size="lg" fw={600} mt="md">
             暂无模板
           </Text>
-          <Text c="dimmed">
-            没有找到符合条件的写作模板
-          </Text>
+          <Text c="dimmed">没有找到符合条件的写作模板</Text>
         </Paper>
       )}
 
@@ -346,7 +342,9 @@ ${template.key_phrases?.map(phrase => `• ${phrase}`).join('\n') || ''}
 
                 {selectedTemplate.template_structure && (
                   <Paper p="md" withBorder>
-                    <Text fw={600} mb="sm">模板结构</Text>
+                    <Text fw={600} mb="sm">
+                      模板结构
+                    </Text>
                     <Code block>
                       {JSON.stringify(selectedTemplate.template_structure, null, 2)}
                     </Code>
@@ -357,44 +355,55 @@ ${template.key_phrases?.map(phrase => `• ${phrase}`).join('\n') || ''}
 
             <Tabs.Panel value="phrases" pt="md">
               <Stack gap="md">
-                {selectedTemplate.opening_sentences && selectedTemplate.opening_sentences.length > 0 && (
-                  <Paper p="md" withBorder>
-                    <Text fw={600} mb="sm">开头句式</Text>
-                    <List>
-                      {selectedTemplate.opening_sentences.map((sentence, index) => (
-                        <List.Item key={index}>{sentence}</List.Item>
-                      ))}
-                    </List>
-                  </Paper>
-                )}
+                {selectedTemplate.opening_sentences &&
+                  selectedTemplate.opening_sentences.length > 0 && (
+                    <Paper p="md" withBorder>
+                      <Text fw={600} mb="sm">
+                        开头句式
+                      </Text>
+                      <List>
+                        {selectedTemplate.opening_sentences.map((sentence, index) => (
+                          <List.Item key={index}>{sentence}</List.Item>
+                        ))}
+                      </List>
+                    </Paper>
+                  )}
 
-                {selectedTemplate.transition_phrases && selectedTemplate.transition_phrases.length > 0 && (
-                  <Paper p="md" withBorder>
-                    <Text fw={600} mb="sm">过渡词汇</Text>
-                    <Group gap="xs">
-                      {selectedTemplate.transition_phrases.map((phrase, index) => (
-                        <Badge key={index} variant="light">
-                          {phrase}
-                        </Badge>
-                      ))}
-                    </Group>
-                  </Paper>
-                )}
+                {selectedTemplate.transition_phrases &&
+                  selectedTemplate.transition_phrases.length > 0 && (
+                    <Paper p="md" withBorder>
+                      <Text fw={600} mb="sm">
+                        过渡词汇
+                      </Text>
+                      <Group gap="xs">
+                        {selectedTemplate.transition_phrases.map((phrase, index) => (
+                          <Badge key={index} variant="light">
+                            {phrase}
+                          </Badge>
+                        ))}
+                      </Group>
+                    </Paper>
+                  )}
 
-                {selectedTemplate.conclusion_sentences && selectedTemplate.conclusion_sentences.length > 0 && (
-                  <Paper p="md" withBorder>
-                    <Text fw={600} mb="sm">结尾句式</Text>
-                    <List>
-                      {selectedTemplate.conclusion_sentences.map((sentence, index) => (
-                        <List.Item key={index}>{sentence}</List.Item>
-                      ))}
-                    </List>
-                  </Paper>
-                )}
+                {selectedTemplate.conclusion_sentences &&
+                  selectedTemplate.conclusion_sentences.length > 0 && (
+                    <Paper p="md" withBorder>
+                      <Text fw={600} mb="sm">
+                        结尾句式
+                      </Text>
+                      <List>
+                        {selectedTemplate.conclusion_sentences.map((sentence, index) => (
+                          <List.Item key={index}>{sentence}</List.Item>
+                        ))}
+                      </List>
+                    </Paper>
+                  )}
 
                 {selectedTemplate.key_phrases && selectedTemplate.key_phrases.length > 0 && (
                   <Paper p="md" withBorder>
-                    <Text fw={600} mb="sm">关键短语</Text>
+                    <Text fw={600} mb="sm">
+                      关键短语
+                    </Text>
                     <Group gap="xs">
                       {selectedTemplate.key_phrases.map((phrase, index) => (
                         <Badge key={index} variant="outline">
@@ -410,7 +419,9 @@ ${template.key_phrases?.map(phrase => `• ${phrase}`).join('\n') || ''}
             <Tabs.Panel value="example" pt="md">
               {selectedTemplate.example_essay ? (
                 <Paper p="md" withBorder>
-                  <Text fw={600} mb="sm">示例作文</Text>
+                  <Text fw={600} mb="sm">
+                    示例作文
+                  </Text>
                   <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
                     {selectedTemplate.example_essay}
                   </Text>

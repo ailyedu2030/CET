@@ -96,7 +96,7 @@ export const collaborationApi = {
     const response = await apiClient.get(`/collaboration/lesson-plans/${planId}/download`, {
       responseType: 'blob',
     })
-    
+
     // 创建下载链接
     const url = window.URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')
@@ -219,7 +219,7 @@ export const collaborationApi = {
     formData.append('category', caseData.category)
     formData.append('subject', caseData.subject)
     formData.append('content', caseData.content)
-    
+
     if (caseData.attachments) {
       caseData.attachments.forEach((file, index) => {
         formData.append(`attachments[${index}]`, file)
@@ -391,7 +391,10 @@ export const collaborationApi = {
   /**
    * 搜索协作内容
    */
-  async searchCollaborationContent(query: string, type?: string): Promise<{
+  async searchCollaborationContent(
+    query: string,
+    type?: string
+  ): Promise<{
     lessonPlans: LessonPlan[]
     discussions: DiscussionTopic[]
     cases: any[]
