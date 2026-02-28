@@ -10,19 +10,11 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.schemas.analytics_schemas import (
-    BackupConfig,
-    BackupInfo,
-    BackupRequest,
-    BackupStatistics,
-)
-from app.backup.utils.backup_utils import (
-    BackupCompression,
-    BackupEncryption,
-    BackupStorageManager,
-    BackupValidator,
-    DatabaseDumper,
-)
+from app.analytics.schemas.analytics_schemas import (BackupConfig, BackupInfo,
+                                                     BackupRequest, BackupStatistics)
+from app.backup.utils.backup_utils import (BackupCompression, BackupEncryption,
+                                           BackupStorageManager, BackupValidator,
+                                           DatabaseDumper)
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -202,7 +194,9 @@ class BackupService:
             # 保存备份元数据
             await self._save_backup_metadata(backup_info, request.description)
 
-            logger.info(f"备份创建成功: {backup_id} (文件大小: {file_size / 1024 / 1024:.2f} MB)")
+            logger.info(
+                f"备份创建成功: {backup_id} (文件大小: {file_size / 1024 / 1024:.2f} MB)"
+            )
             return backup_info
 
         except Exception as e:

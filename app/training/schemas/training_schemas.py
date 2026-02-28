@@ -5,7 +5,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field, validator
 
-from app.shared.models.enums import DifficultyLevel, GradingStatus, QuestionType, TrainingType
+from app.shared.models.enums import (DifficultyLevel, GradingStatus, QuestionType,
+                                     TrainingType)
 
 # ==================== 基础响应模式 ====================
 
@@ -142,7 +143,9 @@ class QuestionRequest(BaseModel):
     tags: list[str] = Field(default_factory=list, description="题目标签")
     correct_answer: dict[str, Any] = Field(..., description="正确答案")
     answer_analysis: str | None = Field(None, description="答案解析")
-    grading_criteria: dict[str, Any] = Field(default_factory=dict, description="评分标准")
+    grading_criteria: dict[str, Any] = Field(
+        default_factory=dict, description="评分标准"
+    )
 
 
 class QuestionResponse(BaseModel):
@@ -233,7 +236,9 @@ class GradingResult(BaseModel):
     knowledge_points_mastered: list[str] = Field(description="掌握的知识点")
     knowledge_points_weak: list[str] = Field(description="薄弱的知识点")
     detailed_feedback: str | None = Field(None, description="详细反馈")
-    improvement_suggestions: list[str] = Field(default_factory=list, description="改进建议")
+    improvement_suggestions: list[str] = Field(
+        default_factory=list, description="改进建议"
+    )
 
 
 class TrainingRecordResponse(BaseModel):
@@ -266,7 +271,9 @@ class AdaptiveConfigRequest(BaseModel):
 
     student_id: int = Field(..., description="学生ID")
     training_type: TrainingType = Field(..., description="训练类型")
-    target_accuracy: float = Field(default=0.75, ge=0.5, le=1.0, description="目标正确率")
+    target_accuracy: float = Field(
+        default=0.75, ge=0.5, le=1.0, description="目标正确率"
+    )
     adjustment_sensitivity: float = Field(
         default=0.5, ge=0.1, le=1.0, description="调整敏感度"
     )
@@ -304,7 +311,9 @@ class AdaptiveLearningResponse(BaseModel):
 
     student_id: int = Field(description="学生ID")
     current_config: AdaptiveConfigRequest = Field(description="当前配置")
-    difficulty_adjustment: DifficultyAdjustment | None = Field(None, description="难度调整")
+    difficulty_adjustment: DifficultyAdjustment | None = Field(
+        None, description="难度调整"
+    )
     recommendations: list[LearningRecommendation] = Field(description="学习推荐")
     performance_trend: dict[str, Any] = Field(description="表现趋势")
     next_session_config: dict[str, Any] = Field(description="下次会话配置")
@@ -357,7 +366,9 @@ class LearningProgressResponse(BaseModel):
     training_type: TrainingType | None = Field(description="训练类型")
     date_range: dict[str, datetime | None] = Field(description="日期范围")
     overall_metrics: PerformanceMetrics = Field(description="整体指标")
-    knowledge_point_progress: list[KnowledgePointProgress] = Field(description="知识点进度")
+    knowledge_point_progress: list[KnowledgePointProgress] = Field(
+        description="知识点进度"
+    )
     difficulty_progression: dict[str, Any] = Field(description="难度进展")
     time_distribution: dict[str, int] = Field(description="时间分布")
     strengths: list[str] = Field(description="优势领域")
@@ -430,9 +441,13 @@ class QuestionBatchRequest(BaseModel):
     )
     question_count: int = Field(default=0, ge=0, description="题目数量")
     time_limit: int | None = Field(None, ge=1, le=300, description="时间限制（分钟）")
-    knowledge_points: list[str] = Field(default_factory=list, description="涵盖的知识点")
+    knowledge_points: list[str] = Field(
+        default_factory=list, description="涵盖的知识点"
+    )
     tags: list[str] = Field(default_factory=list, description="批次标签")
-    question_ids: list[int] = Field(default_factory=list, description="包含的题目ID列表")
+    question_ids: list[int] = Field(
+        default_factory=list, description="包含的题目ID列表"
+    )
 
 
 class QuestionBatchResponse(BaseModel):

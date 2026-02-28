@@ -71,7 +71,9 @@ class AgentSystemIntegrationTest:
             template = manager.get_phase_template(agent_templates.TaskPhase.PHASE_2)
 
             # 测试命令生成
-            commands = manager.generate_agent_commands("TEST001", agent_templates.TaskPhase.PHASE_2)
+            commands = manager.generate_agent_commands(
+                "TEST001", agent_templates.TaskPhase.PHASE_2
+            )
 
             self.test_results["agent_templates"] = {
                 "status": "success",
@@ -210,20 +212,23 @@ class AgentSystemIntegrationTest:
             # 检查模板系统是否能为调度器提供数据
             if (
                 self.test_results.get("agent_templates", {}).get("status") == "success"
-                and self.test_results.get("priority_scheduler", {}).get("status") == "success"
+                and self.test_results.get("priority_scheduler", {}).get("status")
+                == "success"
             ):
                 collaboration_score += 25
 
             # 检查API验证器是否能检测到实现状态
             if (
                 self.test_results.get("api_validator", {}).get("status") == "success"
-                and self.test_results.get("api_implementation", {}).get("status") == "success"
+                and self.test_results.get("api_implementation", {}).get("status")
+                == "success"
             ):
                 collaboration_score += 25
 
             # 检查所有组件是否都能正常工作
             all_working = all(
-                result.get("status") == "success" for result in self.test_results.values()
+                result.get("status") == "success"
+                for result in self.test_results.values()
             )
             if all_working:
                 collaboration_score += 50
@@ -254,7 +259,9 @@ class AgentSystemIntegrationTest:
 
         total_tests = len(self.test_results)
         passed_tests = sum(
-            1 for result in self.test_results.values() if result.get("status") == "success"
+            1
+            for result in self.test_results.values()
+            if result.get("status") == "success"
         )
 
         report = {
@@ -262,15 +269,17 @@ class AgentSystemIntegrationTest:
                 "total_tests": total_tests,
                 "passed_tests": passed_tests,
                 "failed_tests": total_tests - passed_tests,
-                "success_rate": (passed_tests / total_tests * 100) if total_tests > 0 else 0,
+                "success_rate": (
+                    (passed_tests / total_tests * 100) if total_tests > 0 else 0
+                ),
                 "test_time": datetime.now().isoformat(),
             },
             "detailed_results": self.test_results,
-            "overall_status": "success"
-            if passed_tests == total_tests
-            else "partial"
-            if passed_tests > 0
-            else "failed",
+            "overall_status": (
+                "success"
+                if passed_tests == total_tests
+                else "partial" if passed_tests > 0 else "failed"
+            ),
         }
 
         print("📈 测试总结:")

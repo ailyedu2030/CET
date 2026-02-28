@@ -7,25 +7,21 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.assistant_schemas import (
-    KnowledgeBaseCreate,
-    KnowledgeBaseListResponse,
-    KnowledgeBaseResponse,
-    KnowledgeBaseUpdate,
-    LearningResourceCreate,
-    LearningResourceResponse,
-    QAFeedback,
-    QARecordListResponse,
-    QARecordResponse,
-    QARequest,
-    QAResponse,
-    ResourceRecommendationRequest,
-    ResourceRecommendationResponse,
-    UserResourceInteractionCreate,
-    VoiceRecognitionRecordListResponse,
-    VoiceRecognitionRequest,
-    VoiceRecognitionResponse,
-)
+from app.training.schemas.assistant_schemas import (KnowledgeBaseCreate,
+                                                    KnowledgeBaseListResponse,
+                                                    KnowledgeBaseResponse,
+                                                    KnowledgeBaseUpdate,
+                                                    LearningResourceCreate,
+                                                    LearningResourceResponse,
+                                                    QAFeedback, QARecordListResponse,
+                                                    QARecordResponse, QARequest,
+                                                    QAResponse,
+                                                    ResourceRecommendationRequest,
+                                                    ResourceRecommendationResponse,
+                                                    UserResourceInteractionCreate,
+                                                    VoiceRecognitionRecordListResponse,
+                                                    VoiceRecognitionRequest,
+                                                    VoiceRecognitionResponse)
 from app.training.services.assistant_service import AssistantService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -37,7 +33,9 @@ router = APIRouter(tags=["学习辅助工具系统"])
 # ==================== 知识库管理 ====================
 
 
-@router.post("/knowledge-base", summary="创建知识库条目", response_model=KnowledgeBaseResponse)
+@router.post(
+    "/knowledge-base", summary="创建知识库条目", response_model=KnowledgeBaseResponse
+)
 async def create_knowledge_base(
     data: KnowledgeBaseCreate,
     current_user: User = Depends(get_current_active_user),
@@ -59,7 +57,9 @@ async def create_knowledge_base(
 
 
 @router.get(
-    "/knowledge-base", summary="获取知识库列表", response_model=KnowledgeBaseListResponse
+    "/knowledge-base",
+    summary="获取知识库列表",
+    response_model=KnowledgeBaseListResponse,
 )
 async def get_knowledge_base_list(
     skip: int = 0,
@@ -208,7 +208,9 @@ async def submit_qa_feedback(
         qa_record = result.scalar_one_or_none()
 
         if not qa_record:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="问答记录不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="问答记录不存在"
+            )
 
         # 更新反馈信息
         qa_record.user_rating = feedback.user_rating
@@ -216,7 +218,9 @@ async def submit_qa_feedback(
         qa_record.is_helpful = feedback.is_helpful
 
         await db.commit()
-        logger.info(f"用户 {current_user.id} 提交问答反馈: {qa_id}, 评分: {feedback.user_rating}")
+        logger.info(
+            f"用户 {current_user.id} 提交问答反馈: {qa_id}, 评分: {feedback.user_rating}"
+        )
 
         return {"message": "反馈提交成功"}
     except Exception as e:
@@ -229,7 +233,9 @@ async def submit_qa_feedback(
 # ==================== 学习资源管理 ====================
 
 
-@router.post("/resources", summary="创建学习资源", response_model=LearningResourceResponse)
+@router.post(
+    "/resources", summary="创建学习资源", response_model=LearningResourceResponse
+)
 async def create_learning_resource(
     data: LearningResourceCreate,
     current_user: User = Depends(get_current_active_user),
@@ -289,7 +295,9 @@ async def get_resource_recommendations(
             current_user.id, request
         )
 
-        logger.info(f"用户 {current_user.id} 获取资源推荐，共 {len(recommendations)} 个")
+        logger.info(
+            f"用户 {current_user.id} 获取资源推荐，共 {len(recommendations)} 个"
+        )
 
         return [ResourceRecommendationResponse(**rec) for rec in recommendations]
     except Exception as e:
@@ -397,7 +405,9 @@ async def get_voice_recognition_history(
 ) -> VoiceRecognitionRecordListResponse:
     """获取用户语音识别历史"""
     try:
-        logger.info(f"获取语音识别历史: user={current_user.id}, skip={skip}, limit={limit}")
+        logger.info(
+            f"获取语音识别历史: user={current_user.id}, skip={skip}, limit={limit}"
+        )
 
         return VoiceRecognitionRecordListResponse(
             success=True,

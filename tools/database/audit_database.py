@@ -93,8 +93,7 @@ class AuditDatabase:
             cursor = conn.cursor()
 
             # API端点表
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS api_endpoints (
                     id TEXT PRIMARY KEY,
                     path TEXT NOT NULL,
@@ -107,12 +106,10 @@ class AuditDatabase:
                     check_count INTEGER DEFAULT 1,
                     UNIQUE(path, method)
                 )
-            """
-            )
+            """)
 
             # 需求表
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS requirements (
                     id TEXT PRIMARY KEY,
                     requirement_id TEXT UNIQUE NOT NULL,
@@ -124,12 +121,10 @@ class AuditDatabase:
                     created_at TEXT,
                     updated_at TEXT
                 )
-            """
-            )
+            """)
 
             # 问题表
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS issues (
                     id TEXT PRIMARY KEY,
                     issue_type TEXT NOT NULL,
@@ -144,12 +139,10 @@ class AuditDatabase:
                     created_at TEXT,
                     resolved_at TEXT
                 )
-            """
-            )
+            """)
 
             # 修复任务表
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS fix_tasks (
                     id TEXT PRIMARY KEY,
                     task_id TEXT UNIQUE NOT NULL,
@@ -164,12 +157,10 @@ class AuditDatabase:
                     started_at TEXT,
                     completed_at TEXT
                 )
-            """
-            )
+            """)
 
             # 任务-问题关联表
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS task_issues (
                     task_id TEXT,
                     issue_id TEXT,
@@ -177,12 +168,10 @@ class AuditDatabase:
                     FOREIGN KEY (task_id) REFERENCES fix_tasks (id),
                     FOREIGN KEY (issue_id) REFERENCES issues (id)
                 )
-            """
-            )
+            """)
 
             # 需求-API关联表
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS requirement_apis (
                     requirement_id TEXT,
                     api_id TEXT,
@@ -190,12 +179,10 @@ class AuditDatabase:
                     FOREIGN KEY (requirement_id) REFERENCES requirements (id),
                     FOREIGN KEY (api_id) REFERENCES api_endpoints (id)
                 )
-            """
-            )
+            """)
 
             # 审计日志表
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS audit_logs (
                     id TEXT PRIMARY KEY,
                     action TEXT NOT NULL,
@@ -205,8 +192,7 @@ class AuditDatabase:
                     timestamp TEXT,
                     user_id TEXT
                 )
-            """
-            )
+            """)
 
             conn.commit()
 
@@ -417,7 +403,9 @@ class AuditDatabase:
 
             conn.commit()
 
-    def get_api_endpoints(self, status_filter: int | None = None) -> list[APIEndpointRecord]:
+    def get_api_endpoints(
+        self, status_filter: int | None = None
+    ) -> list[APIEndpointRecord]:
         """获取API端点记录"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -431,11 +419,9 @@ class AuditDatabase:
                     (status_filter,),
                 )
             else:
-                cursor.execute(
-                    """
+                cursor.execute("""
                     SELECT * FROM api_endpoints ORDER BY last_checked DESC
-                """
-                )
+                """)
 
             rows = cursor.fetchall()
 
@@ -454,7 +440,9 @@ class AuditDatabase:
                 for row in rows
             ]
 
-    def get_requirements(self, status_filter: str | None = None) -> list[RequirementRecord]:
+    def get_requirements(
+        self, status_filter: str | None = None
+    ) -> list[RequirementRecord]:
         """获取需求记录"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -468,11 +456,9 @@ class AuditDatabase:
                     (status_filter,),
                 )
             else:
-                cursor.execute(
-                    """
+                cursor.execute("""
                     SELECT * FROM requirements ORDER BY priority DESC, updated_at DESC
-                """
-                )
+                """)
 
             rows = cursor.fetchall()
 
@@ -505,11 +491,9 @@ class AuditDatabase:
                     (status_filter,),
                 )
             else:
-                cursor.execute(
-                    """
+                cursor.execute("""
                     SELECT * FROM issues ORDER BY severity DESC, created_at DESC
-                """
-                )
+                """)
 
             rows = cursor.fetchall()
 
@@ -545,11 +529,9 @@ class AuditDatabase:
                     (status_filter,),
                 )
             else:
-                cursor.execute(
-                    """
+                cursor.execute("""
                     SELECT * FROM fix_tasks ORDER BY priority_score DESC, created_at ASC
-                """
-                )
+                """)
 
             rows = cursor.fetchall()
 
@@ -585,14 +567,18 @@ class AuditDatabase:
             cursor.execute("SELECT COUNT(*) FROM api_endpoints WHERE status_code = 200")
             stats["working_apis"] = cursor.fetchone()[0]
 
-            cursor.execute("SELECT COUNT(*) FROM api_endpoints WHERE status_code >= 500")
+            cursor.execute(
+                "SELECT COUNT(*) FROM api_endpoints WHERE status_code >= 500"
+            )
             stats["error_apis"] = cursor.fetchone()[0]
 
             # 需求统计
             cursor.execute("SELECT COUNT(*) FROM requirements")
             stats["total_requirements"] = cursor.fetchone()[0]
 
-            cursor.execute('SELECT COUNT(*) FROM requirements WHERE status = "fully_implemented"')
+            cursor.execute(
+                'SELECT COUNT(*) FROM requirements WHERE status = "fully_implemented"'
+            )
             stats["completed_requirements"] = cursor.fetchone()[0]
 
             # 问题统计
@@ -606,18 +592,24 @@ class AuditDatabase:
             cursor.execute('SELECT COUNT(*) FROM fix_tasks WHERE status = "pending"')
             stats["pending_tasks"] = cursor.fetchone()[0]
 
-            cursor.execute('SELECT COUNT(*) FROM fix_tasks WHERE status = "in_progress"')
+            cursor.execute(
+                'SELECT COUNT(*) FROM fix_tasks WHERE status = "in_progress"'
+            )
             stats["active_tasks"] = cursor.fetchone()[0]
 
             cursor.execute('SELECT COUNT(*) FROM fix_tasks WHERE status = "completed"')
             stats["completed_tasks"] = cursor.fetchone()[0]
 
             # 时间统计
-            cursor.execute('SELECT SUM(estimated_time) FROM fix_tasks WHERE status != "completed"')
+            cursor.execute(
+                'SELECT SUM(estimated_time) FROM fix_tasks WHERE status != "completed"'
+            )
             result = cursor.fetchone()[0]
             stats["remaining_work_hours"] = result if result else 0
 
-            cursor.execute('SELECT SUM(actual_time) FROM fix_tasks WHERE status = "completed"')
+            cursor.execute(
+                'SELECT SUM(actual_time) FROM fix_tasks WHERE status = "completed"'
+            )
             result = cursor.fetchone()[0]
             stats["completed_work_hours"] = result if result else 0
 

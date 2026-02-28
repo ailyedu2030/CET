@@ -33,7 +33,9 @@ def test_imports() -> bool:
 
     try:
         # 导入 agent-templates
-        agent_templates = safe_load_module("agent_templates", script_dir / "agent-templates.py")
+        agent_templates = safe_load_module(
+            "agent_templates", script_dir / "agent-templates.py"
+        )
         AgentTemplateManager = agent_templates.AgentTemplateManager
         TaskPhase = agent_templates.TaskPhase
         AgentRole = agent_templates.AgentRole
@@ -44,7 +46,9 @@ def test_imports() -> bool:
 
     try:
         # 导入 agent-wrapper
-        agent_wrapper = safe_load_module("agent_wrapper", script_dir / "agent-wrapper.py")
+        agent_wrapper = safe_load_module(
+            "agent_wrapper", script_dir / "agent-wrapper.py"
+        )
         AgentContext = agent_wrapper.AgentContext
         template_enforcer = agent_wrapper.template_enforcer
         template_wrapper = agent_wrapper.template_wrapper
@@ -55,7 +59,9 @@ def test_imports() -> bool:
 
     try:
         # 导入 agent-registry
-        agent_registry = safe_load_module("agent_registry", script_dir / "agent-registry.py")
+        agent_registry = safe_load_module(
+            "agent_registry", script_dir / "agent-registry.py"
+        )
         AgentRegistry = agent_registry.AgentRegistry
         init_agent_system = agent_registry.init_agent_system
         print("✅ agent-registry 导入成功")
@@ -65,7 +71,9 @@ def test_imports() -> bool:
 
     try:
         # 导入 agent-executor
-        agent_executor = safe_load_module("agent_executor", script_dir / "agent-executor.py")
+        agent_executor = safe_load_module(
+            "agent_executor", script_dir / "agent-executor.py"
+        )
         AgentExecutor = agent_executor.AgentExecutor
         print("✅ agent-executor 导入成功")
     except Exception as e:
@@ -74,7 +82,9 @@ def test_imports() -> bool:
 
     try:
         # 导入 agent-scheduler
-        agent_scheduler = safe_load_module("agent_scheduler", script_dir / "agent-scheduler.py")
+        agent_scheduler = safe_load_module(
+            "agent_scheduler", script_dir / "agent-scheduler.py"
+        )
         AgentScheduler = agent_scheduler.AgentScheduler
         print("✅ agent-scheduler 导入成功")
     except Exception as e:
@@ -101,7 +111,9 @@ def test_template_manager() -> bool:
 
     try:
         # 导入模块
-        agent_templates = safe_load_module("agent_templates", script_dir / "agent-templates.py")
+        agent_templates = safe_load_module(
+            "agent_templates", script_dir / "agent-templates.py"
+        )
 
         manager = agent_templates.AgentTemplateManager()
         print("✅ 模板管理器创建成功")
@@ -115,7 +127,9 @@ def test_template_manager() -> bool:
             return False
 
         # 测试生成命令
-        commands = manager.generate_agent_commands("23", agent_templates.TaskPhase.PHASE_1)
+        commands = manager.generate_agent_commands(
+            "23", agent_templates.TaskPhase.PHASE_1
+        )
         if commands:
             print(f"✅ 生成命令成功，共{len(commands)}个命令")
         else:
@@ -173,7 +187,9 @@ def test_agent_registry() -> bool:
         print("✅ 智能体注册中心创建成功")
 
         # 测试注册智能体
-        registry.register_agent("test_agent", AgentRole.COORDINATOR, ["view", "codebase-retrieval"])
+        registry.register_agent(
+            "test_agent", AgentRole.COORDINATOR, ["view", "codebase-retrieval"]
+        )
         print("✅ 智能体注册成功")
 
         # 测试获取工具

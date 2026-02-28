@@ -11,7 +11,9 @@ from pathlib import Path
 from typing import Any
 
 # 设置日志
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -171,7 +173,9 @@ class PriorityScheduler:
 
         return status
 
-    async def create_missing_files(self: "PriorityScheduler", task_id: str) -> dict[str, Any]:
+    async def create_missing_files(
+        self: "PriorityScheduler", task_id: str
+    ) -> dict[str, Any]:
         """为指定任务创建缺失的文件"""
         if task_id not in self.priority_1_tasks:
             return {"success": False, "message": f"未找到任务: {task_id}"}

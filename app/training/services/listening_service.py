@@ -200,10 +200,11 @@ class ListeningService:
             question_results=result_data["question_results"],
             answer_analysis=result_data["answer_analysis"],
             total_time_seconds=session.total_time_seconds,
-            average_time_per_question=session.total_time_seconds
-            / exercise.total_questions
-            if exercise.total_questions
-            else 0,
+            average_time_per_question=(
+                session.total_time_seconds / exercise.total_questions
+                if exercise.total_questions
+                else 0
+            ),
             listening_ability_score=result_data.get("listening_ability_score"),
             comprehension_score=result_data.get("comprehension_score"),
             vocabulary_score=result_data.get("vocabulary_score"),
@@ -375,16 +376,16 @@ class ListeningService:
         for r in results[:10]:
             recent_performance.append(
                 {
-                    "date": r.completion_time.isoformat()
-                    if r.completion_time
-                    else None,
+                    "date": (
+                        r.completion_time.isoformat() if r.completion_time else None
+                    ),
                     "score": r.percentage,
-                    "exercise_type": r.exercise.exercise_type
-                    if r.exercise
-                    else "unknown",
-                    "difficulty": r.exercise.difficulty_level.value
-                    if r.exercise
-                    else "unknown",
+                    "exercise_type": (
+                        r.exercise.exercise_type if r.exercise else "unknown"
+                    ),
+                    "difficulty": (
+                        r.exercise.difficulty_level.value if r.exercise else "unknown"
+                    ),
                 }
             )
 
@@ -637,9 +638,9 @@ class ListeningService:
                 "title": e.title,
                 "description": e.description,
                 "exercise_type": e.exercise_type,
-                "difficulty_level": e.difficulty_level.value
-                if e.difficulty_level
-                else None,
+                "difficulty_level": (
+                    e.difficulty_level.value if e.difficulty_level else None
+                ),
                 "tags": e.tags,
             }
             for e in exercises
@@ -681,9 +682,9 @@ class ListeningService:
                 "title": e.title,
                 "description": e.description,
                 "exercise_type": e.exercise_type,
-                "difficulty_level": e.difficulty_level.value
-                if e.difficulty_level
-                else None,
+                "difficulty_level": (
+                    e.difficulty_level.value if e.difficulty_level else None
+                ),
                 "tags": e.tags,
             }
             for e in exercises
@@ -725,9 +726,9 @@ class ListeningService:
                 "title": e.title,
                 "description": e.description,
                 "exercise_type": e.exercise_type,
-                "difficulty_level": e.difficulty_level.value
-                if e.difficulty_level
-                else None,
+                "difficulty_level": (
+                    e.difficulty_level.value if e.difficulty_level else None
+                ),
                 "tags": e.tags,
                 "total_questions": e.total_questions,
             }
@@ -799,9 +800,11 @@ class ListeningService:
                         "title": exercise.title,
                         "description": exercise.description,
                         "exercise_type": exercise.exercise_type,
-                        "difficulty_level": exercise.difficulty_level.value
-                        if exercise.difficulty_level
-                        else None,
+                        "difficulty_level": (
+                            exercise.difficulty_level.value
+                            if exercise.difficulty_level
+                            else None
+                        ),
                         "questions_data": exercise.questions_data,
                         "total_questions": exercise.total_questions,
                         "duration_seconds": exercise.duration_seconds,

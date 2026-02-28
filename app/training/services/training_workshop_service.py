@@ -8,18 +8,11 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.training.models.training_models import (
-    TrainingParameterTemplate,
-    TrainingTask,
-    TrainingTaskSubmission,
-)
+from app.training.models.training_models import (TrainingParameterTemplate,
+                                                 TrainingTask, TrainingTaskSubmission)
 from app.training.schemas.training_workshop_schemas import (
-    TrainingParameterTemplateRequest,
-    TrainingParameterTemplateResponse,
-    TrainingTaskRequest,
-    TrainingTaskResponse,
-    WeeklyTrainingRequest,
-)
+    TrainingParameterTemplateRequest, TrainingParameterTemplateResponse,
+    TrainingTaskRequest, TrainingTaskResponse, WeeklyTrainingRequest)
 
 
 class TrainingWorkshopService:
@@ -408,7 +401,9 @@ class TrainingWorkshopService:
                 task.publish_time = datetime.utcnow()
                 await self.db.commit()
 
-                logging.info(f"任务 {task.id} 成功生成 {len(generated_questions)} 道题目并投放")
+                logging.info(
+                    f"任务 {task.id} 成功生成 {len(generated_questions)} 道题目并投放"
+                )
             else:
                 task.status = "failed"
                 await self.db.commit()
@@ -620,7 +615,11 @@ class TrainingWorkshopService:
     ) -> str:
         """构建写作题目生成提示词."""
         sources_text = "、".join(topic_sources)
-        standard_text = "严格按照大学英语四级考试写作评分标准" if cet4_standard else "按照一般英语写作标准"
+        standard_text = (
+            "严格按照大学英语四级考试写作评分标准"
+            if cet4_standard
+            else "按照一般英语写作标准"
+        )
 
         return f"""请生成一道大学英语四级{writing_type}写作题目。
 

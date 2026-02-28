@@ -35,7 +35,10 @@ class AgentExecutor:
         self.execution_log: list[dict[str, Any]] = []
 
     def execute_phase(
-        self, requirement_id: str, phase: TaskPhase, agent_role: AgentRole = AgentRole.COORDINATOR
+        self,
+        requirement_id: str,
+        phase: TaskPhase,
+        agent_role: AgentRole = AgentRole.COORDINATOR,
     ) -> dict[str, Any]:
         """执行指定阶段的任务"""
         print(f"\n🚀 开始执行需求{requirement_id}的{phase.value}")
@@ -88,7 +91,9 @@ class AgentExecutor:
         # 更新执行状态
         execution_result["end_time"] = datetime.now().isoformat()
         execution_result["status"] = (
-            "completed" if all(r["success"] for r in execution_result["results"]) else "failed"
+            "completed"
+            if all(r["success"] for r in execution_result["results"])
+            else "failed"
         )
 
         # 记录执行日志
@@ -99,7 +104,9 @@ class AgentExecutor:
 
         return execution_result
 
-    def _simulate_command_execution(self, command: str, requirement_id: str) -> dict[str, Any]:
+    def _simulate_command_execution(
+        self, command: str, requirement_id: str
+    ) -> dict[str, Any]:
         """模拟命令执行（在实际环境中替换为真实的工具调用）"""
         # 这里模拟不同命令的执行结果
         if "view" in command:
@@ -283,7 +290,9 @@ def main() -> None:
             print(f"❌ 无效的阶段: {phase_arg}")
     else:
         # 执行完整需求
-        result = executor.execute_full_requirement(requirement_id, f"需求{requirement_id}")
+        result = executor.execute_full_requirement(
+            requirement_id, f"需求{requirement_id}"
+        )
         print(f"\n📊 总体结果: {result['status']}")
         print(f"⏱️ 总预估时间: {result['total_estimated_hours']}小时")
 

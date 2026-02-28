@@ -7,11 +7,9 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.courses.models.course_models import Class, Course
-from app.courses.schemas.assignment_schemas import (
-    CourseAssignmentRequest,
-    TeacherQualificationCheck,
-    TimeConflictCheck,
-)
+from app.courses.schemas.assignment_schemas import (CourseAssignmentRequest,
+                                                    TeacherQualificationCheck,
+                                                    TimeConflictCheck)
 from app.courses.services.assignment_service import AssignmentService
 
 logger = logging.getLogger(__name__)
@@ -41,7 +39,9 @@ class CourseAssignmentService:
                 not qualification_result["is_qualified"]
                 and not assignment_request.force_assign
             ):
-                raise ValueError(f"教师资质不符合要求: {qualification_result['message']}")
+                raise ValueError(
+                    f"教师资质不符合要求: {qualification_result['message']}"
+                )
 
             # 2. 检查教师工作量平衡分配
             workload_result = await self._check_teacher_workload_balance(

@@ -10,24 +10,18 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.training.models.assistant_models import (
-    KnowledgeBaseModel,
-    LearningResourceModel,
-    QARecordModel,
-    UserResourceInteractionModel,
-    VoiceRecognitionRecordModel,
-)
-from app.training.schemas.assistant_schemas import (
-    KnowledgeBaseCreate,
-    KnowledgeBaseUpdate,
-    LearningResourceCreate,
-    QARequest,
-    QAResponse,
-    ResourceRecommendationRequest,
-    UserResourceInteractionCreate,
-    VoiceRecognitionRequest,
-    VoiceRecognitionResponse,
-)
+from app.training.models.assistant_models import (KnowledgeBaseModel,
+                                                  LearningResourceModel, QARecordModel,
+                                                  UserResourceInteractionModel,
+                                                  VoiceRecognitionRecordModel)
+from app.training.schemas.assistant_schemas import (KnowledgeBaseCreate,
+                                                    KnowledgeBaseUpdate,
+                                                    LearningResourceCreate, QARequest,
+                                                    QAResponse,
+                                                    ResourceRecommendationRequest,
+                                                    UserResourceInteractionCreate,
+                                                    VoiceRecognitionRequest,
+                                                    VoiceRecognitionResponse)
 
 logger = logging.getLogger(__name__)
 
@@ -511,7 +505,9 @@ class AssistantService:
 
         # 添加知识库内容
         for knowledge in knowledge_list:
-            context_parts.append(f"知识点: {knowledge.title}\n内容: {knowledge.content}")
+            context_parts.append(
+                f"知识点: {knowledge.title}\n内容: {knowledge.content}"
+            )
 
         # 添加用户上下文
         if user_context:
@@ -706,9 +702,9 @@ class AssistantService:
                     existing[
                         "recommendation_reason"
                     ] += f", {rec.get('recommendation_reason', '')}"
-                    existing[
-                        "recommendation_source"
-                    ] = f"{existing['recommendation_source']}, {rec['recommendation_source']}"
+                    existing["recommendation_source"] = (
+                        f"{existing['recommendation_source']}, {rec['recommendation_source']}"
+                    )
                 else:
                     resource_map[resource_id] = rec
 
@@ -989,7 +985,9 @@ class AssistantService:
                 if "punctuation" in error_types:
                     suggestions.append("注意标点符号的使用，特别是撇号和逗号")
 
-                suggestions.append(f"发现 {len(grammar_errors)} 个语法问题，建议复习相关语法规则")
+                suggestions.append(
+                    f"发现 {len(grammar_errors)} 个语法问题，建议复习相关语法规则"
+                )
 
             # 通用建议
             if len(text.split()) < 5:
@@ -1034,7 +1032,11 @@ class AssistantService:
                         "description": "针对元音和辅音的发音练习",
                         "difficulty": "beginner",
                         "estimated_time": 15,
-                        "exercises": ["跟读单词发音练习", "音标识别练习", "最小对比练习"],
+                        "exercises": [
+                            "跟读单词发音练习",
+                            "音标识别练习",
+                            "最小对比练习",
+                        ],
                     }
                 )
 
@@ -1062,7 +1064,11 @@ class AssistantService:
                             "description": "掌握英语大小写的基本规则",
                             "difficulty": "beginner",
                             "estimated_time": 10,
-                            "exercises": ["句首大写练习", "专有名词识别", "人称代词练习"],
+                            "exercises": [
+                                "句首大写练习",
+                                "专有名词识别",
+                                "人称代词练习",
+                            ],
                         }
                     )
 
@@ -1074,7 +1080,11 @@ class AssistantService:
                             "description": "学习正确使用英语标点符号",
                             "difficulty": "beginner",
                             "estimated_time": 15,
-                            "exercises": ["撇号使用练习", "逗号规则练习", "句号和问号练习"],
+                            "exercises": [
+                                "撇号使用练习",
+                                "逗号规则练习",
+                                "句号和问号练习",
+                            ],
                         }
                     )
 

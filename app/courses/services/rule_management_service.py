@@ -7,12 +7,11 @@ from typing import Any
 from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.courses.models.course_models import RuleConfiguration, RuleExecutionLog, RuleMonitoring
-from app.courses.schemas.rule_schemas import (
-    RuleConfigurationCreate,
-    RuleConfigurationUpdate,
-    RuleMonitoringCreate,
-)
+from app.courses.models.course_models import (RuleConfiguration, RuleExecutionLog,
+                                              RuleMonitoring)
+from app.courses.schemas.rule_schemas import (RuleConfigurationCreate,
+                                              RuleConfigurationUpdate,
+                                              RuleMonitoringCreate)
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +67,9 @@ class RuleManagementService:
                 creator_id,
             )
 
-            logger.info(f"规则配置创建成功: {rule_data.rule_name} (ID: {rule_config.id})")
+            logger.info(
+                f"规则配置创建成功: {rule_data.rule_name} (ID: {rule_config.id})"
+            )
             return rule_config
 
         except Exception as e:
@@ -400,7 +401,9 @@ class RuleManagementService:
             "rule_count": len(violations),
             "severity": "high" if len(violations) > 0 else "none",
             "message": (
-                "班级绑定规则验证完成" if len(violations) == 0 else f"发现{len(violations)}个违规"
+                "班级绑定规则验证完成"
+                if len(violations) == 0
+                else f"发现{len(violations)}个违规"
             ),
         }
 
@@ -457,7 +460,9 @@ class RuleManagementService:
             "rule_count": len(violations),
             "severity": "high" if len(violations) > 0 else "none",
             "message": (
-                "教室排课规则验证完成" if len(violations) == 0 else f"发现{len(violations)}个违规"
+                "教室排课规则验证完成"
+                if len(violations) == 0
+                else f"发现{len(violations)}个违规"
             ),
         }
 
@@ -505,7 +510,9 @@ class RuleManagementService:
             "rule_count": len(violations),
             "severity": "medium" if len(violations) > 0 else "none",
             "message": (
-                "教师工作量规则验证完成" if len(violations) == 0 else f"发现{len(violations)}个违规"
+                "教师工作量规则验证完成"
+                if len(violations) == 0
+                else f"发现{len(violations)}个违规"
             ),
         }
 
@@ -606,7 +613,9 @@ class RuleManagementService:
 
             await self.db.commit()
 
-            logger.info(f"规则监控统计更新成功: 规则ID {rule_id}, 合规率 {compliance_rate:.2%}")
+            logger.info(
+                f"规则监控统计更新成功: 规则ID {rule_id}, 合规率 {compliance_rate:.2%}"
+            )
 
             return {
                 "rule_id": rule_id,

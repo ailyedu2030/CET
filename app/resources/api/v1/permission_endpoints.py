@@ -10,12 +10,11 @@ from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.exceptions import PermissionDeniedError, ResourceNotFoundError, ValidationError
-from app.resources.schemas.permission_schemas import (
-    PermissionSettingRequest,
-    PermissionSettingResponse,
-    SharedResourceResponse,
-)
+from app.core.exceptions import (PermissionDeniedError, ResourceNotFoundError,
+                                 ValidationError)
+from app.resources.schemas.permission_schemas import (PermissionSettingRequest,
+                                                      PermissionSettingResponse,
+                                                      SharedResourceResponse)
 from app.resources.services.permission_service import PermissionService
 from app.users.dependencies import get_current_user
 from app.users.models import User
@@ -261,7 +260,8 @@ async def reset_resource_permission(
         )
 
         logger.info(
-            "权限重置成功", extra={"resource_type": resource_type, "resource_id": resource_id}
+            "权限重置成功",
+            extra={"resource_type": resource_type, "resource_id": resource_id},
         )
 
         return {"success": True, "message": "权限已重置为私有"}
@@ -325,6 +325,7 @@ async def get_my_shared_resources(
 
     except Exception as e:
         logger.error(
-            f"获取分享资源失败: {str(e)}", extra={"user_id": current_user.id, "error": str(e)}
+            f"获取分享资源失败: {str(e)}",
+            extra={"user_id": current_user.id, "error": str(e)},
         )
         raise HTTPException(status_code=500, detail="获取分享资源失败") from e

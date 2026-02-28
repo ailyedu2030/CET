@@ -9,11 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.shared.models.enums import DifficultyLevel
-from app.training.schemas.listening_schemas import (
-    ListeningExercise,
-    ListeningExerciseListResponse,
-    SubmitAnswersRequest,
-)
+from app.training.schemas.listening_schemas import (ListeningExercise,
+                                                    ListeningExerciseListResponse,
+                                                    SubmitAnswersRequest)
 from app.training.services.listening_service import ListeningService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -154,7 +152,8 @@ async def get_exercises(
     except Exception as e:
         logger.error(f"获取听力练习列表失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="获取听力练习列表失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="获取听力练习列表失败",
         ) from e
 
 
@@ -170,7 +169,9 @@ async def get_exercise_by_id(
         exercise = await service.get_exercise_by_id(exercise_id)
 
         if not exercise:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
+            )
 
         return ListeningExercise.model_validate(exercise)
 
@@ -179,7 +180,8 @@ async def get_exercise_by_id(
     except Exception as e:
         logger.error(f"获取听力练习详情失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="获取听力练习详情失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="获取听力练习详情失败",
         ) from e
 
 
@@ -219,7 +221,8 @@ async def start_session(
     except Exception as e:
         logger.error(f"开始听力训练会话失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="开始听力训练会话失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="开始听力训练会话失败",
         ) from e
 
 
@@ -277,11 +280,15 @@ async def get_session(
         session = await service.get_session_by_id(session_id)
 
         if not session:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力会话不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="听力会话不存在"
+            )
 
         # 验证权限
         if session.student_id != current_user.id:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="无权访问此会话")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="无权访问此会话"
+            )
 
         return {
             "success": True,
@@ -303,7 +310,8 @@ async def get_session(
     except Exception as e:
         logger.error(f"获取听力会话详情失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="获取听力会话详情失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="获取听力会话详情失败",
         ) from e
 
 
@@ -325,7 +333,8 @@ async def get_statistics(
     except Exception as e:
         logger.error(f"获取听力训练统计失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="获取听力训练统计失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="获取听力训练统计失败",
         ) from e
 
 
@@ -341,11 +350,15 @@ async def get_result(
         result = await service.get_result_by_id(result_id)
 
         if not result:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力结果不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="听力结果不存在"
+            )
 
         # 验证权限
         if result.student_id != current_user.id:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="无权访问此结果")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="无权访问此结果"
+            )
 
         return {
             "success": True,
@@ -378,7 +391,8 @@ async def get_result(
     except Exception as e:
         logger.error(f"获取听力结果详情失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="获取听力结果详情失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="获取听力结果详情失败",
         ) from e
 
 
@@ -401,13 +415,16 @@ async def update_playback_settings(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
+            )
 
         # 验证设置参数
         playback_speed = settings.get("playback_speed", 1.0)
         if not 0.5 <= playback_speed <= 2.0:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="播放速度必须在0.5-2.0之间"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="播放速度必须在0.5-2.0之间",
             )
 
         repeat_count = settings.get("repeat_count", 1)
@@ -465,7 +482,9 @@ async def create_dictation_exercise(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
+            )
 
         # 创建听写练习
         dictation_type = dictation_data.get("type", "word")  # word, phrase, sentence
@@ -513,7 +532,9 @@ async def start_pronunciation_practice(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
+            )
 
         # 创建跟读练习
         target_text = practice_data.get("target_text", "")
@@ -544,7 +565,8 @@ async def start_pronunciation_practice(
     except Exception as e:
         logger.error(f"开始口语跟读练习失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="开始口语跟读练习失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="开始口语跟读练习失败",
         ) from e
 
 
@@ -567,7 +589,9 @@ async def create_phonetic_practice(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
+            )
 
         # 创建音标练习
         target_phonetics = phonetic_data.get("target_phonetics", [])
@@ -617,7 +641,8 @@ async def create_phonetic_practice(
     except Exception as e:
         logger.error(f"创建音标识别练习失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建音标识别练习失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="创建音标识别练习失败",
         ) from e
 
 
@@ -637,7 +662,9 @@ async def analyze_listening_difficulties(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
+            )
 
         # 分析用户答题情况
         user_answers = analysis_data.get("user_answers", [])
@@ -645,7 +672,8 @@ async def analyze_listening_difficulties(
 
         if len(user_answers) != len(correct_answers):
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="用户答案和正确答案数量不匹配"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="用户答案和正确答案数量不匹配",
             )
 
         # 分析错误类型
@@ -679,9 +707,17 @@ async def analyze_listening_difficulties(
 
         # 生成改进建议
         if accuracy < 0.6:
-            improvement_suggestions.extend(["建议加强基础听力训练", "重点练习单词发音和语调", "增加听力材料的接触量"])
+            improvement_suggestions.extend(
+                [
+                    "建议加强基础听力训练",
+                    "重点练习单词发音和语调",
+                    "增加听力材料的接触量",
+                ]
+            )
         elif accuracy < 0.8:
-            improvement_suggestions.extend(["注意听力技巧的运用", "加强对话语境的理解", "练习预测和推理能力"])
+            improvement_suggestions.extend(
+                ["注意听力技巧的运用", "加强对话语境的理解", "练习预测和推理能力"]
+            )
 
         # 标注个人难点
         if exercise.exercise_type == "short_conversation":
@@ -721,7 +757,9 @@ async def get_listening_techniques(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
+            )
 
         # 根据题型提供相应技巧
         techniques = {
@@ -736,7 +774,11 @@ async def get_listening_techniques(
                     "注意说话人的语气和态度",
                     "关注转折词和强调词",
                 ],
-                "post_listening": ["结合语境选择最佳答案", "排除明显错误选项", "相信第一直觉"],
+                "post_listening": [
+                    "结合语境选择最佳答案",
+                    "排除明显错误选项",
+                    "相信第一直觉",
+                ],
             },
             "long_conversation": {
                 "pre_listening": [
@@ -749,7 +791,11 @@ async def get_listening_techniques(
                     "注意对话的逻辑结构",
                     "关注问答之间的关系",
                 ],
-                "post_listening": ["逐题分析，避免混淆", "利用排除法缩小范围", "检查答案的逻辑性"],
+                "post_listening": [
+                    "逐题分析，避免混淆",
+                    "利用排除法缩小范围",
+                    "检查答案的逻辑性",
+                ],
             },
             "short_passage": {
                 "pre_listening": [
@@ -769,13 +815,21 @@ async def get_listening_techniques(
                 ],
             },
             "lecture": {
-                "pre_listening": ["了解讲座的学科背景", "预测可能的专业词汇", "关注题目的考查重点"],
+                "pre_listening": [
+                    "了解讲座的学科背景",
+                    "预测可能的专业词汇",
+                    "关注题目的考查重点",
+                ],
                 "while_listening": [
                     "抓住讲座的核心观点",
                     "注意例证和解释说明",
                     "关注讲者的态度和结论",
                 ],
-                "post_listening": ["理解题目的深层含义", "结合背景知识判断", "注意推理题的逻辑性"],
+                "post_listening": [
+                    "理解题目的深层含义",
+                    "结合背景知识判断",
+                    "注意推理题的逻辑性",
+                ],
             },
         }
 
@@ -803,7 +857,8 @@ async def get_listening_techniques(
     except Exception as e:
         logger.error(f"获取听力应试技巧失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="获取听力应试技巧失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="获取听力应试技巧失败",
         ) from e
 
 
@@ -911,7 +966,9 @@ async def get_audio_file(
         audio_file = await service.get_audio_file_by_id(audio_id)
 
         if not audio_file:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="音频文件不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="音频文件不存在"
+            )
 
         return {
             "success": True,
@@ -934,5 +991,6 @@ async def get_audio_file(
     except Exception as e:
         logger.error(f"获取音频文件信息失败: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="获取音频文件信息失败"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="获取音频文件信息失败",
         ) from e

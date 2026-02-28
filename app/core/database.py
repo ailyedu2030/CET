@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from app.core.config import settings
 from app.courses.models import *  # noqa: F401, F403
-
 # 导入所有模型以确保表创建
 from app.shared.models.base_model import Base  # noqa: F401
 from app.training.models import *  # noqa: F401, F403

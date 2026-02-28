@@ -267,7 +267,9 @@ class ProgressTracker:
         mastery_level = self._determine_mastery_level(mastery_score)
 
         # 计算置信度
-        confidence = min(len(relevant_sessions) / 10.0, 1.0)  # 至少需要10次会话才能完全置信
+        confidence = min(
+            len(relevant_sessions) / 10.0, 1.0
+        )  # 至少需要10次会话才能完全置信
 
         return {
             "mastery_level": mastery_level,
@@ -1130,6 +1132,8 @@ class ProgressTracker:
         if weak_types:
             recommendations.append(f"建议加强{', '.join(weak_types[:2])}类型的练习")
         if strong_types:
-            recommendations.append(f"在{', '.join(strong_types[:2])}方面表现优秀，可以挑战更高难度")
+            recommendations.append(
+                f"在{', '.join(strong_types[:2])}方面表现优秀，可以挑战更高难度"
+            )
 
         return recommendations

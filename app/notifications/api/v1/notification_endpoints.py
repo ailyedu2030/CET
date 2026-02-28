@@ -8,20 +8,13 @@ from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_user, get_db
-from app.notifications.models.notification_models import Notification, NotificationPreference
+from app.notifications.models.notification_models import (Notification,
+                                                          NotificationPreference)
 from app.notifications.schemas.notification_schemas import (
-    NotificationBatchCreate,
-    NotificationCreate,
-    NotificationListResponse,
-    NotificationPreferenceResponse,
-    NotificationPreferenceUpdate,
-    NotificationResponse,
-    NotificationStats,
-    NotificationUpdate,
-    ResourceAuditNotification,
-    TeachingPlanChangeNotification,
-    TrainingAnomalyAlert,
-)
+    NotificationBatchCreate, NotificationCreate, NotificationListResponse,
+    NotificationPreferenceResponse, NotificationPreferenceUpdate, NotificationResponse,
+    NotificationStats, NotificationUpdate, ResourceAuditNotification,
+    TeachingPlanChangeNotification, TrainingAnomalyAlert)
 from app.notifications.services.notification_service import UnifiedNotificationService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import AuthRequired, create_permission_dependency
@@ -679,7 +672,9 @@ async def websocket_notification_endpoint(
                 logger.error(f"处理WebSocket消息失败: {str(e)}")
 
     except WebSocketDisconnect:
-        logger.info(f"WebSocket连接断开: user_id={user_id}, connection_id={connection_id}")
+        logger.info(
+            f"WebSocket连接断开: user_id={user_id}, connection_id={connection_id}"
+        )
     except Exception as e:
         logger.error(f"WebSocket连接异常: {str(e)}")
     finally:

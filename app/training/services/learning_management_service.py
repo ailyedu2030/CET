@@ -8,25 +8,20 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.training.models.learning_plan_models import (
-    LearningPlanModel,
-    LearningProgressModel,
-    LearningReminderModel,
-    LearningReportModel,
-    LearningTaskModel,
-    PlanStatus,
-    TaskStatus,
-)
-from app.training.schemas.learning_management_schemas import (
-    LearningDashboard,
-    LearningPlanCreate,
-    LearningPlanUpdate,
-    LearningProgressCreate,
-    LearningReportCreate,
-    LearningStatistics,
-    LearningTaskCreate,
-    LearningTaskUpdate,
-)
+from app.training.models.learning_plan_models import (LearningPlanModel,
+                                                      LearningProgressModel,
+                                                      LearningReminderModel,
+                                                      LearningReportModel,
+                                                      LearningTaskModel, PlanStatus,
+                                                      TaskStatus)
+from app.training.schemas.learning_management_schemas import (LearningDashboard,
+                                                              LearningPlanCreate,
+                                                              LearningPlanUpdate,
+                                                              LearningProgressCreate,
+                                                              LearningReportCreate,
+                                                              LearningStatistics,
+                                                              LearningTaskCreate,
+                                                              LearningTaskUpdate)
 
 logger = logging.getLogger(__name__)
 
@@ -453,10 +448,7 @@ class LearningManagementService:
         statistics = await self.get_user_statistics(user_id)
 
         from app.training.schemas.learning_management_schemas import (
-            LearningPlanResponse,
-            LearningProgressResponse,
-            LearningTaskResponse,
-        )
+            LearningPlanResponse, LearningProgressResponse, LearningTaskResponse)
 
         return LearningDashboard(
             today_tasks=[LearningTaskResponse.model_validate(t) for t in today_tasks],
@@ -808,12 +800,14 @@ class LearningManagementService:
                                 "type": t.task_type,  # 修正属性名
                                 "status": t.status,  # 修正属性名
                                 "priority": t.difficulty_level,  # 修正属性名
-                                "due_date": t.due_date.isoformat()
-                                if t.due_date
-                                else None,
-                                "completed_at": t.completed_at.isoformat()
-                                if t.completed_at
-                                else None,
+                                "due_date": (
+                                    t.due_date.isoformat() if t.due_date else None
+                                ),
+                                "completed_at": (
+                                    t.completed_at.isoformat()
+                                    if t.completed_at
+                                    else None
+                                ),
                             }
                             for t in tasks
                         ],
@@ -893,9 +887,11 @@ class LearningManagementService:
                     "title": reminder.reminder_name,  # type: ignore[has-type]
                     "content": reminder.message or "",  # type: ignore[has-type]
                     "reminder_type": reminder.reminder_type or "custom",  # type: ignore[has-type]
-                    "reminder_time": reminder.reminder_time.strftime("%H:%M")
-                    if reminder.reminder_time
-                    else "09:00",  # type: ignore[has-type]
+                    "reminder_time": (
+                        reminder.reminder_time.strftime("%H:%M")
+                        if reminder.reminder_time
+                        else "09:00"
+                    ),  # type: ignore[has-type]
                     "is_active": reminder.is_active,  # type: ignore[has-type]
                     "created_at": reminder.created_at.isoformat(),  # type: ignore[has-type]
                 }
@@ -950,9 +946,11 @@ class LearningManagementService:
                 "title": reminder_model.reminder_name,  # type: ignore[has-type]
                 "content": reminder_model.message or "",  # type: ignore[has-type]
                 "reminder_type": reminder_model.reminder_type or "custom",  # type: ignore[has-type]
-                "reminder_time": reminder_model.reminder_time.strftime("%H:%M")
-                if reminder_model.reminder_time
-                else "09:00",  # type: ignore[has-type]
+                "reminder_time": (
+                    reminder_model.reminder_time.strftime("%H:%M")
+                    if reminder_model.reminder_time
+                    else "09:00"
+                ),  # type: ignore[has-type]
                 "is_active": reminder_model.is_active,  # type: ignore[has-type]
                 "created_at": reminder_model.created_at.isoformat(),  # type: ignore[has-type]
             }
@@ -1020,9 +1018,11 @@ class LearningManagementService:
                 "title": reminder_model.reminder_name,  # type: ignore[has-type]
                 "content": reminder_model.message or "",  # type: ignore[has-type]
                 "reminder_type": reminder_model.reminder_type or "custom",  # type: ignore[has-type]
-                "reminder_time": reminder_model.reminder_time.strftime("%H:%M")
-                if reminder_model.reminder_time
-                else "09:00",  # type: ignore[has-type]
+                "reminder_time": (
+                    reminder_model.reminder_time.strftime("%H:%M")
+                    if reminder_model.reminder_time
+                    else "09:00"
+                ),  # type: ignore[has-type]
                 "is_active": reminder_model.is_active,  # type: ignore[has-type]
                 "updated_at": reminder_model.updated_at.isoformat(),  # type: ignore[has-type]
             }

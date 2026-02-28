@@ -49,7 +49,8 @@ class AgentInstance:
     @property
     def is_available(self: "AgentInstance") -> bool:
         return (
-            len(self.current_tasks or []) < self.max_concurrent_tasks and self.status != "blocked"
+            len(self.current_tasks or []) < self.max_concurrent_tasks
+            and self.status != "blocked"
         )
 
     @property
@@ -109,7 +110,10 @@ class AgentScheduler:
                 print(f"⚠️ 未知的智能体角色: {role_name}")
 
     def add_requirement_to_queue(
-        self: "AgentScheduler", requirement_id: str, requirement_title: str, priority: int = 1
+        self: "AgentScheduler",
+        requirement_id: str,
+        requirement_title: str,
+        priority: int = 1,
     ) -> None:
         """添加需求到任务队列"""
         # 为需求的每个阶段创建任务
@@ -158,7 +162,9 @@ class AgentScheduler:
 
         return dependencies
 
-    def assign_task_to_agent(self: "AgentScheduler", task: dict[str, Any]) -> str | None:
+    def assign_task_to_agent(
+        self: "AgentScheduler", task: dict[str, Any]
+    ) -> str | None:
         """将任务分配给最合适的智能体"""
         # 获取任务的阶段模板
         template = self.template_manager.get_phase_template(task["phase"])
@@ -194,7 +200,8 @@ class AgentScheduler:
         for dep_task_id in task["dependencies"]:
             # 检查依赖任务是否已完成
             dep_completed = any(
-                t["id"] == dep_task_id and t["status"] == "completed" for t in self.completed_tasks
+                t["id"] == dep_task_id and t["status"] == "completed"
+                for t in self.completed_tasks
             )
             if not dep_completed:
                 return False
@@ -219,7 +226,9 @@ class AgentScheduler:
             agent_id = self.assign_task_to_agent(task)
             if agent_id:
                 # 执行任务
-                result = self.executor.execute_phase(task["requirement_id"], task["phase"])
+                result = self.executor.execute_phase(
+                    task["requirement_id"], task["phase"]
+                )
 
                 # 更新任务状态
                 task["execution_result"] = result
@@ -239,7 +248,10 @@ class AgentScheduler:
 
                 # 释放智能体
                 agent = self.agent_instances[agent_id]
-                if agent.current_tasks is not None and task["id"] in agent.current_tasks:
+                if (
+                    agent.current_tasks is not None
+                    and task["id"] in agent.current_tasks
+                ):
                     agent.current_tasks.remove(task["id"])
                 if not (agent.current_tasks or []):
                     agent.status = "idle"
@@ -248,7 +260,9 @@ class AgentScheduler:
 
         return executed_tasks
 
-    def run_scheduler(self: "AgentScheduler", max_iterations: int = 100) -> dict[str, Any]:
+    def run_scheduler(
+        self: "AgentScheduler", max_iterations: int = 100
+    ) -> dict[str, Any]:
         """运行调度器直到所有任务完成"""
         print("\n🚀 启动智能体调度器")
         print(f"📊 队列中有 {len(self.task_queue)} 个任务")
@@ -277,11 +291,13 @@ class AgentScheduler:
             "failed_tasks": len(self.failed_tasks),
             "pending_tasks": len(self.task_queue),
             "iterations": iteration,
-            "success_rate": len(self.completed_tasks)
-            / (len(self.completed_tasks) + len(self.failed_tasks))
-            * 100
-            if (len(self.completed_tasks) + len(self.failed_tasks)) > 0
-            else 0,
+            "success_rate": (
+                len(self.completed_tasks)
+                / (len(self.completed_tasks) + len(self.failed_tasks))
+                * 100
+                if (len(self.completed_tasks) + len(self.failed_tasks)) > 0
+                else 0
+            ),
         }
 
         print("\n📊 调度完成统计:")
@@ -293,13 +309,17 @@ class AgentScheduler:
 
         return result
 
-    def schedule_by_priority(self: "AgentScheduler", priority_level: int = 1) -> dict[str, Any]:
+    def schedule_by_priority(
+        self: "AgentScheduler", priority_level: int = 1
+    ) -> dict[str, Any]:
         """基于优先级调度任务执行"""
         print(f"\n🎯 开始执行第{priority_level}优先级任务")
         print("=" * 50)
 
         # 获取指定优先级的模板
-        priority_templates = self.template_manager.get_priority_templates(priority_level)
+        priority_templates = self.template_manager.get_priority_templates(
+            priority_level
+        )
 
         if not priority_templates:
             print(f"⚠️ 未找到第{priority_level}优先级的任务模板")
@@ -327,7 +347,9 @@ class AgentScheduler:
 
             self.task_queue.append(task)
             scheduled_tasks.append(task_id)
-            print(f"✅ 已添加任务: {template.name} (预估{template.estimated_hours}小时)")
+            print(
+                f"✅ 已添加任务: {template.name} (预估{template.estimated_hours}小时)"
+            )
 
         print(f"\n📋 第{priority_level}优先级任务调度完成:")
         print(f"  添加任务数: {len(scheduled_tasks)}")
@@ -372,7 +394,9 @@ class AgentScheduler:
             priority_hours = sum(t.estimated_hours for t in priority_templates)
             total_results["total_hours"] += priority_hours
 
-            print(f"✅ 第{priority}优先级完成 - 成功率: {result.get('success_rate', 0):.1f}%")
+            print(
+                f"✅ 第{priority}优先级完成 - 成功率: {result.get('success_rate', 0):.1f}%"
+            )
 
         # 计算总体成功率
         total_results["overall_success_rate"] = (
@@ -400,7 +424,9 @@ class AgentScheduler:
         for agent in self.agent_instances.values():
             load_percent = agent.load_factor * 100
             status_icon = (
-                "🟢" if agent.status == "idle" else "🔄" if agent.status == "working" else "🔴"
+                "🟢"
+                if agent.status == "idle"
+                else "🔄" if agent.status == "working" else "🔴"
             )
 
             print(f"{status_icon} {agent.name}")
@@ -465,7 +491,9 @@ def main() -> None:
         scheduler.show_agent_status()
         result = scheduler.schedule_all_priorities()
         scheduler.show_agent_status()
-        print(f"\n🎉 所有任务完成！总体成功率: {result.get('overall_success_rate', 0):.1f}%")
+        print(
+            f"\n🎉 所有任务完成！总体成功率: {result.get('overall_success_rate', 0):.1f}%"
+        )
 
     elif mode == "requirements":
         # 传统需求ID模式

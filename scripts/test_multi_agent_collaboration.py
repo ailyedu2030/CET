@@ -32,7 +32,9 @@ def load_modules() -> dict[str, Any]:
     modules = {}
 
     # 导入 agent-templates
-    agent_templates = safe_load_module("agent_templates", script_dir / "agent-templates.py")
+    agent_templates = safe_load_module(
+        "agent_templates", script_dir / "agent-templates.py"
+    )
     modules["agent_templates"] = agent_templates
 
     # 导入 agent-wrapper
@@ -40,7 +42,9 @@ def load_modules() -> dict[str, Any]:
     modules["agent_wrapper"] = agent_wrapper
 
     # 导入 agent-registry
-    agent_registry = safe_load_module("agent_registry", script_dir / "agent-registry.py")
+    agent_registry = safe_load_module(
+        "agent_registry", script_dir / "agent-registry.py"
+    )
     modules["agent_registry"] = agent_registry
 
     return modules
@@ -239,13 +243,17 @@ def test_agent_handoff() -> bool:
 
     # 注册协调者智能体
     registry.register_agent(
-        "coordinator", agent_templates.AgentRole.COORDINATOR, ["view", "codebase-retrieval"]
+        "coordinator",
+        agent_templates.AgentRole.COORDINATOR,
+        ["view", "codebase-retrieval"],
     )
     print("✅ 注册协调者智能体成功")
 
     # 注册后端智能体
     registry.register_agent(
-        "backend_specialist", agent_templates.AgentRole.BACKEND, ["str-replace-editor", "save-file"]
+        "backend_specialist",
+        agent_templates.AgentRole.BACKEND,
+        ["str-replace-editor", "save-file"],
     )
     print("✅ 注册后端专家智能体成功")
 

@@ -8,28 +8,21 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.training.models.social_models import (
-    DiscussionForumModel,
-    ForumPostModel,
-    MessageModel,
-    PostLikeModel,
-    PostReportModel,
-    StudyGroupMembershipModel,
-    StudyGroupModel,
-    StudyPartnerMatchModel,
-    StudyPartnerRequestModel,
-)
-from app.training.schemas.social_interaction_schemas import (
-    DiscussionForumCreate,
-    DiscussionForumUpdate,
-    ForumPostCreate,
-    ForumPostUpdate,
-    MessageCreate,
-    PostLikeCreate,
-    PostReportCreate,
-    StudyGroupCreate,
-    StudyPartnerRequestCreate,
-)
+from app.training.models.social_models import (DiscussionForumModel, ForumPostModel,
+                                               MessageModel, PostLikeModel,
+                                               PostReportModel,
+                                               StudyGroupMembershipModel,
+                                               StudyGroupModel, StudyPartnerMatchModel,
+                                               StudyPartnerRequestModel)
+from app.training.schemas.social_interaction_schemas import (DiscussionForumCreate,
+                                                             DiscussionForumUpdate,
+                                                             ForumPostCreate,
+                                                             ForumPostUpdate,
+                                                             MessageCreate,
+                                                             PostLikeCreate,
+                                                             PostReportCreate,
+                                                             StudyGroupCreate,
+                                                             StudyPartnerRequestCreate)
 
 logger = logging.getLogger(__name__)
 

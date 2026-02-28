@@ -13,7 +13,9 @@ class AttendanceRecordCreateRequest(BaseModel):
     attendance_type: str = Field(..., description="考勤类型：present/absent/late/leave")
     check_in_time: datetime | None = Field(None, description="签到时间")
     check_out_time: datetime | None = Field(None, description="签退时间")
-    leave_type: str | None = Field(None, description="请假类型：sick/personal/emergency")
+    leave_type: str | None = Field(
+        None, description="请假类型：sick/personal/emergency"
+    )
     leave_reason: str | None = Field(None, description="请假原因")
     notes: str | None = Field(None, description="备注信息")
     class_id: int | None = Field(None, description="班级ID")
@@ -27,7 +29,9 @@ class AttendanceRecordUpdateRequest(BaseModel):
     )
     check_in_time: datetime | None = Field(None, description="签到时间")
     check_out_time: datetime | None = Field(None, description="签退时间")
-    leave_type: str | None = Field(None, description="请假类型：sick/personal/emergency")
+    leave_type: str | None = Field(
+        None, description="请假类型：sick/personal/emergency"
+    )
     leave_reason: str | None = Field(None, description="请假原因")
     notes: str | None = Field(None, description="备注信息")
 
@@ -150,7 +154,9 @@ class PaymentProcessRequest(BaseModel):
 class InvoiceGenerateRequest(BaseModel):
     """发票生成请求."""
 
-    invoice_type: str = Field(default="electronic", description="发票类型：electronic/paper")
+    invoice_type: str = Field(
+        default="electronic", description="发票类型：electronic/paper"
+    )
     company_name: str | None = Field(None, description="公司名称")
     tax_number: str | None = Field(None, description="税号")
     company_address: str | None = Field(None, description="公司地址")

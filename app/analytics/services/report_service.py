@@ -10,11 +10,8 @@ from typing import Any
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.schemas.analytics_schemas import (
-    ReportRequest,
-    ReportResponse,
-    UserBehaviorReport,
-)
+from app.analytics.schemas.analytics_schemas import (ReportRequest, ReportResponse,
+                                                     UserBehaviorReport)
 from app.analytics.utils.chart_utils import ChartGenerator
 from app.users.models.user_models import User
 
@@ -352,15 +349,15 @@ class UserAnalyticsReportGenerator:
             monthly_data = user_stats.get("monthly_growth", {})
             if monthly_data:
                 line_data = [{"month": k, "users": v} for k, v in monthly_data.items()]
-                charts[
-                    "monthly_growth_line"
-                ] = self.chart_generator.generate_line_chart(
-                    line_data,
-                    "month",
-                    "users",
-                    "月度用户增长",
-                    "月份",
-                    "新增用户数",
+                charts["monthly_growth_line"] = (
+                    self.chart_generator.generate_line_chart(
+                        line_data,
+                        "month",
+                        "users",
+                        "月度用户增长",
+                        "月份",
+                        "新增用户数",
+                    )
                 )
 
             # 登录时间分布柱状图
@@ -588,7 +585,9 @@ class ReportExporter:
                             writer.writerow([f"{current_key}[{i}]", str(item), ""])
                 else:
                     # 处理简单列表
-                    writer.writerow([current_key, ", ".join(map(str, value)), "列表数据"])
+                    writer.writerow(
+                        [current_key, ", ".join(map(str, value)), "列表数据"]
+                    )
             else:
                 writer.writerow([current_key, str(value), ""])
 

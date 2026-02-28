@@ -118,11 +118,17 @@ class StreamingGradingResult(BaseModel):
     accuracy_rate: float = Field(..., ge=0, le=1, description="准确率")
     detailed_feedback: str = Field(..., description="详细反馈")
     error_analysis: list[str] = Field(default_factory=list, description="错误分析")
-    improvement_suggestions: list[str] = Field(default_factory=list, description="改进建议")
+    improvement_suggestions: list[str] = Field(
+        default_factory=list, description="改进建议"
+    )
     grammar_issues: list[str] = Field(default_factory=list, description="语法问题")
-    vocabulary_suggestions: list[str] = Field(default_factory=list, description="词汇建议")
+    vocabulary_suggestions: list[str] = Field(
+        default_factory=list, description="词汇建议"
+    )
     confidence: float = Field(..., ge=0, le=1, description="批改置信度")
-    grading_criteria: dict[str, float] = Field(default_factory=dict, description="评分细则")
+    grading_criteria: dict[str, float] = Field(
+        default_factory=dict, description="评分细则"
+    )
 
     class Config:
         json_schema_extra = {
@@ -149,7 +155,9 @@ class StreamingGradingResult(BaseModel):
 class WritingAssistanceResult(BaseModel):
     """写作辅助结果."""
 
-    suggestions: list[dict[str, Any]] = Field(default_factory=list, description="建议列表")
+    suggestions: list[dict[str, Any]] = Field(
+        default_factory=list, description="建议列表"
+    )
     overall_score: int = Field(0, ge=0, le=100, description="整体评分")
     improvement_tips: list[str] = Field(default_factory=list, description="改进提示")
 

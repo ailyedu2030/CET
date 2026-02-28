@@ -10,9 +10,8 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from app.training.services.training_workshop_service import (  # noqa: E402
-    TrainingWorkshopService,
-)
+from app.training.services.training_workshop_service import \
+    TrainingWorkshopService  # noqa: E402
 
 
 def test_analytics_methods() -> bool:

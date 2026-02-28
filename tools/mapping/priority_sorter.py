@@ -93,14 +93,22 @@ class PrioritySorter:
             },
             # 模块缺失模式
             "module_missing": {
-                "patterns": [r"ModuleNotFoundError", r"No module named", r"ImportError"],
+                "patterns": [
+                    r"ModuleNotFoundError",
+                    r"No module named",
+                    r"ImportError",
+                ],
                 "severity": IssueSeverity.CRITICAL,
                 "impact_scope": ImpactScope.MODULE_WIDE,
                 "keywords": ["模块缺失", "导入错误", "依赖缺失"],
             },
             # 认证问题模式
             "authentication_error": {
-                "patterns": [r"403.*Forbidden", r"401.*Unauthorized", r"Authentication.*failed"],
+                "patterns": [
+                    r"403.*Forbidden",
+                    r"401.*Unauthorized",
+                    r"Authentication.*failed",
+                ],
                 "severity": IssueSeverity.HIGH,
                 "impact_scope": ImpactScope.FEATURE_SPECIFIC,
                 "keywords": ["认证失败", "权限不足", "未授权"],
@@ -135,7 +143,11 @@ class PrioritySorter:
             },
             # 连接问题模式
             "connection_error": {
-                "patterns": [r"Connection.*refused", r"Connection.*timeout", r"Network.*error"],
+                "patterns": [
+                    r"Connection.*refused",
+                    r"Connection.*timeout",
+                    r"Network.*error",
+                ],
                 "severity": IssueSeverity.HIGH,
                 "impact_scope": ImpactScope.MODULE_WIDE,
                 "keywords": ["连接被拒绝", "连接超时", "网络错误"],
@@ -183,7 +195,9 @@ class PrioritySorter:
             req_issues = requirement.get("issues", [])
 
             for issue_desc in req_issues:
-                issue_analysis = self._analyze_single_issue(issue_desc, req_id, requirement)
+                issue_analysis = self._analyze_single_issue(
+                    issue_desc, req_id, requirement
+                )
                 if issue_analysis:
                     issues.append(issue_analysis)
 
@@ -208,7 +222,9 @@ class PrioritySorter:
         affected_apis = self._extract_affected_apis(issue_desc, requirement)
 
         # 估算修复时间
-        estimated_fix_time = self._estimate_fix_time(issue_type, pattern_info["severity"])
+        estimated_fix_time = self._estimate_fix_time(
+            issue_type, pattern_info["severity"]
+        )
 
         # 识别依赖关系
         dependencies = self._identify_dependencies(issue_type, affected_apis)
@@ -246,7 +262,9 @@ class PrioritySorter:
 
         return None
 
-    def _determine_business_priority(self, req_id: str, issue_desc: str) -> BusinessPriority:
+    def _determine_business_priority(
+        self, req_id: str, issue_desc: str
+    ) -> BusinessPriority:
         """确定业务优先级"""
         # 基于需求ID的权重
         req_weight = self.business_weights.get(req_id, 0.5)
@@ -269,7 +287,9 @@ class PrioritySorter:
         else:
             return BusinessPriority.OPTIMIZATION
 
-    def _extract_affected_apis(self, issue_desc: str, requirement: dict[str, Any]) -> list[str]:
+    def _extract_affected_apis(
+        self, issue_desc: str, requirement: dict[str, Any]
+    ) -> list[str]:
         """提取受影响的API"""
         affected_apis = []
 
@@ -311,7 +331,9 @@ class PrioritySorter:
 
         return int(base_time * multiplier)
 
-    def _identify_dependencies(self, issue_type: str, affected_apis: list[str]) -> list[str]:
+    def _identify_dependencies(
+        self, issue_type: str, affected_apis: list[str]
+    ) -> list[str]:
         """识别依赖关系"""
         dependencies = []
 
@@ -410,7 +432,9 @@ class PrioritySorter:
 
         return fix_tasks
 
-    def _group_issues_by_task(self, issues: list[IssueAnalysis]) -> dict[str, list[IssueAnalysis]]:
+    def _group_issues_by_task(
+        self, issues: list[IssueAnalysis]
+    ) -> dict[str, list[IssueAnalysis]]:
         """按任务分组问题"""
         groups: dict[str, list[IssueAnalysis]] = {}
 
@@ -622,11 +646,11 @@ class PrioritySorter:
             priority_level = (
                 "🔥 紧急"
                 if task.priority_score >= 80
-                else "⚡ 高"
-                if task.priority_score >= 60
-                else "📋 中"
-                if task.priority_score >= 40
-                else "📝 低"
+                else (
+                    "⚡ 高"
+                    if task.priority_score >= 60
+                    else "📋 中" if task.priority_score >= 40 else "📝 低"
+                )
             )
 
             print(f"\\n{task.fix_order}. {task.title}")

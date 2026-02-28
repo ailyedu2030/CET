@@ -10,17 +10,16 @@ from loguru import logger
 from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import BusinessLogicError, PermissionDeniedError, ResourceNotFoundError
+from app.core.exceptions import (BusinessLogicError, PermissionDeniedError,
+                                 ResourceNotFoundError)
 from app.resources.models.resource_models import PermissionLevel, ResourceLibrary
-from app.resources.schemas.course_resource_schemas import (
-    ImportError,
-    ImportResultResponse,
-    ImportWarning,
-    KnowledgeLibraryCreate,
-    KnowledgeLibraryResponse,
-    VocabularyLibraryCreate,
-    VocabularyLibraryResponse,
-)
+from app.resources.schemas.course_resource_schemas import (ImportError,
+                                                           ImportResultResponse,
+                                                           ImportWarning,
+                                                           KnowledgeLibraryCreate,
+                                                           KnowledgeLibraryResponse,
+                                                           VocabularyLibraryCreate,
+                                                           VocabularyLibraryResponse)
 from app.resources.services.file_processor import FileProcessor
 from app.resources.services.version_service import VersionService
 
@@ -77,9 +76,12 @@ class CourseResourceService:
                     version=lib.version,
                     created_at=lib.created_at.isoformat() if lib.created_at else "",
                     updated_at=lib.updated_at.isoformat() if lib.updated_at else "",
-                    last_import_at=lib.last_import_at.isoformat()
-                    if lib.last_import_at and hasattr(lib.last_import_at, "isoformat")
-                    else None,
+                    last_import_at=(
+                        lib.last_import_at.isoformat()
+                        if lib.last_import_at
+                        and hasattr(lib.last_import_at, "isoformat")
+                        else None
+                    ),
                 )
                 for lib in libraries
             ]
@@ -155,7 +157,8 @@ class CourseResourceService:
         except Exception as e:
             await self.db.rollback()
             logger.error(
-                f"创建词汇库失败: {str(e)}", extra={"course_id": course_id, "user_id": user_id}
+                f"创建词汇库失败: {str(e)}",
+                extra={"course_id": course_id, "user_id": user_id},
             )
             raise
 
@@ -479,7 +482,8 @@ class CourseResourceService:
             return {"id": 1, "course_id": course_id, "materials": []}
         except Exception as e:
             logger.error(
-                f"获取教材库失败: {str(e)}", extra={"course_id": course_id, "user_id": user_id}
+                f"获取教材库失败: {str(e)}",
+                extra={"course_id": course_id, "user_id": user_id},
             )
             raise
 
@@ -496,7 +500,8 @@ class CourseResourceService:
             }
         except Exception as e:
             logger.error(
-                f"添加教材失败: {str(e)}", extra={"course_id": course_id, "user_id": user_id}
+                f"添加教材失败: {str(e)}",
+                extra={"course_id": course_id, "user_id": user_id},
             )
             raise
 
@@ -530,7 +535,8 @@ class CourseResourceService:
             return None
         except Exception as e:
             logger.error(
-                f"获取考纲失败: {str(e)}", extra={"course_id": course_id, "user_id": user_id}
+                f"获取考纲失败: {str(e)}",
+                extra={"course_id": course_id, "user_id": user_id},
             )
             raise
 
@@ -548,6 +554,7 @@ class CourseResourceService:
             }
         except Exception as e:
             logger.error(
-                f"创建考纲失败: {str(e)}", extra={"course_id": course_id, "user_id": user_id}
+                f"创建考纲失败: {str(e)}",
+                extra={"course_id": course_id, "user_id": user_id},
             )
             raise

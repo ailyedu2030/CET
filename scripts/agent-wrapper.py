@@ -24,12 +24,16 @@ class AgentContext:
         self.execution_log: list[dict[str, Any]] = []
         self.auto_template_enabled = True
 
-    def set_context(self, requirement_id: str, phase: TaskPhase, agent_role: AgentRole) -> None:
+    def set_context(
+        self, requirement_id: str, phase: TaskPhase, agent_role: AgentRole
+    ) -> None:
         """设置当前执行上下文"""
         self.current_requirement_id = requirement_id
         self.current_phase = phase
         self.current_agent_role = agent_role
-        print(f"🎯 设置智能体上下文: 需求{requirement_id} - {phase.value} - {agent_role.value}")
+        print(
+            f"🎯 设置智能体上下文: 需求{requirement_id} - {phase.value} - {agent_role.value}"
+        )
 
     def get_current_template(self) -> Any:
         """获取当前阶段的模板"""
@@ -60,7 +64,9 @@ class AgentContext:
 agent_context = AgentContext()
 
 
-def template_wrapper(tool_name: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+def template_wrapper(
+    tool_name: str,
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """装饰器：为工具调用添加模板支持"""
 
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -90,7 +96,9 @@ def _execute_with_template(
     execution_record = {
         "tool_name": tool_name,
         "requirement_id": agent_context.current_requirement_id,
-        "phase": agent_context.current_phase.value if agent_context.current_phase else None,
+        "phase": (
+            agent_context.current_phase.value if agent_context.current_phase else None
+        ),
         "start_time": datetime.now().isoformat(),
         "template_used": True,
         "checklist_items": template.checklist,
@@ -123,7 +131,9 @@ def _execute_with_template(
         agent_context.execution_log.append(execution_record)
 
 
-def _pre_execution_check(tool_name: str, template: Any, *args: Any, **kwargs: Any) -> None:
+def _pre_execution_check(
+    tool_name: str, template: Any, *args: Any, **kwargs: Any
+) -> None:
     """执行前检查"""
     print(f"📋 执行前检查 - {tool_name}")
 
@@ -150,7 +160,9 @@ class TemplateEnforcer:
         self.original_functions: dict[str, Callable[..., Any]] = {}
         self.wrapped_functions: dict[str, Callable[..., Any]] = {}
 
-    def wrap_tool_function(self, tool_name: str, func: Callable[..., Any]) -> Callable[..., Any]:
+    def wrap_tool_function(
+        self, tool_name: str, func: Callable[..., Any]
+    ) -> Callable[..., Any]:
         """包装工具函数"""
         if tool_name not in self.original_functions:
             self.original_functions[tool_name] = func
@@ -173,7 +185,10 @@ class TemplateEnforcer:
         print("🔧 已禁用自动模板调用")
 
     def start_requirement_execution(
-        self, requirement_id: str, phase: TaskPhase, agent_role: AgentRole = AgentRole.COORDINATOR
+        self,
+        requirement_id: str,
+        phase: TaskPhase,
+        agent_role: AgentRole = AgentRole.COORDINATOR,
     ) -> None:
         """开始需求执行"""
         agent_context.set_context(requirement_id, phase, agent_role)
@@ -187,7 +202,9 @@ class TemplateEnforcer:
             print(f"🎯 检查项目: {len(template.checklist)}项")
             print(f"✅ 成功标准: {len(template.success_criteria)}项")
 
-            commands = agent_context.template_manager.generate_agent_commands(requirement_id, phase)
+            commands = agent_context.template_manager.generate_agent_commands(
+                requirement_id, phase
+            )
             print("\n💡 推荐执行命令:")
             for i, cmd in enumerate(commands, 1):
                 print(f"  {i}. {cmd}")
@@ -217,12 +234,18 @@ class TemplateEnforcer:
             if (
                 log.get("requirement_id") == agent_context.current_requirement_id
                 and log.get("phase")
-                == (agent_context.current_phase.value if agent_context.current_phase else None)
+                == (
+                    agent_context.current_phase.value
+                    if agent_context.current_phase
+                    else None
+                )
             )
         ]
 
         if phase_logs:
-            success_count = len([log for log in phase_logs if log.get("status") == "success"])
+            success_count = len(
+                [log for log in phase_logs if log.get("status") == "success"]
+            )
             total_count = len(phase_logs)
 
             print("📊 阶段执行报告:")
@@ -248,7 +271,9 @@ def auto_template_call(
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
-            template_enforcer.start_requirement_execution(requirement_id, phase, agent_role)
+            template_enforcer.start_requirement_execution(
+                requirement_id, phase, agent_role
+            )
             try:
                 result = func(*args, **kwargs)
                 return result

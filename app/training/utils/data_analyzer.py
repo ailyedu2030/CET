@@ -842,9 +842,7 @@ class DataAnalyzer:
             "analysis_reliability": (
                 "高"
                 if completeness >= 0.8 and total_sessions >= 10
-                else "中"
-                if completeness >= 0.6
-                else "低"
+                else "中" if completeness >= 0.6 else "低"
             ),
         }
 
@@ -1267,7 +1265,9 @@ class DataAnalyzer:
             )
 
             if rating == "需要改进":
-                recommendations.append(f"建议加强{type_name}训练，当前准确率{accuracy:.1%}")
+                recommendations.append(
+                    f"建议加强{type_name}训练，当前准确率{accuracy:.1%}"
+                )
             elif rating == "优秀":
                 recommendations.append(f"{type_name}表现优秀，可以挑战更高难度")
 
@@ -1555,7 +1555,9 @@ class DataAnalyzer:
             for i in range(1, 6):
                 future_x = n + i
                 predicted_accuracy = intercept + slope * future_x
-                predicted_accuracy = max(0.0, min(1.0, predicted_accuracy))  # 限制在合理范围
+                predicted_accuracy = max(
+                    0.0, min(1.0, predicted_accuracy)
+                )  # 限制在合理范围
                 future_predictions.append(predicted_accuracy)
 
             return {

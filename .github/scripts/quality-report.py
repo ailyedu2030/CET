@@ -20,7 +20,7 @@ class QualityReportGenerator:
             "timestamp": datetime.now().isoformat(),
             "summary": {},
             "details": {},
-            "recommendations": []
+            "recommendations": [],
         }
 
     def load_ruff_report(self) -> dict[str, Any]:
@@ -54,12 +54,18 @@ class QualityReportGenerator:
             with open(complexity_file) as f:
                 content = f.read()
                 # 简单解析复杂度报告
-                lines = content.split('\n')
-                high_complexity = [line for line in lines if 'F' in line or 'E' in line]
+                lines = content.split("\n")
+                high_complexity = [line for line in lines if "F" in line or "E" in line]
                 return {
-                    "total_files": len([line for line in lines if line.strip() and not line.startswith(' ')]),
+                    "total_files": len(
+                        [
+                            line
+                            for line in lines
+                            if line.strip() and not line.startswith(" ")
+                        ]
+                    ),
                     "high_complexity_count": len(high_complexity),
-                    "high_complexity_files": high_complexity[:10]  # 前10个
+                    "high_complexity_files": high_complexity[:10],  # 前10个
                 }
         return {}
 
@@ -74,28 +80,39 @@ class QualityReportGenerator:
         ruff_issues = len(ruff_data) if isinstance(ruff_data, list) else 0
 
         # 安全问题总结
-        security_issues = len(bandit_data.get('results', []))
-        high_severity = len([r for r in bandit_data.get('results', [])
-                           if r.get('issue_severity') == 'HIGH'])
+        security_issues = len(bandit_data.get("results", []))
+        high_severity = len(
+            [
+                r
+                for r in bandit_data.get("results", [])
+                if r.get("issue_severity") == "HIGH"
+            ]
+        )
 
         # 依赖安全问题
-        vulnerabilities = len(safety_data.get('vulnerabilities', []))
+        vulnerabilities = len(safety_data.get("vulnerabilities", []))
 
         self.report_data["summary"] = {
             "code_quality": {
                 "ruff_issues": ruff_issues,
-                "status": "✅ PASS" if ruff_issues == 0 else "❌ FAIL"
+                "status": "✅ PASS" if ruff_issues == 0 else "❌ FAIL",
             },
             "security": {
                 "bandit_issues": security_issues,
                 "high_severity": high_severity,
                 "vulnerabilities": vulnerabilities,
-                "status": "✅ PASS" if high_severity == 0 else "❌ FAIL"
+                "status": "✅ PASS" if high_severity == 0 else "❌ FAIL",
             },
             "complexity": {
-                "high_complexity_files": complexity_data.get("high_complexity_count", 0),
-                "status": "✅ PASS" if complexity_data.get("high_complexity_count", 0) < 5 else "⚠️ WARNING"
-            }
+                "high_complexity_files": complexity_data.get(
+                    "high_complexity_count", 0
+                ),
+                "status": (
+                    "✅ PASS"
+                    if complexity_data.get("high_complexity_count", 0) < 5
+                    else "⚠️ WARNING"
+                ),
+            },
         }
 
     def generate_recommendations(self) -> None:
@@ -103,36 +120,44 @@ class QualityReportGenerator:
         summary = self.report_data["summary"]
 
         if summary["code_quality"]["ruff_issues"] > 0:
-            self.report_data["recommendations"].append({
-                "category": "Code Quality",
-                "priority": "High",
-                "description": f"修复 {summary['code_quality']['ruff_issues']} 个代码质量问题",
-                "action": "运行 `ruff check --fix .` 自动修复"
-            })
+            self.report_data["recommendations"].append(
+                {
+                    "category": "Code Quality",
+                    "priority": "High",
+                    "description": f"修复 {summary['code_quality']['ruff_issues']} 个代码质量问题",
+                    "action": "运行 `ruff check --fix .` 自动修复",
+                }
+            )
 
         if summary["security"]["high_severity"] > 0:
-            self.report_data["recommendations"].append({
-                "category": "Security",
-                "priority": "Critical",
-                "description": f"修复 {summary['security']['high_severity']} 个高危安全问题",
-                "action": "查看 bandit 报告并修复安全漏洞"
-            })
+            self.report_data["recommendations"].append(
+                {
+                    "category": "Security",
+                    "priority": "Critical",
+                    "description": f"修复 {summary['security']['high_severity']} 个高危安全问题",
+                    "action": "查看 bandit 报告并修复安全漏洞",
+                }
+            )
 
         if summary["security"]["vulnerabilities"] > 0:
-            self.report_data["recommendations"].append({
-                "category": "Dependencies",
-                "priority": "High",
-                "description": f"更新 {summary['security']['vulnerabilities']} 个存在漏洞的依赖",
-                "action": "运行 `pip install --upgrade` 更新依赖"
-            })
+            self.report_data["recommendations"].append(
+                {
+                    "category": "Dependencies",
+                    "priority": "High",
+                    "description": f"更新 {summary['security']['vulnerabilities']} 个存在漏洞的依赖",
+                    "action": "运行 `pip install --upgrade` 更新依赖",
+                }
+            )
 
         if summary["complexity"]["high_complexity_files"] > 5:
-            self.report_data["recommendations"].append({
-                "category": "Code Complexity",
-                "priority": "Medium",
-                "description": f"{summary['complexity']['high_complexity_files']} 个文件复杂度过高",
-                "action": "重构复杂函数，拆分大型类"
-            })
+            self.report_data["recommendations"].append(
+                {
+                    "category": "Code Complexity",
+                    "priority": "Medium",
+                    "description": f"{summary['complexity']['high_complexity_files']} 个文件复杂度过高",
+                    "action": "重构复杂函数，拆分大型类",
+                }
+            )
 
     def generate_markdown_report(self) -> str:
         """生成Markdown格式的报告"""
@@ -215,13 +240,13 @@ class QualityReportGenerator:
         self.generate_recommendations()
 
         # 保存JSON格式
-        json_file = output_file.replace('.md', '.json')
-        with open(json_file, 'w', encoding='utf-8') as f:
+        json_file = output_file.replace(".md", ".json")
+        with open(json_file, "w", encoding="utf-8") as f:
             json.dump(self.report_data, f, indent=2, ensure_ascii=False)
 
         # 保存Markdown格式
         markdown_report = self.generate_markdown_report()
-        with open(output_file, 'w', encoding='utf-8') as f:
+        with open(output_file, "w", encoding="utf-8") as f:
             f.write(markdown_report)
 
         print(f"✅ 质量报告已生成: {output_file}")

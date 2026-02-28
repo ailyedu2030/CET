@@ -7,8 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.enhanced_collaboration_manager import EnhancedCollaborationManager
 from app.ai.services.enhanced_learning_analytics import EnhancedLearningAnalytics
-from app.ai.services.intelligent_teaching_adjustment import IntelligentTeachingAdjustment
-from app.ai.services.optimized_recommendation_engine import OptimizedRecommendationEngine
+from app.ai.services.intelligent_teaching_adjustment import \
+    IntelligentTeachingAdjustment
+from app.ai.services.optimized_recommendation_engine import \
+    OptimizedRecommendationEngine
 from app.core.database import get_db
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_user

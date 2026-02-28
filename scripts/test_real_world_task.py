@@ -32,7 +32,9 @@ def load_modules() -> dict[str, Any]:
     modules = {}
 
     # 导入 agent-templates
-    agent_templates = safe_load_module("agent_templates", script_dir / "agent-templates.py")
+    agent_templates = safe_load_module(
+        "agent_templates", script_dir / "agent-templates.py"
+    )
     modules["agent_templates"] = agent_templates
 
     # 导入 agent-wrapper
@@ -40,7 +42,9 @@ def load_modules() -> dict[str, Any]:
     modules["agent_wrapper"] = agent_wrapper
 
     # 导入 agent-registry
-    agent_registry = safe_load_module("agent_registry", script_dir / "agent-registry.py")
+    agent_registry = safe_load_module(
+        "agent_registry", script_dir / "agent-registry.py"
+    )
     modules["agent_registry"] = agent_registry
 
     return modules
@@ -64,7 +68,13 @@ def test_vocabulary_feature_development() -> bool:
     registry.register_agent(
         "backend_dev",
         agent_templates.AgentRole.BACKEND,
-        ["view", "codebase-retrieval", "str-replace-editor", "save-file", "diagnostics"],
+        [
+            "view",
+            "codebase-retrieval",
+            "str-replace-editor",
+            "save-file",
+            "diagnostics",
+        ],
     )
     print("✅ 后端开发智能体注册成功")
 
@@ -72,7 +82,13 @@ def test_vocabulary_feature_development() -> bool:
     registry.register_agent(
         "frontend_dev",
         agent_templates.AgentRole.FRONTEND,
-        ["view", "codebase-retrieval", "str-replace-editor", "save-file", "diagnostics"],
+        [
+            "view",
+            "codebase-retrieval",
+            "str-replace-editor",
+            "save-file",
+            "diagnostics",
+        ],
     )
     print("✅ 前端开发智能体注册成功")
 

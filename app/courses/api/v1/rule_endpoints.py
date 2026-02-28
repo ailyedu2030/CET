@@ -8,15 +8,12 @@ from fastapi import status as http_status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.rule_schemas import (
-    RuleConfigurationCreate,
-    RuleConfigurationResponse,
-    RuleConfigurationUpdate,
-    RuleTemplateResponse,
-    RuleValidationRequest,
-    RuleValidationResponse,
-    RuleViolation,
-)
+from app.courses.schemas.rule_schemas import (RuleConfigurationCreate,
+                                              RuleConfigurationResponse,
+                                              RuleConfigurationUpdate,
+                                              RuleTemplateResponse,
+                                              RuleValidationRequest,
+                                              RuleValidationResponse, RuleViolation)
 from app.courses.services.rule_management_service import RuleManagementService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_admin_user

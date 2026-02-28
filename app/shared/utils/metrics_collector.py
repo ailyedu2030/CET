@@ -27,16 +27,9 @@ from app.shared.models.enums import AlertLevel, MetricType
 
 # Prometheus客户端支持
 try:
-    from prometheus_client import (
-        CONTENT_TYPE_LATEST,
-        CollectorRegistry,
-        Counter,
-        Gauge,
-        Histogram,
-        Info,
-        generate_latest,
-    )
+    from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, Counter
     from prometheus_client import Enum as PrometheusEnum
+    from prometheus_client import Gauge, Histogram, Info, generate_latest
 
     PROMETHEUS_AVAILABLE = True
 except ImportError:
@@ -208,9 +201,9 @@ class MetricsCollector:
         )
 
         # 聚合指标缓存
-        self.aggregated_metrics: dict[
-            str, dict[AggregationType, AggregatedMetric]
-        ] = defaultdict(dict)
+        self.aggregated_metrics: dict[str, dict[AggregationType, AggregatedMetric]] = (
+            defaultdict(dict)
+        )
 
         # 告警规则
         self.alert_rules: dict[str, dict[str, Any]] = {}
@@ -237,7 +230,9 @@ class MetricsCollector:
     def register_metric(self, definition: MetricDefinition) -> None:
         """注册指标定义"""
         self.metric_definitions[definition.name] = definition
-        self.logger.info(f"注册指标: {definition.name} ({definition.metric_type.value})")
+        self.logger.info(
+            f"注册指标: {definition.name} ({definition.metric_type.value})"
+        )
 
     def add_alert_rule(
         self,
@@ -851,7 +846,9 @@ class PrometheusMetricsCollector:
         )
 
         # 系统信息
-        self.system_info = Info("cet4_system_info", "CET4系统信息", registry=self.registry)
+        self.system_info = Info(
+            "cet4_system_info", "CET4系统信息", registry=self.registry
+        )
 
         # 设置系统信息
         self.system_info.info(

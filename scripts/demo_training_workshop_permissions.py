@@ -20,9 +20,7 @@ def demo_permission_scenarios() -> bool:
 
     try:
         from app.training.api.v1.training_workshop_endpoints import (
-            check_teacher_permission,
-            check_template_ownership,
-        )
+            check_teacher_permission, check_template_ownership)
 
         # 创建不同角色的用户
         users = {

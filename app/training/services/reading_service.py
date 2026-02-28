@@ -7,28 +7,22 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.training.models.reading_models import (
-    ReadingAnswerRecordModel,
-    ReadingDifficulty,
-    ReadingPassageModel,
-    ReadingQuestionModel,
-    ReadingTheme,
-    ReadingTrainingPlanModel,
-    ReadingTrainingRecordModel,
-)
-from app.training.schemas.reading_schemas import (
-    ReadingAnswerRecordCreate,
-    ReadingPassageCreate,
-    ReadingPassageUpdate,
-    ReadingQuestionCreate,
-    ReadingQuestionUpdate,
-    ReadingRecommendation,
-    ReadingStatistics,
-    ReadingTrainingPlanCreate,
-    ReadingTrainingRecordCreate,
-    ReadingTrainingRecordUpdate,
-    ReadingTrainingSession,
-)
+from app.training.models.reading_models import (ReadingAnswerRecordModel,
+                                                ReadingDifficulty, ReadingPassageModel,
+                                                ReadingQuestionModel, ReadingTheme,
+                                                ReadingTrainingPlanModel,
+                                                ReadingTrainingRecordModel)
+from app.training.schemas.reading_schemas import (ReadingAnswerRecordCreate,
+                                                  ReadingPassageCreate,
+                                                  ReadingPassageUpdate,
+                                                  ReadingQuestionCreate,
+                                                  ReadingQuestionUpdate,
+                                                  ReadingRecommendation,
+                                                  ReadingStatistics,
+                                                  ReadingTrainingPlanCreate,
+                                                  ReadingTrainingRecordCreate,
+                                                  ReadingTrainingRecordUpdate,
+                                                  ReadingTrainingSession)
 
 logger = logging.getLogger(__name__)
 
@@ -323,11 +317,9 @@ class ReadingService:
         logger.info(f"阅读训练会话创建成功: ID={training_record.id}")  # type: ignore
 
         # 构建响应
-        from app.training.schemas.reading_schemas import (
-            ReadingPassageResponse,
-            ReadingQuestionResponse,
-            ReadingTrainingRecordResponse,
-        )
+        from app.training.schemas.reading_schemas import (ReadingPassageResponse,
+                                                          ReadingQuestionResponse,
+                                                          ReadingTrainingRecordResponse)
 
         return ReadingTrainingSession(
             passage=ReadingPassageResponse.model_validate(passage),
@@ -367,7 +359,9 @@ class ReadingService:
         answers: list[ReadingAnswerRecordCreate],
     ) -> ReadingTrainingRecordModel | None:
         """提交阅读答案"""
-        logger.info(f"用户 {user_id} 提交阅读答案: training_record={training_record_id}")
+        logger.info(
+            f"用户 {user_id} 提交阅读答案: training_record={training_record_id}"
+        )
 
         # 获取训练记录
         query = select(ReadingTrainingRecordModel).where(
@@ -507,9 +501,9 @@ class ReadingService:
             total_passages_read=int(total_passages) if total_passages else 0,
             total_questions_answered=int(total_questions) if total_questions else 0,
             overall_accuracy=float(overall_accuracy) if overall_accuracy else 0.0,
-            average_reading_speed=float(average_reading_speed)
-            if average_reading_speed
-            else 0.0,
+            average_reading_speed=(
+                float(average_reading_speed) if average_reading_speed else 0.0
+            ),
             theme_performance={},
             difficulty_performance={},
             question_type_performance={},

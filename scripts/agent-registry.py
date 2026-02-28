@@ -70,7 +70,9 @@ class AgentRegistry:
 
                 print(f"🔧 已为 {agent_name} 包装工具: {tool_name}")
 
-    def _create_wrapped_tool(self, tool_name: str, agent_name: str) -> Callable[..., Any]:
+    def _create_wrapped_tool(
+        self, tool_name: str, agent_name: str
+    ) -> Callable[..., Any]:
         """创建包装后的工具函数"""
 
         @template_wrapper(tool_name)
@@ -88,7 +90,9 @@ class AgentRegistry:
         print(f"  📞 模拟调用 {tool_name} with args={args}, kwargs={kwargs}")
         return f"模拟结果: {tool_name} 执行完成"
 
-    def get_agent_tool(self, agent_name: str, tool_name: str) -> Callable[..., Any] | None:
+    def get_agent_tool(
+        self, agent_name: str, tool_name: str
+    ) -> Callable[..., Any] | None:
         """获取智能体的包装工具"""
         if agent_name in self.registered_agents:
             return self.registered_agents[agent_name]["wrapped_tools"].get(tool_name)  # type: ignore[no-any-return]
@@ -119,7 +123,9 @@ class AgentRegistry:
 
         def agent_execution_function() -> dict[str, Any]:
             """智能体执行函数"""
-            tools = self.execute_requirement_with_agent(agent_name, requirement_id, phase)
+            tools = self.execute_requirement_with_agent(
+                agent_name, requirement_id, phase
+            )
 
             # 这里可以添加具体的执行逻辑
             # 智能体会自动使用包装后的工具
@@ -219,7 +225,9 @@ def create_requirement_executor(requirement_id: str) -> Any:
             """完成当前阶段"""
             if self.current_phase:
                 template_enforcer.finish_requirement_execution()
-                print(f"✅ 需求{self.requirement_id}的{self.current_phase.value}执行完成")
+                print(
+                    f"✅ 需求{self.requirement_id}的{self.current_phase.value}执行完成"
+                )
                 self.current_phase = None
                 self.current_agent = None
 

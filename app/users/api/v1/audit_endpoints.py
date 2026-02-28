@@ -11,13 +11,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.shared.models.enums import UserType
 from app.users.models import User
-from app.users.schemas.audit_schemas import (
-    AuditLogResponse,
-    PermissionAuditRequest,
-    PermissionAuditResponse,
-    SecurityEventResponse,
-    UserActivityResponse,
-)
+from app.users.schemas.audit_schemas import (AuditLogResponse, PermissionAuditRequest,
+                                             PermissionAuditResponse,
+                                             SecurityEventResponse,
+                                             UserActivityResponse)
 from app.users.services.audit_service import AuditService
 from app.users.utils.auth_decorators import get_current_active_user
 

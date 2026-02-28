@@ -33,16 +33,22 @@ def safe_load_module(module_name: str, file_path: Path) -> Any:
 # 延迟导入以避免循环依赖
 def get_agent_modules() -> tuple[Any, Any]:
     # 导入依赖模块
-    agent_templates = safe_load_module("agent_templates", script_dir / "agent-templates.py")
+    agent_templates = safe_load_module(
+        "agent_templates", script_dir / "agent-templates.py"
+    )
     safe_load_module("agent_wrapper", script_dir / "agent-wrapper.py")
-    agent_registry = safe_load_module("agent_registry", script_dir / "agent-registry.py")
+    agent_registry = safe_load_module(
+        "agent_registry", script_dir / "agent-registry.py"
+    )
 
     return agent_registry.create_requirement_executor, agent_registry.init_agent_system
 
 
 # 直接导入TaskPhase以避免类型检查问题
 def get_task_phase() -> Any:
-    agent_templates = safe_load_module("agent_templates", script_dir / "agent-templates.py")
+    agent_templates = safe_load_module(
+        "agent_templates", script_dir / "agent-templates.py"
+    )
     return agent_templates.TaskPhase
 
 
@@ -117,12 +123,22 @@ class AgentSystemManager:
                 "coordinator": {
                     "enabled": True,
                     "max_tasks": 5,
-                    "tools": ["view", "codebase-retrieval", "str-replace-editor", "save-file"],
+                    "tools": [
+                        "view",
+                        "codebase-retrieval",
+                        "str-replace-editor",
+                        "save-file",
+                    ],
                 },
                 "backend_agent": {
                     "enabled": True,
                     "max_tasks": 2,
-                    "tools": ["str-replace-editor", "save-file", "launch-process", "diagnostics"],
+                    "tools": [
+                        "str-replace-editor",
+                        "save-file",
+                        "launch-process",
+                        "diagnostics",
+                    ],
                 },
                 "frontend_agent": {
                     "enabled": True,
@@ -250,12 +266,16 @@ class AgentSystemManager:
             print(f"✅ 需求{requirement_id}的所有阶段执行完成")
             return results
 
-    def _force_existing_code_check(self: "AgentSystemManager", requirement_id: str) -> None:
+    def _force_existing_code_check(
+        self: "AgentSystemManager", requirement_id: str
+    ) -> None:
         """强制现有代码检查，防止重复开发"""
         print(f"🔍 检查需求{requirement_id}的现有实现...")
 
         # 加载模板系统
-        agent_templates = safe_load_module("agent_templates", script_dir / "agent-templates.py")
+        agent_templates = safe_load_module(
+            "agent_templates", script_dir / "agent-templates.py"
+        )
         template_manager = agent_templates.AgentTemplateManager()
 
         # 使用现有代码检查模板
@@ -283,7 +303,9 @@ class AgentSystemManager:
     ) -> None:
         """显示阶段模板要求"""
         # 加载模板系统
-        agent_templates = safe_load_module("agent_templates", script_dir / "agent-templates.py")
+        agent_templates = safe_load_module(
+            "agent_templates", script_dir / "agent-templates.py"
+        )
         template_manager = agent_templates.AgentTemplateManager()
 
         template = template_manager.get_phase_template(phase_enum)
@@ -302,13 +324,17 @@ class AgentSystemManager:
                 print(f"     {i}. {criterion}")
 
             print("\n   🔧 模板命令:")
-            commands = template_manager.generate_agent_commands(requirement_id, phase_enum)
+            commands = template_manager.generate_agent_commands(
+                requirement_id, phase_enum
+            )
             for i, cmd in enumerate(commands, 1):
                 print(f"     {i}. {cmd}")
 
             print("\n" + "=" * 80)
 
-    def batch_execute(self: "AgentSystemManager", requirement_range: str) -> dict[str, Any]:
+    def batch_execute(
+        self: "AgentSystemManager", requirement_range: str
+    ) -> dict[str, Any]:
         """批量执行需求"""
         if not self.system_initialized:
             self.initialize_system()
@@ -373,7 +399,9 @@ class AgentSystemManager:
         print(f"📋 生成需求{requirement_id}的详细模板...")
 
         # 加载模板系统
-        agent_templates = safe_load_module("agent_templates", script_dir / "agent-templates.py")
+        agent_templates = safe_load_module(
+            "agent_templates", script_dir / "agent-templates.py"
+        )
         template_manager = agent_templates.AgentTemplateManager()
 
         # 生成详细模板
@@ -389,7 +417,11 @@ class AgentSystemManager:
         print(f"✅ 模板已生成并保存到: {template_file}")
         print("📄 模板内容预览:")
         print("=" * 80)
-        print(template_content[:1000] + "..." if len(template_content) > 1000 else template_content)
+        print(
+            template_content[:1000] + "..."
+            if len(template_content) > 1000
+            else template_content
+        )
         print("=" * 80)
 
 

@@ -3,7 +3,6 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 
 from alembic import context  # type: ignore[attr-defined]
-
 # add your model's MetaData object here
 # for 'autogenerate' support
 from app.courses.models import *  # noqa: F401, F403

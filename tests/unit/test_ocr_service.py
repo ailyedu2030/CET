@@ -83,7 +83,9 @@ class TestOCRService:
 
         # 验证需求33：OCR识别准确率>95%
         if result["confidence"] > 0:  # 如果有置信度数据
-            assert result["confidence"] >= 0.95, f"OCR置信度({result['confidence']})低于需求的95%"
+            assert (
+                result["confidence"] >= 0.95
+            ), f"OCR置信度({result['confidence']})低于需求的95%"
 
     @pytest.mark.asyncio
     async def test_extract_text_from_pdf_mock(self, ocr_service, temp_pdf_file):

@@ -13,10 +13,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
 from app.shared.models.enums import TrainingType
-from app.training.models.training_models import Question, TrainingRecord, TrainingSession
+from app.training.models.training_models import (Question, TrainingRecord,
+                                                 TrainingSession)
 from app.training.services.adaptive_service import AdaptiveLearningService
 from app.training.services.analytics_service import AnalyticsService
-from app.training.services.intelligent_training_loop_helpers import IntelligentTrainingLoopHelpers
+from app.training.services.intelligent_training_loop_helpers import \
+    IntelligentTrainingLoopHelpers
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +65,9 @@ class IntelligentTrainingLoopService:
     ) -> dict[str, Any]:
         """执行完整的智能训练闭环流程."""
         try:
-            logger.info(f"开始执行智能训练闭环: 学生{student_id}, 训练类型{training_type}")
+            logger.info(
+                f"开始执行智能训练闭环: 学生{student_id}, 训练类型{training_type}"
+            )
 
             # 第一步：数据采集
             collected_data = await self._data_collection_phase(
@@ -106,7 +110,9 @@ class IntelligentTrainingLoopService:
             # 记录闭环执行结果
             await self._record_loop_execution(loop_result)
 
-            logger.info(f"智能训练闭环执行完成: 学生{student_id}, 成功={loop_result['loop_success']}")
+            logger.info(
+                f"智能训练闭环执行完成: 学生{student_id}, 成功={loop_result['loop_success']}"
+            )
             return loop_result
 
         except Exception as e:
@@ -612,7 +618,9 @@ class IntelligentTrainingLoopService:
             "difficulty_adjustment": difficulty_adjustment,
             "content_adjustment": content_adjustment,
             "frequency_adjustment": frequency_adjustment,
-            "priority_focus": (weak_areas[:3] if weak_areas else []),  # 重点关注前3个薄弱环节
+            "priority_focus": (
+                weak_areas[:3] if weak_areas else []
+            ),  # 重点关注前3个薄弱环节
             "implementation_timeline": "immediate",  # 立即实施
             "expected_improvement": (
                 sum(s.get("expected_improvement", 0) for s in improvement_suggestions)
@@ -866,9 +874,7 @@ class IntelligentTrainingLoopService:
             "trend": (
                 "increasing"
                 if progression_rate > 0.2
-                else "decreasing"
-                if progression_rate < -0.2
-                else "stable"
+                else "decreasing" if progression_rate < -0.2 else "stable"
             ),
             "progression_rate": progression_rate,
             "difficulty_range": [min(difficulty_levels), max(difficulty_levels)],
@@ -902,9 +908,7 @@ class IntelligentTrainingLoopService:
             trend = (
                 "improving"
                 if recent_avg > early_avg * 1.1
-                else "declining"
-                if recent_avg < early_avg * 0.9
-                else "stable"
+                else "declining" if recent_avg < early_avg * 0.9 else "stable"
             )
         else:
             trend = "insufficient_data"
@@ -948,9 +952,7 @@ class IntelligentTrainingLoopService:
             "pattern": (
                 "consistent"
                 if accuracy_rate > 0.8
-                else "inconsistent"
-                if accuracy_rate < 0.6
-                else "moderate"
+                else "inconsistent" if accuracy_rate < 0.6 else "moderate"
             ),
         }
 
@@ -1027,9 +1029,7 @@ class IntelligentTrainingLoopService:
             "engagement_level": (
                 "high"
                 if avg_engagement > 0.7
-                else "low"
-                if avg_engagement < 0.4
-                else "medium"
+                else "low" if avg_engagement < 0.4 else "medium"
             ),
         }
 

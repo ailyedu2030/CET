@@ -10,16 +10,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.shared.models.enums import DifficultyLevel, GradingStatus, QuestionType, TrainingType
-from app.training.models.training_models import Question, TrainingRecord, TrainingSession
-from app.training.schemas.training_schemas import (
-    GradingResult,
-    QuestionFilter,
-    QuestionResponse,
-    SubmitAnswerRequest,
-    TrainingSessionRequest,
-    TrainingSessionResponse,
-)
+from app.shared.models.enums import (DifficultyLevel, GradingStatus, QuestionType,
+                                     TrainingType)
+from app.training.models.training_models import (Question, TrainingRecord,
+                                                 TrainingSession)
+from app.training.schemas.training_schemas import (GradingResult, QuestionFilter,
+                                                   QuestionResponse,
+                                                   SubmitAnswerRequest,
+                                                   TrainingSessionRequest,
+                                                   TrainingSessionResponse)
 
 
 class TrainingCenterService:
@@ -604,7 +603,8 @@ class TrainingCenterService:
                         difficulty_level=difficulty_level,
                         max_score=20.0,
                         time_limit=600,  # 10分钟
-                        knowledge_points=knowledge_points or ["translation", "英汉翻译"],
+                        knowledge_points=knowledge_points
+                        or ["translation", "英汉翻译"],
                         tags=["ai_generated", "translation"],
                         correct_answer=question_data["correct_answer"],
                         answer_analysis=question_data.get("analysis", ""),
@@ -1038,7 +1038,9 @@ class TrainingCenterService:
             knowledge_points_mastered=question.knowledge_points if is_correct else [],
             knowledge_points_weak=[] if is_correct else question.knowledge_points,
             detailed_feedback=question.correct_answer.get("explanation", ""),
-            improvement_suggestions=([] if is_correct else ["请仔细阅读题目，注意关键词"]),
+            improvement_suggestions=(
+                [] if is_correct else ["请仔细阅读题目，注意关键词"]
+            ),
         )
 
     async def _grade_fill_blank_question(
@@ -1082,7 +1084,9 @@ class TrainingCenterService:
             ),
             knowledge_points_weak=[] if accuracy >= 0.8 else question.knowledge_points,
             detailed_feedback=f"填空准确率: {accuracy:.1%}",
-            improvement_suggestions=([] if accuracy >= 0.8 else ["注意单词拼写和形式变化"]),
+            improvement_suggestions=(
+                [] if accuracy >= 0.8 else ["注意单词拼写和形式变化"]
+            ),
         )
 
     async def _grade_essay_question(

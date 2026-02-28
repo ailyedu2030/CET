@@ -6,13 +6,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.training_center_schemas import (
-    TrainingCenterCreate,
-    TrainingCenterDashboard,
-    TrainingCenterListResponse,
-    TrainingCenterResponse,
-    TrainingCenterUpdate,
-)
+from app.training.schemas.training_center_schemas import (TrainingCenterCreate,
+                                                          TrainingCenterDashboard,
+                                                          TrainingCenterListResponse,
+                                                          TrainingCenterResponse,
+                                                          TrainingCenterUpdate)
 from app.training.services.training_center_service import TrainingCenterService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -24,7 +22,9 @@ router = APIRouter(tags=["学生综合训练中心"])
 # ==================== 训练中心管理 ====================
 
 
-@router.get("/", summary="获取学生综合训练中心列表", response_model=TrainingCenterListResponse)
+@router.get(
+    "/", summary="获取学生综合训练中心列表", response_model=TrainingCenterListResponse
+)
 async def get_training_centers(
     skip: int = 0,
     limit: int = 10,
@@ -78,7 +78,9 @@ async def create_training_center(
 
 
 @router.get(
-    "/{center_id}", summary="获取学生综合训练中心详情", response_model=TrainingCenterResponse
+    "/{center_id}",
+    summary="获取学生综合训练中心详情",
+    response_model=TrainingCenterResponse,
 )
 async def get_training_center_detail(
     center_id: int,
@@ -91,7 +93,9 @@ async def get_training_center_detail(
         training_center = await service.get_training_center(current_user.id, center_id)
 
         if not training_center:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="训练中心不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="训练中心不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 查询训练中心详情: {center_id}")
 
@@ -105,7 +109,11 @@ async def get_training_center_detail(
         ) from e
 
 
-@router.put("/{center_id}", summary="更新学生综合训练中心", response_model=TrainingCenterResponse)
+@router.put(
+    "/{center_id}",
+    summary="更新学生综合训练中心",
+    response_model=TrainingCenterResponse,
+)
 async def update_training_center(
     center_id: int,
     data: TrainingCenterUpdate,
@@ -120,7 +128,9 @@ async def update_training_center(
         )
 
         if not training_center:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="训练中心不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="训练中心不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 更新训练中心: {center_id}")
 

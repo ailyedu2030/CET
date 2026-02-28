@@ -9,13 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
 from app.shared.models.enums import DifficultyLevel, TrainingType
-from app.training.models.training_models import Question, TrainingRecord, TrainingSession
-from app.training.schemas.training_schemas import (
-    AdaptiveConfigRequest,
-    AdaptiveLearningResponse,
-    DifficultyAdjustment,
-    LearningRecommendation,
-)
+from app.training.models.training_models import (Question, TrainingRecord,
+                                                 TrainingSession)
+from app.training.schemas.training_schemas import (AdaptiveConfigRequest,
+                                                   AdaptiveLearningResponse,
+                                                   DifficultyAdjustment,
+                                                   LearningRecommendation)
 
 
 class AdaptiveLearningService:
@@ -613,7 +612,9 @@ class AdaptiveLearningService:
         if suggested_level.value > current_level.value:
             return f"当前正确率{accuracy:.1%}表现优秀，建议提高至{suggested_level.name}难度"
         elif suggested_level.value < current_level.value:
-            return f"当前正确率{accuracy:.1%}需要强化，建议降至{suggested_level.name}难度"
+            return (
+                f"当前正确率{accuracy:.1%}需要强化，建议降至{suggested_level.name}难度"
+            )
         else:
             return f"当前{current_level.name}难度适合，建议保持"
 

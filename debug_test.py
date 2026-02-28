@@ -6,9 +6,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from tests.unit.shared.test_base_model_education_logic import (
-    TestEducationModel,
-)
+from tests.unit.shared.test_base_model_education_logic import TestEducationModel
 
 
 def debug_permission_test() -> None:

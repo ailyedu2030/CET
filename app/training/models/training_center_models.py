@@ -3,7 +3,8 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, Text)
 from sqlalchemy.orm import relationship
 
 from app.shared.models.base_model import BaseModel
@@ -187,7 +188,9 @@ class TrainingProgressModel(BaseModel):
     recent_accuracy = Column(Float, default=0.0, comment="近期正确率")
 
     # 时间信息
-    first_encounter_at = Column(DateTime, default=datetime.utcnow, comment="首次接触时间")
+    first_encounter_at = Column(
+        DateTime, default=datetime.utcnow, comment="首次接触时间"
+    )
     last_practice_at = Column(DateTime, default=datetime.utcnow, comment="最后练习时间")
     mastery_achieved_at = Column(DateTime, nullable=True, comment="掌握达成时间")
 

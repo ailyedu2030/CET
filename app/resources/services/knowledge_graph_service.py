@@ -133,7 +133,9 @@ class KnowledgeGraphService:
             }
 
         except Exception as e:
-            logger.error(f"前置知识推荐失败 knowledge_point_id={knowledge_point_id}: {str(e)}")
+            logger.error(
+                f"前置知识推荐失败 knowledge_point_id={knowledge_point_id}: {str(e)}"
+            )
             raise BusinessLogicError(f"前置知识推荐失败: {str(e)}") from e
 
     async def analyze_difficulty_gradient(self, library_id: int) -> dict[str, Any]:
@@ -258,7 +260,9 @@ class KnowledgeGraphService:
                 self._difficulty_to_numeric(kp1.difficulty_level)
                 - self._difficulty_to_numeric(kp2.difficulty_level)
             )
-            difficulty_similarity = max(0, 1.0 - difficulty_diff / 4.0)  # 假设最大差异为4
+            difficulty_similarity = max(
+                0, 1.0 - difficulty_diff / 4.0
+            )  # 假设最大差异为4
 
             # 3. 标签相似度
             tags1 = set(kp1.tags or [])
@@ -320,9 +324,11 @@ class KnowledgeGraphService:
                 "density": nx.density(graph),
                 "is_connected": nx.is_weakly_connected(graph),
                 "average_clustering": nx.average_clustering(graph.to_undirected()),
-                "diameter": nx.diameter(graph.to_undirected())
-                if nx.is_connected(graph.to_undirected())
-                else None,
+                "diameter": (
+                    nx.diameter(graph.to_undirected())
+                    if nx.is_connected(graph.to_undirected())
+                    else None
+                ),
             }
         except Exception as e:
             logger.error(f"图谱指标计算失败: {str(e)}")
@@ -552,10 +558,12 @@ class KnowledgeGraphService:
         return {
             "gradient_smoothness": 0.8,  # 梯度平滑度
             "coverage_completeness": len(difficulty_groups) / 5.0,  # 覆盖完整性
-            "balance_score": len(min(difficulty_groups.values(), key=len))
-            / len(max(difficulty_groups.values(), key=len))
-            if difficulty_groups
-            else 0,
+            "balance_score": (
+                len(min(difficulty_groups.values(), key=len))
+                / len(max(difficulty_groups.values(), key=len))
+                if difficulty_groups
+                else 0
+            ),
         }
 
     async def _generate_difficulty_based_paths(
@@ -640,21 +648,25 @@ class KnowledgeGraphService:
                     for node in path_nodes
                 ]
                 difficulty_analysis = {
-                    "average_gradient": sum(difficulties) / len(difficulties)
-                    if difficulties
-                    else 0,
-                    "max_jump": max(
-                        abs(difficulties[i + 1] - difficulties[i])
-                        for i in range(len(difficulties) - 1)
-                    )
-                    if len(difficulties) > 1
-                    else 0,
-                    "is_smooth": all(
-                        difficulties[i + 1] >= difficulties[i]
-                        for i in range(len(difficulties) - 1)
-                    )
-                    if len(difficulties) > 1
-                    else True,
+                    "average_gradient": (
+                        sum(difficulties) / len(difficulties) if difficulties else 0
+                    ),
+                    "max_jump": (
+                        max(
+                            abs(difficulties[i + 1] - difficulties[i])
+                            for i in range(len(difficulties) - 1)
+                        )
+                        if len(difficulties) > 1
+                        else 0
+                    ),
+                    "is_smooth": (
+                        all(
+                            difficulties[i + 1] >= difficulties[i]
+                            for i in range(len(difficulties) - 1)
+                        )
+                        if len(difficulties) > 1
+                        else True
+                    ),
                 }
 
                 return {

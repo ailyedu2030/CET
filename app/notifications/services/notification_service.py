@@ -7,16 +7,12 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.notifications.models.notification_models import (
-    Notification,
-    NotificationHistory,
-    NotificationPreference,
-)
-from app.notifications.schemas.notification_schemas import (
-    NotificationBatchCreate,
-    NotificationCreate,
-    NotificationResponse,
-)
+from app.notifications.models.notification_models import (Notification,
+                                                          NotificationHistory,
+                                                          NotificationPreference)
+from app.notifications.schemas.notification_schemas import (NotificationBatchCreate,
+                                                            NotificationCreate,
+                                                            NotificationResponse)
 from app.notifications.services.websocket_manager import websocket_manager
 from app.shared.tasks.email_tasks import send_notification_email
 
@@ -420,7 +416,8 @@ class UnifiedNotificationService:
             try:
                 if channel == "in_app":
                     # 系统内消息已通过数据库记录实现, 同时发送WebSocket
-                    from app.notifications.schemas.notification_schemas import NotificationResponse
+                    from app.notifications.schemas.notification_schemas import \
+                        NotificationResponse
 
                     notification_response = NotificationResponse(
                         id=notification.id,

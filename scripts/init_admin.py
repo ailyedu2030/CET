@@ -70,7 +70,9 @@ async def create_default_admin() -> User | None:
                 from sqlalchemy import text
 
                 await db.execute(
-                    text("INSERT INTO user_roles (user_id, role_id) VALUES (:user_id, :role_id)"),
+                    text(
+                        "INSERT INTO user_roles (user_id, role_id) VALUES (:user_id, :role_id)"
+                    ),
                     {"user_id": admin_user.id, "role_id": super_admin_role.id},
                 )
                 print("✅ 为管理员分配超级管理员角色")
@@ -95,23 +97,88 @@ async def create_default_permissions(db: AsyncSession) -> None:
     default_permissions = [
         # 用户管理权限
         {"name": "查看用户", "code": "user:view", "module": "users", "action": "view"},
-        {"name": "创建用户", "code": "user:create", "module": "users", "action": "create"},
+        {
+            "name": "创建用户",
+            "code": "user:create",
+            "module": "users",
+            "action": "create",
+        },
         {"name": "编辑用户", "code": "user:edit", "module": "users", "action": "edit"},
-        {"name": "删除用户", "code": "user:delete", "module": "users", "action": "delete"},
-        {"name": "审核用户", "code": "user:audit", "module": "users", "action": "audit"},
+        {
+            "name": "删除用户",
+            "code": "user:delete",
+            "module": "users",
+            "action": "delete",
+        },
+        {
+            "name": "审核用户",
+            "code": "user:audit",
+            "module": "users",
+            "action": "audit",
+        },
         # 课程管理权限
-        {"name": "查看课程", "code": "course:view", "module": "courses", "action": "view"},
-        {"name": "创建课程", "code": "course:create", "module": "courses", "action": "create"},
-        {"name": "编辑课程", "code": "course:edit", "module": "courses", "action": "edit"},
-        {"name": "删除课程", "code": "course:delete", "module": "courses", "action": "delete"},
+        {
+            "name": "查看课程",
+            "code": "course:view",
+            "module": "courses",
+            "action": "view",
+        },
+        {
+            "name": "创建课程",
+            "code": "course:create",
+            "module": "courses",
+            "action": "create",
+        },
+        {
+            "name": "编辑课程",
+            "code": "course:edit",
+            "module": "courses",
+            "action": "edit",
+        },
+        {
+            "name": "删除课程",
+            "code": "course:delete",
+            "module": "courses",
+            "action": "delete",
+        },
         # 训练管理权限
-        {"name": "查看训练", "code": "training:view", "module": "training", "action": "view"},
-        {"name": "创建训练", "code": "training:create", "module": "training", "action": "create"},
-        {"name": "编辑训练", "code": "training:edit", "module": "training", "action": "edit"},
+        {
+            "name": "查看训练",
+            "code": "training:view",
+            "module": "training",
+            "action": "view",
+        },
+        {
+            "name": "创建训练",
+            "code": "training:create",
+            "module": "training",
+            "action": "create",
+        },
+        {
+            "name": "编辑训练",
+            "code": "training:edit",
+            "module": "training",
+            "action": "edit",
+        },
         # 系统管理权限
-        {"name": "系统监控", "code": "system:monitor", "module": "system", "action": "monitor"},
-        {"name": "系统配置", "code": "system:config", "module": "system", "action": "config"},
-        {"name": "数据备份", "code": "system:backup", "module": "system", "action": "backup"},
+        {
+            "name": "系统监控",
+            "code": "system:monitor",
+            "module": "system",
+            "action": "monitor",
+        },
+        {
+            "name": "系统配置",
+            "code": "system:config",
+            "module": "system",
+            "action": "config",
+        },
+        {
+            "name": "数据备份",
+            "code": "system:backup",
+            "module": "system",
+            "action": "backup",
+        },
     ]
 
     for perm_data in default_permissions:

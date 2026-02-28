@@ -54,7 +54,9 @@ class HotspotResourceUpdate(BaseModel):
     difficulty_level: DifficultyLevel | None = Field(None, description="难度级别")
     topics: list[str] | None = Field(None, description="话题标签")
     keywords: list[str] | None = Field(None, description="关键词")
-    vocabulary_highlights: list[dict[str, Any]] | None = Field(None, description="重点词汇")
+    vocabulary_highlights: list[dict[str, Any]] | None = Field(
+        None, description="重点词汇"
+    )
     grammar_points: list[str] | None = Field(None, description="语法点")
     cultural_notes: str | None = Field(None, description="文化注释")
     comprehension_questions: list[dict[str, Any]] | None = Field(
@@ -147,7 +149,9 @@ class DailyRecommendationResponse(BaseModel):
     recommended_resources: list[HotspotResourceResponse] = Field(
         ..., description="推荐资源列表"
     )
-    trending_resources: list[HotspotResourceResponse] = Field(..., description="热门资源列表")
+    trending_resources: list[HotspotResourceResponse] = Field(
+        ..., description="热门资源列表"
+    )
     total_count: int = Field(..., description="总数量")
     generated_at: datetime = Field(..., description="生成时间")
 

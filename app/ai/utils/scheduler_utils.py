@@ -102,7 +102,9 @@ class PriorityQueue:
             heapq.heappush(self.queue, task)
             self.task_map[task.task_id] = task
 
-            self.logger.debug(f"任务已加入队列: {task.task_id}, 优先级: {task.priority.name}")
+            self.logger.debug(
+                f"任务已加入队列: {task.task_id}, 优先级: {task.priority.name}"
+            )
             return True
 
         except Exception as e:

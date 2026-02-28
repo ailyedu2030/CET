@@ -9,15 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.shared.models.enums import UserType
 from app.training.schemas.training_workshop_schemas import (
-    TrainingParameterTemplateListResponse,
-    TrainingParameterTemplateRequest,
-    TrainingParameterTemplateResponse,
-    TrainingTaskListResponse,
-    TrainingTaskRequest,
-    TrainingTaskResponse,
-    TrainingWorkshopResponse,
-    WeeklyTrainingRequest,
-)
+    TrainingParameterTemplateListResponse, TrainingParameterTemplateRequest,
+    TrainingParameterTemplateResponse, TrainingTaskListResponse, TrainingTaskRequest,
+    TrainingTaskResponse, TrainingWorkshopResponse, WeeklyTrainingRequest)
 from app.training.services.analytics_service import AnalyticsService
 from app.training.services.training_workshop_service import TrainingWorkshopService
 from app.users.models.user_models import User

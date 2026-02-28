@@ -72,7 +72,11 @@ class APIValidator:
             ],
             # 现有API - 应该已经实现的基础功能
             "existing_basic": [
-                {"path": "/api/v1/users/me", "method": "GET", "description": "用户信息"},
+                {
+                    "path": "/api/v1/users/me",
+                    "method": "GET",
+                    "description": "用户信息",
+                },
                 {"path": "/api/v1/courses", "method": "GET", "description": "课程列表"},
                 {"path": "/health", "method": "GET", "description": "健康检查"},
                 {"path": "/docs", "method": "GET", "description": "API文档"},
@@ -84,7 +88,9 @@ class APIValidator:
         self.session = aiohttp.ClientSession()
         return self
 
-    async def __aexit__(self: "APIValidator", exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def __aexit__(
+        self: "APIValidator", exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """异步上下文管理器出口"""
         if self.session:
             await self.session.close()
@@ -97,7 +103,9 @@ class APIValidator:
             return {"status": "error", "error": "Session not initialized"}
 
         try:
-            async with self.session.get(f"{self.base_url}/health", timeout=5) as response:
+            async with self.session.get(
+                f"{self.base_url}/health", timeout=5
+            ) as response:
                 if response.status == 200:
                     data = await response.json()
                     print("✅ API服务运行正常")
@@ -125,7 +133,9 @@ class APIValidator:
         results: dict[str, Any] = {}
         for endpoint in doc_endpoints:
             try:
-                async with self.session.get(f"{self.base_url}{endpoint}", timeout=5) as response:
+                async with self.session.get(
+                    f"{self.base_url}{endpoint}", timeout=5
+                ) as response:
                     results[endpoint] = {
                         "status": response.status,
                         "available": response.status == 200,
@@ -140,7 +150,9 @@ class APIValidator:
 
         return results
 
-    async def validate_api_endpoints(self: "APIValidator", category: str = "all") -> dict[str, Any]:
+    async def validate_api_endpoints(
+        self: "APIValidator", category: str = "all"
+    ) -> dict[str, Any]:
         """验证API端点的可用性"""
         print(f"🔍 验证API端点 (类别: {category})...")
 
@@ -177,7 +189,9 @@ class APIValidator:
             try:
                 # 对于需要认证的端点，我们只检查是否返回401而不是404
                 if method == "GET":
-                    async with self.session.get(f"{self.base_url}{path}", timeout=5) as response:
+                    async with self.session.get(
+                        f"{self.base_url}{path}", timeout=5
+                    ) as response:
                         status = response.status
                 elif method == "POST":
                     async with self.session.post(
@@ -188,7 +202,12 @@ class APIValidator:
                     status = 405  # Method not allowed for unsupported methods
 
                 # 判断端点状态
-                if status in [200, 201, 401, 422]:  # 200/201=成功, 401=需要认证, 422=验证错误
+                if status in [
+                    200,
+                    201,
+                    401,
+                    422,
+                ]:  # 200/201=成功, 401=需要认证, 422=验证错误
                     results["available"] += 1
                     status_icon = "✅"
                     result_status = "available"
@@ -251,7 +270,9 @@ class APIValidator:
 
         return priority_results
 
-    def generate_validation_report(self: "APIValidator", results: dict[str, Any]) -> str:
+    def generate_validation_report(
+        self: "APIValidator", results: dict[str, Any]
+    ) -> str:
         """生成验证报告"""
         print("\n📊 生成API验证报告...")
 
@@ -365,7 +386,11 @@ async def main() -> None:
         elif command == "priority":
             result = await validator.check_priority_apis()
             for priority, data in result.items():
-                completion = (data["available"] / data["total"] * 100) if data["total"] > 0 else 0
+                completion = (
+                    (data["available"] / data["total"] * 100)
+                    if data["total"] > 0
+                    else 0
+                )
                 print(f"{priority}: {completion:.1f}% 完成")
 
         elif command == "full":

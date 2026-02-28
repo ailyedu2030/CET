@@ -11,17 +11,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.shared.models.enums import UserType
 from app.users.models import User
-from app.users.schemas.registration_schemas import (
-    ApplicationListFilter,
-    ApplicationListResponse,
-    ApplicationReviewRequest,
-    BatchReviewRequest,
-    RegistrationApplicationDetail,
-    RegistrationStatusResponse,
-    RegistrationSuccessResponse,
-    StudentRegistrationRequest,
-    TeacherRegistrationRequest,
-)
+from app.users.schemas.registration_schemas import (ApplicationListFilter,
+                                                    ApplicationListResponse,
+                                                    ApplicationReviewRequest,
+                                                    BatchReviewRequest,
+                                                    RegistrationApplicationDetail,
+                                                    RegistrationStatusResponse,
+                                                    RegistrationSuccessResponse,
+                                                    StudentRegistrationRequest,
+                                                    TeacherRegistrationRequest)
 from app.users.services.registration_service import RegistrationService
 from app.users.utils.auth_decorators import get_current_active_user
 

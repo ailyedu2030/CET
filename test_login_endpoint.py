@@ -20,7 +20,9 @@ async def test_login_endpoint() -> None:
             from app.users.schemas.auth_schemas import LoginRequest
 
             # 创建登录请求数据
-            login_data = LoginRequest(username="admin", password="admin123", user_type=None)
+            login_data = LoginRequest(
+                username="admin", password="admin123", user_type=None
+            )
 
             # 模拟request对象
             class MockRequest:

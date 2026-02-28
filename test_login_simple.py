@@ -36,7 +36,9 @@ async def test_simple_login() -> None:
 
             print("✅ 认证服务调用成功！")
             print(f"   结果类型: {type(result)}")
-            print(f"   结果键: {list(result.keys()) if isinstance(result, dict) else 'Not a dict'}")
+            print(
+                f"   结果键: {list(result.keys()) if isinstance(result, dict) else 'Not a dict'}"
+            )
 
             # 测试数据转换
             print("🔄 测试数据转换...")
@@ -56,7 +58,9 @@ async def test_simple_login() -> None:
             print("🌐 测试登录端点逻辑...")
 
             # 模拟登录请求
-            login_data = LoginRequest(username="admin", password="admin123", user_type=None)
+            login_data = LoginRequest(
+                username="admin", password="admin123", user_type=None
+            )
 
             # 模拟request对象
             class MockRequest:

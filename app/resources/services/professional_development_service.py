@@ -9,16 +9,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import ColumnElement
 
-from app.resources.models.professional_development_models import (
-    CertificationMaterial,
-    CommunityPost,
-    LearningProgress,
-    NotificationSettings,
-    ResearchUpdate,
-    TrainingEnrollment,
-    TrainingResource,
-)
-from app.resources.schemas.professional_development_schemas import NotificationSettingsUpdate
+from app.resources.models.professional_development_models import (CertificationMaterial,
+                                                                  CommunityPost,
+                                                                  LearningProgress,
+                                                                  NotificationSettings,
+                                                                  ResearchUpdate,
+                                                                  TrainingEnrollment,
+                                                                  TrainingResource)
+from app.resources.schemas.professional_development_schemas import \
+    NotificationSettingsUpdate
 from app.users.models.user_models import User
 
 logger = logging.getLogger(__name__)

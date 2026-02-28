@@ -8,12 +8,8 @@ from fastapi import status as http_status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.class_schemas import (
-    ClassBatchCreate,
-    ClassCreate,
-    ClassResponse,
-    ClassUpdate,
-)
+from app.courses.schemas.class_schemas import (ClassBatchCreate, ClassCreate,
+                                               ClassResponse, ClassUpdate)
 from app.courses.services.class_management_service import ClassManagementService
 from app.shared.models.enums import UserType
 from app.users.models import User

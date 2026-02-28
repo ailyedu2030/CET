@@ -124,7 +124,9 @@ class APIImplementationManager:
             },
         }
 
-    async def analyze_current_api_status(self: "APIImplementationManager") -> dict[str, Any]:
+    async def analyze_current_api_status(
+        self: "APIImplementationManager",
+    ) -> dict[str, Any]:
         """分析当前API实现状态"""
         print("🔍 分析当前API实现状态...")
 
@@ -145,7 +147,9 @@ class APIImplementationManager:
             if api_dir.exists():
                 for api_file in api_dir.glob("*.py"):
                     if api_file.name != "__init__.py":
-                        status["existing_apis"].append(str(api_file.relative_to(self.project_root)))
+                        status["existing_apis"].append(
+                            str(api_file.relative_to(self.project_root))
+                        )
 
         # 分析缺失的API
         for priority, modules in self.missing_apis.items():
@@ -169,14 +173,19 @@ class APIImplementationManager:
         print(f"🚀 开始实现第{priority_level}优先级API...")
 
         if priority_level not in self.missing_apis:
-            return {"success": False, "message": f"未找到第{priority_level}优先级的API定义"}
+            return {
+                "success": False,
+                "message": f"未找到第{priority_level}优先级的API定义",
+            }
 
         modules = self.missing_apis[priority_level]
         results = {}
 
         for module_name, module_info in modules.items():
             print(f"📝 实现模块: {module_name}")
-            result = await self._implement_module_apis(module_name, module_info, priority_level)
+            result = await self._implement_module_apis(
+                module_name, module_info, priority_level
+            )
             results[module_name] = result
 
         return {

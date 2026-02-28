@@ -9,15 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.ai.models.ai_models import AISyllabus, CollaborativeSession, LessonPlan
-from app.ai.schemas.ai_schemas import (
-    CollaborationJoinRequest,
-    CollaborationSessionResponse,
-    CollaborationUpdateRequest,
-    LessonPlanCreate,
-    LessonPlanGenerationRequest,
-    LessonPlanResponse,
-    LessonPlanUpdate,
-)
+from app.ai.schemas.ai_schemas import (CollaborationJoinRequest,
+                                       CollaborationSessionResponse,
+                                       CollaborationUpdateRequest, LessonPlanCreate,
+                                       LessonPlanGenerationRequest, LessonPlanResponse,
+                                       LessonPlanUpdate)
 from app.ai.services.deepseek_service import get_deepseek_service
 from app.ai.utils.content_generator import LessonPlanGenerator
 from app.users.models.user_models import User

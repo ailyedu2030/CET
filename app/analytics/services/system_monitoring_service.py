@@ -7,7 +7,8 @@ from typing import Any
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.services.enhanced_performance_monitor import EnhancedPerformanceMonitor
+from app.analytics.services.enhanced_performance_monitor import \
+    EnhancedPerformanceMonitor
 from app.analytics.services.intelligent_alert_manager import IntelligentAlertManager
 from app.shared.services.cache_service import CacheService
 from app.users.models import User
@@ -381,9 +382,7 @@ class SystemMonitoringService:
                 "status": (
                     "healthy"
                     if health_score >= 80
-                    else "warning"
-                    if health_score >= 60
-                    else "critical"
+                    else "warning" if health_score >= 60 else "critical"
                 ),
                 "server_resources": {
                     "cpu_usage_percent": cpu_usage,

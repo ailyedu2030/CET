@@ -10,12 +10,11 @@ from sqlalchemy import and_, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import PermissionDeniedError, ResourceNotFoundError
-from app.resources.models.resource_models import PermissionLevel, ResourceLibrary, ResourceShare
-from app.resources.schemas.permission_schemas import (
-    PermissionSettingRequest,
-    PermissionSettingResponse,
-    SharedResourceResponse,
-)
+from app.resources.models.resource_models import (PermissionLevel, ResourceLibrary,
+                                                  ResourceShare)
+from app.resources.schemas.permission_schemas import (PermissionSettingRequest,
+                                                      PermissionSettingResponse,
+                                                      SharedResourceResponse)
 
 
 class PermissionService:
@@ -83,9 +82,11 @@ class PermissionService:
                 resource_type=permission_data.resource_type.value,
                 resource_id=permission_data.resource_id,
                 permission=permission_data.permission.value,
-                shared_with=permission_data.shared_with.dict()
-                if permission_data.shared_with
-                else None,
+                shared_with=(
+                    permission_data.shared_with.dict()
+                    if permission_data.shared_with
+                    else None
+                ),
             )
 
         except Exception as e:
@@ -170,12 +171,16 @@ class PermissionService:
                             resource.id, resource_type
                         ),
                         version=resource.version,
-                        created_at=resource.created_at.isoformat()
-                        if resource.created_at
-                        else "",
-                        updated_at=resource.updated_at.isoformat()
-                        if resource.updated_at
-                        else "",
+                        created_at=(
+                            resource.created_at.isoformat()
+                            if resource.created_at
+                            else ""
+                        ),
+                        updated_at=(
+                            resource.updated_at.isoformat()
+                            if resource.updated_at
+                            else ""
+                        ),
                     )
                 )
 
@@ -211,7 +216,8 @@ class PermissionService:
             # 检查用户是否有查看权限的权限
             if not await self._can_view_permission(resource, user_id):
                 raise PermissionDeniedError(
-                    message="没有权限查看此资源的权限设置", error_code="PERMISSION_VIEW_DENIED"
+                    message="没有权限查看此资源的权限设置",
+                    error_code="PERMISSION_VIEW_DENIED",
                 )
 
             # 获取班级共享配置
@@ -323,15 +329,21 @@ class PermissionService:
                             resource.id, resource.resource_type
                         ),
                         version=resource.version,
-                        created_at=resource.created_at.isoformat()
-                        if resource.created_at
-                        else "",
-                        updated_at=resource.updated_at.isoformat()
-                        if resource.updated_at
-                        else "",
-                        shared_at=resource.updated_at.isoformat()
-                        if resource.updated_at
-                        else "",  # 使用更新时间作为分享时间
+                        created_at=(
+                            resource.created_at.isoformat()
+                            if resource.created_at
+                            else ""
+                        ),
+                        updated_at=(
+                            resource.updated_at.isoformat()
+                            if resource.updated_at
+                            else ""
+                        ),
+                        shared_at=(
+                            resource.updated_at.isoformat()
+                            if resource.updated_at
+                            else ""
+                        ),  # 使用更新时间作为分享时间
                     )
                 )
 
@@ -356,7 +368,8 @@ class PermissionService:
 
         if resource.created_by != user_id:
             raise PermissionDeniedError(
-                message="只有资源创建者可以修改权限设置", error_code="PERMISSION_MODIFY_DENIED"
+                message="只有资源创建者可以修改权限设置",
+                error_code="PERMISSION_MODIFY_DENIED",
             )
 
         return resource

@@ -251,17 +251,31 @@ class RequirementMapper:
         """创建需求-API映射规则"""
         self.mapping_rules = {
             # 用户管理相关
-            "需求1": ["/api/v1/users/register", "/api/v1/users/audit", "/api/v1/users/status"],
+            "需求1": [
+                "/api/v1/users/register",
+                "/api/v1/users/audit",
+                "/api/v1/users/status",
+            ],
             "需求2": [
                 "/api/v1/users/students",
                 "/api/v1/users/teachers",
                 "/api/v1/users/classrooms",
             ],
             "需求7": ["/api/v1/auth", "/api/v1/permissions", "/api/v1/roles"],
-            "需求10": ["/api/v1/users/teachers/register", "/api/v1/users/teachers/qualification"],
-            "需求20": ["/api/v1/users/students/register", "/api/v1/users/students/activation"],
+            "需求10": [
+                "/api/v1/users/teachers/register",
+                "/api/v1/users/teachers/qualification",
+            ],
+            "需求20": [
+                "/api/v1/users/students/register",
+                "/api/v1/users/students/activation",
+            ],
             # 课程管理相关
-            "需求3": ["/api/v1/courses", "/api/v1/courses/templates", "/api/v1/courses/versions"],
+            "需求3": [
+                "/api/v1/courses",
+                "/api/v1/courses/templates",
+                "/api/v1/courses/versions",
+            ],
             "需求4": ["/api/v1/courses/classes", "/api/v1/courses/assignments"],
             "需求5": ["/api/v1/courses/classes/batch", "/api/v1/courses/scheduling"],
             "需求11": ["/api/v1/resources/vocabulary", "/api/v1/resources/knowledge"],
@@ -276,7 +290,10 @@ class RequirementMapper:
             "需求23": ["/api/v1/ai/grading", "/api/v1/ai/feedback"],
             "需求24": ["/api/v1/ai/analysis", "/api/v1/ai/reports"],
             "需求25": ["/api/v1/training/errors", "/api/v1/training/adaptive"],
-            "需求26": ["/api/v1/training/writing", "/api/v1/training/writing/templates"],
+            "需求26": [
+                "/api/v1/training/writing",
+                "/api/v1/training/writing/templates",
+            ],
             # AI集成相关
             "需求13": ["/api/v1/ai/syllabus", "/api/v1/ai/lesson-plans"],
             "需求14": ["/api/v1/ai/teaching-adjustment", "/api/v1/ai/optimization"],
@@ -312,11 +329,15 @@ class RequirementMapper:
 
                         # 检查端点状态
                         if endpoint.status_code >= 500:
-                            issues.append(f"服务器错误: {endpoint.path} - {endpoint.error_message}")
+                            issues.append(
+                                f"服务器错误: {endpoint.path} - {endpoint.error_message}"
+                            )
                         elif endpoint.status_code == 404:
                             issues.append(f"端点不存在: {endpoint.path}")
                         elif endpoint.status_code == 405:
-                            issues.append(f"HTTP方法不支持: {endpoint.method} {endpoint.path}")
+                            issues.append(
+                                f"HTTP方法不支持: {endpoint.method} {endpoint.path}"
+                            )
                         elif endpoint.response_time > 5.0:
                             issues.append(
                                 f"响应时间过长: {endpoint.path} ({endpoint.response_time:.2f}s)"
@@ -325,7 +346,9 @@ class RequirementMapper:
             # 更新需求映射
             requirement.mapped_apis = mapped_apis
             requirement.issues = issues
-            requirement.completion_percentage = self._calculate_completion_percentage(requirement)
+            requirement.completion_percentage = self._calculate_completion_percentage(
+                requirement
+            )
             requirement.status = self._determine_requirement_status(requirement)
 
     def _find_matching_endpoints(self, expected_path: str) -> list[APIEndpoint]:
@@ -333,22 +356,30 @@ class RequirementMapper:
         matching_endpoints = []
 
         for _, endpoint in self.api_endpoints.items():
-            if expected_path in endpoint.path or endpoint.path.startswith(expected_path):
+            if expected_path in endpoint.path or endpoint.path.startswith(
+                expected_path
+            ):
                 matching_endpoints.append(endpoint)
 
         return matching_endpoints
 
-    def _calculate_completion_percentage(self, requirement: RequirementMapping) -> float:
+    def _calculate_completion_percentage(
+        self, requirement: RequirementMapping
+    ) -> float:
         """计算需求完成百分比"""
         if not requirement.mapped_apis:
             return 0.0
 
-        working_apis = sum(1 for api in requirement.mapped_apis if api.status_code == 200)
+        working_apis = sum(
+            1 for api in requirement.mapped_apis if api.status_code == 200
+        )
         total_apis = len(requirement.mapped_apis)
 
         return (working_apis / total_apis) * 100.0
 
-    def _determine_requirement_status(self, requirement: RequirementMapping) -> RequirementStatus:
+    def _determine_requirement_status(
+        self, requirement: RequirementMapping
+    ) -> RequirementStatus:
         """确定需求状态"""
         if requirement.completion_percentage == 0:
             return RequirementStatus.NOT_IMPLEMENTED
@@ -371,7 +402,12 @@ class RequirementMapper:
                 "needs_review": 0,
             },
             "requirements": {},
-            "priority_breakdown": {"P0_critical": [], "P1_high": [], "P2_medium": [], "P3_low": []},
+            "priority_breakdown": {
+                "P0_critical": [],
+                "P1_high": [],
+                "P2_medium": [],
+                "P3_low": [],
+            },
             "issues_summary": [],
         }
 
@@ -417,7 +453,9 @@ class RequirementMapper:
 
         report["issues_summary"] = [
             {"type": issue_type, "count": count}
-            for issue_type, count in sorted(issue_counts.items(), key=lambda x: x[1], reverse=True)
+            for issue_type, count in sorted(
+                issue_counts.items(), key=lambda x: x[1], reverse=True
+            )
         ]
 
         return report

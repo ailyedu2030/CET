@@ -3,18 +3,17 @@
 from datetime import date, datetime
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import JSON, Boolean, Date, DateTime, Enum, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (JSON, Boolean, Date, DateTime, Enum, Float, ForeignKey, Integer,
+                        String, Text)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.shared.models.base_model import BaseModel
 from app.shared.models.enums import UserType
 
 if TYPE_CHECKING:
-    from app.training.models.training_models import (
-        TrainingParameterTemplate,
-        TrainingTask,
-        TrainingTaskSubmission,
-    )
+    from app.training.models.training_models import (TrainingParameterTemplate,
+                                                     TrainingTask,
+                                                     TrainingTaskSubmission)
     from app.users.models.permission_models import LoginSession, Role
 
 
@@ -108,13 +107,13 @@ class User(BaseModel):
     )
 
     # 训练工坊关系 (需求15)
-    training_parameter_templates: Mapped[
-        list["TrainingParameterTemplate"]
-    ] = relationship(
-        "TrainingParameterTemplate",
-        foreign_keys="TrainingParameterTemplate.created_by",
-        back_populates="creator",
-        cascade="all, delete-orphan",
+    training_parameter_templates: Mapped[list["TrainingParameterTemplate"]] = (
+        relationship(
+            "TrainingParameterTemplate",
+            foreign_keys="TrainingParameterTemplate.created_by",
+            back_populates="creator",
+            cascade="all, delete-orphan",
+        )
     )
     training_tasks: Mapped[list["TrainingTask"]] = relationship(
         "TrainingTask",

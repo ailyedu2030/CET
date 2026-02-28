@@ -66,7 +66,9 @@ class AcceptanceChecker:
         if self.session:
             await self.session.close()
 
-    async def authenticate(self, username: str = "admin", password: str = "admin123") -> bool:
+    async def authenticate(
+        self, username: str = "admin", password: str = "admin123"
+    ) -> bool:
         """获取认证token"""
         if self.session is None:
             raise RuntimeError("Session not initialized. Use async context manager.")
@@ -167,13 +169,17 @@ class AcceptanceChecker:
 
         # 检查词汇训练API
         check = await self._check_api_endpoint(
-            "GET", "/api/v1/training/vocabulary", "词汇训练：每日15-30题，5种题型，5级难度"
+            "GET",
+            "/api/v1/training/vocabulary",
+            "词汇训练：每日15-30题，5种题型，5级难度",
         )
         checks.append(check)
 
         # 检查听力训练API
         check = await self._check_api_endpoint(
-            "GET", "/api/v1/training/listening", "听力训练：4种题型，语速可调，辅助功能完整"
+            "GET",
+            "/api/v1/training/listening",
+            "听力训练：4种题型，语速可调，辅助功能完整",
         )
         checks.append(check)
 
@@ -191,7 +197,9 @@ class AcceptanceChecker:
 
         # 检查写作训练API
         check = await self._check_api_endpoint(
-            "GET", "/api/v1/training/writing", "写作训练：5种题型，实时辅助，四级评分标准"
+            "GET",
+            "/api/v1/training/writing",
+            "写作训练：5种题型，实时辅助，四级评分标准",
         )
         checks.append(check)
 
@@ -239,11 +247,15 @@ class AcceptanceChecker:
 
         # 检查知识点分析API
         check = await self._check_api_endpoint(
-            "GET", "/api/v1/ai/analysis/knowledge-points", "知识点薄弱环节分析推送教师端"
+            "GET",
+            "/api/v1/ai/analysis/knowledge-points",
+            "知识点薄弱环节分析推送教师端",
         )
         checks.append(check)
 
-        return self._create_requirement_acceptance("需求23", "智能批改与反馈系统", checks)
+        return self._create_requirement_acceptance(
+            "需求23", "智能批改与反馈系统", checks
+        )
 
     async def check_requirement_35(self) -> RequirementAcceptance:
         """检查需求35：高并发架构与AI服务优化"""
@@ -260,11 +272,15 @@ class AcceptanceChecker:
         checks.append(check)
 
         # 检查AI服务健康监控
-        check = await self._check_api_endpoint("GET", "/api/v1/ai/health", "AI服务健康监控")
+        check = await self._check_api_endpoint(
+            "GET", "/api/v1/ai/health", "AI服务健康监控"
+        )
         checks.append(check)
 
         # 检查请求队列管理
-        check = await self._check_api_endpoint("GET", "/api/v1/system/queue/status", "请求队列管理")
+        check = await self._check_api_endpoint(
+            "GET", "/api/v1/system/queue/status", "请求队列管理"
+        )
         checks.append(check)
 
         # 检查降级策略
@@ -273,7 +289,9 @@ class AcceptanceChecker:
         )
         checks.append(check)
 
-        return self._create_requirement_acceptance("需求35", "高并发架构与AI服务优化", checks)
+        return self._create_requirement_acceptance(
+            "需求35", "高并发架构与AI服务优化", checks
+        )
 
     async def _check_api_endpoint(
         self,
@@ -295,14 +313,20 @@ class AcceptanceChecker:
                 async with self.session.get(url, headers=headers) as response:
                     status = response.status
                     data = (
-                        await response.json() if response.content_type == "application/json" else {}
+                        await response.json()
+                        if response.content_type == "application/json"
+                        else {}
                     )
             elif method == "POST":
                 json_data = test_data or {}
-                async with self.session.post(url, json=json_data, headers=headers) as response:
+                async with self.session.post(
+                    url, json=json_data, headers=headers
+                ) as response:
                     status = response.status
                     data = (
-                        await response.json() if response.content_type == "application/json" else {}
+                        await response.json()
+                        if response.content_type == "application/json"
+                        else {}
                     )
             else:
                 return AcceptanceCheck(
@@ -315,13 +339,18 @@ class AcceptanceChecker:
             if status == 200:
                 # 检查预期字段
                 if expected_fields and isinstance(data, dict):
-                    missing_fields = [field for field in expected_fields if field not in data]
+                    missing_fields = [
+                        field for field in expected_fields if field not in data
+                    ]
                     if missing_fields:
                         return AcceptanceCheck(
                             criterion=description,
                             result=CheckResult.WARNING,
                             message=f"缺少预期字段: {missing_fields}",
-                            details={"status": status, "missing_fields": missing_fields},
+                            details={
+                                "status": status,
+                                "missing_fields": missing_fields,
+                            },
                         )
 
                 return AcceptanceCheck(
@@ -396,14 +425,20 @@ class AcceptanceChecker:
                     criterion=description,
                     result=CheckResult.PASS,
                     message=f"响应时间: {response_time:.3f}s (要求: <{max_response_time}s)",
-                    details={"response_time": response_time, "max_allowed": max_response_time},
+                    details={
+                        "response_time": response_time,
+                        "max_allowed": max_response_time,
+                    },
                 )
             else:
                 return AcceptanceCheck(
                     criterion=description,
                     result=CheckResult.FAIL,
                     message=f"响应时间超标: {response_time:.3f}s (要求: <{max_response_time}s)",
-                    details={"response_time": response_time, "max_allowed": max_response_time},
+                    details={
+                        "response_time": response_time,
+                        "max_allowed": max_response_time,
+                    },
                 )
 
         except Exception as e:
@@ -542,13 +577,17 @@ class AcceptanceChecker:
             try:
                 result = await check_method()
                 results.append(result)
-                print(f"✅ {result.requirement_id} 检查完成: {result.pass_rate:.1f}% 通过")
+                print(
+                    f"✅ {result.requirement_id} 检查完成: {result.pass_rate:.1f}% 通过"
+                )
             except Exception as e:
                 print(f"❌ {check_method.__name__} 检查失败: {e}")
 
         return results
 
-    def generate_acceptance_report(self, results: list[RequirementAcceptance]) -> dict[str, Any]:
+    def generate_acceptance_report(
+        self, results: list[RequirementAcceptance]
+    ) -> dict[str, Any]:
         """生成验收报告"""
         report: dict[str, Any] = {
             "summary": {

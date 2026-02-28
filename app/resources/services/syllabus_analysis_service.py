@@ -710,13 +710,19 @@ class SyllabusAnalysisService:
         summary_parts = []
 
         if structure_changes["added_sections"]:
-            summary_parts.append(f"新增{len(structure_changes['added_sections'])}个章节")
+            summary_parts.append(
+                f"新增{len(structure_changes['added_sections'])}个章节"
+            )
 
         if structure_changes["removed_sections"]:
-            summary_parts.append(f"删除{len(structure_changes['removed_sections'])}个章节")
+            summary_parts.append(
+                f"删除{len(structure_changes['removed_sections'])}个章节"
+            )
 
         if structure_changes["modified_sections"]:
-            summary_parts.append(f"修改{len(structure_changes['modified_sections'])}个章节")
+            summary_parts.append(
+                f"修改{len(structure_changes['modified_sections'])}个章节"
+            )
 
         if content_changes["exam_type_changed"]:
             summary_parts.append("考试类型发生变更")
@@ -748,7 +754,10 @@ class SyllabusAnalysisService:
 
         risk_levels = {
             "critical": {"level": "high", "description": "变更影响重大，存在高风险"},
-            "high": {"level": "medium-high", "description": "变更影响较大，存在中高风险"},
+            "high": {
+                "level": "medium-high",
+                "description": "变更影响较大，存在中高风险",
+            },
             "medium": {"level": "medium", "description": "变更影响中等，存在中等风险"},
             "low": {"level": "low", "description": "变更影响较小，风险较低"},
         }
@@ -793,10 +802,22 @@ class SyllabusAnalysisService:
             impact_assessment = {
                 "overall_impact": "medium",
                 "affected_areas": [
-                    {"area": "听力理解", "impact_level": "high", "change_percentage": 25},
-                    {"area": "阅读理解", "impact_level": "medium", "change_percentage": 15},
+                    {
+                        "area": "听力理解",
+                        "impact_level": "high",
+                        "change_percentage": 25,
+                    },
+                    {
+                        "area": "阅读理解",
+                        "impact_level": "medium",
+                        "change_percentage": 15,
+                    },
                     {"area": "写作表达", "impact_level": "low", "change_percentage": 5},
-                    {"area": "翻译技能", "impact_level": "medium", "change_percentage": 20},
+                    {
+                        "area": "翻译技能",
+                        "impact_level": "medium",
+                        "change_percentage": 20,
+                    },
                 ],
                 "difficulty_changes": {
                     "increased_difficulty": ["听力理解", "翻译技能"],
@@ -841,11 +862,19 @@ class SyllabusAnalysisService:
                 "section_weights": {
                     "听力理解": {
                         "weight": 0.35,
-                        "sub_sections": {"短对话": 0.10, "长对话": 0.15, "短文理解": 0.10},
+                        "sub_sections": {
+                            "短对话": 0.10,
+                            "长对话": 0.15,
+                            "短文理解": 0.10,
+                        },
                     },
                     "阅读理解": {
                         "weight": 0.35,
-                        "sub_sections": {"词汇理解": 0.05, "长篇阅读": 0.10, "仔细阅读": 0.20},
+                        "sub_sections": {
+                            "词汇理解": 0.05,
+                            "长篇阅读": 0.10,
+                            "仔细阅读": 0.20,
+                        },
                     },
                     "写作": {"weight": 0.15, "sub_sections": {"短文写作": 0.15}},
                     "翻译": {"weight": 0.15, "sub_sections": {"段落翻译": 0.15}},

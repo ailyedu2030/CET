@@ -8,26 +8,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.security import get_current_user
-from app.training.schemas.social_schemas import (
-    AchievementResponse,
-    ClassLearningCircleResponse,
-    CompetitionAnswerRequest,
-    CompetitionCreateRequest,
-    CompetitionLeaderboardResponse,
-    CompetitionResponse,
-    ContentQualityResponse,
-    CustomAchievementCreateRequest,
-    DiscussionPostCreateRequest,
-    DiscussionPostResponse,
-    HelpRequestCreateRequest,
-    HelpResponseCreateRequest,
-    HelpResponseResponse,
-    InteractionInsightsResponse,
-    JoinGroupRequest,
-    StudyGroupCreateRequest,
-    StudyGroupResponse,
-    UserAchievementsResponse,
-)
+from app.training.schemas.social_schemas import (AchievementResponse,
+                                                 ClassLearningCircleResponse,
+                                                 CompetitionAnswerRequest,
+                                                 CompetitionCreateRequest,
+                                                 CompetitionLeaderboardResponse,
+                                                 CompetitionResponse,
+                                                 ContentQualityResponse,
+                                                 CustomAchievementCreateRequest,
+                                                 DiscussionPostCreateRequest,
+                                                 DiscussionPostResponse,
+                                                 HelpRequestCreateRequest,
+                                                 HelpResponseCreateRequest,
+                                                 HelpResponseResponse,
+                                                 InteractionInsightsResponse,
+                                                 JoinGroupRequest,
+                                                 StudyGroupCreateRequest,
+                                                 StudyGroupResponse,
+                                                 UserAchievementsResponse)
 from app.training.services.achievement_service import AchievementService
 from app.training.services.competition_service import CompetitionService
 from app.training.services.social_learning_service import SocialLearningService

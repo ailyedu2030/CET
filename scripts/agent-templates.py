@@ -47,7 +47,9 @@ class AgentTemplateManager:
     def __init__(self: "AgentTemplateManager") -> None:
         self.templates = self._initialize_templates()
 
-    def _initialize_templates(self: "AgentTemplateManager") -> dict[str, CommandTemplate]:
+    def _initialize_templates(
+        self: "AgentTemplateManager",
+    ) -> dict[str, CommandTemplate]:
         """初始化所有命令模板"""
         templates = {}
 
@@ -643,7 +645,9 @@ class AgentTemplateManager:
 
         return templates
 
-    def get_template(self: "AgentTemplateManager", template_name: str) -> CommandTemplate | None:
+    def get_template(
+        self: "AgentTemplateManager", template_name: str
+    ) -> CommandTemplate | None:
         """获取指定的命令模板"""
         return self.templates.get(template_name)
 
@@ -677,7 +681,9 @@ class AgentTemplateManager:
         template = self.get_phase_template(phase)
         return template.checklist if template else []
 
-    def generate_success_criteria(self: "AgentTemplateManager", phase: TaskPhase) -> list[str]:
+    def generate_success_criteria(
+        self: "AgentTemplateManager", phase: TaskPhase
+    ) -> list[str]:
         """生成成功标准"""
         template = self.get_phase_template(phase)
         return template.success_criteria if template else []
@@ -708,14 +714,19 @@ class AgentTemplateManager:
                 "priority3_learning_plan",
             ],
             4: ["priority4_learning_assistant", "priority4_social_interaction"],
-            5: ["priority5_resource_architecture", "priority5_performance_optimization"],
+            5: [
+                "priority5_resource_architecture",
+                "priority5_performance_optimization",
+            ],
         }
 
         template_names = priority_mapping.get(priority_level, [])
-        return [self.templates[name] for name in template_names if name in self.templates]
+        return [
+            self.templates[name] for name in template_names if name in self.templates
+        ]
 
     def get_all_priority_templates(
-        self: "AgentTemplateManager"
+        self: "AgentTemplateManager",
     ) -> dict[int, list[CommandTemplate]]:
         """获取所有优先级的模板映射"""
         return {
@@ -824,7 +835,9 @@ def main() -> None:
     manager = AgentTemplateManager()
 
     # 生成需求26的详细任务模板
-    task_template = manager.generate_requirement_specific_template("26", "英语四级写作标准库")
+    task_template = manager.generate_requirement_specific_template(
+        "26", "英语四级写作标准库"
+    )
     print("生成的详细任务模板：")
     print(task_template)
 

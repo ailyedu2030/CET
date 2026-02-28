@@ -20,17 +20,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.resources.models.resource_models import ProcessingStatus
 from app.resources.services.document_processing_service import DocumentProcessingService
-from app.resources.services.performance_monitoring_service import (
-    ResourcePerformanceMonitor,
-)
-from app.resources.services.resource_library_service import (
-    ResourceCreateRequest,
-    ResourceLibraryService,
-)
-from app.resources.services.vector_search_service import (
-    SearchQuery,
-    VectorSearchService,
-)
+from app.resources.services.performance_monitoring_service import \
+    ResourcePerformanceMonitor
+from app.resources.services.resource_library_service import (ResourceCreateRequest,
+                                                             ResourceLibraryService)
+from app.resources.services.vector_search_service import (SearchQuery,
+                                                          VectorSearchService)
 from app.shared.models.enums import PermissionLevel, ResourceType
 from app.shared.services.cache_service import CacheService
 

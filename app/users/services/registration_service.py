@@ -10,12 +10,11 @@ from sqlalchemy.orm import selectinload
 from app.core.email import EmailService
 from app.shared.models.enums import UserType
 from app.shared.services.cache_service import CacheService
-from app.users.models import RegistrationApplication, StudentProfile, TeacherProfile, User
-from app.users.schemas.registration_schemas import (
-    ApplicationListFilter,
-    StudentRegistrationRequest,
-    TeacherRegistrationRequest,
-)
+from app.users.models import (RegistrationApplication, StudentProfile, TeacherProfile,
+                              User)
+from app.users.schemas.registration_schemas import (ApplicationListFilter,
+                                                    StudentRegistrationRequest,
+                                                    TeacherRegistrationRequest)
 from app.users.utils.excel_import_utils import StudentExcelImportUtils
 from app.users.utils.jwt_utils import jwt_manager
 
@@ -284,7 +283,9 @@ class RegistrationService:
         return {
             "application_id": application.id,
             "status": application.status,
-            "status_description": status_descriptions.get(application.status, "未知状态"),
+            "status_description": status_descriptions.get(
+                application.status, "未知状态"
+            ),
             "submitted_at": application.created_at,
             "reviewed_at": application.reviewed_at,
             "estimated_review_time": estimated_review_time,

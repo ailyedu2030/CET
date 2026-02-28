@@ -620,14 +620,14 @@ class OCRService:
             return {
                 "overall_quality": quality_level,
                 "quality_score": quality_score,
-                "confidence_score": confidence * 100
-                if isinstance(confidence, float)
-                else confidence,
-                "text_clarity": "high"
-                if quality_score >= 80
-                else "medium"
-                if quality_score >= 60
-                else "low",
+                "confidence_score": (
+                    confidence * 100 if isinstance(confidence, float) else confidence
+                ),
+                "text_clarity": (
+                    "high"
+                    if quality_score >= 80
+                    else "medium" if quality_score >= 60 else "low"
+                ),
                 "checks": quality_checks,
                 "recommendations": recommendations,
                 "meets_requirements": quality_score >= 75,  # 需求33要求高质量
@@ -787,7 +787,9 @@ class OCRService:
                 elif self._is_supported_format(file_path, "pdf"):
                     task = self.extract_text_from_pdf(file_path)
                 else:
-                    failed_files.append({"file": str(file_path), "error": "不支持的文件格式"})
+                    failed_files.append(
+                        {"file": str(file_path), "error": "不支持的文件格式"}
+                    )
                     continue
 
                 tasks.append((str(file_path), task))
@@ -811,12 +813,12 @@ class OCRService:
                 "failures": failed_files,
                 "total_size_mb": total_size / (1024 * 1024),
                 "processing_summary": {
-                    "avg_confidence": sum(
-                        r.get("confidence", 0) for r in processed_results
-                    )
-                    / len(processed_results)
-                    if processed_results
-                    else 0,
+                    "avg_confidence": (
+                        sum(r.get("confidence", 0) for r in processed_results)
+                        / len(processed_results)
+                        if processed_results
+                        else 0
+                    ),
                     "total_words": sum(
                         r.get("word_count", 0) for r in processed_results
                     ),

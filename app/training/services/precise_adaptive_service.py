@@ -15,11 +15,8 @@ from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import DifficultyLevel, TrainingType
-from app.training.models.training_models import (
-    IntelligentTrainingLoop,
-    TrainingRecord,
-    TrainingSession,
-)
+from app.training.models.training_models import (IntelligentTrainingLoop,
+                                                 TrainingRecord, TrainingSession)
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +42,9 @@ class PreciseAdaptiveService:
     ) -> dict[str, Any]:
         """执行基于近10次正确率的精确调整算法."""
         try:
-            logger.info(f"开始执行精确自适应调整: 学生{student_id}, 训练类型{training_type}")
+            logger.info(
+                f"开始执行精确自适应调整: 学生{student_id}, 训练类型{training_type}"
+            )
 
             # 第一步：获取近10次答题记录
             recent_records = await self._get_recent_training_records(
@@ -532,7 +531,9 @@ class PreciseAdaptiveService:
             "knowledge_gaps": knowledge_gaps,
             "learning_style": learning_style,
             "consistency_level": consistency_level,
-            "profile_confidence": min(1.0, len(recent_records) / 30),  # 数据越多置信度越高
+            "profile_confidence": min(
+                1.0, len(recent_records) / 30
+            ),  # 数据越多置信度越高
         }
 
     def _analyze_learning_pace(self, records: list[TrainingRecord]) -> str:

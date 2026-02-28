@@ -6,7 +6,8 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.services.enhanced_performance_monitor import EnhancedPerformanceMonitor
+from app.analytics.services.enhanced_performance_monitor import \
+    EnhancedPerformanceMonitor
 from app.analytics.services.intelligent_alert_manager import IntelligentAlertManager
 from app.core.database import get_db
 from app.users.models.user_models import User
@@ -20,7 +21,9 @@ router = APIRouter(prefix="/enhanced-monitoring", tags=["增强性能监控"])
 
 @router.get("/performance/comprehensive")
 async def comprehensive_performance_analysis(
-    analysis_period_hours: int = Query(24, ge=1, le=168, description="分析周期（小时）"),
+    analysis_period_hours: int = Query(
+        24, ge=1, le=168, description="分析周期（小时）"
+    ),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:

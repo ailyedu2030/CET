@@ -91,7 +91,9 @@ class APIHealthChecker:
             print(f"端点文件 {file_path} 未找到")
             return []
 
-    async def run_health_check(self, endpoints_file: str = "api_endpoints.txt") -> dict[str, Any]:
+    async def run_health_check(
+        self, endpoints_file: str = "api_endpoints.txt"
+    ) -> dict[str, Any]:
         """运行完整的API健康检查"""
         print("🔍 开始API健康检查...")
 
@@ -146,7 +148,9 @@ class APIHealthChecker:
             for keyword in ["create", "register", "login", "submit", "generate"]
         ):
             return "POST"
-        elif any(keyword in endpoint.lower() for keyword in ["update", "edit", "modify"]):
+        elif any(
+            keyword in endpoint.lower() for keyword in ["update", "edit", "modify"]
+        ):
             return "PUT"
         elif any(keyword in endpoint.lower() for keyword in ["delete", "remove"]):
             return "DELETE"
@@ -198,9 +202,15 @@ class APIHealthChecker:
                 for r in problem_endpoints[:20]  # 只显示前20个问题端点
             ],
             "performance_analysis": {
-                "fast_endpoints": len([r for r in self.results if r.response_time < 0.1]),
-                "medium_endpoints": len([r for r in self.results if 0.1 <= r.response_time < 0.5]),
-                "slow_endpoints": len([r for r in self.results if r.response_time >= 0.5]),
+                "fast_endpoints": len(
+                    [r for r in self.results if r.response_time < 0.1]
+                ),
+                "medium_endpoints": len(
+                    [r for r in self.results if 0.1 <= r.response_time < 0.5]
+                ),
+                "slow_endpoints": len(
+                    [r for r in self.results if r.response_time >= 0.5]
+                ),
             },
         }
 

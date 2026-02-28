@@ -32,7 +32,9 @@ async def test_login() -> None:
                 print("❌ 用户不存在")
                 return
 
-            print(f"✅ 找到用户: {user.username}, ID: {user.id}, 类型: {user.user_type}")
+            print(
+                f"✅ 找到用户: {user.username}, ID: {user.id}, 类型: {user.user_type}"
+            )
 
             # 测试密码验证
             from app.users.utils.jwt_utils import jwt_manager
