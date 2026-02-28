@@ -5,16 +5,15 @@ CET4学习系统 - 代码质量报告生成器
 """
 
 import json
-import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 class QualityReportGenerator:
     """代码质量报告生成器"""
-    
+
     def __init__(self, reports_dir: str = "."):
         self.reports_dir = Path(reports_dir)
         self.report_data = {
@@ -23,36 +22,36 @@ class QualityReportGenerator:
             "details": {},
             "recommendations": []
         }
-    
-    def load_ruff_report(self) -> Dict[str, Any]:
+
+    def load_ruff_report(self) -> dict[str, Any]:
         """加载Ruff检查报告"""
         ruff_file = self.reports_dir / "ruff-report.json"
         if ruff_file.exists():
-            with open(ruff_file, 'r') as f:
+            with open(ruff_file) as f:
                 return json.load(f)
         return {}
-    
-    def load_bandit_report(self) -> Dict[str, Any]:
+
+    def load_bandit_report(self) -> dict[str, Any]:
         """加载Bandit安全扫描报告"""
         bandit_file = self.reports_dir / "bandit-report.json"
         if bandit_file.exists():
-            with open(bandit_file, 'r') as f:
+            with open(bandit_file) as f:
                 return json.load(f)
         return {}
-    
-    def load_safety_report(self) -> Dict[str, Any]:
+
+    def load_safety_report(self) -> dict[str, Any]:
         """加载Safety依赖安全报告"""
         safety_file = self.reports_dir / "safety-report.json"
         if safety_file.exists():
-            with open(safety_file, 'r') as f:
+            with open(safety_file) as f:
                 return json.load(f)
         return {}
-    
-    def analyze_complexity(self) -> Dict[str, Any]:
+
+    def analyze_complexity(self) -> dict[str, Any]:
         """分析代码复杂度"""
         complexity_file = self.reports_dir / "complexity-report.txt"
         if complexity_file.exists():
-            with open(complexity_file, 'r') as f:
+            with open(complexity_file) as f:
                 content = f.read()
                 # 简单解析复杂度报告
                 lines = content.split('\n')
@@ -63,25 +62,25 @@ class QualityReportGenerator:
                     "high_complexity_files": high_complexity[:10]  # 前10个
                 }
         return {}
-    
+
     def generate_summary(self) -> None:
         """生成质量总结"""
         ruff_data = self.load_ruff_report()
         bandit_data = self.load_bandit_report()
         safety_data = self.load_safety_report()
         complexity_data = self.analyze_complexity()
-        
+
         # Ruff检查总结
         ruff_issues = len(ruff_data) if isinstance(ruff_data, list) else 0
-        
+
         # 安全问题总结
         security_issues = len(bandit_data.get('results', []))
-        high_severity = len([r for r in bandit_data.get('results', []) 
+        high_severity = len([r for r in bandit_data.get('results', [])
                            if r.get('issue_severity') == 'HIGH'])
-        
+
         # 依赖安全问题
         vulnerabilities = len(safety_data.get('vulnerabilities', []))
-        
+
         self.report_data["summary"] = {
             "code_quality": {
                 "ruff_issues": ruff_issues,
@@ -98,11 +97,11 @@ class QualityReportGenerator:
                 "status": "✅ PASS" if complexity_data.get("high_complexity_count", 0) < 5 else "⚠️ WARNING"
             }
         }
-    
+
     def generate_recommendations(self) -> None:
         """生成改进建议"""
         summary = self.report_data["summary"]
-        
+
         if summary["code_quality"]["ruff_issues"] > 0:
             self.report_data["recommendations"].append({
                 "category": "Code Quality",
@@ -110,7 +109,7 @@ class QualityReportGenerator:
                 "description": f"修复 {summary['code_quality']['ruff_issues']} 个代码质量问题",
                 "action": "运行 `ruff check --fix .` 自动修复"
             })
-        
+
         if summary["security"]["high_severity"] > 0:
             self.report_data["recommendations"].append({
                 "category": "Security",
@@ -118,7 +117,7 @@ class QualityReportGenerator:
                 "description": f"修复 {summary['security']['high_severity']} 个高危安全问题",
                 "action": "查看 bandit 报告并修复安全漏洞"
             })
-        
+
         if summary["security"]["vulnerabilities"] > 0:
             self.report_data["recommendations"].append({
                 "category": "Dependencies",
@@ -126,7 +125,7 @@ class QualityReportGenerator:
                 "description": f"更新 {summary['security']['vulnerabilities']} 个存在漏洞的依赖",
                 "action": "运行 `pip install --upgrade` 更新依赖"
             })
-        
+
         if summary["complexity"]["high_complexity_files"] > 5:
             self.report_data["recommendations"].append({
                 "category": "Code Complexity",
@@ -134,11 +133,11 @@ class QualityReportGenerator:
                 "description": f"{summary['complexity']['high_complexity_files']} 个文件复杂度过高",
                 "action": "重构复杂函数，拆分大型类"
             })
-    
+
     def generate_markdown_report(self) -> str:
         """生成Markdown格式的报告"""
         summary = self.report_data["summary"]
-        
+
         report = f"""# 🔍 CET4学习系统代码质量报告
 
 **生成时间**: {self.report_data["timestamp"]}
@@ -155,7 +154,7 @@ class QualityReportGenerator:
 ## 🎯 总体评分
 
 """
-        
+
         # 计算总体评分
         total_score = 100
         if summary["code_quality"]["ruff_issues"] > 0:
@@ -166,7 +165,7 @@ class QualityReportGenerator:
             total_score -= min(20, summary["security"]["vulnerabilities"] * 5)
         if summary["complexity"]["high_complexity_files"] > 5:
             total_score -= 10
-        
+
         if total_score >= 90:
             grade = "A+"
             emoji = "🏆"
@@ -179,9 +178,9 @@ class QualityReportGenerator:
         else:
             grade = "C"
             emoji = "❌"
-        
+
         report += f"**{emoji} 总体评分: {total_score}/100 ({grade})**\n\n"
-        
+
         # 添加建议
         if self.report_data["recommendations"]:
             report += "## 🔧 改进建议\n\n"
@@ -189,7 +188,7 @@ class QualityReportGenerator:
                 report += f"### {i}. {rec['category']} (优先级: {rec['priority']})\n"
                 report += f"**问题**: {rec['description']}\n\n"
                 report += f"**建议**: {rec['action']}\n\n"
-        
+
         report += """## 📈 质量趋势
 
 - 代码质量持续改进
@@ -207,24 +206,24 @@ class QualityReportGenerator:
 ---
 *此报告由 CET4学习系统质量检查工具自动生成*
 """
-        
+
         return report
-    
+
     def save_report(self, output_file: str = "quality-report.md") -> None:
         """保存报告"""
         self.generate_summary()
         self.generate_recommendations()
-        
+
         # 保存JSON格式
         json_file = output_file.replace('.md', '.json')
         with open(json_file, 'w', encoding='utf-8') as f:
             json.dump(self.report_data, f, indent=2, ensure_ascii=False)
-        
+
         # 保存Markdown格式
         markdown_report = self.generate_markdown_report()
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(markdown_report)
-        
+
         print(f"✅ 质量报告已生成: {output_file}")
         print(f"✅ 详细数据已保存: {json_file}")
 
@@ -233,7 +232,7 @@ def main():
     """主函数"""
     reports_dir = sys.argv[1] if len(sys.argv) > 1 else "."
     output_file = sys.argv[2] if len(sys.argv) > 2 else "quality-report.md"
-    
+
     generator = QualityReportGenerator(reports_dir)
     generator.save_report(output_file)
 

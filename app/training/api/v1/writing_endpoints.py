@@ -8,22 +8,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.training.models.writing_models import WritingDifficulty, WritingType
-from app.training.schemas.writing_schemas import (GrammarCheckResult,
-                                                  WritingRecommendation,
-                                                  WritingStatistics,
-                                                  WritingSubmissionCreate,
-                                                  WritingSubmissionListResponse,
-                                                  WritingSubmissionResponse,
-                                                  WritingTaskCreate,
-                                                  WritingTaskListResponse,
-                                                  WritingTaskResponse,
-                                                  WritingTemplateCreate,
-                                                  WritingTemplateListResponse,
-                                                  WritingTemplateResponse,
-                                                  WritingTemplateUpdate,
-                                                  WritingVocabularyCreate,
-                                                  WritingVocabularyListResponse,
-                                                  WritingVocabularyResponse)
+from app.training.schemas.writing_schemas import (
+    GrammarCheckResult,
+    WritingRecommendation,
+    WritingStatistics,
+    WritingSubmissionCreate,
+    WritingSubmissionListResponse,
+    WritingSubmissionResponse,
+    WritingTaskCreate,
+    WritingTaskListResponse,
+    WritingTaskResponse,
+    WritingTemplateCreate,
+    WritingTemplateListResponse,
+    WritingTemplateResponse,
+    WritingTemplateUpdate,
+    WritingVocabularyCreate,
+    WritingVocabularyListResponse,
+    WritingVocabularyResponse,
+)
 from app.training.services.writing_service import WritingService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user

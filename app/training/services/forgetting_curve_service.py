@@ -9,8 +9,10 @@ from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.training.models.training_models import Question, TrainingRecord
-from app.training.schemas.adaptive_learning_schemas import (ForgettingCurveResponse,
-                                                            ReviewScheduleResponse)
+from app.training.schemas.adaptive_learning_schemas import (
+    ForgettingCurveResponse,
+    ReviewScheduleResponse,
+)
 
 logger = logging.getLogger(__name__)
 

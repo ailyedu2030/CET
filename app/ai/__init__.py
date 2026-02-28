@@ -1,27 +1,66 @@
 """AI模块 - DeepSeek集成与智能教学功能."""
 
-from .models import (AISyllabus, AITaskLog, CollaborativeSession,  # noqa: F401
-                     LearningAnalysis, LessonPlan, LessonSchedule, TeachingAdjustment)
-from .schemas import (AITaskRequest, AITaskResponse,  # noqa: F401
-                      CollaborationJoinRequest, CollaborationSessionResponse,
-                      CollaborationUpdateRequest, LearningAnalysisCreate,
-                      LearningAnalysisListResponse, LearningAnalysisRequest,
-                      LearningAnalysisResponse, LessonPlanCreate,
-                      LessonPlanGenerationRequest, LessonPlanListResponse,
-                      LessonPlanResponse, LessonPlanUpdate, ScheduleGenerationRequest,
-                      SmartSuggestionRequest, SmartSuggestionResponse, SyllabusCreate,
-                      SyllabusGenerationRequest, SyllabusListResponse, SyllabusResponse,
-                      SyllabusUpdate, TeachingAdjustmentCreate,
-                      TeachingAdjustmentListResponse, TeachingAdjustmentRequest,
-                      TeachingAdjustmentResponse, TeachingAdjustmentUpdate)
-from .services import (DeepSeekService, LearningAdjustmentService,  # noqa: F401
-                       LessonPlanService, SyllabusService, get_deepseek_service,
-                       get_learning_adjustment_service, get_lesson_plan_service,
-                       get_syllabus_service)
-from .utils import (APICallManager, APIKeyPool, APIUsageStats,  # noqa: F401
-                    ContentTemplate, DeepSeekAPIKeyPool, LessonPlanGenerator,
-                    ScheduleOptimizer, SmartSuggestionEngine, SyllabusGenerator,
-                    get_api_stats, get_deepseek_pool)
+from .models import (  # noqa: F401
+    AISyllabus,
+    AITaskLog,
+    CollaborativeSession,
+    LearningAnalysis,
+    LessonPlan,
+    LessonSchedule,
+    TeachingAdjustment,
+)
+from .schemas import (  # noqa: F401
+    AITaskRequest,
+    AITaskResponse,
+    CollaborationJoinRequest,
+    CollaborationSessionResponse,
+    CollaborationUpdateRequest,
+    LearningAnalysisCreate,
+    LearningAnalysisListResponse,
+    LearningAnalysisRequest,
+    LearningAnalysisResponse,
+    LessonPlanCreate,
+    LessonPlanGenerationRequest,
+    LessonPlanListResponse,
+    LessonPlanResponse,
+    LessonPlanUpdate,
+    ScheduleGenerationRequest,
+    SmartSuggestionRequest,
+    SmartSuggestionResponse,
+    SyllabusCreate,
+    SyllabusGenerationRequest,
+    SyllabusListResponse,
+    SyllabusResponse,
+    SyllabusUpdate,
+    TeachingAdjustmentCreate,
+    TeachingAdjustmentListResponse,
+    TeachingAdjustmentRequest,
+    TeachingAdjustmentResponse,
+    TeachingAdjustmentUpdate,
+)
+from .services import (  # noqa: F401
+    DeepSeekService,
+    LearningAdjustmentService,
+    LessonPlanService,
+    SyllabusService,
+    get_deepseek_service,
+    get_learning_adjustment_service,
+    get_lesson_plan_service,
+    get_syllabus_service,
+)
+from .utils import (  # noqa: F401
+    APICallManager,
+    APIKeyPool,
+    APIUsageStats,
+    ContentTemplate,
+    DeepSeekAPIKeyPool,
+    LessonPlanGenerator,
+    ScheduleOptimizer,
+    SmartSuggestionEngine,
+    SyllabusGenerator,
+    get_api_stats,
+    get_deepseek_pool,
+)
 
 __all__ = [
     # Models

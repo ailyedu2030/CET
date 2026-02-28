@@ -5,8 +5,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.training.models.assistant_models import (QuestionType, RecommendationSource,
-                                                  ResourceType)
+from app.training.models.assistant_models import QuestionType, RecommendationSource, ResourceType
 
 
 # 知识库模式

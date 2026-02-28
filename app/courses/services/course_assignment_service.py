@@ -7,9 +7,11 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.courses.models.course_models import Class, Course
-from app.courses.schemas.assignment_schemas import (CourseAssignmentRequest,
-                                                    TeacherQualificationCheck,
-                                                    TimeConflictCheck)
+from app.courses.schemas.assignment_schemas import (
+    CourseAssignmentRequest,
+    TeacherQualificationCheck,
+    TimeConflictCheck,
+)
 from app.courses.services.assignment_service import AssignmentService
 
 logger = logging.getLogger(__name__)

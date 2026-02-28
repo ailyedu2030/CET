@@ -10,11 +10,12 @@ from sqlalchemy.orm import selectinload
 from app.core.email import EmailService
 from app.shared.models.enums import UserType
 from app.shared.services.cache_service import CacheService
-from app.users.models import (RegistrationApplication, StudentProfile, TeacherProfile,
-                              User)
-from app.users.schemas.registration_schemas import (ApplicationListFilter,
-                                                    StudentRegistrationRequest,
-                                                    TeacherRegistrationRequest)
+from app.users.models import RegistrationApplication, StudentProfile, TeacherProfile, User
+from app.users.schemas.registration_schemas import (
+    ApplicationListFilter,
+    StudentRegistrationRequest,
+    TeacherRegistrationRequest,
+)
 from app.users.utils.excel_import_utils import StudentExcelImportUtils
 from app.users.utils.jwt_utils import jwt_manager
 

@@ -6,11 +6,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.training_center_schemas import (TrainingCenterCreate,
-                                                          TrainingCenterDashboard,
-                                                          TrainingCenterListResponse,
-                                                          TrainingCenterResponse,
-                                                          TrainingCenterUpdate)
+from app.training.schemas.training_center_schemas import (
+    TrainingCenterCreate,
+    TrainingCenterDashboard,
+    TrainingCenterListResponse,
+    TrainingCenterResponse,
+    TrainingCenterUpdate,
+)
 from app.training.services.training_center_service import TrainingCenterService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user

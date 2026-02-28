@@ -10,8 +10,11 @@ from typing import Any
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.schemas.analytics_schemas import (ReportRequest, ReportResponse,
-                                                     UserBehaviorReport)
+from app.analytics.schemas.analytics_schemas import (
+    ReportRequest,
+    ReportResponse,
+    UserBehaviorReport,
+)
 from app.analytics.utils.chart_utils import ChartGenerator
 from app.users.models.user_models import User
 

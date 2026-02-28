@@ -10,10 +10,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.shared.services.cache_service import CacheService, get_cache_service
 from app.users.models import User
-from app.users.schemas.mfa_schemas import (EmailVerificationRequest, MFASessionRequest,
-                                           MFASessionResponse, SMSVerificationRequest,
-                                           VerificationCodeRequest,
-                                           VerificationResponse)
+from app.users.schemas.mfa_schemas import (
+    EmailVerificationRequest,
+    MFASessionRequest,
+    MFASessionResponse,
+    SMSVerificationRequest,
+    VerificationCodeRequest,
+    VerificationResponse,
+)
 from app.users.services.mfa_service import MFAService
 from app.users.utils.auth_decorators import get_current_active_user
 

@@ -11,8 +11,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.resources.models.resource_models import KnowledgePoint
 from app.shared.models.enums import TrainingType
 from app.training.models.training_models import Question, TrainingRecord
-from app.training.schemas.adaptive_learning_schemas import (ErrorPatternResponse,
-                                                            KnowledgeGapResponse)
+from app.training.schemas.adaptive_learning_schemas import (
+    ErrorPatternResponse,
+    KnowledgeGapResponse,
+)
 
 logger = logging.getLogger(__name__)
 

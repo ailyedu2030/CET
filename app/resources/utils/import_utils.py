@@ -10,10 +10,13 @@ from typing import Any
 import pandas as pd
 from openpyxl.workbook import Workbook
 
-from app.resources.schemas.resource_schemas import (ExamSyllabusBase, ImportResult,
-                                                    KnowledgePointBase,
-                                                    TeachingMaterialBase,
-                                                    VocabularyItemBase)
+from app.resources.schemas.resource_schemas import (
+    ExamSyllabusBase,
+    ImportResult,
+    KnowledgePointBase,
+    TeachingMaterialBase,
+    VocabularyItemBase,
+)
 from app.shared.models.enums import ContentType, DifficultyLevel
 
 logger = logging.getLogger(__name__)

@@ -8,10 +8,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import DifficultyLevel, TrainingType
 from app.training.models.training_models import QuestionBatch
-from app.training.schemas.training_schemas import (PaginatedResponse,
-                                                   QuestionBatchListResponse,
-                                                   QuestionBatchRequest,
-                                                   QuestionBatchResponse)
+from app.training.schemas.training_schemas import (
+    PaginatedResponse,
+    QuestionBatchListResponse,
+    QuestionBatchRequest,
+    QuestionBatchResponse,
+)
 
 logger = logging.getLogger(__name__)
 

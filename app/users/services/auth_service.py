@@ -72,7 +72,7 @@ class AuthService:
 
         # 获取用户角色和权限
         user_roles = await self._get_user_roles(user.id)
-        user_permissions = await self._get_user_permissions(user.id)
+
 
         # 创建JWT令牌对
         token_pair = jwt_manager.create_token_pair(

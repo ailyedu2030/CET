@@ -6,17 +6,19 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.assignment_schemas import (BulkAssignmentRequest,
-                                                    BulkAssignmentResponse,
-                                                    CourseAssignmentRequest,
-                                                    CourseAssignmentResponse,
-                                                    QualificationCheckResult,
-                                                    TeacherQualificationCheck,
-                                                    TeacherWorkloadInfo,
-                                                    TimeConflictCheck,
-                                                    TimeConflictResult,
-                                                    WorkloadBalanceRequest,
-                                                    WorkloadBalanceResponse)
+from app.courses.schemas.assignment_schemas import (
+    BulkAssignmentRequest,
+    BulkAssignmentResponse,
+    CourseAssignmentRequest,
+    CourseAssignmentResponse,
+    QualificationCheckResult,
+    TeacherQualificationCheck,
+    TeacherWorkloadInfo,
+    TimeConflictCheck,
+    TimeConflictResult,
+    WorkloadBalanceRequest,
+    WorkloadBalanceResponse,
+)
 from app.courses.services.assignment_service import AssignmentService
 from app.users.utils.auth_decorators import AuthRequired
 

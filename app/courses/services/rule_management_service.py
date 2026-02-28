@@ -7,11 +7,12 @@ from typing import Any
 from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.courses.models.course_models import (RuleConfiguration, RuleExecutionLog,
-                                              RuleMonitoring)
-from app.courses.schemas.rule_schemas import (RuleConfigurationCreate,
-                                              RuleConfigurationUpdate,
-                                              RuleMonitoringCreate)
+from app.courses.models.course_models import RuleConfiguration, RuleExecutionLog, RuleMonitoring
+from app.courses.schemas.rule_schemas import (
+    RuleConfigurationCreate,
+    RuleConfigurationUpdate,
+    RuleMonitoringCreate,
+)
 
 logger = logging.getLogger(__name__)
 

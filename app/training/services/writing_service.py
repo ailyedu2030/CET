@@ -12,20 +12,26 @@ from sqlalchemy.orm import selectinload
 
 from app.ai.services.deepseek_service import DeepSeekService
 from app.shared.services.cache_service import CacheType, get_cache_service
-from app.training.models.writing_models import (WritingDifficulty,
-                                                WritingGrammarRuleModel,
-                                                WritingScoreLevel,
-                                                WritingSubmissionModel,
-                                                WritingTaskModel, WritingTemplateModel,
-                                                WritingType, WritingVocabularyModel)
-from app.training.schemas.writing_schemas import (GrammarCheckResult,
-                                                  WritingRecommendation,
-                                                  WritingStatistics,
-                                                  WritingSubmissionCreate,
-                                                  WritingTaskCreate,
-                                                  WritingTemplateCreate,
-                                                  WritingTemplateUpdate,
-                                                  WritingVocabularyCreate)
+from app.training.models.writing_models import (
+    WritingDifficulty,
+    WritingGrammarRuleModel,
+    WritingScoreLevel,
+    WritingSubmissionModel,
+    WritingTaskModel,
+    WritingTemplateModel,
+    WritingType,
+    WritingVocabularyModel,
+)
+from app.training.schemas.writing_schemas import (
+    GrammarCheckResult,
+    WritingRecommendation,
+    WritingStatistics,
+    WritingSubmissionCreate,
+    WritingTaskCreate,
+    WritingTemplateCreate,
+    WritingTemplateUpdate,
+    WritingVocabularyCreate,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -841,9 +847,11 @@ class WritingService:
             difficulty_level=recommended_difficulty,
         )
 
-        from app.training.schemas.writing_schemas import (WritingTaskResponse,
-                                                          WritingTemplateResponse,
-                                                          WritingVocabularyResponse)
+        from app.training.schemas.writing_schemas import (
+            WritingTaskResponse,
+            WritingTemplateResponse,
+            WritingVocabularyResponse,
+        )
 
         return WritingRecommendation(
             recommended_templates=[

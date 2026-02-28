@@ -185,8 +185,7 @@ async def generate_custom_report(
         )
 
     try:
-        from app.analytics.services.custom_report_service import (OutputFormat,
-                                                                  ReportFilter)
+        from app.analytics.services.custom_report_service import OutputFormat, ReportFilter
 
         service = CustomReportService()
 

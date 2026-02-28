@@ -8,13 +8,28 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.training.schemas.social_interaction_schemas import (
-    DiscussionForumCreate, DiscussionForumListResponse, DiscussionForumResponse,
-    DiscussionForumUpdate, ForumPostCreate, ForumPostListResponse, ForumPostResponse,
-    ForumPostUpdate, MessageCreate, MessageListResponse, MessageResponse,
-    PostLikeCreate, PostLikeResponse, PostReportCreate, PostReportResponse,
-    StudyGroupCreate, StudyGroupListResponse, StudyGroupResponse,
-    StudyPartnerRequestCreate, StudyPartnerRequestListResponse,
-    StudyPartnerRequestResponse)
+    DiscussionForumCreate,
+    DiscussionForumListResponse,
+    DiscussionForumResponse,
+    DiscussionForumUpdate,
+    ForumPostCreate,
+    ForumPostListResponse,
+    ForumPostResponse,
+    ForumPostUpdate,
+    MessageCreate,
+    MessageListResponse,
+    MessageResponse,
+    PostLikeCreate,
+    PostLikeResponse,
+    PostReportCreate,
+    PostReportResponse,
+    StudyGroupCreate,
+    StudyGroupListResponse,
+    StudyGroupResponse,
+    StudyPartnerRequestCreate,
+    StudyPartnerRequestListResponse,
+    StudyPartnerRequestResponse,
+)
 from app.training.services.social_service import SocialService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user

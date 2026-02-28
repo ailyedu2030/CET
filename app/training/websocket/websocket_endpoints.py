@@ -15,8 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.shared.models.enums import UserType
-from app.training.websocket.websocket_manager import (RealTimePushService,
-                                                      connection_manager)
+from app.training.websocket.websocket_manager import RealTimePushService, connection_manager
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
 

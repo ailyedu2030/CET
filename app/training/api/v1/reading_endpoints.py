@@ -7,22 +7,24 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.reading_schemas import (ReadingAnswerRecordCreate,
-                                                  ReadingPassageCreate,
-                                                  ReadingPassageListResponse,
-                                                  ReadingPassageResponse,
-                                                  ReadingPassageUpdate,
-                                                  ReadingQuestionCreate,
-                                                  ReadingQuestionResponse,
-                                                  ReadingQuestionUpdate,
-                                                  ReadingRecommendation,
-                                                  ReadingStatistics,
-                                                  ReadingTrainingPlanCreate,
-                                                  ReadingTrainingPlanListResponse,
-                                                  ReadingTrainingPlanResponse,
-                                                  ReadingTrainingRecordCreate,
-                                                  ReadingTrainingRecordResponse,
-                                                  ReadingTrainingSession)
+from app.training.schemas.reading_schemas import (
+    ReadingAnswerRecordCreate,
+    ReadingPassageCreate,
+    ReadingPassageListResponse,
+    ReadingPassageResponse,
+    ReadingPassageUpdate,
+    ReadingQuestionCreate,
+    ReadingQuestionResponse,
+    ReadingQuestionUpdate,
+    ReadingRecommendation,
+    ReadingStatistics,
+    ReadingTrainingPlanCreate,
+    ReadingTrainingPlanListResponse,
+    ReadingTrainingPlanResponse,
+    ReadingTrainingRecordCreate,
+    ReadingTrainingRecordResponse,
+    ReadingTrainingSession,
+)
 from app.training.services.reading_service import ReadingService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user

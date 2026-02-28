@@ -9,8 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.ai.models.ai_models import AISyllabus
-from app.ai.schemas.ai_schemas import (SyllabusCreate, SyllabusGenerationRequest,
-                                       SyllabusResponse, SyllabusUpdate)
+from app.ai.schemas.ai_schemas import (
+    SyllabusCreate,
+    SyllabusGenerationRequest,
+    SyllabusResponse,
+    SyllabusUpdate,
+)
 from app.ai.services.deepseek_service import get_deepseek_service
 from app.ai.utils.content_generator import SyllabusGenerator
 from app.courses.models.course_models import Course

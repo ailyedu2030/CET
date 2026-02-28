@@ -13,12 +13,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
 from app.shared.models.enums import TrainingType
-from app.training.models.training_models import (Question, TrainingRecord,
-                                                 TrainingSession)
+from app.training.models.training_models import Question, TrainingRecord, TrainingSession
 from app.training.services.adaptive_service import AdaptiveLearningService
 from app.training.services.analytics_service import AnalyticsService
-from app.training.services.intelligent_training_loop_helpers import \
-    IntelligentTrainingLoopHelpers
+from app.training.services.intelligent_training_loop_helpers import IntelligentTrainingLoopHelpers
 
 logger = logging.getLogger(__name__)
 

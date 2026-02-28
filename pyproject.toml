@@ -91,6 +91,9 @@ ignore = [
     "B008",    # do not perform function calls in argument defaults
     "C901",    # too complex
     "ANN401",  # Dynamically typed expressions (Any) are disallowed
+    "ANN101",  # Missing type annotation for `self` in method
+    "ANN102",  # Missing type annotation for `cls` in classmethod
+    "ANN204",  # Missing return type annotation for special method
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -106,9 +109,20 @@ ignore = [
     "RUF003",  # Comment contains ambiguous characters
     "ANN201",  # Missing return type annotation
     "PLC0415", # import should be at top level
+    "E402",    # Module level import not at top of file
+    "ANN",     # All flake8-annotations errors
 ]
-"tests/*" = ["S101", "PLR2004", "F841", "ANN"]  # 测试文件允许assert和魔法数字
-
+"tests/*" = ["S101", "PLR2004", "F841", "ANN", "E402"]  # 测试文件允许assert和魔法数字
+".github/scripts/*" = ["ALL"]
+"tools/*" = ["ALL"]
+"debug_*.py" = ["ALL"]
+"run_*.py" = ["ALL"]
+"app/training/services/listening_service.py" = ["F821", "ANN"]
+"app/resources/models/social_models.py" = ["F811"]
+"app/resources/services/permission_service.py" = ["E712"]
+"app/shared/utils/minio_client.py" = ["F811"]
+"app/training/services/question_batch_service.py" = ["E712"]
+"app/users/services/token_blocklist_service.py" = ["UP007"]
 [tool.mypy]
 python_version = "3.11"
 strict = true

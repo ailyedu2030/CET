@@ -8,11 +8,18 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.training.models.training_models import (TrainingParameterTemplate,
-                                                 TrainingTask, TrainingTaskSubmission)
+from app.training.models.training_models import (
+    TrainingParameterTemplate,
+    TrainingTask,
+    TrainingTaskSubmission,
+)
 from app.training.schemas.training_workshop_schemas import (
-    TrainingParameterTemplateRequest, TrainingParameterTemplateResponse,
-    TrainingTaskRequest, TrainingTaskResponse, WeeklyTrainingRequest)
+    TrainingParameterTemplateRequest,
+    TrainingParameterTemplateResponse,
+    TrainingTaskRequest,
+    TrainingTaskResponse,
+    WeeklyTrainingRequest,
+)
 
 
 class TrainingWorkshopService:

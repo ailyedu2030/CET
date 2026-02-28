@@ -7,21 +7,25 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.assistant_schemas import (KnowledgeBaseCreate,
-                                                    KnowledgeBaseListResponse,
-                                                    KnowledgeBaseResponse,
-                                                    KnowledgeBaseUpdate,
-                                                    LearningResourceCreate,
-                                                    LearningResourceResponse,
-                                                    QAFeedback, QARecordListResponse,
-                                                    QARecordResponse, QARequest,
-                                                    QAResponse,
-                                                    ResourceRecommendationRequest,
-                                                    ResourceRecommendationResponse,
-                                                    UserResourceInteractionCreate,
-                                                    VoiceRecognitionRecordListResponse,
-                                                    VoiceRecognitionRequest,
-                                                    VoiceRecognitionResponse)
+from app.training.schemas.assistant_schemas import (
+    KnowledgeBaseCreate,
+    KnowledgeBaseListResponse,
+    KnowledgeBaseResponse,
+    KnowledgeBaseUpdate,
+    LearningResourceCreate,
+    LearningResourceResponse,
+    QAFeedback,
+    QARecordListResponse,
+    QARecordResponse,
+    QARequest,
+    QAResponse,
+    ResourceRecommendationRequest,
+    ResourceRecommendationResponse,
+    UserResourceInteractionCreate,
+    VoiceRecognitionRecordListResponse,
+    VoiceRecognitionRequest,
+    VoiceRecognitionResponse,
+)
 from app.training.services.assistant_service import AssistantService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user

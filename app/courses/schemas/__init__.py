@@ -1,19 +1,44 @@
 """课程管理模块schemas."""
 
-from .assignment_schemas import (AssignmentHistory, BulkAssignmentRequest,
-                                 BulkAssignmentResponse, CourseAssignmentRequest,
-                                 CourseAssignmentResponse, QualificationCheckResult,
-                                 TeacherQualificationCheck, TeacherWorkloadInfo,
-                                 TimeConflictCheck, TimeConflictResult,
-                                 WorkloadBalanceRequest, WorkloadBalanceResponse)
-from .class_schemas import (ClassBatchCreate, ClassConflictCheck, ClassCreate,
-                            ClassListResponse, ClassResponse, ClassStatistics,
-                            ClassUpdate, ConflictCheckResult, StudentEnrollmentRequest,
-                            StudentEnrollmentResponse)
-from .course_schemas import (ClassBase, CourseCreate, CourseListResponse,
-                             CourseResponse, CourseStatusUpdate, CourseTemplateCreate,
-                             CourseTemplateListResponse, CourseTemplateResponse,
-                             CourseTemplateUpdate, CourseUpdate, CourseVersionResponse)
+from .assignment_schemas import (
+    AssignmentHistory,
+    BulkAssignmentRequest,
+    BulkAssignmentResponse,
+    CourseAssignmentRequest,
+    CourseAssignmentResponse,
+    QualificationCheckResult,
+    TeacherQualificationCheck,
+    TeacherWorkloadInfo,
+    TimeConflictCheck,
+    TimeConflictResult,
+    WorkloadBalanceRequest,
+    WorkloadBalanceResponse,
+)
+from .class_schemas import (
+    ClassBatchCreate,
+    ClassConflictCheck,
+    ClassCreate,
+    ClassListResponse,
+    ClassResponse,
+    ClassStatistics,
+    ClassUpdate,
+    ConflictCheckResult,
+    StudentEnrollmentRequest,
+    StudentEnrollmentResponse,
+)
+from .course_schemas import (
+    ClassBase,
+    CourseCreate,
+    CourseListResponse,
+    CourseResponse,
+    CourseStatusUpdate,
+    CourseTemplateCreate,
+    CourseTemplateListResponse,
+    CourseTemplateResponse,
+    CourseTemplateUpdate,
+    CourseUpdate,
+    CourseVersionResponse,
+)
 
 __all__ = [
     # 课程相关schemas

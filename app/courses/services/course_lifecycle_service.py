@@ -8,8 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.courses.models.course_models import Course, CourseVersion
-from app.courses.schemas.course_schemas import (CourseCreate, CourseStatusUpdate,
-                                                CourseUpdate)
+from app.courses.schemas.course_schemas import CourseCreate, CourseStatusUpdate, CourseUpdate
 from app.courses.services.course_service import CourseService
 from app.shared.models.enums import CourseStatus
 

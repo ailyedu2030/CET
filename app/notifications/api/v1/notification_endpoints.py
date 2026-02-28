@@ -8,13 +8,20 @@ from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_user, get_db
-from app.notifications.models.notification_models import (Notification,
-                                                          NotificationPreference)
+from app.notifications.models.notification_models import Notification, NotificationPreference
 from app.notifications.schemas.notification_schemas import (
-    NotificationBatchCreate, NotificationCreate, NotificationListResponse,
-    NotificationPreferenceResponse, NotificationPreferenceUpdate, NotificationResponse,
-    NotificationStats, NotificationUpdate, ResourceAuditNotification,
-    TeachingPlanChangeNotification, TrainingAnomalyAlert)
+    NotificationBatchCreate,
+    NotificationCreate,
+    NotificationListResponse,
+    NotificationPreferenceResponse,
+    NotificationPreferenceUpdate,
+    NotificationResponse,
+    NotificationStats,
+    NotificationUpdate,
+    ResourceAuditNotification,
+    TeachingPlanChangeNotification,
+    TrainingAnomalyAlert,
+)
 from app.notifications.services.notification_service import UnifiedNotificationService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import AuthRequired, create_permission_dependency

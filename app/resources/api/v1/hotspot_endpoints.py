@@ -7,9 +7,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.resources.schemas.hotspot_schemas import HotspotResourceResponse
-from app.resources.schemas.resource_schemas import (HotspotResourceCreate,
-                                                    HotspotResourceSearchRequest,
-                                                    HotspotResourceUpdate)
+from app.resources.schemas.resource_schemas import (
+    HotspotResourceCreate,
+    HotspotResourceSearchRequest,
+    HotspotResourceUpdate,
+)
 from app.resources.services.hotspot_service import HotspotService
 from app.resources.utils.rss_utils import ExternalResourceCollector
 from app.users.models.user_models import User
