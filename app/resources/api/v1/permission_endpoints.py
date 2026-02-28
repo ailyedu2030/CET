@@ -9,19 +9,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.users.dependencies import get_current_user
 from app.core.database import get_db
-from app.core.exceptions import (
-    PermissionDeniedError,
-    ResourceNotFoundError,
-    ValidationError,
-)
-from app.resources.schemas.permission_schemas import (
-    PermissionSettingRequest,
-    PermissionSettingResponse,
-    SharedResourceResponse,
-)
+from app.core.exceptions import (PermissionDeniedError, ResourceNotFoundError,
+                                 ValidationError)
+from app.resources.schemas.permission_schemas import (PermissionSettingRequest,
+                                                      PermissionSettingResponse,
+                                                      SharedResourceResponse)
 from app.resources.services.permission_service import PermissionService
+from app.users.dependencies import get_current_user
 from app.users.models import User
 
 router = APIRouter(prefix="/api/v1/resource-permissions", tags=["资源权限管理"])
@@ -154,12 +149,19 @@ async def get_shared_resources(
     except Exception as e:
         logger.error(
             f"获取共享资源失败: {str(e)}",
-            extra={"user_id": current_user.id, "resource_type": resource_type, "error": str(e)},
+            extra={
+                "user_id": current_user.id,
+                "resource_type": resource_type,
+                "error": str(e),
+            },
         )
         raise HTTPException(status_code=500, detail="获取共享资源失败") from e
 
 
-@router.get("/permissions/{resource_type}/{resource_id}", response_model=PermissionSettingResponse)
+@router.get(
+    "/permissions/{resource_type}/{resource_id}",
+    response_model=PermissionSettingResponse,
+)
 async def get_resource_permission(
     resource_type: str,
     resource_id: int,
@@ -253,7 +255,9 @@ async def reset_resource_permission(
         )
 
         service = PermissionService(db)
-        await service.reset_resource_permission(resource_type, resource_id, current_user.id)
+        await service.reset_resource_permission(
+            resource_type, resource_id, current_user.id
+        )
 
         logger.info(
             "权限重置成功", extra={"resource_type": resource_type, "resource_id": resource_id}

@@ -10,11 +10,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import TrainingType
 from app.training.models.training_models import TrainingRecord, TrainingSession
-from app.training.schemas.training_schemas import (
-    LearningProgressResponse,
-    PerformanceMetrics,
-    PerformanceReportResponse,
-)
+from app.training.schemas.training_schemas import (LearningProgressResponse,
+                                                   PerformanceMetrics,
+                                                   PerformanceReportResponse)
 
 
 class AnalyticsService:
@@ -53,7 +51,9 @@ class AnalyticsService:
         # 计算基础统计
         total_questions = len(training_records)
         correct_answers = sum(1 for r in training_records if r.is_correct)
-        accuracy_rate = (correct_answers / total_questions) if total_questions > 0 else 0.0
+        accuracy_rate = (
+            (correct_answers / total_questions) if total_questions > 0 else 0.0
+        )
 
         # 计算平均用时
         total_time = sum(r.time_spent for r in training_records if r.time_spent)
@@ -195,21 +195,29 @@ class AnalyticsService:
         # 获取所有训练类型的数据
         all_metrics = {}
         for training_type in TrainingType:
-            metrics = await self.get_performance_metrics(student_id, training_type, days)
+            metrics = await self.get_performance_metrics(
+                student_id, training_type, days
+            )
             if metrics.total_questions > 0:
                 all_metrics[training_type] = metrics
 
         # 整体统计
         total_questions = sum(m.total_questions for m in all_metrics.values())
         total_correct = sum(m.correct_answers for m in all_metrics.values())
-        overall_accuracy = (total_correct / total_questions) if total_questions > 0 else 0.0
+        overall_accuracy = (
+            (total_correct / total_questions) if total_questions > 0 else 0.0
+        )
 
         # 最强和最弱领域
         best_area = None
         worst_area = None
         if all_metrics:
-            best_area = max(all_metrics.keys(), key=lambda k: all_metrics[k].accuracy_rate)
-            worst_area = min(all_metrics.keys(), key=lambda k: all_metrics[k].accuracy_rate)
+            best_area = max(
+                all_metrics.keys(), key=lambda k: all_metrics[k].accuracy_rate
+            )
+            worst_area = min(
+                all_metrics.keys(), key=lambda k: all_metrics[k].accuracy_rate
+            )
 
         # 学习建议
         recommendations = await self._generate_comprehensive_recommendations(
@@ -270,7 +278,9 @@ class AnalyticsService:
 
     # ==================== 数据洞察分析 ====================
 
-    async def get_learning_patterns(self, student_id: int, days: int = 60) -> dict[str, Any]:
+    async def get_learning_patterns(
+        self, student_id: int, days: int = 60
+    ) -> dict[str, Any]:
         """分析学习模式和习惯."""
         end_date = datetime.utcnow()
         start_date = end_date - timedelta(days=days)
@@ -352,7 +362,9 @@ class AnalyticsService:
 
     # ==================== 私有辅助方法 ====================
 
-    async def _calculate_consecutive_days(self, student_id: int, end_date: datetime) -> int:
+    async def _calculate_consecutive_days(
+        self, student_id: int, end_date: datetime
+    ) -> int:
         """计算连续学习天数."""
         consecutive_days = 0
         current_date = end_date.date()
@@ -506,7 +518,9 @@ class AnalyticsService:
 
         # 基于训练类型的建议
         if type_stats:
-            weakest_type = min(type_stats.keys(), key=lambda k: type_stats[k]["accuracy"])
+            weakest_type = min(
+                type_stats.keys(), key=lambda k: type_stats[k]["accuracy"]
+            )
             suggestions.append(f"建议加强{weakest_type}类型题目的练习")
 
         # 基于难度的建议
@@ -546,7 +560,9 @@ class AnalyticsService:
         if not previous_records:
             return 0.0
 
-        previous_accuracy = sum(1 for r in previous_records if r.is_correct) / len(previous_records)
+        previous_accuracy = sum(1 for r in previous_records if r.is_correct) / len(
+            previous_records
+        )
 
         # 当前准确率需要重新计算或传入
         # 这里简化处理
@@ -558,7 +574,9 @@ class AnalyticsService:
             else 0.0
         )
 
-    async def _get_difficulty_distribution(self, records: list[TrainingRecord]) -> dict[str, int]:
+    async def _get_difficulty_distribution(
+        self, records: list[TrainingRecord]
+    ) -> dict[str, int]:
         """获取难度分布."""
         distribution: dict[str, int] = defaultdict(int)
         for _record in records:
@@ -601,7 +619,9 @@ class AnalyticsService:
 
         # 针对具体训练类型的建议
         if all_metrics:
-            weakest = min(all_metrics.keys(), key=lambda k: all_metrics[k].accuracy_rate)
+            weakest = min(
+                all_metrics.keys(), key=lambda k: all_metrics[k].accuracy_rate
+            )
             recommendations.append(f"重点关注{weakest.value}训练，提升准确率")
 
         return recommendations
@@ -624,7 +644,9 @@ class AnalyticsService:
 
     # ==================== 模式分析方法 ====================
 
-    async def _analyze_time_patterns(self, records: list[TrainingRecord]) -> dict[str, Any]:
+    async def _analyze_time_patterns(
+        self, records: list[TrainingRecord]
+    ) -> dict[str, Any]:
         """分析时间模式."""
         hour_distribution: dict[int, int] = defaultdict(int)
         weekday_distribution: dict[int, int] = defaultdict(int)
@@ -654,7 +676,9 @@ class AnalyticsService:
             "weekday_distribution": dict(weekday_distribution),
         }
 
-    async def _analyze_frequency_patterns(self, records: list[TrainingRecord]) -> dict[str, Any]:
+    async def _analyze_frequency_patterns(
+        self, records: list[TrainingRecord]
+    ) -> dict[str, Any]:
         """分析学习频率模式."""
         daily_counts: dict[dt.date, int] = defaultdict(int)
         for record in records:
@@ -682,7 +706,9 @@ class AnalyticsService:
             "study_consistency": consistency,
         }
 
-    async def _analyze_error_patterns(self, records: list[TrainingRecord]) -> dict[str, Any]:
+    async def _analyze_error_patterns(
+        self, records: list[TrainingRecord]
+    ) -> dict[str, Any]:
         """分析错误模式."""
         error_records = [r for r in records if not r.is_correct]
         total_errors = len(error_records)
@@ -704,7 +730,9 @@ class AnalyticsService:
             "common_error_types": dict(error_types),
         }
 
-    async def _analyze_progress_patterns(self, records: list[TrainingRecord]) -> dict[str, Any]:
+    async def _analyze_progress_patterns(
+        self, records: list[TrainingRecord]
+    ) -> dict[str, Any]:
         """分析进步模式."""
         if len(records) < 10:
             return {"trend": "数据不足", "improvement_rate": 0.0}
@@ -714,11 +742,17 @@ class AnalyticsService:
 
         # 计算滑动平均准确率
         window_size = min(10, len(sorted_records) // 3)
-        early_accuracy = sum(1 for r in sorted_records[:window_size] if r.is_correct) / window_size
-        late_accuracy = sum(1 for r in sorted_records[-window_size:] if r.is_correct) / window_size
+        early_accuracy = (
+            sum(1 for r in sorted_records[:window_size] if r.is_correct) / window_size
+        )
+        late_accuracy = (
+            sum(1 for r in sorted_records[-window_size:] if r.is_correct) / window_size
+        )
 
         improvement_rate = (
-            (late_accuracy - early_accuracy) / early_accuracy * 100 if early_accuracy > 0 else 0.0
+            (late_accuracy - early_accuracy) / early_accuracy * 100
+            if early_accuracy > 0
+            else 0.0
         )
 
         if improvement_rate > 5:
@@ -810,15 +844,16 @@ class AnalyticsService:
         insights = []
 
         # 准确率对比
-        if student_progress.overall_metrics.accuracy_rate > comparison_data["average_accuracy"]:
+        if (
+            student_progress.overall_metrics.accuracy_rate
+            > comparison_data["average_accuracy"]
+        ):
             insights.append("您的准确率高于平均水平，表现优秀")
         else:
             insights.append("准确率低于平均水平，有提升空间")
 
         # 活跃度对比
-        avg_daily = (
-            student_progress.overall_metrics.total_questions / 30  # 假设30天分析周期
-        )
+        avg_daily = student_progress.overall_metrics.total_questions / 30  # 假设30天分析周期
         if avg_daily > comparison_data["average_questions_per_day"]:
             insights.append("学习活跃度很高，保持这个势头")
         else:
@@ -834,7 +869,10 @@ class AnalyticsService:
         """识别改进机会."""
         opportunities = []
 
-        if student_progress.overall_metrics.accuracy_rate < comparison_data["average_accuracy"]:
+        if (
+            student_progress.overall_metrics.accuracy_rate
+            < comparison_data["average_accuracy"]
+        ):
             opportunities.append("提升答题准确率至平均水平以上")
 
         if len(student_progress.time_distribution) < 7:

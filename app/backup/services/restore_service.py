@@ -11,17 +11,11 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.schemas.analytics_schemas import (
-    BackupInfo,
-    RestoreInfo,
-    RestoreRequest,
-)
+from app.analytics.schemas.analytics_schemas import (BackupInfo, RestoreInfo,
+                                                     RestoreRequest)
 from app.backup.services.backup_service import BackupService
-from app.backup.utils.backup_utils import (
-    BackupCompression,
-    BackupEncryption,
-    DatabaseDumper,
-)
+from app.backup.utils.backup_utils import (BackupCompression, BackupEncryption,
+                                           DatabaseDumper)
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -73,7 +67,9 @@ class RestoreService:
             # 验证备份文件
             if request.validate_before_restore:
                 logger.info("验证备份文件完整性...")
-                validation_result = await self.backup_service.validate_backup(request.backup_id)
+                validation_result = await self.backup_service.validate_backup(
+                    request.backup_id
+                )
                 if not validation_result["valid"]:
                     raise Exception(f"备份文件验证失败: {validation_result.get('error')}")
 
@@ -85,11 +81,17 @@ class RestoreService:
 
             # 执行恢复
             if request.restore_type == "full":
-                await self._perform_full_restore(restore_file_path, restore_info, request)
+                await self._perform_full_restore(
+                    restore_file_path, restore_info, request
+                )
             elif request.restore_type == "partial":
-                await self._perform_partial_restore(restore_file_path, restore_info, request)
+                await self._perform_partial_restore(
+                    restore_file_path, restore_info, request
+                )
             elif request.restore_type == "point_in_time":
-                await self._perform_point_in_time_restore(restore_file_path, restore_info, request)
+                await self._perform_point_in_time_restore(
+                    restore_file_path, restore_info, request
+                )
             else:
                 raise Exception(f"不支持的恢复类型: {request.restore_type}")
 
@@ -128,7 +130,9 @@ class RestoreService:
             encryption = BackupEncryption(encryption_key)
 
             # 创建临时解密文件
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".decrypted") as temp_file:
+            with tempfile.NamedTemporaryFile(
+                delete=False, suffix=".decrypted"
+            ) as temp_file:
                 decrypted_path = temp_file.name
 
             encryption.decrypt_file(current_file, decrypted_path)
@@ -182,7 +186,9 @@ class RestoreService:
 
         # 对于PostgreSQL，部分恢复需要过滤SQL文件
         # 这里简化实现，实际项目中需要解析SQL并过滤特定表
-        filtered_sql_file = await self._filter_sql_for_tables(restore_file_path, request.tables)
+        filtered_sql_file = await self._filter_sql_for_tables(
+            restore_file_path, request.tables
+        )
 
         try:
             # 执行过滤后的SQL
@@ -193,7 +199,9 @@ class RestoreService:
 
             # 更新恢复信息
             restore_info.tables_restored = request.tables
-            restore_info.records_restored = await self._count_restored_records(request.tables)
+            restore_info.records_restored = await self._count_restored_records(
+                request.tables
+            )
 
         finally:
             # 清理临时过滤文件
@@ -218,9 +226,13 @@ class RestoreService:
         # 在实际实现中，这里需要应用WAL日志
         logger.warning("时间点恢复功能需要WAL日志支持，当前为简化实现")
 
-    async def _filter_sql_for_tables(self, sql_file_path: str, target_tables: list[str]) -> str:
+    async def _filter_sql_for_tables(
+        self, sql_file_path: str, target_tables: list[str]
+    ) -> str:
         """过滤SQL文件，只保留指定表的内容."""
-        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".sql") as temp_file:
+        with tempfile.NamedTemporaryFile(
+            mode="w", delete=False, suffix=".sql"
+        ) as temp_file:
             filtered_file_path = temp_file.name
 
         try:
@@ -314,7 +326,9 @@ class RestoreService:
             logger.error(f"取消恢复操作失败: {restore_id} - {e}")
             return False
 
-    async def validate_restore_prerequisites(self, request: RestoreRequest) -> dict[str, Any]:
+    async def validate_restore_prerequisites(
+        self, request: RestoreRequest
+    ) -> dict[str, Any]:
         """验证恢复前提条件."""
         try:
             issues = []

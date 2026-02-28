@@ -20,7 +20,9 @@ class HotspotResourceBase(BaseModel):
     full_content: str | None = Field(None, description="完整内容")
     content_type: ContentType = Field(ContentType.TEXT, description="内容类型")
     language: str = Field("en", description="语言", max_length=10)
-    difficulty_level: DifficultyLevel = Field(DifficultyLevel.INTERMEDIATE, description="难度级别")
+    difficulty_level: DifficultyLevel = Field(
+        DifficultyLevel.INTERMEDIATE, description="难度级别"
+    )
     topics: list[str] = Field(default_factory=list, description="话题标签")
     keywords: list[str] = Field(default_factory=list, description="关键词")
     vocabulary_highlights: list[dict[str, Any]] = Field(
@@ -55,7 +57,9 @@ class HotspotResourceUpdate(BaseModel):
     vocabulary_highlights: list[dict[str, Any]] | None = Field(None, description="重点词汇")
     grammar_points: list[str] | None = Field(None, description="语法点")
     cultural_notes: str | None = Field(None, description="文化注释")
-    comprehension_questions: list[dict[str, Any]] | None = Field(None, description="理解问题")
+    comprehension_questions: list[dict[str, Any]] | None = Field(
+        None, description="理解问题"
+    )
     discussion_topics: list[str] | None = Field(None, description="讨论话题")
     is_recommended: bool | None = Field(None, description="是否推荐")
     recommendation_reason: str | None = Field(None, description="推荐理由")
@@ -140,7 +144,9 @@ class DailyRecommendationResponse(BaseModel):
 
     date: str = Field(..., description="推荐日期")
     library_id: int = Field(..., description="资源库ID")
-    recommended_resources: list[HotspotResourceResponse] = Field(..., description="推荐资源列表")
+    recommended_resources: list[HotspotResourceResponse] = Field(
+        ..., description="推荐资源列表"
+    )
     trending_resources: list[HotspotResourceResponse] = Field(..., description="热门资源列表")
     total_count: int = Field(..., description="总数量")
     generated_at: datetime = Field(..., description="生成时间")

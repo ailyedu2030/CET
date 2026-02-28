@@ -137,9 +137,7 @@ class ResourceRating(BaseModel):
     )
 
     def __repr__(self) -> str:
-        return (
-            f"<ResourceRating(id={self.id}, resource_id={self.resource_id}, rating={self.rating})>"
-        )
+        return f"<ResourceRating(id={self.id}, resource_id={self.resource_id}, rating={self.rating})>"
 
 
 # 导出
@@ -259,7 +257,6 @@ class ResourceCategory(BaseModel):
         "ResourceCategory",
         back_populates="parent",
     )
-
 
 
 class ResourceQuota(BaseModel):

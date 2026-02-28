@@ -106,7 +106,9 @@ class DataAnalyzer:
         period2_start = period1_start - timedelta(days=period2_days)
 
         period1_sessions = [
-            s for s in sessions if period1_start <= s.get("created_at", datetime.min) <= now
+            s
+            for s in sessions
+            if period1_start <= s.get("created_at", datetime.min) <= now
         ]
 
         period2_sessions = [
@@ -126,10 +128,14 @@ class DataAnalyzer:
         changes = self._calculate_period_changes(period1_stats, period2_stats)
 
         # 统计显著性检验
-        significance_tests = self._perform_significance_tests(period1_sessions, period2_sessions)
+        significance_tests = self._perform_significance_tests(
+            period1_sessions, period2_sessions
+        )
 
         # 趋势分析
-        trend_analysis = self._analyze_performance_trends(period1_sessions, period2_sessions)
+        trend_analysis = self._analyze_performance_trends(
+            period1_sessions, period2_sessions
+        )
 
         return {
             "comparison_periods": {
@@ -180,7 +186,9 @@ class DataAnalyzer:
                 question_analysis.append(analysis)
 
         # 整体难度分布
-        difficulty_distribution = self._calculate_difficulty_distribution(question_analysis)
+        difficulty_distribution = self._calculate_difficulty_distribution(
+            question_analysis
+        )
 
         # 难度校准建议
         calibration_suggestions = self._generate_difficulty_calibration_suggestions(
@@ -234,7 +242,9 @@ class DataAnalyzer:
         for training_type in training_types:
             type_sessions = sessions_by_type[training_type]
             if type_sessions:
-                analysis = self._analyze_single_type_patterns(training_type, type_sessions)
+                analysis = self._analyze_single_type_patterns(
+                    training_type, type_sessions
+                )
                 type_analysis[training_type.value] = analysis
 
         # 跨类型比较
@@ -248,7 +258,9 @@ class DataAnalyzer:
             "type_analysis": type_analysis,
             "cross_type_comparison": cross_type_comparison,
             "type_recommendations": type_recommendations,
-            "insights": self._generate_type_pattern_insights(type_analysis, cross_type_comparison),
+            "insights": self._generate_type_pattern_insights(
+                type_analysis, cross_type_comparison
+            ),
         }
 
     def detect_learning_anomalies(
@@ -359,7 +371,9 @@ class DataAnalyzer:
 
     # ==================== 私有辅助方法 ====================
 
-    def _calculate_basic_statistics(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _calculate_basic_statistics(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """计算基础统计数据."""
         if not sessions:
             return {}
@@ -367,7 +381,9 @@ class DataAnalyzer:
         # 提取关键指标
         accuracies = [s.get("accuracy_rate", 0) for s in sessions]
         times = [
-            s.get("total_time_seconds", 0) for s in sessions if s.get("total_time_seconds", 0) > 0
+            s.get("total_time_seconds", 0)
+            for s in sessions
+            if s.get("total_time_seconds", 0) > 0
         ]
         questions = [s.get("total_questions", 0) for s in sessions]
 
@@ -398,7 +414,9 @@ class DataAnalyzer:
             return {"trend": "数据不足"}
 
         # 按时间排序
-        sorted_sessions = sorted(sessions, key=lambda s: s.get("created_at", datetime.min))
+        sorted_sessions = sorted(
+            sessions, key=lambda s: s.get("created_at", datetime.min)
+        )
 
         # 计算移动平均
         window_size = min(5, len(sorted_sessions) // 3)
@@ -406,7 +424,9 @@ class DataAnalyzer:
 
         for i in range(len(sorted_sessions) - window_size + 1):
             window_sessions = sorted_sessions[i : i + window_size]
-            avg_accuracy = sum(s.get("accuracy_rate", 0) for s in window_sessions) / window_size
+            avg_accuracy = (
+                sum(s.get("accuracy_rate", 0) for s in window_sessions) / window_size
+            )
             moving_averages.append(
                 {
                     "session_index": i + window_size - 1,
@@ -437,7 +457,9 @@ class DataAnalyzer:
             "learning_velocity": self._calculate_learning_velocity(moving_averages),
         }
 
-    def _calculate_learning_velocity(self, moving_averages: list[dict[str, Any]]) -> float:
+    def _calculate_learning_velocity(
+        self, moving_averages: list[dict[str, Any]]
+    ) -> float:
         """计算学习速度."""
         if len(moving_averages) < 2:
             return 0.0
@@ -452,7 +474,9 @@ class DataAnalyzer:
 
         return statistics.mean(velocities) if velocities else 0.0
 
-    def _analyze_efficiency_patterns(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_efficiency_patterns(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析效率模式."""
         if not sessions:
             return {}
@@ -482,13 +506,19 @@ class DataAnalyzer:
             "efficiency_trend": efficiency_trend,
             "efficiency_distribution": efficiency_quartiles,
             "efficiency_consistency": (
-                1.0 - (statistics.stdev(efficiency_scores) / statistics.mean(efficiency_scores))
+                1.0
+                - (
+                    statistics.stdev(efficiency_scores)
+                    / statistics.mean(efficiency_scores)
+                )
                 if len(efficiency_scores) > 1 and statistics.mean(efficiency_scores) > 0
                 else 0
             ),
         }
 
-    def _analyze_difficulty_adaptation(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_difficulty_adaptation(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析难度适应性."""
         # 按难度分组
         difficulty_groups = defaultdict(list)
@@ -501,13 +531,16 @@ class DataAnalyzer:
         for difficulty, accuracies in difficulty_groups.items():
             if accuracies:
                 difficulty_name = (
-                    difficulty.value if hasattr(difficulty, "value") else str(difficulty)
+                    difficulty.value
+                    if hasattr(difficulty, "value")
+                    else str(difficulty)
                 )
                 difficulty_performance[difficulty_name] = {
                     "session_count": len(accuracies),
                     "average_accuracy": statistics.mean(accuracies),
                     "consistency": (
-                        1.0 - (statistics.stdev(accuracies) / statistics.mean(accuracies))
+                        1.0
+                        - (statistics.stdev(accuracies) / statistics.mean(accuracies))
                         if len(accuracies) > 1 and statistics.mean(accuracies) > 0
                         else 0
                     ),
@@ -519,7 +552,9 @@ class DataAnalyzer:
         return {
             "difficulty_performance": difficulty_performance,
             "adaptation_score": adaptation_score,
-            "optimal_difficulty": self._suggest_optimal_difficulty(difficulty_performance),
+            "optimal_difficulty": self._suggest_optimal_difficulty(
+                difficulty_performance
+            ),
         }
 
     def _calculate_adaptation_score(
@@ -552,7 +587,9 @@ class DataAnalyzer:
 
         return total_score / total_weight if total_weight > 0 else 0.0
 
-    def _suggest_optimal_difficulty(self, difficulty_performance: dict[str, dict[str, Any]]) -> str:
+    def _suggest_optimal_difficulty(
+        self, difficulty_performance: dict[str, dict[str, Any]]
+    ) -> str:
         """建议最优难度."""
         if not difficulty_performance:
             return "ELEMENTARY"
@@ -576,7 +613,9 @@ class DataAnalyzer:
         )
         return best_difficulty
 
-    def _analyze_time_distribution(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_time_distribution(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析时间分布."""
         hour_counts: Counter[int] = Counter()
         weekday_counts: Counter[int] = Counter()
@@ -602,9 +641,13 @@ class DataAnalyzer:
             "peak_learning_hour": peak_hour,
             "peak_learning_day": weekday_names[peak_weekday],
             "hour_distribution": dict(hour_counts),
-            "weekday_distribution": {weekday_names[k]: v for k, v in weekday_counts.items()},
+            "weekday_distribution": {
+                weekday_names[k]: v for k, v in weekday_counts.items()
+            },
             "session_duration_stats": {
-                "average_minutes": (statistics.mean(session_durations) if session_durations else 0),
+                "average_minutes": (
+                    statistics.mean(session_durations) if session_durations else 0
+                ),
                 "median_minutes": (
                     statistics.median(session_durations) if session_durations else 0
                 ),
@@ -628,7 +671,9 @@ class DataAnalyzer:
             session_questions = session.get("total_questions", 0)
             session_correct = session.get("correct_answers", 0)
             if session_questions > 0:
-                session_error_rate = (session_questions - session_correct) / session_questions
+                session_error_rate = (
+                    session_questions - session_correct
+                ) / session_questions
                 error_rates_by_session.append(session_error_rate)
 
         error_trend = self._calculate_trend(error_rates_by_session)
@@ -637,7 +682,9 @@ class DataAnalyzer:
             "overall_error_rate": error_rate,
             "error_trend": error_trend,
             "error_consistency": (
-                statistics.stdev(error_rates_by_session) if len(error_rates_by_session) > 1 else 0
+                statistics.stdev(error_rates_by_session)
+                if len(error_rates_by_session) > 1
+                else 0
             ),
         }
 
@@ -770,7 +817,10 @@ class DataAnalyzer:
         # 检查数据完整性
         complete_sessions = 0
         for session in sessions:
-            if all(key in session for key in ["accuracy_rate", "total_questions", "created_at"]):
+            if all(
+                key in session
+                for key in ["accuracy_rate", "total_questions", "created_at"]
+            ):
                 complete_sessions += 1
 
         completeness = complete_sessions / total_sessions if total_sessions > 0 else 0
@@ -810,18 +860,24 @@ class DataAnalyzer:
         # 会话数量变化
         sessions1 = period1_stats.get("session_count", 0)
         sessions2 = period2_stats.get("session_count", 0)
-        session_change = ((sessions1 - sessions2) / sessions2 * 100) if sessions2 > 0 else 0
+        session_change = (
+            ((sessions1 - sessions2) / sessions2 * 100) if sessions2 > 0 else 0
+        )
 
         # 题目数量变化
         questions1 = period1_stats.get("questions_per_session", {}).get("total", 0)
         questions2 = period2_stats.get("questions_per_session", {}).get("total", 0)
-        question_change = ((questions1 - questions2) / questions2 * 100) if questions2 > 0 else 0
+        question_change = (
+            ((questions1 - questions2) / questions2 * 100) if questions2 > 0 else 0
+        )
 
         return {
             "accuracy_change_percent": acc_change,
             "session_count_change_percent": session_change,
             "question_count_change_percent": question_change,
-            "overall_trend": ("改善" if acc_change > 5 else "下降" if acc_change < -5 else "稳定"),
+            "overall_trend": (
+                "改善" if acc_change > 5 else "下降" if acc_change < -5 else "稳定"
+            ),
         }
 
     def _perform_significance_tests(
@@ -871,7 +927,9 @@ class DataAnalyzer:
             if len(sessions) < 3:
                 return "数据不足"
 
-            sorted_sessions = sorted(sessions, key=lambda s: s.get("created_at", datetime.min))
+            sorted_sessions = sorted(
+                sessions, key=lambda s: s.get("created_at", datetime.min)
+            )
             accuracies = [s.get("accuracy_rate", 0) for s in sorted_sessions]
 
             first_half = accuracies[: len(accuracies) // 2]
@@ -936,11 +994,15 @@ class DataAnalyzer:
         actual_difficulty = 1.0 - (correct_count / total_count)  # 错误率作为实际难度
 
         # 计算平均用时
-        times = [r.get("time_spent", 0) for r in responses if r.get("time_spent", 0) > 0]
+        times = [
+            r.get("time_spent", 0) for r in responses if r.get("time_spent", 0) > 0
+        ]
         avg_time = statistics.mean(times) if times else 0
 
         # 标记难度
-        declared_difficulty = question.get("difficulty_level", DifficultyLevel.ELEMENTARY)
+        declared_difficulty = question.get(
+            "difficulty_level", DifficultyLevel.ELEMENTARY
+        )
 
         return {
             "question_id": question.get("id"),
@@ -959,7 +1021,9 @@ class DataAnalyzer:
             ),
         }
 
-    def _assess_difficulty_alignment(self, declared: DifficultyLevel, actual: float) -> str:
+    def _assess_difficulty_alignment(
+        self, declared: DifficultyLevel, actual: float
+    ) -> str:
         """评估难度对齐程度."""
         # 将声明难度转换为数值
         difficulty_mapping = {
@@ -1005,7 +1069,9 @@ class DataAnalyzer:
                 "count": len(actual_difficulties),
                 "avg_actual_difficulty": statistics.mean(actual_difficulties),
                 "std_dev": (
-                    statistics.stdev(actual_difficulties) if len(actual_difficulties) > 1 else 0
+                    statistics.stdev(actual_difficulties)
+                    if len(actual_difficulties) > 1
+                    else 0
                 ),
             }
 
@@ -1064,7 +1130,11 @@ class DataAnalyzer:
 
         for analysis in question_analysis:
             actual = analysis.get("actual_difficulty", 0)
-            z_score = abs(actual - mean_difficulty) / std_difficulty if std_difficulty > 0 else 0
+            z_score = (
+                abs(actual - mean_difficulty) / std_difficulty
+                if std_difficulty > 0
+                else 0
+            )
 
             if z_score > threshold:
                 outliers.append(
@@ -1087,7 +1157,9 @@ class DataAnalyzer:
 
         # 分布洞察
         if difficulty_distribution:
-            total_questions = sum(d.get("count", 0) for d in difficulty_distribution.values())
+            total_questions = sum(
+                d.get("count", 0) for d in difficulty_distribution.values()
+            )
             if total_questions > 0:
                 insights.append(f"共分析{total_questions}道题目的难度分布")
 
@@ -1131,7 +1203,9 @@ class DataAnalyzer:
             "basic_statistics": basic_stats,
             "progress_trend": progress_trend,
             "time_patterns": time_patterns,
-            "performance_rating": self._rate_type_performance(basic_stats, progress_trend),
+            "performance_rating": self._rate_type_performance(
+                basic_stats, progress_trend
+            ),
         }
 
     def _rate_type_performance(
@@ -1150,7 +1224,9 @@ class DataAnalyzer:
         else:
             return "需要改进"
 
-    def _compare_across_types(self, type_analysis: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    def _compare_across_types(
+        self, type_analysis: dict[str, dict[str, Any]]
+    ) -> dict[str, Any]:
         """跨类型比较."""
         if len(type_analysis) < 2:
             return {"error": "类型数量不足进行比较"}
@@ -1158,7 +1234,9 @@ class DataAnalyzer:
         # 找出最佳和最差表现
         type_scores = {}
         for type_name, analysis in type_analysis.items():
-            accuracy = analysis.get("basic_statistics", {}).get("accuracy", {}).get("mean", 0)
+            accuracy = (
+                analysis.get("basic_statistics", {}).get("accuracy", {}).get("mean", 0)
+            )
             type_scores[type_name] = accuracy
 
         best_type = max(type_scores.keys(), key=lambda k: type_scores[k])
@@ -1171,16 +1249,22 @@ class DataAnalyzer:
             "best_performing_type": best_type,
             "worst_performing_type": worst_type,
             "performance_gap": performance_gap,
-            "type_rankings": sorted(type_scores.items(), key=lambda x: x[1], reverse=True),
+            "type_rankings": sorted(
+                type_scores.items(), key=lambda x: x[1], reverse=True
+            ),
         }
 
-    def _generate_type_recommendations(self, type_analysis: dict[str, dict[str, Any]]) -> list[str]:
+    def _generate_type_recommendations(
+        self, type_analysis: dict[str, dict[str, Any]]
+    ) -> list[str]:
         """生成类型推荐."""
         recommendations = []
 
         for type_name, analysis in type_analysis.items():
             rating = analysis.get("performance_rating", "")
-            accuracy = analysis.get("basic_statistics", {}).get("accuracy", {}).get("mean", 0)
+            accuracy = (
+                analysis.get("basic_statistics", {}).get("accuracy", {}).get("mean", 0)
+            )
 
             if rating == "需要改进":
                 recommendations.append(f"建议加强{type_name}训练，当前准确率{accuracy:.1%}")
@@ -1213,7 +1297,9 @@ class DataAnalyzer:
 
         return insights
 
-    def _detect_performance_anomalies(self, sessions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    def _detect_performance_anomalies(
+        self, sessions: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """检测表现异常."""
         if len(sessions) < 5:
             return []
@@ -1237,7 +1323,9 @@ class DataAnalyzer:
                             "session_date": session.get("created_at"),
                             "accuracy": accuracy,
                             "z_score": z_score,
-                            "anomaly_type": ("表现异常低" if accuracy < mean_acc else "表现异常高"),
+                            "anomaly_type": (
+                                "表现异常低" if accuracy < mean_acc else "表现异常高"
+                            ),
                         }
                     )
 
@@ -1250,14 +1338,18 @@ class DataAnalyzer:
         anomalies: list[dict[str, Any]] = []
 
         # 检测学习时间间隔异常
-        session_dates = [s["created_at"] for s in sessions if s.get("created_at") is not None]
+        session_dates = [
+            s["created_at"] for s in sessions if s.get("created_at") is not None
+        ]
         if len(session_dates) < 3:
             return anomalies
 
         session_dates.sort()
         intervals = []
         for i in range(1, len(session_dates)):
-            interval = (session_dates[i] - session_dates[i - 1]).total_seconds() / 3600  # 小时
+            interval = (
+                session_dates[i] - session_dates[i - 1]
+            ).total_seconds() / 3600  # 小时
             intervals.append(interval)
 
         if len(intervals) > 1:
@@ -1279,7 +1371,9 @@ class DataAnalyzer:
 
         return anomalies
 
-    def _detect_behavior_anomalies(self, sessions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    def _detect_behavior_anomalies(
+        self, sessions: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """检测行为异常."""
         anomalies = []
 
@@ -1311,7 +1405,9 @@ class DataAnalyzer:
 
         return anomalies
 
-    def _detect_progress_anomalies(self, sessions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    def _detect_progress_anomalies(
+        self, sessions: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """检测进度异常."""
         anomalies: list[dict[str, Any]] = []
 
@@ -1319,7 +1415,9 @@ class DataAnalyzer:
             return anomalies
 
         # 检测准确率突然下降
-        sorted_sessions = sorted(sessions, key=lambda s: s.get("created_at", datetime.min))
+        sorted_sessions = sorted(
+            sessions, key=lambda s: s.get("created_at", datetime.min)
+        )
 
         for i in range(2, len(sorted_sessions)):
             current_acc = sorted_sessions[i].get("accuracy_rate", 0)
@@ -1420,13 +1518,17 @@ class DataAnalyzer:
 
         return recommendations
 
-    def _predict_learning_trajectory(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _predict_learning_trajectory(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """预测学习轨迹."""
         if len(sessions) < 5:
             return {"error": "数据不足进行预测"}
 
         # 按时间排序
-        sorted_sessions = sorted(sessions, key=lambda s: s.get("created_at", datetime.min))
+        sorted_sessions = sorted(
+            sessions, key=lambda s: s.get("created_at", datetime.min)
+        )
 
         # 提取准确率趋势
         accuracies = [s.get("accuracy_rate", 0) for s in sorted_sessions]
@@ -1439,7 +1541,9 @@ class DataAnalyzer:
         x_mean = statistics.mean(x_values)
         y_mean = statistics.mean(accuracies)
 
-        numerator = sum((x_values[i] - x_mean) * (accuracies[i] - y_mean) for i in range(n))
+        numerator = sum(
+            (x_values[i] - x_mean) * (accuracies[i] - y_mean) for i in range(n)
+        )
         denominator = sum((x_values[i] - x_mean) ** 2 for i in range(n))
 
         if denominator > 0:
@@ -1465,13 +1569,17 @@ class DataAnalyzer:
 
         return {"error": "无法计算趋势"}
 
-    def _predict_future_performance(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _predict_future_performance(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """预测未来表现."""
         if len(sessions) < 3:
             return {"error": "数据不足"}
 
         recent_sessions = sessions[-5:]  # 最近5次会话
-        recent_accuracy = statistics.mean([s.get("accuracy_rate", 0) for s in recent_sessions])
+        recent_accuracy = statistics.mean(
+            [s.get("accuracy_rate", 0) for s in recent_sessions]
+        )
 
         # 基于最近表现预测
         if recent_accuracy >= 0.85:
@@ -1537,12 +1645,16 @@ class DataAnalyzer:
             "intervention_recommended": len(risk_factors) >= 1,
         }
 
-    def _predict_goal_achievement(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _predict_goal_achievement(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """预测目标达成."""
         if not sessions:
             return {"error": "无数据"}
 
-        current_accuracy = statistics.mean([s.get("accuracy_rate", 0) for s in sessions[-3:]])
+        current_accuracy = statistics.mean(
+            [s.get("accuracy_rate", 0) for s in sessions[-3:]]
+        )
 
         # 设定目标（可配置）
         goals = {
@@ -1594,7 +1706,9 @@ class DataAnalyzer:
             recommendations.append("学习轨迹良好，建议保持当前方法")
 
         # 基于表现预测的建议
-        performance_level = performance_prediction.get("predicted_performance_level", "")
+        performance_level = performance_prediction.get(
+            "predicted_performance_level", ""
+        )
         if performance_level == "需要改进":
             recommendations.append("预测表现需要改进，建议加强基础练习")
         elif performance_level == "优秀":
@@ -1617,7 +1731,9 @@ class DataAnalyzer:
         # 基于数据一致性
         if len(sessions) > 1:
             accuracies = [s.get("accuracy_rate", 0) for s in sessions]
-            consistency_score = 1.0 - (statistics.stdev(accuracies) / statistics.mean(accuracies))
+            consistency_score = 1.0 - (
+                statistics.stdev(accuracies) / statistics.mean(accuracies)
+            )
             consistency_score = max(0.0, min(1.0, consistency_score))
         else:
             consistency_score = 0.5

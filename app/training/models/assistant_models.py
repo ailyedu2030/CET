@@ -3,7 +3,8 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, Text)
 from sqlalchemy.orm import relationship
 
 from app.shared.models.base_model import BaseModel
@@ -83,7 +84,9 @@ class KnowledgeBaseModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     qa_records = relationship("QARecordModel", back_populates="knowledge_base")
@@ -130,7 +133,9 @@ class QARecordModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     knowledge_base = relationship("KnowledgeBaseModel", back_populates="qa_records")
@@ -188,11 +193,17 @@ class LearningResourceModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
-    recommendations = relationship("ResourceRecommendationModel", back_populates="resource")
-    user_interactions = relationship("UserResourceInteractionModel", back_populates="resource")
+    recommendations = relationship(
+        "ResourceRecommendationModel", back_populates="resource"
+    )
+    user_interactions = relationship(
+        "UserResourceInteractionModel", back_populates="resource"
+    )
 
     def __repr__(self: "LearningResourceModel") -> str:
         return f"<LearningResourceModel(id={getattr(self, 'id', None)}, title={getattr(self, 'title', None)})>"
@@ -281,7 +292,9 @@ class UserResourceInteractionModel(BaseModel):
     first_interaction_at = Column(DateTime, default=datetime.utcnow, comment="首次交互时间")
     last_interaction_at = Column(DateTime, default=datetime.utcnow, comment="最后交互时间")
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     resource = relationship("LearningResourceModel", back_populates="user_interactions")
@@ -333,7 +346,9 @@ class VoiceRecognitionRecordModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     def __repr__(self: "VoiceRecognitionRecordModel") -> str:
         return f"<VoiceRecognitionRecordModel(id={getattr(self, 'id', None)}, user_id={getattr(self, 'user_id', None)})>"

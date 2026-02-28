@@ -164,7 +164,9 @@ class IntelligentAlertService:
 
             # 4. 智能过滤和去重
             if self.alert_config["alert_rules"]["enable_smart_filtering"]:
-                alerts = await self._filter_and_deduplicate_alerts(student_id, session_id, alerts)
+                alerts = await self._filter_and_deduplicate_alerts(
+                    student_id, session_id, alerts
+                )
 
             # 5. 记录预警历史
             if alerts:
@@ -284,7 +286,10 @@ class IntelligentAlertService:
             engagement_level = engagement_metrics.get("engagement_level", "medium")
             activity_score = engagement_metrics.get("activity_score", 0.5)
 
-            if engagement_level == "low" or activity_score < thresholds["engagement_drop_warning"]:
+            if (
+                engagement_level == "low"
+                or activity_score < thresholds["engagement_drop_warning"]
+            ):
                 alerts.append(
                     {
                         "type": "low_engagement",
@@ -336,8 +341,12 @@ class IntelligentAlertService:
 
         try:
             # 获取分析窗口内的历史数据
-            window_minutes = self.alert_config["pattern_detection"]["analysis_window_minutes"]
-            min_samples = self.alert_config["pattern_detection"]["min_samples_for_analysis"]
+            window_minutes = self.alert_config["pattern_detection"][
+                "analysis_window_minutes"
+            ]
+            min_samples = self.alert_config["pattern_detection"][
+                "min_samples_for_analysis"
+            ]
 
             historical_data = await self._get_historical_metrics(
                 student_id, session_id, window_minutes
@@ -347,17 +356,23 @@ class IntelligentAlertService:
                 return alerts
 
             # 分析答题时间异常
-            time_anomaly = await self._detect_time_anomaly(historical_data, current_metrics)
+            time_anomaly = await self._detect_time_anomaly(
+                historical_data, current_metrics
+            )
             if time_anomaly:
                 alerts.append(time_anomaly)
 
             # 分析正确率波动异常
-            accuracy_anomaly = await self._detect_accuracy_anomaly(historical_data, current_metrics)
+            accuracy_anomaly = await self._detect_accuracy_anomaly(
+                historical_data, current_metrics
+            )
             if accuracy_anomaly:
                 alerts.append(accuracy_anomaly)
 
             # 分析学习节奏异常
-            rhythm_anomaly = await self._detect_rhythm_anomaly(historical_data, current_metrics)
+            rhythm_anomaly = await self._detect_rhythm_anomaly(
+                historical_data, current_metrics
+            )
             if rhythm_anomaly:
                 alerts.append(rhythm_anomaly)
 
@@ -408,7 +423,9 @@ class IntelligentAlertService:
 
             # 分析难度适应性
             difficulty_adaptation = current_metrics.get("difficulty_adaptation", {})
-            adaptation_status = difficulty_adaptation.get("adaptation_status", "appropriate")
+            adaptation_status = difficulty_adaptation.get(
+                "adaptation_status", "appropriate"
+            )
 
             if adaptation_status == "too_hard":
                 alerts.append(
@@ -446,7 +463,9 @@ class IntelligentAlertService:
 
         try:
             filtered_alerts = []
-            duplicate_interval = self.alert_config["alert_rules"]["duplicate_alert_interval"]
+            duplicate_interval = self.alert_config["alert_rules"][
+                "duplicate_alert_interval"
+            ]
             max_alerts = self.alert_config["alert_rules"]["max_alerts_per_session"]
 
             # 获取最近的预警历史
@@ -475,7 +494,9 @@ class IntelligentAlertService:
             if len(filtered_alerts) > max_alerts:
                 # 按严重程度排序，保留最重要的预警
                 severity_order = {"critical": 0, "warning": 1, "info": 2}
-                filtered_alerts.sort(key=lambda x: severity_order.get(x.get("severity", "info"), 3))
+                filtered_alerts.sort(
+                    key=lambda x: severity_order.get(x.get("severity", "info"), 3)
+                )
                 filtered_alerts = filtered_alerts[:max_alerts]
 
             return filtered_alerts
@@ -497,7 +518,9 @@ class IntelligentAlertService:
                 alert_key = f"alert_history:{student_id}:{session_id}"
                 timestamp = int(datetime.now().timestamp())
 
-                await self.redis_client.zadd(alert_key, {json.dumps(alert, default=str): timestamp})
+                await self.redis_client.zadd(
+                    alert_key, {json.dumps(alert, default=str): timestamp}
+                )
 
                 # 设置过期时间（7天）
                 await self.redis_client.expire(alert_key, 86400 * 7)
@@ -505,7 +528,9 @@ class IntelligentAlertService:
                 # 记录全局预警统计
                 stats_key = f"alert_stats:{student_id}"
                 await self.redis_client.hincrby(stats_key, f"total_{alert['type']}", 1)
-                await self.redis_client.hincrby(stats_key, f"severity_{alert['severity']}", 1)
+                await self.redis_client.hincrby(
+                    stats_key, f"severity_{alert['severity']}", 1
+                )
                 await self.redis_client.expire(stats_key, 86400 * 30)
 
         except Exception as e:
@@ -588,7 +613,9 @@ class IntelligentAlertService:
 
         try:
             timeseries_key = f"metrics:timeseries:{student_id}:{session_id}"
-            cutoff_timestamp = int((datetime.now() - timedelta(minutes=window_minutes)).timestamp())
+            cutoff_timestamp = int(
+                (datetime.now() - timedelta(minutes=window_minutes)).timestamp()
+            )
 
             # 获取时间窗口内的数据
             data = await self.redis_client.zrangebyscore(
@@ -630,7 +657,9 @@ class IntelligentAlertService:
             import statistics
 
             mean_time = statistics.mean(historical_times)
-            stdev_time = statistics.stdev(historical_times) if len(historical_times) > 1 else 0
+            stdev_time = (
+                statistics.stdev(historical_times) if len(historical_times) > 1 else 0
+            )
 
             # 获取当前答题时间
             current_speed = current_metrics.get("answer_speed", {})
@@ -641,7 +670,9 @@ class IntelligentAlertService:
 
             # 计算Z分数
             z_score = abs(current_time - mean_time) / stdev_time
-            anomaly_threshold = self.alert_config["pattern_detection"]["anomaly_threshold"]
+            anomaly_threshold = self.alert_config["pattern_detection"][
+                "anomaly_threshold"
+            ]
 
             if z_score > anomaly_threshold:
                 return {
@@ -681,7 +712,9 @@ class IntelligentAlertService:
 
             mean_accuracy = statistics.mean(historical_accuracies)
             stdev_accuracy = (
-                statistics.stdev(historical_accuracies) if len(historical_accuracies) > 1 else 0
+                statistics.stdev(historical_accuracies)
+                if len(historical_accuracies) > 1
+                else 0
             )
 
             if mean_accuracy <= 0:
@@ -750,7 +783,9 @@ class IntelligentAlertService:
             logger.error(f"学习节奏异常检测失败: {str(e)}")
             return None
 
-    async def _get_learning_trend_data(self, student_id: int, session_id: int) -> dict[str, Any]:
+    async def _get_learning_trend_data(
+        self, student_id: int, session_id: int
+    ) -> dict[str, Any]:
         """获取学习趋势数据."""
         try:
             # 获取最近的训练记录
@@ -778,8 +813,12 @@ class IntelligentAlertService:
             early_records = records[:mid_point]
             recent_records = records[mid_point:]
 
-            early_accuracy = sum(1 for r in early_records if r.is_correct) / len(early_records)
-            recent_accuracy = sum(1 for r in recent_records if r.is_correct) / len(recent_records)
+            early_accuracy = sum(1 for r in early_records if r.is_correct) / len(
+                early_records
+            )
+            recent_accuracy = sum(1 for r in recent_records if r.is_correct) / len(
+                recent_records
+            )
 
             if recent_accuracy < early_accuracy - 0.1:
                 accuracy_trend = "declining"
@@ -830,7 +869,9 @@ class IntelligentAlertService:
                 (datetime.now() - timedelta(seconds=interval_seconds)).timestamp()
             )
 
-            data = await self.redis_client.zrangebyscore(alert_key, cutoff_timestamp, "+inf")
+            data = await self.redis_client.zrangebyscore(
+                alert_key, cutoff_timestamp, "+inf"
+            )
 
             alerts = []
             for item in data:
@@ -858,7 +899,9 @@ class IntelligentAlertService:
             return {
                 "student_id": student_id,
                 "statistics": stats,
-                "total_alerts": sum(int(v) for k, v in stats.items() if k.startswith("total_")),
+                "total_alerts": sum(
+                    int(v) for k, v in stats.items() if k.startswith("total_")
+                ),
                 "critical_alerts": int(stats.get("severity_critical", 0)),
                 "warning_alerts": int(stats.get("severity_warning", 0)),
                 "info_alerts": int(stats.get("severity_info", 0)),
@@ -872,7 +915,9 @@ class IntelligentAlertService:
         """更新预警配置."""
         try:
             # 深度更新配置
-            def deep_update(base_dict: dict[str, Any], update_dict: dict[str, Any]) -> None:
+            def deep_update(
+                base_dict: dict[str, Any], update_dict: dict[str, Any]
+            ) -> None:
                 for key, value in update_dict.items():
                     if (
                         key in base_dict

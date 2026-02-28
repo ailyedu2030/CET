@@ -125,7 +125,9 @@ class LearningAlgorithm:
             logger.error(f"计算间隔重复失败: {str(e)}")
             return previous_interval, ease_factor
 
-    def analyze_learning_curve(self, performance_data: list[dict[str, Any]]) -> dict[str, Any]:
+    def analyze_learning_curve(
+        self, performance_data: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析学习曲线."""
         try:
             if len(performance_data) < 5:
@@ -149,7 +151,9 @@ class LearningAlgorithm:
             predicted_score = self._predict_next_performance(scores)
 
             # 计算学习效率
-            learning_efficiency = self._calculate_learning_efficiency(scores, timestamps)
+            learning_efficiency = self._calculate_learning_efficiency(
+                scores, timestamps
+            )
 
             return {
                 "status": "analyzed",
@@ -167,7 +171,9 @@ class LearningAlgorithm:
             logger.error(f"分析学习曲线失败: {str(e)}")
             return {"status": "error", "error": str(e)}
 
-    def cluster_learning_patterns(self, students_data: list[dict[str, Any]]) -> dict[str, Any]:
+    def cluster_learning_patterns(
+        self, students_data: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """聚类学习模式."""
         try:
             if len(students_data) < 10:
@@ -204,7 +210,9 @@ class LearningAlgorithm:
                 "status": "clustered",
                 "n_clusters": n_clusters,
                 "clusters": clusters,
-                "cluster_characteristics": self._describe_cluster_characteristics(clusters),
+                "cluster_characteristics": self._describe_cluster_characteristics(
+                    clusters
+                ),
             }
 
         except Exception as e:
@@ -217,7 +225,9 @@ class LearningAlgorithm:
         """推荐学习策略."""
         try:
             # 分析学习风格
-            learning_style = self._identify_learning_style(student_profile, learning_history)
+            learning_style = self._identify_learning_style(
+                student_profile, learning_history
+            )
 
             # 分析当前表现
             current_performance = self._analyze_current_performance(learning_history)
@@ -236,7 +246,9 @@ class LearningAlgorithm:
                 "current_performance": current_performance,
                 "weak_areas": weak_areas,
                 "recommendations": recommendations,
-                "confidence_score": self._calculate_recommendation_confidence(learning_history),
+                "confidence_score": self._calculate_recommendation_confidence(
+                    learning_history
+                ),
             }
 
         except Exception as e:
@@ -245,7 +257,9 @@ class LearningAlgorithm:
 
     # ==================== 私有方法 ====================
 
-    def _calculate_moving_average(self, data: list[float], window_size: int) -> list[float]:
+    def _calculate_moving_average(
+        self, data: list[float], window_size: int
+    ) -> list[float]:
         """计算移动平均."""
         if len(data) < window_size:
             return data
@@ -349,7 +363,9 @@ class LearningAlgorithm:
 
         return suggestions
 
-    def _extract_learning_features(self, student_data: dict[str, Any]) -> list[float] | None:
+    def _extract_learning_features(
+        self, student_data: dict[str, Any]
+    ) -> list[float] | None:
         """提取学习特征."""
         try:
             features = []
@@ -458,7 +474,9 @@ class LearningAlgorithm:
         else:
             return "balanced_learner"
 
-    def _analyze_current_performance(self, history: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_current_performance(
+        self, history: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析当前表现."""
         if not history:
             return {"status": "no_data"}
@@ -521,7 +539,9 @@ class LearningAlgorithm:
 
         return recommendations
 
-    def _calculate_recommendation_confidence(self, history: list[dict[str, Any]]) -> float:
+    def _calculate_recommendation_confidence(
+        self, history: list[dict[str, Any]]
+    ) -> float:
         """计算推荐置信度."""
         if len(history) < 5:
             return 0.3

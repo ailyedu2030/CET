@@ -7,19 +7,15 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.notifications.models.notification_models import (
-    Notification,
-    NotificationHistory,
-    NotificationPreference,
-)
-from app.notifications.schemas.notification_schemas import (
-    NotificationBatchCreate,
-    NotificationCreate,
-    NotificationResponse,
-)
+from app.notifications.models.notification_models import (Notification,
+                                                          NotificationHistory,
+                                                          NotificationPreference)
+from app.notifications.schemas.notification_schemas import (NotificationBatchCreate,
+                                                            NotificationCreate,
+                                                            NotificationResponse)
+from app.notifications.services.websocket_manager import websocket_manager
 from app.shared.tasks.email_tasks import send_notification_email
 
-from app.notifications.services.websocket_manager import websocket_manager
 logger = logging.getLogger(__name__)
 
 
@@ -70,7 +66,9 @@ class UnifiedNotificationService:
                 await self.db.flush()
 
                 # 多渠道发送
-                send_results = await self._send_multi_channel(notification, effective_channels)
+                send_results = await self._send_multi_channel(
+                    notification, effective_channels
+                )
 
                 # 记录发送历史
                 await self._record_notification_history(notification.id, send_results)
@@ -108,7 +106,9 @@ class UnifiedNotificationService:
         """批量发送通知 - 支持按班级批量发送."""
         try:
             # 根据目标类型获取用户列表
-            user_ids = await self._get_target_users(batch_data.target_type, batch_data.target_ids)
+            user_ids = await self._get_target_users(
+                batch_data.target_type, batch_data.target_ids
+            )
 
             if not user_ids:
                 return {
@@ -246,7 +246,9 @@ class UnifiedNotificationService:
         """发送协作相关通知 - 需求16验收标准2."""
         notification_data = NotificationCreate(
             title=f"协作{action}通知",
-            content=self._get_collaboration_message(collaboration_type, action, details),
+            content=self._get_collaboration_message(
+                collaboration_type, action, details
+            ),
             notification_type="collaboration_activity",
             priority="normal",
             metadata={
@@ -370,10 +372,14 @@ class UnifiedNotificationService:
         key = (collaboration_type, action)
         return messages.get(key, f"{collaboration_type}发生了{action}操作")
 
-    async def _get_user_preferences(self, user_id: int) -> NotificationPreference | None:
+    async def _get_user_preferences(
+        self, user_id: int
+    ) -> NotificationPreference | None:
         """获取用户通知偏好."""
         result = await self.db.execute(
-            select(NotificationPreference).where(NotificationPreference.user_id == user_id)
+            select(NotificationPreference).where(
+                NotificationPreference.user_id == user_id
+            )
         )
         return result.scalar_one_or_none()
 
@@ -410,7 +416,9 @@ class UnifiedNotificationService:
             try:
                 if channel == "in_app":
                     # 系统内消息已通过数据库记录实现, 同时发送WebSocket
-                    from app.notifications.schemas.notification_schemas import NotificationResponse
+                    from app.notifications.schemas.notification_schemas import \
+                        NotificationResponse
+
                     notification_response = NotificationResponse(
                         id=notification.id,
                         user_id=notification.user_id,
@@ -474,7 +482,9 @@ class UnifiedNotificationService:
 
         return results
 
-    async def _send_email_notification(self, notification: Notification) -> dict[str, Any]:
+    async def _send_email_notification(
+        self, notification: Notification
+    ) -> dict[str, Any]:
         """发送邮件通知."""
         try:
             # 使用现有的邮件任务
@@ -496,7 +506,9 @@ class UnifiedNotificationService:
             logger.error(f"邮件发送失败: {str(e)}")
             return {"status": "error", "message": str(e)}
 
-    async def _get_target_users(self, target_type: str, target_ids: list[int]) -> list[int]:
+    async def _get_target_users(
+        self, target_type: str, target_ids: list[int]
+    ) -> list[int]:
         """根据目标类型获取用户列表."""
         if target_type == "user":
             return target_ids
@@ -508,7 +520,9 @@ class UnifiedNotificationService:
             user_ids = []
             for class_id in target_ids:
                 # 获取班级的教师
-                result = await self.db.execute(select(Class.teacher_id).where(Class.id == class_id))
+                result = await self.db.execute(
+                    select(Class.teacher_id).where(Class.id == class_id)
+                )
                 teacher_id = result.scalar_one_or_none()
                 if teacher_id:
                     user_ids.append(teacher_id)

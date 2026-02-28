@@ -8,12 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import DifficultyLevel, TrainingType
 from app.training.models.training_models import QuestionBatch
-from app.training.schemas.training_schemas import (
-    PaginatedResponse,
-    QuestionBatchListResponse,
-    QuestionBatchRequest,
-    QuestionBatchResponse,
-)
+from app.training.schemas.training_schemas import (PaginatedResponse,
+                                                   QuestionBatchListResponse,
+                                                   QuestionBatchRequest,
+                                                   QuestionBatchResponse)
 
 logger = logging.getLogger(__name__)
 
@@ -141,17 +139,23 @@ class QuestionBatchService:
                 total_pages=(total + page_size - 1) // page_size,
             )
 
-            return QuestionBatchListResponse(batches=batch_responses, pagination=pagination)
+            return QuestionBatchListResponse(
+                batches=batch_responses, pagination=pagination
+            )
 
         except Exception as e:
             logger.error(f"获取题目批次列表失败: {str(e)}")
             raise
 
-    async def get_question_batch_by_id(self, batch_id: int) -> QuestionBatchResponse | None:
+    async def get_question_batch_by_id(
+        self, batch_id: int
+    ) -> QuestionBatchResponse | None:
         """根据ID获取题目批次."""
         try:
             query = select(QuestionBatch).where(
-                and_(QuestionBatch.id == batch_id, QuestionBatch.is_active == True)  # noqa: E712
+                and_(
+                    QuestionBatch.id == batch_id, QuestionBatch.is_active == True
+                )  # noqa: E712
             )
             result = await self.db.execute(query)
             batch = result.scalar_one_or_none()
@@ -185,7 +189,9 @@ class QuestionBatchService:
         """更新题目批次."""
         try:
             query = select(QuestionBatch).where(
-                and_(QuestionBatch.id == batch_id, QuestionBatch.is_active == True)  # noqa: E712
+                and_(
+                    QuestionBatch.id == batch_id, QuestionBatch.is_active == True
+                )  # noqa: E712
             )
             result = await self.db.execute(query)
             batch = result.scalar_one_or_none()
@@ -234,7 +240,9 @@ class QuestionBatchService:
         """删除题目批次（软删除）."""
         try:
             query = select(QuestionBatch).where(
-                and_(QuestionBatch.id == batch_id, QuestionBatch.is_active == True)  # noqa: E712
+                and_(
+                    QuestionBatch.id == batch_id, QuestionBatch.is_active == True
+                )  # noqa: E712
             )
             result = await self.db.execute(query)
             batch = result.scalar_one_or_none()

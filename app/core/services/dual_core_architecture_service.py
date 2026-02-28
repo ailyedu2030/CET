@@ -48,7 +48,9 @@ class DualCoreArchitectureService:
 
             # 尝试从缓存获取
             if use_cache:
-                cached_data = await self.cache_service.get(cache_key, CacheType.RESOURCE_DATA)
+                cached_data = await self.cache_service.get(
+                    cache_key, CacheType.RESOURCE_DATA
+                )
                 if cached_data:
                     self.logger.info(f"从缓存获取教学资源底座: {cache_key}")
                     return dict(cached_data)
@@ -92,7 +94,9 @@ class DualCoreArchitectureService:
                         "permission_level": resource.permission_level.value,
                         "download_count": resource.download_count,
                         "updated_at": (
-                            resource.updated_at.isoformat() if resource.updated_at else ""
+                            resource.updated_at.isoformat()
+                            if resource.updated_at
+                            else ""
                         ),
                     }
                     for resource in resources
@@ -101,7 +105,9 @@ class DualCoreArchitectureService:
                     {
                         "id": hotspot.id,
                         "title": hotspot.title,
-                        "content": hotspot.full_content or hotspot.content_preview or "",
+                        "content": hotspot.full_content
+                        or hotspot.content_preview
+                        or "",
                         "popularity_score": hotspot.popularity_score,
                         "source_type": hotspot.source_type,
                         "source_url": hotspot.source_url,
@@ -145,7 +151,9 @@ class DualCoreArchitectureService:
                 if not resource_id:
                     continue
 
-                resource_query = select(ResourceLibrary).where(ResourceLibrary.id == resource_id)
+                resource_query = select(ResourceLibrary).where(
+                    ResourceLibrary.id == resource_id
+                )
                 result = await self.db.execute(resource_query)
                 resource = result.scalar_one_or_none()
 
@@ -164,7 +172,9 @@ class DualCoreArchitectureService:
                 if not hotspot_id:
                     continue
 
-                hotspot_query = select(HotspotResource).where(HotspotResource.id == hotspot_id)
+                hotspot_query = select(HotspotResource).where(
+                    HotspotResource.id == hotspot_id
+                )
                 result = await self.db.execute(hotspot_query)
                 hotspot = result.scalar_one_or_none()
 
@@ -224,7 +234,9 @@ class DualCoreArchitectureService:
 
             # 缓存生成结果
             cache_key = f"teaching_content:{user_id}:{hash(str(syllabus_data))}"
-            await self.cache_service.set(cache_key, teaching_content, CacheType.AI_RESULT, ttl=3600)
+            await self.cache_service.set(
+                cache_key, teaching_content, CacheType.AI_RESULT, ttl=3600
+            )
 
             return teaching_content
 
@@ -241,7 +253,9 @@ class DualCoreArchitectureService:
         """分析学情反馈，完成自动化闭环."""
         try:
             # 构建学情分析提示
-            prompt = self._build_feedback_analysis_prompt(student_data, teaching_content)
+            prompt = self._build_feedback_analysis_prompt(
+                student_data, teaching_content
+            )
 
             # 调用DeepSeek分析学情
             success, ai_response, error = await self.ai_service.generate_completion(
@@ -286,14 +300,18 @@ class DualCoreArchitectureService:
             cache_key = f"frequent_resources:{limit}:{time_window_hours}"
 
             # 尝试从缓存获取
-            cached_resources = await self.cache_service.get(cache_key, CacheType.RESOURCE_DATA)
+            cached_resources = await self.cache_service.get(
+                cache_key, CacheType.RESOURCE_DATA
+            )
             if cached_resources:
                 return list(cached_resources)
 
             # 查询频繁访问的资源（基于下载次数和查看次数）
             query = (
                 select(ResourceLibrary)
-                .order_by(desc(ResourceLibrary.download_count + ResourceLibrary.view_count))
+                .order_by(
+                    desc(ResourceLibrary.download_count + ResourceLibrary.view_count)
+                )
                 .limit(limit)
             )
 

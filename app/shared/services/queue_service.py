@@ -198,7 +198,9 @@ class QueueWorker:
                 raise ValueError("任务验证失败")
 
             # 处理任务
-            result = await asyncio.wait_for(processor.process(task), timeout=task.timeout)
+            result = await asyncio.wait_for(
+                processor.process(task), timeout=task.timeout
+            )
 
             # 任务成功
             task.status = TaskStatus.COMPLETED
@@ -238,7 +240,9 @@ class QueueWorker:
         try:
             processor = self.processors.get(task.task_type)
             if processor:
-                await processor.on_failure(task, Exception(task.error_message or "未知错误"))
+                await processor.on_failure(
+                    task, Exception(task.error_message or "未知错误")
+                )
 
             # 检查是否需要重试
             if task.retry_count < task.max_retries:
@@ -354,7 +358,9 @@ class QueueService:
             self.queue_stats[queue_type].total_tasks += 1
             self.queue_stats[queue_type].pending_tasks += 1
 
-            self.logger.info(f"任务已入队: {task.task_id} ({task_type.value}, {priority.value})")
+            self.logger.info(
+                f"任务已入队: {task.task_id} ({task_type.value}, {priority.value})"
+            )
             return task.task_id
 
         except Exception as e:
@@ -414,7 +420,9 @@ class QueueService:
 
                 # 更新平均处理时间
                 if task.started_at and task.completed_at:
-                    processing_time = (task.completed_at - task.started_at).total_seconds()
+                    processing_time = (
+                        task.completed_at - task.started_at
+                    ).total_seconds()
                     current_avg = stats.average_processing_time
                     total_completed = stats.completed_tasks
                     stats.average_processing_time = (
@@ -515,9 +523,13 @@ class QueueService:
             "priority": task.priority.value,
             "payload": task.payload,
             "created_at": task.created_at.isoformat(),
-            "scheduled_at": (task.scheduled_at.isoformat() if task.scheduled_at else None),
+            "scheduled_at": (
+                task.scheduled_at.isoformat() if task.scheduled_at else None
+            ),
             "started_at": task.started_at.isoformat() if task.started_at else None,
-            "completed_at": (task.completed_at.isoformat() if task.completed_at else None),
+            "completed_at": (
+                task.completed_at.isoformat() if task.completed_at else None
+            ),
             "status": task.status.value,
             "retry_count": task.retry_count,
             "max_retries": task.max_retries,
@@ -546,7 +558,9 @@ class QueueService:
                 else None
             ),
             started_at=(
-                datetime.fromisoformat(task_dict["started_at"]) if task_dict["started_at"] else None
+                datetime.fromisoformat(task_dict["started_at"])
+                if task_dict["started_at"]
+                else None
             ),
             completed_at=(
                 datetime.fromisoformat(task_dict["completed_at"])
@@ -596,7 +610,8 @@ class QueueService:
                     "average_processing_time": stats.average_processing_time,
                     "throughput": stats.throughput,
                     "success_rate": (
-                        stats.completed_tasks / (stats.completed_tasks + stats.failed_tasks)
+                        stats.completed_tasks
+                        / (stats.completed_tasks + stats.failed_tasks)
                         if (stats.completed_tasks + stats.failed_tasks) > 0
                         else 0.0
                     ),
@@ -614,7 +629,8 @@ class QueueService:
                     "success_rate": (
                         worker.stats.tasks_processed
                         / (worker.stats.tasks_processed + worker.stats.tasks_failed)
-                        if (worker.stats.tasks_processed + worker.stats.tasks_failed) > 0
+                        if (worker.stats.tasks_processed + worker.stats.tasks_failed)
+                        > 0
                         else 0.0
                     ),
                 }
@@ -624,7 +640,9 @@ class QueueService:
                 "queues": stats_dict,
                 "workers": worker_stats,
                 "total_workers": len(self.workers),
-                "active_workers": len([w for w in self.workers.values() if w.stats.is_active]),
+                "active_workers": len(
+                    [w for w in self.workers.values() if w.stats.is_active]
+                ),
             }
 
         except Exception as e:

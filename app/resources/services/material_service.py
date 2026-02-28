@@ -10,11 +10,9 @@ from sqlalchemy import desc, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.resources.models.resource_models import ResourceLibrary, TeachingMaterial
-from app.resources.schemas.resource_schemas import (
-    TeachingMaterialCreate,
-    TeachingMaterialSearchRequest,
-    TeachingMaterialUpdate,
-)
+from app.resources.schemas.resource_schemas import (TeachingMaterialCreate,
+                                                    TeachingMaterialSearchRequest,
+                                                    TeachingMaterialUpdate)
 from app.shared.models.enums import ContentType, DifficultyLevel
 
 
@@ -126,10 +124,14 @@ class MaterialService:
             stmt = stmt.where(TeachingMaterial.publisher == search_request.publisher)
 
         if search_request.difficulty_level:
-            stmt = stmt.where(TeachingMaterial.difficulty_level == search_request.difficulty_level)
+            stmt = stmt.where(
+                TeachingMaterial.difficulty_level == search_request.difficulty_level
+            )
 
         if search_request.content_type:
-            stmt = stmt.where(TeachingMaterial.content_type == search_request.content_type)
+            stmt = stmt.where(
+                TeachingMaterial.content_type == search_request.content_type
+            )
 
         if search_request.is_primary is not None:
             stmt = stmt.where(TeachingMaterial.is_primary == search_request.is_primary)
@@ -171,7 +173,9 @@ class MaterialService:
 
         return materials, total
 
-    async def update_material_rating(self, material_id: int, rating: float, user_id: int) -> bool:
+    async def update_material_rating(
+        self, material_id: int, rating: float, user_id: int
+    ) -> bool:
         """更新教材评分."""
         teaching_material = await self.get_teaching_material(material_id)
         if not teaching_material:
@@ -229,7 +233,9 @@ class MaterialService:
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 
-    async def get_supplementary_materials(self, library_id: int) -> list[TeachingMaterial]:
+    async def get_supplementary_materials(
+        self, library_id: int
+    ) -> list[TeachingMaterial]:
         """获取辅助教材."""
         stmt = (
             select(TeachingMaterial)
@@ -259,7 +265,9 @@ class MaterialService:
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 
-    async def get_material_statistics(self, library_id: int | None = None) -> dict[str, Any]:
+    async def get_material_statistics(
+        self, library_id: int | None = None
+    ) -> dict[str, Any]:
         """获取教材统计信息."""
         stmt = select(TeachingMaterial)
         if library_id:
@@ -278,7 +286,9 @@ class MaterialService:
         # 统计不同难度级别的教材数量
         difficulty_stats = {}
         for level in DifficultyLevel:
-            difficulty_stats[level.value] = sum(1 for m in materials if m.difficulty_level == level)
+            difficulty_stats[level.value] = sum(
+                1 for m in materials if m.difficulty_level == level
+            )
 
         # 统计主教材和辅助教材
         primary_count = sum(1 for m in materials if m.is_primary)

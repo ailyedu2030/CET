@@ -220,7 +220,9 @@ class CET4Standards:
     }
 
     @classmethod
-    def evaluate_writing(cls, content: str, word_count: int, error_count: int) -> dict[str, Any]:
+    def evaluate_writing(
+        cls, content: str, word_count: int, error_count: int
+    ) -> dict[str, Any]:
         """评估写作水平."""
         # 计算错误率
         error_rate = error_count / max(word_count, 1) if word_count > 0 else 1.0
@@ -245,7 +247,9 @@ class CET4Standards:
         range_size = float(score_range[1]) - float(score_range[0])  # type: ignore
 
         # 根据字数和错误率在范围内调整
-        word_factor = min(1.0, word_count / 120) if level != CET4WritingLevel.VERY_POOR else 0.5
+        word_factor = (
+            min(1.0, word_count / 120) if level != CET4WritingLevel.VERY_POOR else 0.5
+        )
         error_factor = max(0.0, 1.0 - error_rate * 2)
 
         adjustment = range_size * (word_factor * 0.5 + error_factor * 0.5)
@@ -271,7 +275,9 @@ class CET4Standards:
     ) -> dict[str, Any]:
         """评估翻译水平."""
         # 综合评分 (准确性50% + 流畅性30% + 完整性20%)
-        composite_score = accuracy_score * 0.5 + fluency_score * 0.3 + completeness_score * 0.2
+        composite_score = (
+            accuracy_score * 0.5 + fluency_score * 0.3 + completeness_score * 0.2
+        )
 
         # 确定等级
         if composite_score >= 0.9:

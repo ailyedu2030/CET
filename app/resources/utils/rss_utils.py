@@ -43,7 +43,9 @@ class RSSFeedParser:
         """解析RSS源."""
         try:
             if not self.session:
-                raise RuntimeError("RSSFeedParser must be used as async context manager")
+                raise RuntimeError(
+                    "RSSFeedParser must be used as async context manager"
+                )
 
             # 获取RSS内容
             async with self.session.get(feed_url) as response:
@@ -122,7 +124,9 @@ class RSSFeedParser:
             )
 
             # 生成理解问题
-            comprehension_questions = await self._generate_comprehension_questions(title, summary)
+            comprehension_questions = await self._generate_comprehension_questions(
+                title, summary
+            )
 
             return {
                 "title": title,
@@ -139,7 +143,9 @@ class RSSFeedParser:
                 "keywords": keywords,
                 "vocabulary_highlights": vocabulary_highlights,
                 "comprehension_questions": comprehension_questions,
-                "discussion_topics": await self._generate_discussion_topics(title, summary),
+                "discussion_topics": await self._generate_discussion_topics(
+                    title, summary
+                ),
             }
 
         except Exception as e:
@@ -487,7 +493,9 @@ class ExternalResourceCollector:
         async with RSSFeedParser() as parser:
             tasks = []
             for feed_url in self.rss_feeds:
-                task = parser.parse_rss_feed(feed_url, max_items_per_feed, target_language)
+                task = parser.parse_rss_feed(
+                    feed_url, max_items_per_feed, target_language
+                )
                 tasks.append(task)
 
             # 并发获取所有RSS源

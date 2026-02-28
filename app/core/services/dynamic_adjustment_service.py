@@ -49,7 +49,9 @@ class DynamicAdjustmentService:
                 raise BusinessLogicError(f"教案 {lesson_plan_id} 不存在")
 
             # 分析学生掌握度
-            mastery_analysis = await self._analyze_student_mastery(student_mastery_data, user_id)
+            mastery_analysis = await self._analyze_student_mastery(
+                student_mastery_data, user_id
+            )
 
             # 生成教案演进建议
             evolution_suggestions = await self._generate_evolution_suggestions(
@@ -68,7 +70,9 @@ class DynamicAdjustmentService:
 
             # 缓存演进结果
             cache_key = f"evolved_plan:{lesson_plan_id}:{datetime.utcnow().date()}"
-            await self.cache_service.set(cache_key, evolved_plan, CacheType.AI_RESULT, ttl=7200)
+            await self.cache_service.set(
+                cache_key, evolved_plan, CacheType.AI_RESULT, ttl=7200
+            )
 
             return {
                 "evolved_plan": evolved_plan,
@@ -235,7 +239,9 @@ class DynamicAdjustmentService:
 
             # 获取一周内的数据
             week_start = analysis_date - timedelta(days=7)
-            week_data = await self._collect_weekly_data(teacher_id, week_start, analysis_date)
+            week_data = await self._collect_weekly_data(
+                teacher_id, week_start, analysis_date
+            )
 
             # AI分析周数据
             analysis_result = await self._analyze_weekly_data(week_data, teacher_id)
@@ -364,7 +370,9 @@ class DynamicAdjustmentService:
             "version": "1.0",
         }
 
-    def _generate_fallback_mastery_analysis(self, mastery_data: dict[str, Any]) -> dict[str, Any]:
+    def _generate_fallback_mastery_analysis(
+        self, mastery_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """生成备用掌握度分析."""
         return {
             "analysis": "基于数据的基础分析",
@@ -417,7 +425,9 @@ class DynamicAdjustmentService:
 
         return changes
 
-    def _analyze_adjustment_effects(self, history_records: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_adjustment_effects(
+        self, history_records: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析调整效果."""
         return {
             "total_adjustments": len(history_records),

@@ -7,9 +7,8 @@ from typing import Any
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.services.enhanced_performance_monitor import (
-    EnhancedPerformanceMonitor,
-)
+from app.analytics.services.enhanced_performance_monitor import \
+    EnhancedPerformanceMonitor
 from app.analytics.services.intelligent_alert_manager import IntelligentAlertManager
 from app.shared.services.cache_service import CacheService
 from app.users.models import User
@@ -20,7 +19,9 @@ logger = logging.getLogger(__name__)
 class SystemMonitoringService:
     """系统监控与决策支持服务 - 需求6：系统监控与数据决策支持."""
 
-    def __init__(self, db: AsyncSession, cache_service: CacheService | None = None) -> None:
+    def __init__(
+        self, db: AsyncSession, cache_service: CacheService | None = None
+    ) -> None:
         """初始化系统监控服务."""
         self.db = db
         self.cache_service = cache_service
@@ -39,7 +40,9 @@ class SystemMonitoringService:
 
     # ===== 教学监控看板 - 需求6.1 =====
 
-    async def get_teaching_monitoring_dashboard(self, period_days: int = 7) -> dict[str, Any]:
+    async def get_teaching_monitoring_dashboard(
+        self, period_days: int = 7
+    ) -> dict[str, Any]:
         """获取教学监控看板数据 - 需求6：教学监控."""
         try:
             # 计算时间范围
@@ -47,16 +50,22 @@ class SystemMonitoringService:
             start_date = end_date - timedelta(days=period_days)
 
             # 1. 教师授课质量跟踪
-            teacher_quality_stats = await self._get_teacher_quality_stats(start_date, end_date)
+            teacher_quality_stats = await self._get_teacher_quality_stats(
+                start_date, end_date
+            )
 
             # 2. 学生学习进度监控
-            student_progress_stats = await self._get_student_progress_stats(start_date, end_date)
+            student_progress_stats = await self._get_student_progress_stats(
+                start_date, end_date
+            )
 
             # 3. 完课率统计
             completion_stats = await self._get_completion_stats(start_date, end_date)
 
             # 4. 知识点掌握度分析
-            knowledge_mastery_stats = await self._get_knowledge_mastery_stats(start_date, end_date)
+            knowledge_mastery_stats = await self._get_knowledge_mastery_stats(
+                start_date, end_date
+            )
 
             # 5. 异常情况预警
             teaching_alerts = await self._check_teaching_alerts(start_date, end_date)
@@ -95,7 +104,9 @@ class SystemMonitoringService:
                     func.count(TeachingRecord.id).label("total_classes"),
                     func.avg(TeachingRecord.teaching_rating).label("avg_rating"),
                     func.count(
-                        TeachingRecord.id.filter(TeachingRecord.teaching_status == "completed")
+                        TeachingRecord.id.filter(
+                            TeachingRecord.teaching_status == "completed"
+                        )
                     ).label("completed_classes"),
                 )
                 .where(
@@ -119,7 +130,9 @@ class SystemMonitoringService:
             )
 
             # 计算平均评分
-            ratings = [stat.avg_rating for stat in teacher_stats if stat.avg_rating is not None]
+            ratings = [
+                stat.avg_rating for stat in teacher_stats if stat.avg_rating is not None
+            ]
             overall_avg_rating = sum(ratings) / len(ratings) if ratings else 0
 
             return {
@@ -319,7 +332,9 @@ class SystemMonitoringService:
             system_resources = await self.performance_monitor._collect_system_metrics()
 
             # 4. 异常阈值告警
-            system_alerts = await self._check_system_alerts(system_resources, api_usage_stats)
+            system_alerts = await self._check_system_alerts(
+                system_resources, api_usage_stats
+            )
 
             # 5. 系统关键操作日志
             operation_logs = await self._get_recent_operation_logs()
@@ -406,7 +421,9 @@ class SystemMonitoringService:
         """计算应用健康评分."""
         try:
             # 获取关键指标
-            response_time = app_metrics.get("api_performance", {}).get("avg_response_time", 0)
+            response_time = app_metrics.get("api_performance", {}).get(
+                "avg_response_time", 0
+            )
             error_rate = app_metrics.get("reliability", {}).get("error_rate_percent", 0)
 
             # 计算各项评分 (0-100)
@@ -434,7 +451,9 @@ class SystemMonitoringService:
             total_calls = getattr(api_stats, "total_calls", 0)
             failed_calls = getattr(api_stats, "failed_calls", 0)
             successful_calls = total_calls - failed_calls
-            success_rate = (successful_calls / total_calls * 100) if total_calls > 0 else 100
+            success_rate = (
+                (successful_calls / total_calls * 100) if total_calls > 0 else 100
+            )
 
             # 检查是否低于阈值
             success_rate_warning = (
@@ -528,7 +547,9 @@ class SystemMonitoringService:
                         "type": "low_api_success_rate",
                         "severity": "warning" if api_success_rate > 90 else "critical",
                         "value": api_success_rate,
-                        "threshold": self.monitoring_config["api_success_rate_threshold"],
+                        "threshold": self.monitoring_config[
+                            "api_success_rate_threshold"
+                        ],
                         "message": f"API成功率过低: {api_success_rate:.1f}%",
                         "timestamp": current_time.isoformat(),
                     }
@@ -611,7 +632,9 @@ class SystemMonitoringService:
                 "resource_predictions": resource_predictions,
                 "security_scan": security_scan,
                 "optimization_suggestions": optimization_suggestions,
-                "next_maintenance_window": (datetime.now() + timedelta(days=7)).isoformat(),
+                "next_maintenance_window": (
+                    datetime.now() + timedelta(days=7)
+                ).isoformat(),
                 "last_updated": datetime.now().isoformat(),
             }
 
@@ -765,7 +788,9 @@ class SystemMonitoringService:
                 )
 
             # API性能优化建议
-            response_time = app_metrics.get("api_performance", {}).get("avg_response_time", 0)
+            response_time = app_metrics.get("api_performance", {}).get(
+                "avg_response_time", 0
+            )
             if response_time > 1000:  # 超过1秒
                 suggestions.append(
                     {
@@ -831,7 +856,9 @@ class SystemMonitoringService:
         """生成综合监控报告 - 需求6：数据可视化和报告."""
         try:
             # 1. 教学监控数据
-            teaching_dashboard = await self.get_teaching_monitoring_dashboard(period_days)
+            teaching_dashboard = await self.get_teaching_monitoring_dashboard(
+                period_days
+            )
 
             # 2. 系统运维监控数据
             system_monitoring = await self.get_system_operations_monitoring()
@@ -849,7 +876,9 @@ class SystemMonitoringService:
                 "generation_time": datetime.now().isoformat(),
                 "period": {
                     "days": period_days,
-                    "start_date": (datetime.now() - timedelta(days=period_days)).isoformat(),
+                    "start_date": (
+                        datetime.now() - timedelta(days=period_days)
+                    ).isoformat(),
                     "end_date": datetime.now().isoformat(),
                 },
                 "teaching_monitoring": teaching_dashboard,
@@ -873,11 +902,17 @@ class SystemMonitoringService:
         try:
             # 计算各项评分
             teaching_score = self._calculate_teaching_score(teaching_data)
-            system_score = system_data.get("application_health", {}).get("overall_health_score", 0)
-            security_score = predictive_data.get("security_scan", {}).get("security_score", 0)
+            system_score = system_data.get("application_health", {}).get(
+                "overall_health_score", 0
+            )
+            security_score = predictive_data.get("security_scan", {}).get(
+                "security_score", 0
+            )
 
             # 计算综合评分
-            overall_score = teaching_score * 0.4 + system_score * 0.4 + security_score * 0.2
+            overall_score = (
+                teaching_score * 0.4 + system_score * 0.4 + security_score * 0.2
+            )
 
             # 生成状态评级
             if overall_score >= 90:
@@ -908,7 +943,9 @@ class SystemMonitoringService:
                     "security_compliance": security_score,
                 },
                 "total_alerts": len(all_alerts),
-                "critical_alerts": len([a for a in all_alerts if a.get("severity") == "critical"]),
+                "critical_alerts": len(
+                    [a for a in all_alerts if a.get("severity") == "critical"]
+                ),
                 "key_recommendations": [
                     "定期监控系统性能指标",
                     "持续优化教学质量",

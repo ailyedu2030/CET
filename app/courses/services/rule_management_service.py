@@ -7,16 +7,11 @@ from typing import Any
 from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.courses.models.course_models import (
-    RuleConfiguration,
-    RuleExecutionLog,
-    RuleMonitoring,
-)
-from app.courses.schemas.rule_schemas import (
-    RuleConfigurationCreate,
-    RuleConfigurationUpdate,
-    RuleMonitoringCreate,
-)
+from app.courses.models.course_models import (RuleConfiguration, RuleExecutionLog,
+                                              RuleMonitoring)
+from app.courses.schemas.rule_schemas import (RuleConfigurationCreate,
+                                              RuleConfigurationUpdate,
+                                              RuleMonitoringCreate)
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +32,9 @@ class RuleManagementService:
         try:
             # 检查规则名称是否已存在
             existing_rule = await self.db.execute(
-                select(RuleConfiguration).where(RuleConfiguration.rule_name == rule_data.rule_name)
+                select(RuleConfiguration).where(
+                    RuleConfiguration.rule_name == rule_data.rule_name
+                )
             )
             if existing_rule.scalar_one_or_none():
                 raise ValueError(f"规则名称已存在: {rule_data.rule_name}")
@@ -178,7 +175,11 @@ class RuleManagementService:
                 query = query.where(RuleConfiguration.scope_type == scope_type)
 
             # 分页和排序
-            query = query.order_by(desc(RuleConfiguration.created_at)).offset(offset).limit(limit)
+            query = (
+                query.order_by(desc(RuleConfiguration.created_at))
+                .offset(offset)
+                .limit(limit)
+            )
 
             result = await self.db.execute(query)
             return list(result.scalars().all())
@@ -292,7 +293,9 @@ class RuleManagementService:
         config = rule_config.rule_config
 
         if rule_category == "class_binding":
-            return await self._validate_class_binding_rules(config, target_type, target_id, context)
+            return await self._validate_class_binding_rules(
+                config, target_type, target_id, context
+            )
         elif rule_category == "classroom_scheduling":
             return await self._validate_classroom_scheduling_rules(
                 config, target_type, target_id, context
@@ -564,13 +567,21 @@ class RuleManagementService:
 
             # 计算统计数据
             total_executions = len(logs)
-            successful_executions = len([log for log in logs if log.execution_result == "success"])
-            violation_count = len([log for log in logs if log.execution_result == "violation"])
-            exception_count = len([log for log in logs if log.execution_result == "warning"])
+            successful_executions = len(
+                [log for log in logs if log.execution_result == "success"]
+            )
+            violation_count = len(
+                [log for log in logs if log.execution_result == "violation"]
+            )
+            exception_count = len(
+                [log for log in logs if log.execution_result == "warning"]
+            )
 
             # 计算合规率
             compliance_rate = (
-                successful_executions / total_executions if total_executions > 0 else 1.0
+                successful_executions / total_executions
+                if total_executions > 0
+                else 1.0
             )
 
             # 计算效果评分

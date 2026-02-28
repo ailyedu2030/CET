@@ -56,7 +56,9 @@ class CostOptimizationService:
             original_cost = self._estimate_cost(prompt, max_tokens, model_type)
 
             # 选择优化策略
-            strategy = await self._select_optimization_strategy(prompt, model_type, priority)
+            strategy = await self._select_optimization_strategy(
+                prompt, model_type, priority
+            )
 
             # 应用优化
             optimized_params = await self._apply_optimization(
@@ -99,7 +101,9 @@ class CostOptimizationService:
                 "strategy": "none",
             }
 
-    def _estimate_cost(self, prompt: str, max_tokens: int, model_type: AIModelType) -> float:
+    def _estimate_cost(
+        self, prompt: str, max_tokens: int, model_type: AIModelType
+    ) -> float:
         """估算请求成本"""
         # 简化的成本估算逻辑
         input_tokens = len(prompt.split()) * 1.3  # 粗略估算

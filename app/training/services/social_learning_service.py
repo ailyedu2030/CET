@@ -251,7 +251,9 @@ class SocialLearningService:
                 "title": validated_help["title"],
                 "description": validated_help["description"],
                 "subject": validated_help.get("subject", "英语四级"),
-                "difficulty_level": validated_help.get("difficulty_level", "intermediate"),
+                "difficulty_level": validated_help.get(
+                    "difficulty_level", "intermediate"
+                ),
                 "urgency": validated_help.get("urgency", "normal"),
                 "preferred_help_type": validated_help.get("help_type", "explanation"),
                 "attachments": validated_help.get("attachments", []),
@@ -267,7 +269,9 @@ class SocialLearningService:
             await self._save_help_request(help_request)
 
             # 匹配合适的帮助者
-            potential_helpers = await self._find_potential_helpers(requester_id, validated_help)
+            potential_helpers = await self._find_potential_helpers(
+                requester_id, validated_help
+            )
 
             # 发送求助通知
             await self._notify_potential_helpers(help_id, potential_helpers)
@@ -308,7 +312,9 @@ class SocialLearningService:
             validated_response = await self._validate_help_response(help_response)
 
             # 内容安全检查
-            safety_check = await self._check_content_safety(validated_response["content"])
+            safety_check = await self._check_content_safety(
+                validated_response["content"]
+            )
             if not safety_check["is_safe"]:
                 raise ValueError(f"内容不符合社区规范: {safety_check['reason']}")
 
@@ -354,7 +360,9 @@ class SocialLearningService:
             logger.error(f"提供同伴互助失败: {str(e)}")
             raise
 
-    async def get_class_learning_circle(self, class_id: int, user_id: int) -> dict[str, Any]:
+    async def get_class_learning_circle(
+        self, class_id: int, user_id: int
+    ) -> dict[str, Any]:
         """获取班级学习圈信息."""
         try:
             # 验证用户是否属于该班级
@@ -386,7 +394,9 @@ class SocialLearningService:
                 "leaderboard": leaderboard,
                 "recent_activities": recent_activities,
                 "study_groups": study_groups,
-                "user_participation": await self._get_user_participation_stats(user_id, class_id),
+                "user_participation": await self._get_user_participation_stats(
+                    user_id, class_id
+                ),
                 "generated_at": datetime.now(),
             }
 
@@ -454,7 +464,9 @@ class SocialLearningService:
         # TODO: 实现添加成员的逻辑
         return {"group_id": group_id, "current_members": 2}
 
-    async def _send_welcome_message(self, group_id: str, user_id: int, username: str) -> None:
+    async def _send_welcome_message(
+        self, group_id: str, user_id: int, username: str
+    ) -> None:
         """发送欢迎消息."""
         # TODO: 实现欢迎消息发送逻辑
         logger.info(f"发送欢迎消息: {group_id}, {username}")
@@ -490,7 +502,9 @@ class SocialLearningService:
         # TODO: 实现数据库保存逻辑
         logger.info(f"保存讨论帖子: {post['post_id']}")
 
-    async def _award_interaction_points(self, user_id: int, interaction_type: str) -> None:
+    async def _award_interaction_points(
+        self, user_id: int, interaction_type: str
+    ) -> None:
         """奖励互动积分."""
         if interaction_type in self.interaction_types:
             points = self.interaction_types[interaction_type]["points"]
@@ -538,7 +552,9 @@ class SocialLearningService:
         # TODO: 实现帮助者匹配算法
         return []
 
-    async def _notify_potential_helpers(self, help_id: str, helpers: list[dict[str, Any]]) -> None:
+    async def _notify_potential_helpers(
+        self, help_id: str, helpers: list[dict[str, Any]]
+    ) -> None:
         """通知潜在帮助者."""
         # TODO: 实现通知逻辑
         logger.info(f"通知潜在帮助者: {help_id}, {len(helpers)}人")
@@ -552,7 +568,9 @@ class SocialLearningService:
             "response_count": 0,
         }
 
-    async def _validate_help_response(self, response_data: dict[str, Any]) -> dict[str, Any]:
+    async def _validate_help_response(
+        self, response_data: dict[str, Any]
+    ) -> dict[str, Any]:
         if "content" not in response_data:
             raise ValueError("回复内容不能为空")
         return response_data
@@ -564,10 +582,14 @@ class SocialLearningService:
     async def _save_help_response(self, response: dict[str, Any]) -> None:
         logger.info(f"保存帮助回复: {response['response_id']}")
 
-    async def _update_help_request_status(self, help_id: str, updates: dict[str, Any]) -> None:
+    async def _update_help_request_status(
+        self, help_id: str, updates: dict[str, Any]
+    ) -> None:
         logger.info(f"更新求助状态: {help_id}")
 
-    async def _notify_help_requester(self, help_id: str, helper_id: int, response_id: str) -> None:
+    async def _notify_help_requester(
+        self, help_id: str, helper_id: int, response_id: str
+    ) -> None:
         logger.info(f"通知求助者: {help_id}")
 
     async def _verify_class_membership(self, user_id: int, class_id: int) -> bool:
@@ -591,5 +613,7 @@ class SocialLearningService:
     async def _get_class_study_groups(self, class_id: int) -> list[dict[str, Any]]:
         return []
 
-    async def _get_user_participation_stats(self, user_id: int, class_id: int) -> dict[str, Any]:
+    async def _get_user_participation_stats(
+        self, user_id: int, class_id: int
+    ) -> dict[str, Any]:
         return {"posts": 5, "replies": 12, "points": 45, "rank": 8}

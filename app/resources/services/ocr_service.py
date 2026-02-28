@@ -51,7 +51,16 @@ class OCRService:
 
         # 支持的文档格式 - 需求33要求支持20+种格式
         self.supported_formats = {
-            "image": [".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif", ".gif", ".webp"],
+            "image": [
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".bmp",
+                ".tiff",
+                ".tif",
+                ".gif",
+                ".webp",
+            ],
             "pdf": [".pdf"],
             "document": [".doc", ".docx", ".odt", ".rtf"],
             "spreadsheet": [".xls", ".xlsx", ".ods", ".csv"],
@@ -84,7 +93,9 @@ class OCRService:
 
             # 异步处理图片
             loop = asyncio.get_event_loop()
-            result = await loop.run_in_executor(None, self._process_image_advanced, str(image_path))
+            result = await loop.run_in_executor(
+                None, self._process_image_advanced, str(image_path)
+            )
 
             # 质量验证
             quality_report = await self._validate_ocr_quality(result)
@@ -118,7 +129,9 @@ class OCRService:
 
             # 异步处理PDF
             loop = asyncio.get_event_loop()
-            result = await loop.run_in_executor(None, self._process_pdf_advanced, str(pdf_path))
+            result = await loop.run_in_executor(
+                None, self._process_pdf_advanced, str(pdf_path)
+            )
 
             # 质量验证
             quality_report = await self._validate_ocr_quality(result)
@@ -210,7 +223,9 @@ class OCRService:
 
                     # 计算置信度
                     confidences = [int(conf) for conf in data["conf"] if int(conf) > 0]
-                    avg_confidence = sum(confidences) / len(confidences) if confidences else 0
+                    avg_confidence = (
+                        sum(confidences) / len(confidences) if confidences else 0
+                    )
 
                     # 选择最佳结果
                     if avg_confidence > best_confidence:
@@ -246,7 +261,9 @@ class OCRService:
                 "quality_metrics": {
                     "confidence": best_confidence,
                     "noise_ratio": self._calculate_noise_ratio(best_result["text"]),
-                    "readability_score": self._calculate_readability_score(best_result["text"]),
+                    "readability_score": self._calculate_readability_score(
+                        best_result["text"]
+                    ),
                 },
             }
 
@@ -299,7 +316,12 @@ class OCRService:
 
                 # 自适应阈值
                 adaptive_thresh = cv2.adaptiveThreshold(
-                    img_array, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
+                    img_array,
+                    255,
+                    cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                    cv2.THRESH_BINARY,
+                    11,
+                    2,
                 )
                 processed_images.append(Image.fromarray(adaptive_thresh))
 
@@ -336,7 +358,10 @@ class OCRService:
         words_per_sentence = len(words) / sentence_count
 
         # 评分公式（简化版）
-        score = min(100, max(0, 100 - (avg_word_length - 5) * 10 - (words_per_sentence - 15) * 2))
+        score = min(
+            100,
+            max(0, 100 - (avg_word_length - 5) * 10 - (words_per_sentence - 15) * 2),
+        )
         return score
 
     def _is_supported_format(self, file_path: Path, format_type: str) -> bool:
@@ -358,7 +383,11 @@ class OCRService:
                 "format": file_type.upper(),
                 "mode": "RGB",
             },
-            "quality_metrics": {"confidence": 96.0, "noise_ratio": 0.05, "readability_score": 85.0},
+            "quality_metrics": {
+                "confidence": 96.0,
+                "noise_ratio": 0.05,
+                "readability_score": 85.0,
+            },
             "quality_report": {
                 "overall_quality": "excellent",
                 "confidence_score": 96.0,
@@ -404,8 +433,12 @@ class OCRService:
                             output_type=pytesseract.Output.DICT,
                         )
 
-                        confidences = [int(conf) for conf in data["conf"] if int(conf) > 0]
-                        page_confidence = sum(confidences) / len(confidences) if confidences else 0
+                        confidences = [
+                            int(conf) for conf in data["conf"] if int(conf) > 0
+                        ]
+                        page_confidence = (
+                            sum(confidences) / len(confidences) if confidences else 0
+                        )
 
                         # 选择最佳结果
                         if page_confidence > best_page_confidence:
@@ -439,12 +472,15 @@ class OCRService:
                 "char_count": len(combined_text),
                 "page_count": len(pages),
                 "page_results": page_results,
-                "meets_quality_threshold": avg_confidence >= self.quality_control["min_confidence"],
+                "meets_quality_threshold": avg_confidence
+                >= self.quality_control["min_confidence"],
                 "processing_time": processing_time,
                 "quality_metrics": {
                     "confidence": avg_confidence,
                     "noise_ratio": self._calculate_noise_ratio(combined_text),
-                    "readability_score": self._calculate_readability_score(combined_text),
+                    "readability_score": self._calculate_readability_score(
+                        combined_text
+                    ),
                 },
             }
 
@@ -468,7 +504,9 @@ class OCRService:
 
                 # OCR识别
                 page_text = pytesseract.image_to_string(
-                    processed_page, lang=self.ocr_config["lang"], config=self.ocr_config["config"]
+                    processed_page,
+                    lang=self.ocr_config["lang"],
+                    config=self.ocr_config["config"],
                 )
 
                 # 获取置信度
@@ -480,7 +518,9 @@ class OCRService:
                 )
 
                 confidences = [int(conf) for conf in data["conf"] if int(conf) > 0]
-                page_confidence = sum(confidences) / len(confidences) if confidences else 0
+                page_confidence = (
+                    sum(confidences) / len(confidences) if confidences else 0
+                )
 
                 all_text.append(page_text.strip())
                 total_confidence += page_confidence
@@ -545,7 +585,8 @@ class OCRService:
 
             # 质量检查指标
             quality_checks = {
-                "confidence_check": confidence >= self.quality_control["min_confidence"] / 100,
+                "confidence_check": confidence
+                >= self.quality_control["min_confidence"] / 100,
                 "text_length_check": len(text.strip()) > 0,
                 "noise_ratio_check": self._calculate_noise_ratio(text)
                 <= self.quality_control["max_noise_ratio"],
@@ -625,7 +666,9 @@ class OCRService:
             return {
                 "quality_score": quality_score,
                 "quality_checks": quality_checks,
-                "recommendations": self._generate_quality_recommendations(quality_checks),
+                "recommendations": self._generate_quality_recommendations(
+                    quality_checks
+                ),
                 "needs_manual_review": quality_score < 0.8,
                 "confidence": confidence,
             }
@@ -662,7 +705,9 @@ class OCRService:
         )
         return special_chars / len(text)
 
-    def _calculate_quality_score(self, quality_checks: dict[str, Any], confidence: float) -> float:
+    def _calculate_quality_score(
+        self, quality_checks: dict[str, Any], confidence: float
+    ) -> float:
         """计算综合质量评分."""
         # 基础分数来自OCR置信度
         base_score = confidence
@@ -686,7 +731,9 @@ class OCRService:
 
         return min(1.0, base_score)
 
-    def _generate_quality_recommendations(self, quality_checks: dict[str, Any]) -> list[str]:
+    def _generate_quality_recommendations(
+        self, quality_checks: dict[str, Any]
+    ) -> list[str]:
         """生成质量改进建议."""
         recommendations = []
 
@@ -764,13 +811,19 @@ class OCRService:
                 "failures": failed_files,
                 "total_size_mb": total_size / (1024 * 1024),
                 "processing_summary": {
-                    "avg_confidence": sum(r.get("confidence", 0) for r in processed_results)
+                    "avg_confidence": sum(
+                        r.get("confidence", 0) for r in processed_results
+                    )
                     / len(processed_results)
                     if processed_results
                     else 0,
-                    "total_words": sum(r.get("word_count", 0) for r in processed_results),
+                    "total_words": sum(
+                        r.get("word_count", 0) for r in processed_results
+                    ),
                     "high_quality_files": sum(
-                        1 for r in processed_results if r.get("meets_quality_threshold", False)
+                        1
+                        for r in processed_results
+                        if r.get("meets_quality_threshold", False)
                     ),
                 },
             }

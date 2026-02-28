@@ -52,11 +52,14 @@ class GamificationUtils:
         exp_for_next_level = self.level_config["base_exp"]
 
         # 计算当前等级
-        while total_exp >= exp_for_next_level and level < self.level_config["max_level"]:
+        while (
+            total_exp >= exp_for_next_level and level < self.level_config["max_level"]
+        ):
             level += 1
             exp_for_current_level = exp_for_next_level
             exp_for_next_level = int(
-                self.level_config["base_exp"] * (self.level_config["exp_multiplier"] ** (level - 1))
+                self.level_config["base_exp"]
+                * (self.level_config["exp_multiplier"] ** (level - 1))
             )
 
         # 计算当前等级的经验值
@@ -65,7 +68,9 @@ class GamificationUtils:
 
         # 计算进度百分比
         progress_percentage = (
-            (current_level_exp / exp_needed_for_next) * 100 if exp_needed_for_next > 0 else 100
+            (current_level_exp / exp_needed_for_next) * 100
+            if exp_needed_for_next > 0
+            else 100
         )
 
         return {
@@ -96,15 +101,22 @@ class GamificationUtils:
             if accuracy >= 0.95:
                 bonus = int(base_exp * 0.5)
                 reward["bonus_exp"] = reward["bonus_exp"] + bonus
-                reward["multipliers"].append({"type": "perfect_accuracy", "bonus": bonus})
+                reward["multipliers"].append(
+                    {"type": "perfect_accuracy", "bonus": bonus}
+                )
             elif accuracy >= 0.8:
                 bonus = int(base_exp * 0.2)
                 reward["bonus_exp"] = reward["bonus_exp"] + bonus
                 reward["multipliers"].append({"type": "high_accuracy", "bonus": bonus})
 
         # 速度奖励
-        if "completion_time" in performance_data and "expected_time" in performance_data:
-            time_ratio = performance_data["completion_time"] / performance_data["expected_time"]
+        if (
+            "completion_time" in performance_data
+            and "expected_time" in performance_data
+        ):
+            time_ratio = (
+                performance_data["completion_time"] / performance_data["expected_time"]
+            )
             if time_ratio <= 0.7:  # 快速完成
                 bonus = int(base_exp * 0.3)
                 reward["bonus_exp"] = reward["bonus_exp"] + bonus
@@ -112,10 +124,14 @@ class GamificationUtils:
 
         # 连击奖励
         if "streak_count" in performance_data:
-            streak_bonus = self._calculate_streak_bonus(performance_data["streak_count"], base_exp)
+            streak_bonus = self._calculate_streak_bonus(
+                performance_data["streak_count"], base_exp
+            )
             reward["bonus_exp"] = reward["bonus_exp"] + streak_bonus
             if streak_bonus > 0:
-                reward["multipliers"].append({"type": "streak_bonus", "bonus": streak_bonus})
+                reward["multipliers"].append(
+                    {"type": "streak_bonus", "bonus": streak_bonus}
+                )
 
         # 难度奖励
         if "difficulty_level" in performance_data:
@@ -256,7 +272,9 @@ class GamificationUtils:
             "better_than": len(sorted_scores) - rank,
         }
 
-    def generate_progress_visualization(self, progress_data: dict[str, Any]) -> dict[str, Any]:
+    def generate_progress_visualization(
+        self, progress_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """生成进度可视化数据."""
         visualization: dict[str, Any] = {
             "charts": [],
@@ -432,7 +450,9 @@ class GamificationUtils:
 
         return float(round(engagement_score, 3))
 
-    def generate_challenge_suggestion(self, user_profile: dict[str, Any]) -> dict[str, Any]:
+    def generate_challenge_suggestion(
+        self, user_profile: dict[str, Any]
+    ) -> dict[str, Any]:
         """生成个性化挑战建议."""
         current_level = user_profile.get("level", 1)
         weak_areas = user_profile.get("weak_areas", [])

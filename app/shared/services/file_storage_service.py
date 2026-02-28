@@ -72,7 +72,9 @@ class FilePermission(BaseModel):
 class FileStorageService:
     """文件存储服务"""
 
-    def __init__(self, db: AsyncSession, cache_service: CacheService | None = None) -> None:
+    def __init__(
+        self, db: AsyncSession, cache_service: CacheService | None = None
+    ) -> None:
         """初始化文件存储服务"""
         self.db = db
         self.cache_service = cache_service
@@ -103,7 +105,9 @@ class FileStorageService:
             await self._validate_upload_file(file, file_content)
 
             # 生成对象名称
-            object_name = self._generate_object_name(file.filename or "unknown", file_id)
+            object_name = self._generate_object_name(
+                file.filename or "unknown", file_id
+            )
 
             # 准备元数据
             upload_metadata = {
@@ -355,7 +359,9 @@ class FileStorageService:
     ) -> bool:
         """撤销文件权限"""
         try:
-            await self._delete_file_permission(file_id, target_user_id, target_role, permission)
+            await self._delete_file_permission(
+                file_id, target_user_id, target_role, permission
+            )
 
             # 清除权限缓存
             if self.cache_service:
@@ -380,8 +386,12 @@ class FileStorageService:
                 raise ValueError(f"Original file not found: {original_file_id}")
 
             # 检查权限
-            if not await self._check_file_permission(original_file_id, user_id, "write"):
-                raise PermissionError(f"No permission to update file: {original_file_id}")
+            if not await self._check_file_permission(
+                original_file_id, user_id, "write"
+            ):
+                raise PermissionError(
+                    f"No permission to update file: {original_file_id}"
+                )
 
             # 上传新版本
             result = await self.upload_file(
@@ -396,7 +406,9 @@ class FileStorageService:
             )
 
             # 更新版本信息
-            await self._update_file_version(result.file_id, original_metadata.version + 1)
+            await self._update_file_version(
+                result.file_id, original_metadata.version + 1
+            )
 
             logger.info(f"Created new version of file {original_file_id}")
             return result

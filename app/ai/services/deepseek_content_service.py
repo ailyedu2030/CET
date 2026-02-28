@@ -75,7 +75,9 @@ class DeepSeekContentService:
         """
         try:
             prompt = self._build_syllabus_prompt(resource_content, course_info)
-            response = await self._generate_content(prompt, max_tokens=3000, temperature=0.3)
+            response = await self._generate_content(
+                prompt, max_tokens=3000, temperature=0.3
+            )
 
             if response:
                 try:
@@ -118,7 +120,9 @@ class DeepSeekContentService:
         """
         try:
             prompt = self._build_lesson_plan_prompt(syllabus, lesson_info)
-            response = await self._generate_content(prompt, max_tokens=4000, temperature=0.5)
+            response = await self._generate_content(
+                prompt, max_tokens=4000, temperature=0.5
+            )
 
             if response:
                 try:
@@ -145,7 +149,9 @@ class DeepSeekContentService:
             logger.error(f"Lesson plan generation failed: {str(e)}")
             return None
 
-    async def generate_summary(self, content: str, summary_type: str = "general") -> str:
+    async def generate_summary(
+        self, content: str, summary_type: str = "general"
+    ) -> str:
         """
         生成内容摘要
 
@@ -158,7 +164,9 @@ class DeepSeekContentService:
         """
         try:
             prompt = self._build_summary_prompt(content, summary_type)
-            response = await self._generate_content(prompt, max_tokens=500, temperature=0.2)
+            response = await self._generate_content(
+                prompt, max_tokens=500, temperature=0.2
+            )
 
             if response:
                 logger.info(
@@ -249,11 +257,17 @@ class DeepSeekContentService:
 
                         else:
                             error_text = await response.text()
-                            logger.error(f"DeepSeek API error: {response.status} - {error_text}")
-                            raise BusinessLogicError(f"API request failed: {response.status}")
+                            logger.error(
+                                f"DeepSeek API error: {response.status} - {error_text}"
+                            )
+                            raise BusinessLogicError(
+                                f"API request failed: {response.status}"
+                            )
 
             except TimeoutError as e:
-                logger.warning(f"DeepSeek API timeout, attempt {attempt + 1}/{self.max_retries}")
+                logger.warning(
+                    f"DeepSeek API timeout, attempt {attempt + 1}/{self.max_retries}"
+                )
                 if attempt < self.max_retries - 1:
                     await asyncio.sleep(self.retry_delay * (attempt + 1))
                     continue
@@ -268,7 +282,9 @@ class DeepSeekContentService:
 
         return None
 
-    def _build_syllabus_prompt(self, resource_content: str, course_info: dict[str, Any]) -> str:
+    def _build_syllabus_prompt(
+        self, resource_content: str, course_info: dict[str, Any]
+    ) -> str:
         """构建教学大纲生成提示词"""
         course_name = course_info.get("name", "英语四级课程")
         course_duration = course_info.get("duration", "16周")

@@ -20,15 +20,9 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import (
-    BusinessLogicError,
-    ResourceNotFoundError,
-)
-from app.resources.models.resource_models import (
-    DocumentChunk,
-    ProcessingStatus,
-    ResourceLibrary,
-)
+from app.core.exceptions import BusinessLogicError, ResourceNotFoundError
+from app.resources.models.resource_models import (DocumentChunk, ProcessingStatus,
+                                                  ResourceLibrary)
 from app.shared.services.cache_service import CacheService
 from app.shared.utils.file_utils import FileUtils
 from app.shared.utils.text_utils import TextUtils
@@ -120,7 +114,10 @@ class DocumentProcessingService:
                 raise ResourceNotFoundError(f"Resource {resource_id} not found")
 
             # 2. 检查是否需要处理
-            if not force_reprocess and resource.processing_status == ProcessingStatus.COMPLETED:
+            if (
+                not force_reprocess
+                and resource.processing_status == ProcessingStatus.COMPLETED
+            ):
                 logger.info(f"Resource {resource_id} already processed, skipping")
                 return ProcessingResult(
                     resource_id=resource_id,
@@ -132,7 +129,9 @@ class DocumentProcessingService:
                 )
 
             # 3. 更新处理状态
-            await self._update_processing_status(resource_id, ProcessingStatus.PROCESSING)
+            await self._update_processing_status(
+                resource_id, ProcessingStatus.PROCESSING
+            )
 
             # 4. 文档解析和预处理
             if resource.file_path is None:
@@ -168,7 +167,9 @@ class DocumentProcessingService:
             )
 
             # 11. 完成处理
-            await self._update_processing_status(resource_id, ProcessingStatus.COMPLETED)
+            await self._update_processing_status(
+                resource_id, ProcessingStatus.COMPLETED
+            )
 
             processing_time = time.time() - start_time
 
@@ -233,9 +234,13 @@ class DocumentProcessingService:
             chunk_summaries = await self._map_phase_chunk_processing(chunks)
 
             # 3. Reduce阶段：分层汇总
-            section_summaries = await self._reduce_phase_section_summarization(chunk_summaries)
+            section_summaries = await self._reduce_phase_section_summarization(
+                chunk_summaries
+            )
 
-            document_summary = await self._reduce_phase_document_summarization(section_summaries)
+            document_summary = await self._reduce_phase_document_summarization(
+                section_summaries
+            )
 
             # 4. 构建分层摘要
             hierarchical_summary = HierarchicalSummary(
@@ -270,7 +275,9 @@ class DocumentProcessingService:
                         end_position=chunk.end_position,
                         page_number=chunk.page_number,
                         section_title=chunk.section_title,
-                        metadata=(chunk.metadata if isinstance(chunk.metadata, dict) else {}),
+                        metadata=(
+                            chunk.metadata if isinstance(chunk.metadata, dict) else {}
+                        ),
                     )
                     for chunk in chunks
                 ],
@@ -301,7 +308,9 @@ class DocumentProcessingService:
                 f"Ultra-long document processing failed for resource {resource_id}: {str(e)}",
                 extra={"resource_id": resource_id, "error": str(e)},
             )
-            raise BusinessLogicError(f"Ultra-long document processing failed: {str(e)}") from e
+            raise BusinessLogicError(
+                f"Ultra-long document processing failed: {str(e)}"
+            ) from e
 
     async def _intelligent_document_chunking(
         self, content: str, file_format: str
@@ -382,7 +391,9 @@ class DocumentProcessingService:
             # 处理异常
             for j, vector_result in enumerate(batch_vectors):
                 if isinstance(vector_result, Exception):
-                    logger.error(f"Vectorization failed for chunk {i + j}: {str(vector_result)}")
+                    logger.error(
+                        f"Vectorization failed for chunk {i + j}: {str(vector_result)}"
+                    )
                     # 跳过失败的向量化
                     continue
                 elif vector_result is not None and isinstance(vector_result, str):
@@ -457,7 +468,9 @@ class DocumentProcessingService:
             输出格式为JSON。
             """
 
-            detailed_content_response = await self._real_ai_generate(content_prompt, 3000)
+            detailed_content_response = await self._real_ai_generate(
+                content_prompt, 3000
+            )
 
             detailed_content = json.loads(detailed_content_response)
 
@@ -535,7 +548,9 @@ class DocumentProcessingService:
         resource: ResourceLibrary | None = result.scalar_one_or_none()
         return resource
 
-    async def _update_processing_status(self, resource_id: int, status: ProcessingStatus) -> None:
+    async def _update_processing_status(
+        self, resource_id: int, status: ProcessingStatus
+    ) -> None:
         """更新处理状态"""
         stmt = (
             update(ResourceLibrary)
@@ -599,7 +614,9 @@ class DocumentProcessingService:
 
         return chunks
 
-    async def _create_overlap_content(self, prev_content: str, next_content: str) -> str:
+    async def _create_overlap_content(
+        self, prev_content: str, next_content: str
+    ) -> str:
         """创建重叠内容"""
         overlap_size = min(self.overlap_size, len(prev_content) // 4)
         return prev_content[-overlap_size:] if overlap_size > 0 else ""
@@ -607,9 +624,8 @@ class DocumentProcessingService:
     async def _vectorize_chunk(self, chunk: DocumentChunkData) -> str | None:
         """向量化单个切片"""
         try:
-            from app.ai.services.deepseek_embedding_service import (
-                DeepSeekEmbeddingService,
-            )
+            from app.ai.services.deepseek_embedding_service import \
+                DeepSeekEmbeddingService
 
             # 创建embedding服务
             embedding_service = DeepSeekEmbeddingService(self.cache_service)
@@ -618,9 +634,7 @@ class DocumentProcessingService:
             embedding = await embedding_service.vectorize_text(chunk.content)
 
             # 生成向量ID
-            vector_id = (
-                f"vec_{chunk.chunk_index}_{hashlib.md5(chunk.content.encode()).hexdigest()[:8]}"
-            )
+            vector_id = f"vec_{chunk.chunk_index}_{hashlib.md5(chunk.content.encode()).hexdigest()[:8]}"
 
             # 存储向量到Milvus
             await self._store_vector_to_milvus(vector_id, embedding, chunk)
@@ -637,7 +651,9 @@ class DocumentProcessingService:
             return vector_id
 
         except Exception as e:
-            logger.error(f"Vectorization failed for chunk {chunk.chunk_index}: {str(e)}")
+            logger.error(
+                f"Vectorization failed for chunk {chunk.chunk_index}: {str(e)}"
+            )
             return None
 
     async def _store_vector_to_milvus(
@@ -676,7 +692,9 @@ class DocumentProcessingService:
     ) -> None:
         """存储文档切片和向量"""
         # 删除旧的切片
-        await self.db.execute(select(DocumentChunk).where(DocumentChunk.resource_id == resource_id))
+        await self.db.execute(
+            select(DocumentChunk).where(DocumentChunk.resource_id == resource_id)
+        )
 
         # 创建新的切片记录
         chunk_records = []
@@ -736,7 +754,9 @@ class DocumentProcessingService:
             return await self._real_ai_generate(prompt, 200)
         return content[:200]
 
-    async def _generate_section_summaries(self, chunk_summaries: list[str]) -> list[str]:
+    async def _generate_section_summaries(
+        self, chunk_summaries: list[str]
+    ) -> list[str]:
         """生成章节摘要"""
         section_summaries = []
         batch_size = 5
@@ -806,7 +826,9 @@ class DocumentProcessingService:
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 
-    async def _map_phase_chunk_processing(self, chunks: list[DocumentChunk]) -> list[str]:
+    async def _map_phase_chunk_processing(
+        self, chunks: list[DocumentChunk]
+    ) -> list[str]:
         """Map阶段：并行处理各个切片"""
         tasks = [self._summarize_chunk(chunk.content) for chunk in chunks]
 
@@ -823,11 +845,15 @@ class DocumentProcessingService:
 
         return valid_summaries
 
-    async def _reduce_phase_section_summarization(self, chunk_summaries: list[str]) -> list[str]:
+    async def _reduce_phase_section_summarization(
+        self, chunk_summaries: list[str]
+    ) -> list[str]:
         """Reduce阶段：章节汇总"""
         return await self._generate_section_summaries(chunk_summaries)
 
-    async def _reduce_phase_document_summarization(self, section_summaries: list[str]) -> str:
+    async def _reduce_phase_document_summarization(
+        self, section_summaries: list[str]
+    ) -> str:
         """Reduce阶段：文档汇总"""
         return await self._generate_document_summary(section_summaries)
 
@@ -886,7 +912,9 @@ class DocumentProcessingService:
     ) -> dict[str, Any]:
         """AI集成处理"""
         return {
-            "syllabus": await self._multi_stage_syllabus_generation(resource, hierarchical_summary),
+            "syllabus": await self._multi_stage_syllabus_generation(
+                resource, hierarchical_summary
+            ),
             "lesson_plan": await self._multi_stage_lesson_plan_generation(
                 resource, hierarchical_summary, None
             ),
@@ -956,7 +984,9 @@ class DocumentProcessingService:
                     else prompt[:1000]
                 )
 
-                result = await content_service.generate_syllabus(resource_content, course_info)
+                result = await content_service.generate_syllabus(
+                    resource_content, course_info
+                )
                 if result:
                     return json.dumps(result, ensure_ascii=False)
                 # 如果生成失败，继续到fallback
@@ -975,7 +1005,9 @@ class DocumentProcessingService:
                     "course_outline": [{"week": 1, "topic": "基础训练"}],
                 }
 
-                result = await content_service.generate_lesson_plan(basic_syllabus, lesson_info)
+                result = await content_service.generate_lesson_plan(
+                    basic_syllabus, lesson_info
+                )
                 if result:
                     return json.dumps(result, ensure_ascii=False)
                 # 如果生成失败，继续到fallback

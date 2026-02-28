@@ -18,9 +18,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import (
-    BusinessLogicError,
-)
+from app.core.exceptions import BusinessLogicError
 from app.resources.models.resource_models import DocumentChunk, ResourceLibrary
 from app.shared.services.cache_service import CacheService
 from app.shared.utils.text_utils import TextUtils
@@ -114,10 +112,7 @@ class VectorSearchService:
             bool: 初始化是否成功
         """
         try:
-            from pymilvus import (
-                Collection,
-                connections,
-            )
+            from pymilvus import Collection, connections
 
             # 建立连接
             connections.connect(
@@ -171,7 +166,9 @@ class VectorSearchService:
 
         try:
             # 1. 缓存检查
-            cache_key = f"search:{hash(query.query_text)}:{query.query_type}:{query.top_k}"
+            cache_key = (
+                f"search:{hash(query.query_text)}:{query.query_type}:{query.top_k}"
+            )
             cached_result = await self.cache_service.get(cache_key)
             if cached_result:
                 logger.info(f"Search cache hit for query: {query.query_text[:50]}")
@@ -233,7 +230,9 @@ class VectorSearchService:
             )
             raise BusinessLogicError(f"Search failed: {str(e)}") from e
 
-    async def _hybrid_search_implementation(self, query: SearchQuery) -> list[SearchResult]:
+    async def _hybrid_search_implementation(
+        self, query: SearchQuery
+    ) -> list[SearchResult]:
         """
         混合检索实现
 
@@ -364,7 +363,11 @@ class VectorSearchService:
                 search_conditions.append(DocumentChunk.content.ilike(f"%{keyword}%"))
 
             # 3. 执行数据库查询
-            stmt = select(DocumentChunk).where(or_(*search_conditions)).limit(query.top_k * 2)
+            stmt = (
+                select(DocumentChunk)
+                .where(or_(*search_conditions))
+                .limit(query.top_k * 2)
+            )
 
             # 应用过滤器
             if query.filters:
@@ -376,7 +379,9 @@ class VectorSearchService:
             # 4. 计算关键词匹配得分
             results = []
             for chunk in chunks:
-                keyword_score = await self._calculate_keyword_score(chunk.content, keywords)
+                keyword_score = await self._calculate_keyword_score(
+                    chunk.content, keywords
+                )
 
                 if keyword_score > 0.1:  # 最低匹配阈值
                     search_result = SearchResult(
@@ -391,7 +396,9 @@ class VectorSearchService:
                             "matched_keywords": keywords,
                             "keyword_score": keyword_score,
                         },
-                        highlight=await self._generate_highlight(chunk.content, keywords),
+                        highlight=await self._generate_highlight(
+                            chunk.content, keywords
+                        ),
                     )
                     results.append(search_result)
 
@@ -491,17 +498,26 @@ class VectorSearchService:
                 similarity_factor = result.similarity_score * 0.4
 
                 # 内容质量得分 (30%)
-                quality_factor = await self._calculate_content_quality(result.content) * 0.3
+                quality_factor = (
+                    await self._calculate_content_quality(result.content) * 0.3
+                )
 
                 # 新鲜度得分 (20%)
-                freshness_factor = await self._calculate_freshness_score(result.resource_id) * 0.2
+                freshness_factor = (
+                    await self._calculate_freshness_score(result.resource_id) * 0.2
+                )
 
                 # 用户偏好得分 (10%)
-                preference_factor = await self._calculate_preference_score(result.resource_id) * 0.1
+                preference_factor = (
+                    await self._calculate_preference_score(result.resource_id) * 0.1
+                )
 
                 # 综合得分
                 result.final_score = (
-                    similarity_factor + quality_factor + freshness_factor + preference_factor
+                    similarity_factor
+                    + quality_factor
+                    + freshness_factor
+                    + preference_factor
                 )
 
                 result.metadata.update(
@@ -641,13 +657,8 @@ class VectorSearchService:
     async def _ensure_collection_exists(self) -> None:
         """确保集合存在"""
         try:
-            from pymilvus import (
-                Collection,
-                CollectionSchema,
-                DataType,
-                FieldSchema,
-                utility,
-            )
+            from pymilvus import (Collection, CollectionSchema, DataType, FieldSchema,
+                                  utility)
 
             collection_name = self.milvus_config.collection_name
 
@@ -658,7 +669,9 @@ class VectorSearchService:
 
             # 创建集合schema
             fields = [
-                FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+                FieldSchema(
+                    name="id", dtype=DataType.INT64, is_primary=True, auto_id=True
+                ),
                 FieldSchema(name="vector_id", dtype=DataType.VARCHAR, max_length=100),
                 FieldSchema(name="resource_id", dtype=DataType.INT64),
                 FieldSchema(name="chunk_id", dtype=DataType.INT64),
@@ -696,9 +709,8 @@ class VectorSearchService:
     async def _vectorize_query(self, query_text: str) -> list[float]:
         """查询向量化"""
         try:
-            from app.ai.services.deepseek_embedding_service import (
-                DeepSeekEmbeddingService,
-            )
+            from app.ai.services.deepseek_embedding_service import \
+                DeepSeekEmbeddingService
 
             # 创建embedding服务
             embedding_service = DeepSeekEmbeddingService(self.cache_service)
@@ -817,7 +829,9 @@ class VectorSearchService:
             pass
         return stmt
 
-    async def _calculate_keyword_score(self, content: str, keywords: list[str]) -> float:
+    async def _calculate_keyword_score(
+        self, content: str, keywords: list[str]
+    ) -> float:
         """计算关键词匹配得分"""
         if not keywords:
             return 0.0
@@ -856,7 +870,11 @@ class VectorSearchService:
     async def _search_by_concept(self, concept: str, limit: int) -> list[SearchResult]:
         """基于概念检索"""
         # 简化实现
-        stmt = select(DocumentChunk).where(DocumentChunk.content.ilike(f"%{concept}%")).limit(limit)
+        stmt = (
+            select(DocumentChunk)
+            .where(DocumentChunk.content.ilike(f"%{concept}%"))
+            .limit(limit)
+        )
 
         result = await self.db.execute(stmt)
         chunks = result.scalars().all()
@@ -887,7 +905,9 @@ class VectorSearchService:
 
         return len(intersection) / len(union) if union else 0.0
 
-    async def _deduplicate_results(self, results: list[SearchResult]) -> list[SearchResult]:
+    async def _deduplicate_results(
+        self, results: list[SearchResult]
+    ) -> list[SearchResult]:
         """去重搜索结果"""
         seen_chunks = set()
         unique_results = []
@@ -931,7 +951,9 @@ class VectorSearchService:
             else:
                 # 融合得分
                 current_score = merged_dict[chunk_id].final_score
-                merged_dict[chunk_id].final_score = (current_score + result.final_score) / 2
+                merged_dict[chunk_id].final_score = (
+                    current_score + result.final_score
+                ) / 2
                 merged_dict[chunk_id].metadata["search_methods"].append("keyword")
                 # 保留高亮
                 if result.highlight:
@@ -946,7 +968,9 @@ class VectorSearchService:
             else:
                 # 融合得分
                 current_score = merged_dict[chunk_id].final_score
-                merged_dict[chunk_id].final_score = (current_score + result.final_score) / 2
+                merged_dict[chunk_id].final_score = (
+                    current_score + result.final_score
+                ) / 2
                 merged_dict[chunk_id].metadata["search_methods"].append("semantic")
 
         # 为多方法匹配的结果加权
@@ -972,7 +996,9 @@ class VectorSearchService:
     async def _calculate_freshness_score(self, resource_id: int) -> float:
         """计算新鲜度得分"""
         # 获取资源创建时间
-        stmt = select(ResourceLibrary.created_at).where(ResourceLibrary.id == resource_id)
+        stmt = select(ResourceLibrary.created_at).where(
+            ResourceLibrary.id == resource_id
+        )
         result = await self.db.execute(stmt)
         created_at: datetime | None = result.scalar_one_or_none()
 
@@ -988,7 +1014,9 @@ class VectorSearchService:
         # 简化的偏好计算，可以基于用户历史行为
         return 0.5  # 默认中性偏好
 
-    async def _apply_diversity_adjustment(self, results: list[SearchResult]) -> list[SearchResult]:
+    async def _apply_diversity_adjustment(
+        self, results: list[SearchResult]
+    ) -> list[SearchResult]:
         """应用多样性调整"""
         if len(results) <= 5:
             return results

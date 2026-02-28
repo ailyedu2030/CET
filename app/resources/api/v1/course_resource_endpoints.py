@@ -7,26 +7,21 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.users.dependencies import get_current_user
 from app.core.database import get_db
-from app.core.exceptions import (
-    PermissionDeniedError,
-    ResourceNotFoundError,
-    ValidationError,
-)
-from app.resources.schemas.course_resource_schemas import (
-    ImportResultResponse,
-    KnowledgeLibraryCreate,
-    KnowledgeLibraryResponse,
-    MaterialCreate,
-    MaterialLibraryResponse,
-    MaterialResponse,
-    SyllabusCreate,
-    SyllabusResponse,
-    VocabularyLibraryCreate,
-    VocabularyLibraryResponse,
-)
+from app.core.exceptions import (PermissionDeniedError, ResourceNotFoundError,
+                                 ValidationError)
+from app.resources.schemas.course_resource_schemas import (ImportResultResponse,
+                                                           KnowledgeLibraryCreate,
+                                                           KnowledgeLibraryResponse,
+                                                           MaterialCreate,
+                                                           MaterialLibraryResponse,
+                                                           MaterialResponse,
+                                                           SyllabusCreate,
+                                                           SyllabusResponse,
+                                                           VocabularyLibraryCreate,
+                                                           VocabularyLibraryResponse)
 from app.resources.services.course_resource_service import CourseResourceService
+from app.users.dependencies import get_current_user
 from app.users.models import User
 
 router = APIRouter(prefix="/api/v1/course-resources", tags=["课程资源库管理"])
@@ -35,7 +30,8 @@ router = APIRouter(prefix="/api/v1/course-resources", tags=["课程资源库管�
 
 
 @router.get(
-    "/courses/{course_id}/vocabulary-libraries", response_model=list[VocabularyLibraryResponse]
+    "/courses/{course_id}/vocabulary-libraries",
+    response_model=list[VocabularyLibraryResponse],
 )
 async def get_vocabulary_libraries(
     course_id: int,
@@ -68,7 +64,8 @@ async def get_vocabulary_libraries(
 
     except PermissionDeniedError as e:
         logger.warning(
-            f"权限不足: {e.message}", extra={"user_id": current_user.id, "course_id": course_id}
+            f"权限不足: {e.message}",
+            extra={"user_id": current_user.id, "course_id": course_id},
         )
         raise HTTPException(status_code=403, detail=e.message) from e
     except Exception as e:
@@ -79,7 +76,10 @@ async def get_vocabulary_libraries(
         raise HTTPException(status_code=500, detail="获取词汇库列表失败") from e
 
 
-@router.post("/courses/{course_id}/vocabulary-libraries", response_model=VocabularyLibraryResponse)
+@router.post(
+    "/courses/{course_id}/vocabulary-libraries",
+    response_model=VocabularyLibraryResponse,
+)
 async def create_vocabulary_library(
     course_id: int,
     library_data: VocabularyLibraryCreate,
@@ -102,7 +102,9 @@ async def create_vocabulary_library(
         )
 
         service = CourseResourceService(db)
-        library = await service.create_vocabulary_library(course_id, library_data, current_user.id)
+        library = await service.create_vocabulary_library(
+            course_id, library_data, current_user.id
+        )
 
         logger.info(
             f"词汇库创建成功: {library.name}",
@@ -125,7 +127,9 @@ async def create_vocabulary_library(
         raise HTTPException(status_code=500, detail="创建词汇库失败") from e
 
 
-@router.post("/vocabulary-libraries/{library_id}/import", response_model=ImportResultResponse)
+@router.post(
+    "/vocabulary-libraries/{library_id}/import", response_model=ImportResultResponse
+)
 async def import_vocabulary(
     library_id: int,
     file: UploadFile = File(...),
@@ -164,7 +168,9 @@ async def import_vocabulary(
         )
 
         service = CourseResourceService(db)
-        result = await service.import_vocabulary(library_id, file, import_mode, current_user.id)
+        result = await service.import_vocabulary(
+            library_id, file, import_mode, current_user.id
+        )
 
         logger.info(
             f"词汇导入完成: 成功{result.success}条，失败{result.failed}条",
@@ -191,7 +197,11 @@ async def import_vocabulary(
     except Exception as e:
         logger.error(
             f"词汇导入失败: {str(e)}",
-            extra={"user_id": current_user.id, "library_id": library_id, "error": str(e)},
+            extra={
+                "user_id": current_user.id,
+                "library_id": library_id,
+                "error": str(e),
+            },
         )
         raise HTTPException(status_code=500, detail="词汇导入失败") from e
 
@@ -200,7 +210,8 @@ async def import_vocabulary(
 
 
 @router.get(
-    "/courses/{course_id}/knowledge-libraries", response_model=list[KnowledgeLibraryResponse]
+    "/courses/{course_id}/knowledge-libraries",
+    response_model=list[KnowledgeLibraryResponse],
 )
 async def get_knowledge_libraries(
     course_id: int,
@@ -233,7 +244,8 @@ async def get_knowledge_libraries(
 
     except PermissionDeniedError as e:
         logger.warning(
-            f"权限不足: {e.message}", extra={"user_id": current_user.id, "course_id": course_id}
+            f"权限不足: {e.message}",
+            extra={"user_id": current_user.id, "course_id": course_id},
         )
         raise HTTPException(status_code=403, detail=e.message) from e
     except Exception as e:
@@ -244,7 +256,9 @@ async def get_knowledge_libraries(
         raise HTTPException(status_code=500, detail="获取知识点库列表失败") from e
 
 
-@router.post("/courses/{course_id}/knowledge-libraries", response_model=KnowledgeLibraryResponse)
+@router.post(
+    "/courses/{course_id}/knowledge-libraries", response_model=KnowledgeLibraryResponse
+)
 async def create_knowledge_library(
     course_id: int,
     library_data: KnowledgeLibraryCreate,
@@ -267,7 +281,9 @@ async def create_knowledge_library(
         )
 
         service = CourseResourceService(db)
-        library = await service.create_knowledge_library(course_id, library_data, current_user.id)
+        library = await service.create_knowledge_library(
+            course_id, library_data, current_user.id
+        )
 
         logger.info(
             f"知识点库创建成功: {library.name}",
@@ -290,7 +306,9 @@ async def create_knowledge_library(
         raise HTTPException(status_code=500, detail="创建知识点库失败") from e
 
 
-@router.post("/knowledge-libraries/{library_id}/import", response_model=ImportResultResponse)
+@router.post(
+    "/knowledge-libraries/{library_id}/import", response_model=ImportResultResponse
+)
 async def import_knowledge_points(
     library_id: int,
     file: UploadFile = File(...),
@@ -338,7 +356,11 @@ async def import_knowledge_points(
     except Exception as e:
         logger.error(
             f"知识点导入失败: {str(e)}",
-            extra={"user_id": current_user.id, "library_id": library_id, "error": str(e)},
+            extra={
+                "user_id": current_user.id,
+                "library_id": library_id,
+                "error": str(e),
+            },
         )
         raise HTTPException(status_code=500, detail="知识点导入失败") from e
 
@@ -346,7 +368,9 @@ async def import_knowledge_points(
 # =================== 教材库管理 ===================
 
 
-@router.get("/courses/{course_id}/material-library", response_model=MaterialLibraryResponse)
+@router.get(
+    "/courses/{course_id}/material-library", response_model=MaterialLibraryResponse
+)
 async def get_material_library(
     course_id: int,
     db: AsyncSession = Depends(get_db),
@@ -385,7 +409,8 @@ async def get_material_library(
 
     except ResourceNotFoundError as e:
         logger.warning(
-            f"教材库不存在: {e.message}", extra={"user_id": current_user.id, "course_id": course_id}
+            f"教材库不存在: {e.message}",
+            extra={"user_id": current_user.id, "course_id": course_id},
         )
         raise HTTPException(status_code=404, detail=e.message) from e
     except Exception as e:
@@ -419,7 +444,9 @@ async def add_material(
         )
 
         service = CourseResourceService(db)
-        material = await service.add_material(course_id, material_data.dict(), current_user.id)
+        material = await service.add_material(
+            course_id, material_data.dict(), current_user.id
+        )
 
         logger.info(
             f"教材添加成功: {material.get('title', '')}",
@@ -493,7 +520,9 @@ async def upload_custom_material(
         )
 
         service = CourseResourceService(db)
-        material = await service.upload_custom_material(course_id, file, current_user.id)
+        material = await service.upload_custom_material(
+            course_id, file, current_user.id
+        )
 
         logger.info(
             f"自编教材上传成功: {material.get('title', '')}",
@@ -553,7 +582,11 @@ async def get_syllabus(
     try:
         logger.info(
             f"获取课程{course_id}的考纲",
-            extra={"user_id": current_user.id, "course_id": course_id, "action": "get_syllabus"},
+            extra={
+                "user_id": current_user.id,
+                "course_id": course_id,
+                "action": "get_syllabus",
+            },
         )
 
         service = CourseResourceService(db)
@@ -590,7 +623,8 @@ async def get_syllabus(
 
     except PermissionDeniedError as e:
         logger.warning(
-            f"权限不足: {e.message}", extra={"user_id": current_user.id, "course_id": course_id}
+            f"权限不足: {e.message}",
+            extra={"user_id": current_user.id, "course_id": course_id},
         )
         raise HTTPException(status_code=403, detail=e.message) from e
     except Exception as e:
@@ -624,11 +658,16 @@ async def create_syllabus(
         )
 
         service = CourseResourceService(db)
-        syllabus = await service.create_syllabus(course_id, syllabus_data.dict(), current_user.id)
+        syllabus = await service.create_syllabus(
+            course_id, syllabus_data.dict(), current_user.id
+        )
 
         logger.info(
             f"考纲创建成功: {syllabus.get('title', '')}",
-            extra={"syllabus_id": syllabus.get("id", 0), "version": syllabus.get("version", "")},
+            extra={
+                "syllabus_id": syllabus.get("id", 0),
+                "version": syllabus.get("version", ""),
+            },
         )
 
         return SyllabusResponse(

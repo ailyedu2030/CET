@@ -162,7 +162,9 @@ class MilvusClient:
     async def insert(self, collection_name: str, data: list[dict[str, Any]]) -> Any:
         """插入数据."""
         try:
-            logger.info(f"Inserting {len(data)} entities into collection '{collection_name}'")
+            logger.info(
+                f"Inserting {len(data)} entities into collection '{collection_name}'"
+            )
 
             # 模拟插入数据
             # 实际代码：
@@ -252,7 +254,9 @@ class MilvusClient:
     async def delete(self, collection_name: str, expr: str) -> bool:
         """删除数据."""
         try:
-            logger.info(f"Deleting entities from collection '{collection_name}' with expr: {expr}")
+            logger.info(
+                f"Deleting entities from collection '{collection_name}' with expr: {expr}"
+            )
 
             # 模拟删除数据
             # 实际代码：

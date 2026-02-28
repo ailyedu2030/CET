@@ -65,7 +65,9 @@ class RegistrationVerificationService:
             await self.cache.set(rate_limit_key, current_time, ttl=60)  # 60秒
 
             # 7. 更新每日发送次数
-            await self.cache.set(daily_count_key, int(daily_count) + 1, ttl=86400)  # 24小时
+            await self.cache.set(
+                daily_count_key, int(daily_count) + 1, ttl=86400
+            )  # 24小时
 
             # 8. 这里应该调用实际的短信服务API
             # 目前使用模拟实现

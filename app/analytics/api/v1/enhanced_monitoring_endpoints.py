@@ -6,9 +6,8 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.services.enhanced_performance_monitor import (
-    EnhancedPerformanceMonitor,
-)
+from app.analytics.services.enhanced_performance_monitor import \
+    EnhancedPerformanceMonitor
 from app.analytics.services.intelligent_alert_manager import IntelligentAlertManager
 from app.core.database import get_db
 from app.users.models.user_models import User
@@ -153,13 +152,17 @@ async def get_real_time_dashboard(
         performance_monitor = EnhancedPerformanceMonitor(db, cache_service)
 
         # 使用性能监控器获取综合数据
-        performance_data = await performance_monitor.comprehensive_performance_analysis(1)
+        performance_data = await performance_monitor.comprehensive_performance_analysis(
+            1
+        )
 
         # 构建仪表板数据
         dashboard_data = {
             "system_health": {
                 "status": "healthy",
-                "overall_score": performance_data.get("overall_performance_score", 0.85),
+                "overall_score": performance_data.get(
+                    "overall_performance_score", 0.85
+                ),
                 "health_grade": "A",
                 "critical_issues": 0,
             },
@@ -193,7 +196,9 @@ async def get_key_metrics(
         performance_monitor = EnhancedPerformanceMonitor(db, cache_service)
 
         # 获取最新的性能数据
-        performance_data = await performance_monitor.comprehensive_performance_analysis(1)
+        performance_data = await performance_monitor.comprehensive_performance_analysis(
+            1
+        )
 
         # 提取关键指标
         key_metrics = {
@@ -215,7 +220,9 @@ async def get_key_metrics(
         return {
             "success": True,
             "key_metrics": key_metrics,
-            "timestamp": performance_data.get("analysis_metadata", {}).get("analysis_timestamp"),
+            "timestamp": performance_data.get("analysis_metadata", {}).get(
+                "analysis_timestamp"
+            ),
             "message": "关键指标获取成功",
         }
 
@@ -302,7 +309,9 @@ async def export_monitoring_data(
         performance_monitor = EnhancedPerformanceMonitor(db, cache_service)
 
         # 获取监控数据
-        monitoring_data = await performance_monitor.comprehensive_performance_analysis(period_hours)
+        monitoring_data = await performance_monitor.comprehensive_performance_analysis(
+            period_hours
+        )
 
         # 根据格式导出数据
         if export_format.lower() == "json":
@@ -351,7 +360,9 @@ async def comprehensive_health_check(
         # alert_manager = IntelligentAlertManager(db, cache_service)  # TODO: 实现告警管理器功能
 
         # 获取性能数据
-        performance_data = await performance_monitor.comprehensive_performance_analysis(1)
+        performance_data = await performance_monitor.comprehensive_performance_analysis(
+            1
+        )
 
         # 获取告警数据
         alert_data = {
@@ -411,7 +422,9 @@ async def comprehensive_health_check(
         return {
             "success": True,
             "health_report": health_report,
-            "timestamp": performance_data.get("analysis_metadata", {}).get("analysis_timestamp"),
+            "timestamp": performance_data.get("analysis_metadata", {}).get(
+                "analysis_timestamp"
+            ),
             "message": "系统健康检查完成",
         }
 

@@ -221,7 +221,9 @@ class ActivationService:
                 }
 
             # 3. 发送激活邮件
-            email_result = await self.send_activation_email(user.id, email, user.username, base_url)
+            email_result = await self.send_activation_email(
+                user.id, email, user.username, base_url
+            )
 
             if email_result["success"]:
                 # 4. 设置重发频率限制（5分钟）
@@ -314,7 +316,9 @@ class ActivationService:
     async def _log_activation_email_sent(self, user_id: int, email: str) -> None:
         """记录激活邮件发送日志."""
         try:
-            log_key = f"activation_email_log:{user_id}:{int(datetime.utcnow().timestamp())}"
+            log_key = (
+                f"activation_email_log:{user_id}:{int(datetime.utcnow().timestamp())}"
+            )
             log_data = {
                 "user_id": user_id,
                 "email": email,

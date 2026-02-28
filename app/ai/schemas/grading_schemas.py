@@ -195,7 +195,9 @@ class BatchGradingRequest(BaseModel):
     """批量批改请求."""
 
     grading_requests: list[GradingRequest] = Field(..., description="批改请求列表")
-    priority: str = Field("normal", description="优先级", pattern="^(low|normal|high|urgent)$")
+    priority: str = Field(
+        "normal", description="优先级", pattern="^(low|normal|high|urgent)$"
+    )
 
     class Config:
         json_schema_extra = {

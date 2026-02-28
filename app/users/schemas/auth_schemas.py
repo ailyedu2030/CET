@@ -66,7 +66,9 @@ class ChangePasswordRequest(BaseModel):
 
     old_password: str = Field(..., min_length=6, max_length=128, description="原密码")
     new_password: str = Field(..., min_length=6, max_length=128, description="新密码")
-    confirm_password: str = Field(..., min_length=6, max_length=128, description="确认新密码")
+    confirm_password: str = Field(
+        ..., min_length=6, max_length=128, description="确认新密码"
+    )
 
 
 class LogoutRequest(BaseModel):
@@ -102,7 +104,9 @@ class PasswordChangeRequest(BaseModel):
 
     old_password: str = Field(..., min_length=6, max_length=128, description="原密码")
     new_password: str = Field(..., min_length=6, max_length=128, description="新密码")
-    confirm_password: str = Field(..., min_length=6, max_length=128, description="确认新密码")
+    confirm_password: str = Field(
+        ..., min_length=6, max_length=128, description="确认新密码"
+    )
 
 
 class ProfileUpdateRequest(BaseModel):

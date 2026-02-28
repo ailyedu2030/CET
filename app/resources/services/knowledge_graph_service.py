@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 class KnowledgeGraphService:
     """知识图谱构建服务 - 构建知识点关联关系图谱."""
 
-    def __init__(self, db: AsyncSession, cache_service: CacheService | None = None) -> None:
+    def __init__(
+        self, db: AsyncSession, cache_service: CacheService | None = None
+    ) -> None:
         """初始化知识图谱服务."""
         self.db = db
         self.cache_service = cache_service
@@ -63,7 +65,9 @@ class KnowledgeGraphService:
             )
 
             # 难度梯度分析
-            difficulty_analysis = await self._analyze_difficulty_gradient(graph, knowledge_points)
+            difficulty_analysis = await self._analyze_difficulty_gradient(
+                graph, knowledge_points
+            )
 
             return {
                 "graph": self._graph_to_dict(graph),
@@ -79,7 +83,9 @@ class KnowledgeGraphService:
             logger.error(f"知识图谱构建失败 library_id={library_id}: {str(e)}")
             raise BusinessLogicError(f"知识图谱构建失败: {str(e)}") from e
 
-    async def get_prerequisite_recommendations(self, knowledge_point_id: int) -> dict[str, Any]:
+    async def get_prerequisite_recommendations(
+        self, knowledge_point_id: int
+    ) -> dict[str, Any]:
         """获取前置知识推荐 - 需求33前置知识推荐."""
         try:
             # 获取知识点
@@ -121,7 +127,9 @@ class KnowledgeGraphService:
                 "difficulty_prerequisites": difficulty_prerequisites,
                 "semantic_prerequisites": semantic_prerequisites,
                 "recommended_prerequisites": all_prerequisites[:10],  # 返回前10个推荐
-                "learning_path": await self._generate_learning_path(knowledge_point_id, graph),
+                "learning_path": await self._generate_learning_path(
+                    knowledge_point_id, graph
+                ),
             }
 
         except Exception as e:
@@ -151,10 +159,14 @@ class KnowledgeGraphService:
             }
 
             # 计算难度梯度
-            gradient_analysis = await self._calculate_difficulty_gradient(difficulty_groups)
+            gradient_analysis = await self._calculate_difficulty_gradient(
+                difficulty_groups
+            )
 
             # 生成学习路径建议
-            learning_paths = await self._generate_difficulty_based_paths(difficulty_groups)
+            learning_paths = await self._generate_difficulty_based_paths(
+                difficulty_groups
+            )
 
             return {
                 "library_id": library_id,
@@ -209,7 +221,10 @@ class KnowledgeGraphService:
             await self._add_similarity_edges(graph, kp, knowledge_points)
 
     async def _add_similarity_edges(
-        self, graph: nx.DiGraph, current_kp: KnowledgePoint, all_kps: list[KnowledgePoint]
+        self,
+        graph: nx.DiGraph,
+        current_kp: KnowledgePoint,
+        all_kps: list[KnowledgePoint],
     ) -> None:
         """添加基于相似度的边."""
         for other_kp in all_kps:
@@ -217,7 +232,9 @@ class KnowledgeGraphService:
                 continue
 
             # 计算相似度
-            similarity = await self._calculate_knowledge_similarity(current_kp, other_kp)
+            similarity = await self._calculate_knowledge_similarity(
+                current_kp, other_kp
+            )
 
             if similarity >= self.graph_config["similarity_threshold"]:
                 graph.add_edge(
@@ -246,7 +263,9 @@ class KnowledgeGraphService:
             # 3. 标签相似度
             tags1 = set(kp1.tags or [])
             tags2 = set(kp2.tags or [])
-            tag_similarity = len(tags1 & tags2) / len(tags1 | tags2) if tags1 | tags2 else 0.0
+            tag_similarity = (
+                len(tags1 & tags2) / len(tags1 | tags2) if tags1 | tags2 else 0.0
+            )
 
             # 4. 名称相似度（简化实现）
             name1 = getattr(kp1, "name", f"知识点{kp1.id}")
@@ -409,7 +428,9 @@ class KnowledgeGraphService:
             if node["id"] == kp.id:
                 continue
 
-            node_difficulty = self._difficulty_to_numeric_from_string(node["difficulty"])
+            node_difficulty = self._difficulty_to_numeric_from_string(
+                node["difficulty"]
+            )
             if node_difficulty < current_difficulty and node["category"] == kp.category:
                 prerequisites.append(node["id"])
 
@@ -440,7 +461,9 @@ class KnowledgeGraphService:
 
             node_tags = set(node["tags"] or [])
             similarity = (
-                len(kp_tags & node_tags) / len(kp_tags | node_tags) if kp_tags | node_tags else 0.0
+                len(kp_tags & node_tags) / len(kp_tags | node_tags)
+                if kp_tags | node_tags
+                else 0.0
             )
 
             if similarity >= 0.3:  # 相似度阈值
@@ -574,11 +597,15 @@ class KnowledgeGraphService:
 
         return recommendations
 
-    async def get_knowledge_prerequisites(self, knowledge_point_id: int) -> dict[str, Any]:
+    async def get_knowledge_prerequisites(
+        self, knowledge_point_id: int
+    ) -> dict[str, Any]:
         """获取知识点前置要求 - 需求33前置知识推荐."""
         return await self.get_prerequisite_recommendations(knowledge_point_id)
 
-    async def get_learning_path(self, start_point_id: int, end_point_id: int) -> dict[str, Any]:
+    async def get_learning_path(
+        self, start_point_id: int, end_point_id: int
+    ) -> dict[str, Any]:
         """获取学习路径 - 需求33难度梯度分析."""
         try:
             # 获取起始知识点的库ID
@@ -623,7 +650,8 @@ class KnowledgeGraphService:
                     if len(difficulties) > 1
                     else 0,
                     "is_smooth": all(
-                        difficulties[i + 1] >= difficulties[i] for i in range(len(difficulties) - 1)
+                        difficulties[i + 1] >= difficulties[i]
+                        for i in range(len(difficulties) - 1)
                     )
                     if len(difficulties) > 1
                     else True,
@@ -648,7 +676,9 @@ class KnowledgeGraphService:
             logger.error(f"获取学习路径失败: {str(e)}")
             raise BusinessLogicError(f"获取学习路径失败: {str(e)}") from e
 
-    async def recommend_knowledge_points(self, user_id: int, limit: int = 10) -> dict[str, Any]:
+    async def recommend_knowledge_points(
+        self, user_id: int, limit: int = 10
+    ) -> dict[str, Any]:
         """推荐知识点 - 需求33个性化推荐."""
         try:
             # 模拟推荐算法

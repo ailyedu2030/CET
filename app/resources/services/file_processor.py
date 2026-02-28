@@ -13,7 +13,9 @@ class FileProcessor:
         """初始化文件处理器."""
         self.logger = logger
 
-    async def process_vocabulary_file(self, file_content: bytes, file_name: str) -> dict[str, Any]:
+    async def process_vocabulary_file(
+        self, file_content: bytes, file_name: str
+    ) -> dict[str, Any]:
         """
         处理词汇文件.
 
@@ -57,7 +59,9 @@ class FileProcessor:
                 "error": str(e),
             }
 
-    async def process_knowledge_file(self, file_content: bytes, file_name: str) -> dict[str, Any]:
+    async def process_knowledge_file(
+        self, file_content: bytes, file_name: str
+    ) -> dict[str, Any]:
         """
         处理知识点文件.
 
@@ -101,7 +105,9 @@ class FileProcessor:
                 "error": str(e),
             }
 
-    async def validate_file_format(self, file_name: str, allowed_extensions: list[str]) -> bool:
+    async def validate_file_format(
+        self, file_name: str, allowed_extensions: list[str]
+    ) -> bool:
         """
         验证文件格式.
 

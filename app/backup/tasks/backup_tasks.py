@@ -164,7 +164,9 @@ def validate_backup_integrity(self: Any) -> dict[str, str]:
 
                 for backup in recent_backups:
                     try:
-                        validation_result = await service.validate_backup(backup.backup_id)
+                        validation_result = await service.validate_backup(
+                            backup.backup_id
+                        )
                         if validation_result.get("is_valid", False):
                             valid_count += 1
                         else:

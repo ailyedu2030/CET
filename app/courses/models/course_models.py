@@ -3,19 +3,8 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import (
-    JSON,
-    Boolean,
-    DateTime,
-    Enum,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-    UniqueConstraint,
-    Index,
-)
+from sqlalchemy import (JSON, Boolean, DateTime, Enum, Float, ForeignKey, Index,
+                        Integer, String, Text, UniqueConstraint)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.shared.models.base_model import BaseModel
@@ -303,7 +292,6 @@ class Class(BaseModel):
         return f"<Class(id={self.id}, name='{self.name}', course_id={self.course_id})>"
 
 
-
 class ClassStudent(BaseModel):
     """班级学生注册模型 - 记录学生在班级中的注册信息."""
 
@@ -543,7 +531,9 @@ class Resource(BaseModel):
 
     def __repr__(self) -> str:
         """资源模型字符串表示."""
-        return f"<Resource(id={self.id}, name='{self.name}', type={self.resource_type})>"
+        return (
+            f"<Resource(id={self.id}, name='{self.name}', type={self.resource_type})>"
+        )
 
 
 class Syllabus(BaseModel):
@@ -728,9 +718,7 @@ class CourseVersion(BaseModel):
 
     def __repr__(self) -> str:
         """课程版本模型字符串表示."""
-        return (
-            f"<CourseVersion(id={self.id}, course_id={self.course_id}, version='{self.version}')>"
-        )
+        return f"<CourseVersion(id={self.id}, course_id={self.course_id}, version='{self.version}')>"
 
 
 class CourseTemplate(BaseModel):
@@ -806,7 +794,9 @@ class CourseTemplate(BaseModel):
 
     # 关系
     creator: Mapped["User"] = relationship("User", foreign_keys=[created_by])
-    source_course: Mapped["Course"] = relationship("Course", foreign_keys=[source_course_id])
+    source_course: Mapped["Course"] = relationship(
+        "Course", foreign_keys=[source_course_id]
+    )
 
     def __repr__(self) -> str:
         """课程模板模型字符串表示."""

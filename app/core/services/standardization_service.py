@@ -198,7 +198,9 @@ class StandardizationService:
             content_analysis = await self._analyze_writing_content(writing_content)
 
             # 按CET-4标准评分
-            cet4_score = await self._calculate_cet4_score(content_analysis, cet4_criteria)
+            cet4_score = await self._calculate_cet4_score(
+                content_analysis, cet4_criteria
+            )
 
             # 生成详细评分报告
             scoring_report = {
@@ -207,14 +209,18 @@ class StandardizationService:
                 "cet4_criteria": cet4_criteria,
                 "cet4_score": cet4_score,
                 "scoring_breakdown": self._generate_scoring_breakdown(cet4_score),
-                "improvement_suggestions": self._generate_improvement_suggestions(cet4_score),
+                "improvement_suggestions": self._generate_improvement_suggestions(
+                    cet4_score
+                ),
                 "scored_at": datetime.utcnow().isoformat(),
                 "compliance_status": "cet4_compliant",
             }
 
             # 缓存评分结果
             cache_key = f"writing_score:{hash(writing_content)}"
-            await self.cache_service.set(cache_key, scoring_report, CacheType.AI_RESULT, ttl=3600)
+            await self.cache_service.set(
+                cache_key, scoring_report, CacheType.AI_RESULT, ttl=3600
+            )
 
             return scoring_report
 
@@ -369,7 +375,9 @@ class StandardizationService:
                 raise ValidationError(f"API配置验证失败: {validation_result['error']}")
 
             # 测试API连接
-            connection_test = await self._test_api_connection(api_config, authentication)
+            connection_test = await self._test_api_connection(
+                api_config, authentication
+            )
 
             # 创建API注册记录
             api_registration = {
@@ -452,7 +460,9 @@ class StandardizationService:
             formatted_data = await self._format_export_data(export_data, export_format)
 
             # 生成导出文件
-            export_file = await self._generate_export_file(formatted_data, export_format, data_type)
+            export_file = await self._generate_export_file(
+                formatted_data, export_format, data_type
+            )
 
             # 创建导出记录
             export_record = {
@@ -469,7 +479,9 @@ class StandardizationService:
 
             # 缓存导出记录
             cache_key = f"data_export:{export_record['export_id']}"
-            await self.cache_service.set(cache_key, export_record, CacheType.SYSTEM_DATA, ttl=86400)
+            await self.cache_service.set(
+                cache_key, export_record, CacheType.SYSTEM_DATA, ttl=86400
+            )
 
             return export_record
 
@@ -498,7 +510,9 @@ class StandardizationService:
             },
         ]
 
-    async def _format_export_data(self, data: list[dict[str, Any]], format_type: str) -> Any:
+    async def _format_export_data(
+        self, data: list[dict[str, Any]], format_type: str
+    ) -> Any:
         """格式化导出数据."""
         if format_type == "json":
             return json.dumps(data, ensure_ascii=False, indent=2)

@@ -55,7 +55,9 @@ class ProgressMonitoringService:
             progress_trends = await self._analyze_progress_trends(student_id)
 
             # 检测异常情况
-            anomalies = await self._detect_progress_anomalies(student_id, progress_metrics)
+            anomalies = await self._detect_progress_anomalies(
+                student_id, progress_metrics
+            )
 
             # 生成进度报告
             progress_report = await self._generate_progress_report(
@@ -63,7 +65,9 @@ class ProgressMonitoringService:
             )
 
             # 生成提醒和建议
-            reminders = await self._generate_reminders(student_id, progress_metrics, anomalies)
+            reminders = await self._generate_reminders(
+                student_id, progress_metrics, anomalies
+            )
 
             # 更新监控状态
             await self._update_monitoring_status(student_id, progress_metrics)
@@ -120,7 +124,9 @@ class ProgressMonitoringService:
             logger.error(f"获取实时进度失败: {str(e)}")
             raise
 
-    async def track_goal_progress(self, student_id: int, goal_id: int) -> dict[str, Any]:
+    async def track_goal_progress(
+        self, student_id: int, goal_id: int
+    ) -> dict[str, Any]:
         """跟踪特定目标的进度."""
         try:
             # 获取目标信息
@@ -137,7 +143,9 @@ class ProgressMonitoringService:
             )
 
             # 检查里程碑状态
-            milestone_status = await self._check_milestone_status(goal_id, goal_progress)
+            milestone_status = await self._check_milestone_status(
+                goal_id, goal_progress
+            )
 
             # 生成目标相关提醒
             goal_reminders = await self._generate_goal_reminders(
@@ -197,7 +205,9 @@ class ProgressMonitoringService:
             logger.error(f"生成进度预警失败: {str(e)}")
             raise
 
-    async def get_progress_summary(self, student_id: int, period_days: int = 30) -> dict[str, Any]:
+    async def get_progress_summary(
+        self, student_id: int, period_days: int = 30
+    ) -> dict[str, Any]:
         """获取进度总结."""
         try:
             # 计算时间范围
@@ -205,16 +215,24 @@ class ProgressMonitoringService:
             start_date = end_date - timedelta(days=period_days)
 
             # 获取期间统计数据
-            period_stats = await self._get_period_statistics(student_id, start_date, end_date)
+            period_stats = await self._get_period_statistics(
+                student_id, start_date, end_date
+            )
 
             # 计算进步情况
-            improvement_analysis = await self._analyze_improvement(student_id, period_stats)
+            improvement_analysis = await self._analyze_improvement(
+                student_id, period_stats
+            )
 
             # 识别成就和里程碑
-            achievements = await self._identify_achievements(student_id, start_date, end_date)
+            achievements = await self._identify_achievements(
+                student_id, start_date, end_date
+            )
 
             # 分析学习模式
-            learning_patterns = await self._analyze_learning_patterns(student_id, period_stats)
+            learning_patterns = await self._analyze_learning_patterns(
+                student_id, period_stats
+            )
 
             # 生成总结报告
             summary_report = await self._generate_summary_report(
@@ -253,10 +271,14 @@ class ProgressMonitoringService:
         start_date = end_date - timedelta(days=30)
 
         # 完成率
-        completion_rate = await self._calculate_completion_rate(student_id, start_date, end_date)
+        completion_rate = await self._calculate_completion_rate(
+            student_id, start_date, end_date
+        )
 
         # 准确率
-        accuracy_rate = await self._calculate_accuracy_rate(student_id, start_date, end_date)
+        accuracy_rate = await self._calculate_accuracy_rate(
+            student_id, start_date, end_date
+        )
 
         # 一致性分数
         consistency_score = await self._calculate_consistency_score(
@@ -264,10 +286,14 @@ class ProgressMonitoringService:
         )
 
         # 改进率
-        improvement_rate = await self._calculate_improvement_rate(student_id, start_date, end_date)
+        improvement_rate = await self._calculate_improvement_rate(
+            student_id, start_date, end_date
+        )
 
         # 参与度分数
-        engagement_score = await self._calculate_engagement_score(student_id, start_date, end_date)
+        engagement_score = await self._calculate_engagement_score(
+            student_id, start_date, end_date
+        )
 
         # 计算综合分数
         overall_score = (
@@ -329,7 +355,9 @@ class ProgressMonitoringService:
                         "metric": metric,
                         "current_value": current_value,
                         "target_value": target_value,
-                        "severity": ("high" if current_value < target_value * 0.5 else "medium"),
+                        "severity": (
+                            "high" if current_value < target_value * 0.5 else "medium"
+                        ),
                         "description": f"{metric}低于预期",
                     }
                 )
@@ -382,7 +410,10 @@ class ProgressMonitoringService:
             reminders.append(reminder)
 
         # 基于一致性生成提醒
-        if metrics.get("consistency_score", 1) < self.monitoring_config["consistency_threshold"]:
+        if (
+            metrics.get("consistency_score", 1)
+            < self.monitoring_config["consistency_threshold"]
+        ):
             reminder = await self.reminder_utils.create_reminder(
                 student_id=student_id,
                 reminder_type="consistency_reminder",
@@ -393,7 +424,9 @@ class ProgressMonitoringService:
 
         return reminders
 
-    async def _update_monitoring_status(self, student_id: int, metrics: dict[str, Any]) -> None:
+    async def _update_monitoring_status(
+        self, student_id: int, metrics: dict[str, Any]
+    ) -> None:
         """更新监控状态."""
         # TODO: 实现监控状态更新逻辑
         logger.info(f"更新学生 {student_id} 监控状态")
@@ -416,7 +449,9 @@ class ProgressMonitoringService:
         today = datetime.now().date()
 
         # 获取今日训练记录
-        stmt = select(func.count(TrainingRecord.id), func.avg(TrainingRecord.score)).where(
+        stmt = select(
+            func.count(TrainingRecord.id), func.avg(TrainingRecord.score)
+        ).where(
             and_(
                 TrainingRecord.student_id == student_id,
                 func.date(TrainingRecord.created_at) == today,
@@ -440,7 +475,9 @@ class ProgressMonitoringService:
         week_start = today - timedelta(days=today.weekday())
 
         # 获取本周训练记录
-        stmt = select(func.count(TrainingRecord.id), func.avg(TrainingRecord.score)).where(
+        stmt = select(
+            func.count(TrainingRecord.id), func.avg(TrainingRecord.score)
+        ).where(
             and_(
                 TrainingRecord.student_id == student_id,
                 TrainingRecord.created_at >= week_start,
@@ -457,7 +494,9 @@ class ProgressMonitoringService:
             "study_days": await self._get_week_study_days(student_id, week_start),
         }
 
-    async def _get_current_session_progress(self, student_id: int) -> dict[str, Any] | None:
+    async def _get_current_session_progress(
+        self, student_id: int
+    ) -> dict[str, Any] | None:
         """获取当前会话进度."""
         # 获取最近的活跃会话
         stmt = (
@@ -474,8 +513,13 @@ class ProgressMonitoringService:
             return {
                 "session_id": session.id,
                 "start_time": session.started_at,
-                "duration_minutes": (datetime.now() - session.started_at).total_seconds() / 60,
-                "questions_completed": await self._get_session_question_count(session.id),
+                "duration_minutes": (
+                    datetime.now() - session.started_at
+                ).total_seconds()
+                / 60,
+                "questions_completed": await self._get_session_question_count(
+                    session.id
+                ),
             }
 
         return None
@@ -488,10 +532,13 @@ class ProgressMonitoringService:
     ) -> dict[str, Any]:
         """计算实时指标."""
         return {
-            "daily_target_progress": today_progress["questions_completed"] / 20,  # 假设每日目标20题
+            "daily_target_progress": today_progress["questions_completed"]
+            / 20,  # 假设每日目标20题
             "weekly_target_progress": week_progress["questions_completed"]
             / 100,  # 假设每周目标100题
-            "current_momentum": ("high" if today_progress["questions_completed"] > 10 else "low"),
+            "current_momentum": (
+                "high" if today_progress["questions_completed"] > 10 else "low"
+            ),
             "consistency_this_week": week_progress["study_days"] / 7,
         }
 
@@ -526,7 +573,9 @@ class ProgressMonitoringService:
         """计算准确率."""
         stmt = select(
             func.count(TrainingRecord.id).label("total"),
-            func.count(TrainingRecord.id).filter(TrainingRecord.is_correct).label("correct"),  # noqa: E712
+            func.count(TrainingRecord.id)
+            .filter(TrainingRecord.is_correct)
+            .label("correct"),  # noqa: E712
         ).where(
             and_(
                 TrainingRecord.student_id == student_id,
@@ -581,13 +630,17 @@ class ProgressMonitoringService:
     ) -> dict[str, Any]:
         return {"overall_score": 0.7}
 
-    async def _calculate_trend_direction(self, trends: dict[str, Any]) -> dict[str, Any]:
+    async def _calculate_trend_direction(
+        self, trends: dict[str, Any]
+    ) -> dict[str, Any]:
         return {"direction": "improving", "rate": 0.05}
 
     def _summarize_trends(self, trend_analysis: dict[str, Any]) -> str:
         return "整体呈上升趋势"
 
-    def _assess_overall_progress(self, metrics: dict[str, Any], trends: dict[str, Any]) -> str:
+    def _assess_overall_progress(
+        self, metrics: dict[str, Any], trends: dict[str, Any]
+    ) -> str:
         return "良好"
 
     def _identify_strengths(self, metrics: dict[str, Any]) -> list[str]:
@@ -613,7 +666,9 @@ class ProgressMonitoringService:
             "target_date": datetime.now() + timedelta(days=30),
         }
 
-    async def _calculate_goal_progress(self, student_id: int, goal_id: int) -> dict[str, Any]:
+    async def _calculate_goal_progress(
+        self, student_id: int, goal_id: int
+    ) -> dict[str, Any]:
         return {"overall_progress": 0.6, "milestone_progress": 0.75}
 
     async def _analyze_achievement_probability(
@@ -642,7 +697,9 @@ class ProgressMonitoringService:
     async def _check_consistency_alert(self, student_id: int) -> dict[str, Any] | None:
         return {"type": "consistency", "message": "最近3天未学习", "priority": 3}
 
-    async def _check_performance_decline_alert(self, student_id: int) -> dict[str, Any] | None:
+    async def _check_performance_decline_alert(
+        self, student_id: int
+    ) -> dict[str, Any] | None:
         return None
 
     async def _check_deadline_alerts(self, student_id: int) -> list[dict[str, Any]]:
@@ -656,7 +713,9 @@ class ProgressMonitoringService:
     ) -> dict[str, Any]:
         return {"total_questions": 150, "total_time": 1800, "avg_score": 0.75}
 
-    async def _analyze_improvement(self, student_id: int, stats: dict[str, Any]) -> dict[str, Any]:
+    async def _analyze_improvement(
+        self, student_id: int, stats: dict[str, Any]
+    ) -> dict[str, Any]:
         return {"improvement_trend": "positive", "improvement_rate": 0.1}
 
     async def _identify_achievements(

@@ -6,18 +6,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.course_schemas import (
-    CourseCreate,
-    CourseListResponse,
-    CourseResponse,
-    CourseStatusUpdate,
-    CourseTemplateCreate,
-    CourseTemplateListResponse,
-    CourseTemplateResponse,
-    CourseTemplateUpdate,
-    CourseUpdate,
-    CourseVersionResponse,
-)
+from app.courses.schemas.course_schemas import (CourseCreate, CourseListResponse,
+                                                CourseResponse, CourseStatusUpdate,
+                                                CourseTemplateCreate,
+                                                CourseTemplateListResponse,
+                                                CourseTemplateResponse,
+                                                CourseTemplateUpdate, CourseUpdate,
+                                                CourseVersionResponse)
 from app.courses.services.course_service import CoursePermissionService, CourseService
 from app.courses.services.template_service import CourseTemplateService
 from app.courses.utils.version_utils import VersionUtils
@@ -28,7 +23,9 @@ router = APIRouter()
 
 
 # 课程管理端点
-@router.post("/courses/", response_model=CourseResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/courses/", response_model=CourseResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_course(
     course_data: CourseCreate,
     current_user: Annotated[dict[str, Any], AuthRequired()],
@@ -58,7 +55,9 @@ async def get_course(
     permission_service = CoursePermissionService(db)
 
     # 检查权限
-    has_access = await permission_service.check_course_access(course_id, current_user["id"], "read")
+    has_access = await permission_service.check_course_access(
+        course_id, current_user["id"], "read"
+    )
     if not has_access:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -125,7 +124,9 @@ async def update_course(
             detail="无权限修改此课程",
         )
 
-    course = await course_service.update_course(course_id, course_data, current_user["id"])
+    course = await course_service.update_course(
+        course_id, course_data, current_user["id"]
+    )
     if not course:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -214,14 +215,18 @@ async def duplicate_course(
     permission_service = CoursePermissionService(db)
 
     # 检查权限
-    has_access = await permission_service.check_course_access(course_id, current_user["id"], "read")
+    has_access = await permission_service.check_course_access(
+        course_id, current_user["id"], "read"
+    )
     if not has_access:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="无权限访问此课程",
         )
 
-    course = await course_service.duplicate_course(course_id, new_name, current_user["id"])
+    course = await course_service.duplicate_course(
+        course_id, new_name, current_user["id"]
+    )
     if not course:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -243,7 +248,9 @@ async def get_course_versions(
     permission_service = CoursePermissionService(db)
 
     # 检查权限
-    has_access = await permission_service.check_course_access(course_id, current_user["id"], "read")
+    has_access = await permission_service.check_course_access(
+        course_id, current_user["id"], "read"
+    )
     if not has_access:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -254,7 +261,9 @@ async def get_course_versions(
     return [CourseVersionResponse.model_validate(version) for version in versions]
 
 
-@router.post("/courses/{course_id}/versions/{version_id}/rollback", response_model=CourseResponse)
+@router.post(
+    "/courses/{course_id}/versions/{version_id}/rollback", response_model=CourseResponse
+)
 async def rollback_course_version(
     course_id: int,
     version_id: int,
@@ -275,7 +284,9 @@ async def rollback_course_version(
             detail="无权限修改此课程",
         )
 
-    course = await course_service.rollback_course_version(course_id, version_id, current_user["id"])
+    course = await course_service.rollback_course_version(
+        course_id, version_id, current_user["id"]
+    )
     if not course:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -298,7 +309,9 @@ async def compare_course_versions(
     permission_service = CoursePermissionService(db)
 
     # 检查权限
-    has_access = await permission_service.check_course_access(course_id, current_user["id"], "read")
+    has_access = await permission_service.check_course_access(
+        course_id, current_user["id"], "read"
+    )
     if not has_access:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -374,7 +387,9 @@ async def get_course_templates(
         creator_id=creator_id,
     )
 
-    return [CourseTemplateListResponse.model_validate(template) for template in templates]
+    return [
+        CourseTemplateListResponse.model_validate(template) for template in templates
+    ]
 
 
 @router.get("/templates/public", response_model=list[CourseTemplateListResponse])
@@ -391,7 +406,9 @@ async def get_public_templates(
         skip=skip, limit=limit, category=category
     )
 
-    return [CourseTemplateListResponse.model_validate(template) for template in templates]
+    return [
+        CourseTemplateListResponse.model_validate(template) for template in templates
+    ]
 
 
 @router.get("/templates/popular", response_model=list[CourseTemplateListResponse])
@@ -403,9 +420,13 @@ async def get_popular_templates(
     """获取热门模板列表."""
     template_service = CourseTemplateService(db)
 
-    templates = await template_service.get_popular_templates(limit=limit, category=category)
+    templates = await template_service.get_popular_templates(
+        limit=limit, category=category
+    )
 
-    return [CourseTemplateListResponse.model_validate(template) for template in templates]
+    return [
+        CourseTemplateListResponse.model_validate(template) for template in templates
+    ]
 
 
 @router.get("/templates/{template_id}", response_model=CourseTemplateResponse)
@@ -458,7 +479,9 @@ async def update_course_template(
             detail="无权限修改此模板",
         )
 
-    updated_template = await template_service.update_template(template_id, template_data)
+    updated_template = await template_service.update_template(
+        template_id, template_data
+    )
     return CourseTemplateResponse.model_validate(updated_template)  # type: ignore[no-any-return]
 
 

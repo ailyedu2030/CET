@@ -7,28 +7,22 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.training.models.reading_models import (
-    ReadingAnswerRecordModel,
-    ReadingDifficulty,
-    ReadingPassageModel,
-    ReadingQuestionModel,
-    ReadingTheme,
-    ReadingTrainingPlanModel,
-    ReadingTrainingRecordModel,
-)
-from app.training.schemas.reading_schemas import (
-    ReadingAnswerRecordCreate,
-    ReadingPassageCreate,
-    ReadingPassageUpdate,
-    ReadingQuestionCreate,
-    ReadingQuestionUpdate,
-    ReadingRecommendation,
-    ReadingStatistics,
-    ReadingTrainingPlanCreate,
-    ReadingTrainingRecordCreate,
-    ReadingTrainingRecordUpdate,
-    ReadingTrainingSession,
-)
+from app.training.models.reading_models import (ReadingAnswerRecordModel,
+                                                ReadingDifficulty, ReadingPassageModel,
+                                                ReadingQuestionModel, ReadingTheme,
+                                                ReadingTrainingPlanModel,
+                                                ReadingTrainingRecordModel)
+from app.training.schemas.reading_schemas import (ReadingAnswerRecordCreate,
+                                                  ReadingPassageCreate,
+                                                  ReadingPassageUpdate,
+                                                  ReadingQuestionCreate,
+                                                  ReadingQuestionUpdate,
+                                                  ReadingRecommendation,
+                                                  ReadingStatistics,
+                                                  ReadingTrainingPlanCreate,
+                                                  ReadingTrainingRecordCreate,
+                                                  ReadingTrainingRecordUpdate,
+                                                  ReadingTrainingSession)
 
 logger = logging.getLogger(__name__)
 
@@ -112,7 +106,9 @@ class ReadingService:
 
         return list(passages), total
 
-    async def get_passage(self: "ReadingService", passage_id: int) -> ReadingPassageModel | None:
+    async def get_passage(
+        self: "ReadingService", passage_id: int
+    ) -> ReadingPassageModel | None:
         """获取阅读文章详情"""
         logger.info(f"查询阅读文章详情: {passage_id}")
 
@@ -321,16 +317,16 @@ class ReadingService:
         logger.info(f"阅读训练会话创建成功: ID={training_record.id}")  # type: ignore
 
         # 构建响应
-        from app.training.schemas.reading_schemas import (
-            ReadingPassageResponse,
-            ReadingQuestionResponse,
-            ReadingTrainingRecordResponse,
-        )
+        from app.training.schemas.reading_schemas import (ReadingPassageResponse,
+                                                          ReadingQuestionResponse,
+                                                          ReadingTrainingRecordResponse)
 
         return ReadingTrainingSession(
             passage=ReadingPassageResponse.model_validate(passage),
             questions=[ReadingQuestionResponse.model_validate(q) for q in questions],
-            training_record=ReadingTrainingRecordResponse.model_validate(training_record),
+            training_record=ReadingTrainingRecordResponse.model_validate(
+                training_record
+            ),
         )
 
     # ==================== 私有辅助方法 ====================
@@ -340,7 +336,9 @@ class ReadingService:
         # 假设平均阅读速度为200字/分钟
         return max(1, word_count // 200)
 
-    async def _calculate_statistics(self: "ReadingService", user_id: int) -> ReadingStatistics:
+    async def _calculate_statistics(
+        self: "ReadingService", user_id: int
+    ) -> ReadingStatistics:
         """计算用户阅读统计数据"""
         logger.info("Method implemented")
         return ReadingStatistics(
@@ -393,7 +391,9 @@ class ReadingService:
                 continue
 
             # 判断答案是否正确
-            is_correct = answer_data.user_answer.upper() == question.correct_answer.upper()
+            is_correct = (
+                answer_data.user_answer.upper() == question.correct_answer.upper()
+            )
             if is_correct:
                 correct_count += 1
                 total_score += question.points
@@ -418,16 +418,20 @@ class ReadingService:
             if question.usage_count > 0:
                 # 简化的正确率计算
                 question.correct_rate = (
-                    question.correct_rate * (question.usage_count - 1) + (1 if is_correct else 0)
+                    question.correct_rate * (question.usage_count - 1)
+                    + (1 if is_correct else 0)
                 ) / question.usage_count
 
         # 更新训练记录
         training_record.correct_answers = correct_count
         training_record.accuracy_rate = correct_count / len(answers) if answers else 0.0
         training_record.total_score = total_score
-        training_record.answering_time_seconds = sum(a.answer_time_seconds for a in answers)
+        training_record.answering_time_seconds = sum(
+            a.answer_time_seconds for a in answers
+        )
         training_record.total_time_seconds = (
-            training_record.reading_time_seconds + training_record.answering_time_seconds
+            training_record.reading_time_seconds
+            + training_record.answering_time_seconds
         )
         training_record.completed_at = datetime.utcnow()
         training_record.is_completed = True
@@ -438,7 +442,9 @@ class ReadingService:
         logger.info(f"阅读答案提交成功: 正确率={training_record.accuracy_rate:.2%}")
         return training_record
 
-    async def get_user_statistics(self: "ReadingService", user_id: int) -> ReadingStatistics:
+    async def get_user_statistics(
+        self: "ReadingService", user_id: int
+    ) -> ReadingStatistics:
         """获取用户阅读统计数据"""
         logger.info(f"查询用户 {user_id} 的阅读统计")
 
@@ -468,7 +474,9 @@ class ReadingService:
         total_passages = len(records)
         total_questions = sum(r.total_questions for r in records)
         total_correct = sum(r.correct_answers for r in records)
-        overall_accuracy = total_correct / total_questions if total_questions > 0 else 0.0
+        overall_accuracy = (
+            total_correct / total_questions if total_questions > 0 else 0.0
+        )
 
         # 计算阅读速度 (字/分钟)
         total_words = 0
@@ -491,7 +499,9 @@ class ReadingService:
             total_passages_read=int(total_passages) if total_passages else 0,
             total_questions_answered=int(total_questions) if total_questions else 0,
             overall_accuracy=float(overall_accuracy) if overall_accuracy else 0.0,
-            average_reading_speed=float(average_reading_speed) if average_reading_speed else 0.0,
+            average_reading_speed=float(average_reading_speed)
+            if average_reading_speed
+            else 0.0,
             theme_performance={},
             difficulty_performance={},
             question_type_performance={},

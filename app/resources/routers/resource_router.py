@@ -12,37 +12,22 @@
 import asyncio
 from typing import TYPE_CHECKING, Any
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    File,
-    Form,
-    HTTPException,
-    Query,
-    UploadFile,
-    status,
-)
+from fastapi import (APIRouter, Depends, File, Form, HTTPException, Query, UploadFile,
+                     status)
 from fastapi.responses import FileResponse
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.exceptions import (
-    BusinessLogicError,
-    ResourceNotFoundError,
-    ValidationError,
-)
+from app.core.exceptions import (BusinessLogicError, ResourceNotFoundError,
+                                 ValidationError)
 from app.resources.services.document_processing_service import DocumentProcessingService
-from app.resources.services.resource_library_service import (
-    BatchOperationRequest,
-    ResourceCreateRequest,
-    ResourceSearchRequest,
-    ResourceUpdateRequest,
-)
-from app.resources.services.vector_search_service import (
-    SearchQuery,
-    VectorSearchService,
-)
+from app.resources.services.resource_library_service import (BatchOperationRequest,
+                                                             ResourceCreateRequest,
+                                                             ResourceSearchRequest,
+                                                             ResourceUpdateRequest)
+from app.resources.services.vector_search_service import (SearchQuery,
+                                                          VectorSearchService)
 from app.shared.dependencies import get_current_user
 from app.shared.models.enums import PermissionLevel, ResourceType
 from app.shared.services.cache_service import CacheService
@@ -115,9 +100,13 @@ async def create_resource(
             "message": "Resource created successfully",
         }
     except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except BusinessLogicError as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"Create resource failed: {str(e)}")
         raise HTTPException(
@@ -312,7 +301,9 @@ async def upload_file(
             permission_level=permission_level,
         )
 
-        result = await service.create_resource(create_request, current_user["id"], file_path)
+        result = await service.create_resource(
+            create_request, current_user["id"], file_path
+        )
 
         return {
             "success": True,
@@ -328,9 +319,13 @@ async def upload_file(
         }
 
     except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except BusinessLogicError as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"File upload failed: {str(e)}")
         raise HTTPException(
@@ -355,7 +350,9 @@ async def download_file(
         resource = await service.get_resource(resource_id, current_user["id"])
 
         if not resource.file_path:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+            )
 
         # 2. 返回文件
         return FileResponse(
@@ -392,7 +389,9 @@ async def process_document(
     """
     try:
         # 异步处理文档
-        asyncio.create_task(service.process_large_document(resource_id, force_reprocess))
+        asyncio.create_task(
+            service.process_large_document(resource_id, force_reprocess)
+        )
 
         return {
             "success": True,
@@ -474,7 +473,9 @@ async def generate_syllabus(
     except ResourceNotFoundError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except BusinessLogicError as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"Generate syllabus failed: {str(e)}")
         raise HTTPException(
@@ -521,9 +522,13 @@ async def vector_search(
         }
 
     except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except BusinessLogicError as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"Vector search failed: {str(e)}")
         raise HTTPException(
@@ -564,7 +569,9 @@ async def find_similar_resources(
         result = await search_service.hybrid_search(search_query)
 
         # 3. 过滤掉自身
-        filtered_results = [r for r in result.results if r.resource_id != resource_id][:top_k]
+        filtered_results = [r for r in result.results if r.resource_id != resource_id][
+            :top_k
+        ]
 
         return {
             "success": True,
@@ -612,9 +619,13 @@ async def batch_operation(
         }
 
     except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except BusinessLogicError as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"Batch operation failed: {str(e)}")
         raise HTTPException(

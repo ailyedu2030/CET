@@ -10,25 +10,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.shared.models.enums import (
-    DifficultyLevel,
-    GradingStatus,
-    QuestionType,
-    TrainingType,
-)
-from app.training.models.training_models import (
-    Question,
-    TrainingRecord,
-    TrainingSession,
-)
-from app.training.schemas.training_schemas import (
-    GradingResult,
-    QuestionFilter,
-    QuestionResponse,
-    SubmitAnswerRequest,
-    TrainingSessionRequest,
-    TrainingSessionResponse,
-)
+from app.shared.models.enums import (DifficultyLevel, GradingStatus, QuestionType,
+                                     TrainingType)
+from app.training.models.training_models import (Question, TrainingRecord,
+                                                 TrainingSession)
+from app.training.schemas.training_schemas import (GradingResult, QuestionFilter,
+                                                   QuestionResponse,
+                                                   SubmitAnswerRequest,
+                                                   TrainingSessionRequest,
+                                                   TrainingSessionResponse)
 
 
 class TrainingCenterService:
@@ -112,7 +102,9 @@ class TrainingCenterService:
         if status:
             stmt = stmt.where(TrainingSession.status == status)
 
-        stmt = stmt.order_by(desc(TrainingSession.created_at)).offset(offset).limit(limit)
+        stmt = (
+            stmt.order_by(desc(TrainingSession.created_at)).offset(offset).limit(limit)
+        )
 
         result = await self.db.execute(stmt)
         sessions = result.scalars().all()
@@ -332,7 +324,11 @@ class TrainingCenterService:
                         content=question_data["content"],
                         difficulty_level=difficulty_level,
                         max_score=10.0,
-                        time_limit=(120 if question_type == QuestionType.MULTIPLE_CHOICE else 180),
+                        time_limit=(
+                            120
+                            if question_type == QuestionType.MULTIPLE_CHOICE
+                            else 180
+                        ),
                         knowledge_points=knowledge_points or ["vocabulary", "基础词汇"],
                         tags=["ai_generated", "vocabulary"],
                         correct_answer=question_data["correct_answer"],
@@ -351,7 +347,9 @@ class TrainingCenterService:
                     TrainingType.VOCABULARY, difficulty_level, question_type
                 )
                 if backup_question:
-                    questions.append(await self._build_question_response(backup_question))
+                    questions.append(
+                        await self._build_question_response(backup_question)
+                    )
 
         await self.db.commit()
         return questions[:question_count]
@@ -369,7 +367,9 @@ class TrainingCenterService:
 
         for _ in range(question_count):
             # 生成听力材料和题目
-            prompt = await self._build_listening_prompt(difficulty_level, knowledge_points)
+            prompt = await self._build_listening_prompt(
+                difficulty_level, knowledge_points
+            )
 
             try:
                 ai_response = await self._safe_ai_completion(prompt, max_tokens=1000)
@@ -407,7 +407,9 @@ class TrainingCenterService:
                     TrainingType.LISTENING, difficulty_level, question_type
                 )
                 if backup_question:
-                    questions.append(await self._build_question_response(backup_question))
+                    questions.append(
+                        await self._build_question_response(backup_question)
+                    )
 
         await self.db.commit()
         return questions[:question_count]
@@ -428,13 +430,17 @@ class TrainingCenterService:
 
         for _ in range(passage_count):
             # 生成阅读材料
-            prompt = await self._build_reading_prompt(difficulty_level, knowledge_points)
+            prompt = await self._build_reading_prompt(
+                difficulty_level, knowledge_points
+            )
 
             try:
                 ai_response = await self._safe_ai_completion(prompt, max_tokens=1500)
 
                 if ai_response:
-                    passage_data = self._parse_ai_reading_response(ai_response, difficulty_level)
+                    passage_data = self._parse_ai_reading_response(
+                        ai_response, difficulty_level
+                    )
 
                     # 为每篇文章生成多个题目
                     questions_per_passage = min(4, question_count - len(questions))
@@ -447,15 +453,22 @@ class TrainingCenterService:
                                 title=passage_data["questions"][q_idx]["title"],
                                 content={
                                     "passage": passage_data["passage"],
-                                    "question": passage_data["questions"][q_idx]["question"],
-                                    "options": passage_data["questions"][q_idx]["options"],
+                                    "question": passage_data["questions"][q_idx][
+                                        "question"
+                                    ],
+                                    "options": passage_data["questions"][q_idx][
+                                        "options"
+                                    ],
                                 },
                                 difficulty_level=difficulty_level,
                                 max_score=12.0,
                                 time_limit=400,  # 6分40秒
-                                knowledge_points=knowledge_points or ["reading", "英语阅读"],
+                                knowledge_points=knowledge_points
+                                or ["reading", "英语阅读"],
                                 tags=["ai_generated", "reading"],
-                                correct_answer=passage_data["questions"][q_idx]["correct_answer"],
+                                correct_answer=passage_data["questions"][q_idx][
+                                    "correct_answer"
+                                ],
                                 answer_analysis=passage_data["questions"][q_idx].get(
                                     "analysis", ""
                                 ),
@@ -465,7 +478,9 @@ class TrainingCenterService:
                             self.db.add(question)
                             await self.db.flush()
 
-                            questions.append(await self._build_question_response(question))
+                            questions.append(
+                                await self._build_question_response(question)
+                            )
 
             except Exception:
                 # 使用备用题目
@@ -474,7 +489,9 @@ class TrainingCenterService:
                         TrainingType.READING, difficulty_level, question_type
                     )
                     if backup_question:
-                        questions.append(await self._build_question_response(backup_question))
+                        questions.append(
+                            await self._build_question_response(backup_question)
+                        )
 
         await self.db.commit()
         return questions[:question_count]
@@ -491,7 +508,9 @@ class TrainingCenterService:
         question_type = QuestionType.ESSAY
 
         for _ in range(question_count):
-            prompt = await self._build_writing_prompt(difficulty_level, knowledge_points)
+            prompt = await self._build_writing_prompt(
+                difficulty_level, knowledge_points
+            )
 
             try:
                 ai_response = await self._safe_ai_completion(
@@ -535,7 +554,9 @@ class TrainingCenterService:
                     TrainingType.WRITING, difficulty_level, question_type
                 )
                 if backup_question:
-                    questions.append(await self._build_question_response(backup_question))
+                    questions.append(
+                        await self._build_question_response(backup_question)
+                    )
 
         await self.db.commit()
         return questions[:question_count]
@@ -603,7 +624,9 @@ class TrainingCenterService:
                     TrainingType.TRANSLATION, difficulty_level, question_type
                 )
                 if backup_question:
-                    questions.append(await self._build_question_response(backup_question))
+                    questions.append(
+                        await self._build_question_response(backup_question)
+                    )
 
         await self.db.commit()
         return questions[:question_count]
@@ -659,7 +682,9 @@ class TrainingCenterService:
             DifficultyLevel.ADVANCED: "四级难点词汇",
         }
 
-        knowledge_context = f"重点关注：{', '.join(knowledge_points)}" if knowledge_points else ""
+        knowledge_context = (
+            f"重点关注：{', '.join(knowledge_points)}" if knowledge_points else ""
+        )
 
         if question_type == QuestionType.MULTIPLE_CHOICE:
             return f"""
@@ -819,7 +844,9 @@ class TrainingCenterService:
         knowledge_points: list[str] | None,
     ) -> str:
         """构建翻译题目生成prompt."""
-        direction = "中译英" if question_type == QuestionType.TRANSLATION_CN_TO_EN else "英译中"
+        direction = (
+            "中译英" if question_type == QuestionType.TRANSLATION_CN_TO_EN else "英译中"
+        )
 
         return f"""
 请生成一道英语四级{direction}翻译题目，难度：{difficulty_level.name.lower()}。
@@ -852,7 +879,11 @@ class TrainingCenterService:
     ) -> dict[str, Any] | None:
         """安全的AI调用包装器."""
         try:
-            success, ai_response, error_msg = await self.deepseek_service.generate_completion(
+            (
+                success,
+                ai_response,
+                error_msg,
+            ) = await self.deepseek_service.generate_completion(
                 prompt=prompt,
                 temperature=temperature,
                 max_tokens=max_tokens,
@@ -879,7 +910,11 @@ class TrainingCenterService:
         """解析AI生成的题目响应."""
         try:
             # 从AI响应中提取内容
-            content = ai_response.get("choices", [{}])[0].get("message", {}).get("content", "")
+            content = (
+                ai_response.get("choices", [{}])[0]
+                .get("message", {})
+                .get("content", "")
+            )
 
             # 尝试解析JSON格式
             if content.strip().startswith("{"):
@@ -897,7 +932,11 @@ class TrainingCenterService:
     ) -> dict[str, Any]:
         """解析AI生成的阅读理解响应."""
         try:
-            content = ai_response.get("choices", [{}])[0].get("message", {}).get("content", "")
+            content = (
+                ai_response.get("choices", [{}])[0]
+                .get("message", {})
+                .get("content", "")
+            )
             return cast(dict[str, Any], json.loads(content))
         except Exception:
             # 返回默认阅读材料
@@ -940,7 +979,9 @@ class TrainingCenterService:
 
     # ==================== 私有方法：批改和评分 ====================
 
-    async def _grade_answer(self, question: Question, user_answer: dict[str, Any]) -> GradingResult:
+    async def _grade_answer(
+        self, question: Question, user_answer: dict[str, Any]
+    ) -> GradingResult:
         """批改答案."""
         # 根据题目类型进行不同的批改逻辑
         if question.question_type in [
@@ -1035,7 +1076,9 @@ class TrainingCenterService:
                 "user_words": user_words,
             },
             ai_confidence=0.9,
-            knowledge_points_mastered=(question.knowledge_points if accuracy >= 0.8 else []),
+            knowledge_points_mastered=(
+                question.knowledge_points if accuracy >= 0.8 else []
+            ),
             knowledge_points_weak=[] if accuracy >= 0.8 else question.knowledge_points,
             detailed_feedback=f"填空准确率: {accuracy:.1%}",
             improvement_suggestions=([] if accuracy >= 0.8 else ["注意单词拼写和形式变化"]),
@@ -1095,10 +1138,16 @@ class TrainingCenterService:
             )
 
             if ai_response:
-                content = ai_response.get("choices", [{}])[0].get("message", {}).get("content", "")
+                content = (
+                    ai_response.get("choices", [{}])[0]
+                    .get("message", {})
+                    .get("content", "")
+                )
                 grading_result_data = json.loads(content)
 
-                total_score = min(grading_result_data.get("total_score", 0), question.max_score)
+                total_score = min(
+                    grading_result_data.get("total_score", 0), question.max_score
+                )
                 is_correct = total_score >= question.max_score * 0.6  # 60%为及格线
 
                 return GradingResult(
@@ -1108,8 +1157,12 @@ class TrainingCenterService:
                     grading_status=GradingStatus.COMPLETED,
                     ai_feedback=grading_result_data,
                     ai_confidence=grading_result_data.get("confidence", 0.8),
-                    knowledge_points_mastered=(question.knowledge_points if is_correct else []),
-                    knowledge_points_weak=([] if is_correct else question.knowledge_points),
+                    knowledge_points_mastered=(
+                        question.knowledge_points if is_correct else []
+                    ),
+                    knowledge_points_weak=(
+                        [] if is_correct else question.knowledge_points
+                    ),
                     detailed_feedback=grading_result_data.get("feedback", ""),
                     improvement_suggestions=grading_result_data.get("improvements", []),
                 )
@@ -1119,7 +1172,9 @@ class TrainingCenterService:
         except Exception:
             # AI批改失败，使用基础评分
             word_count = len(essay_text.split())
-            basic_score = min(question.max_score * 0.6, question.max_score * word_count / 150)
+            basic_score = min(
+                question.max_score * 0.6, question.max_score * word_count / 150
+            )
 
             return GradingResult(
                 is_correct=basic_score >= question.max_score * 0.6,
@@ -1192,10 +1247,16 @@ class TrainingCenterService:
             )
 
             if ai_response:
-                content = ai_response.get("choices", [{}])[0].get("message", {}).get("content", "")
+                content = (
+                    ai_response.get("choices", [{}])[0]
+                    .get("message", {})
+                    .get("content", "")
+                )
                 grading_result_data = json.loads(content)
 
-                total_score = min(grading_result_data.get("total_score", 0), question.max_score)
+                total_score = min(
+                    grading_result_data.get("total_score", 0), question.max_score
+                )
                 is_correct = total_score >= question.max_score * 0.6
 
                 return GradingResult(
@@ -1205,8 +1266,12 @@ class TrainingCenterService:
                     grading_status=GradingStatus.COMPLETED,
                     ai_feedback=grading_result_data,
                     ai_confidence=grading_result_data.get("confidence", 0.8),
-                    knowledge_points_mastered=(question.knowledge_points if is_correct else []),
-                    knowledge_points_weak=([] if is_correct else question.knowledge_points),
+                    knowledge_points_mastered=(
+                        question.knowledge_points if is_correct else []
+                    ),
+                    knowledge_points_weak=(
+                        [] if is_correct else question.knowledge_points
+                    ),
                     detailed_feedback=grading_result_data.get("feedback", ""),
                     improvement_suggestions=grading_result_data.get("suggestions", []),
                 )
@@ -1290,12 +1355,16 @@ class TrainingCenterService:
             question.average_score = float(stats.avg_score or 0)
             question.correct_rate = float(stats.correct_rate or 0)
 
-    async def _build_session_response(self, session: TrainingSession) -> TrainingSessionResponse:
+    async def _build_session_response(
+        self, session: TrainingSession
+    ) -> TrainingSessionResponse:
         """构建训练会话响应数据."""
         # 计算正确率
         accuracy_rate = 0.0
         if session.total_questions > 0:
-            accuracy_rate = round(session.correct_answers / session.total_questions * 100, 2)
+            accuracy_rate = round(
+                session.correct_answers / session.total_questions * 100, 2
+            )
 
         return TrainingSessionResponse(
             id=session.id,

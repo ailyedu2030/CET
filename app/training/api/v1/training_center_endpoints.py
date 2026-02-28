@@ -6,13 +6,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.training_center_schemas import (
-    TrainingCenterCreate,
-    TrainingCenterDashboard,
-    TrainingCenterListResponse,
-    TrainingCenterResponse,
-    TrainingCenterUpdate,
-)
+from app.training.schemas.training_center_schemas import (TrainingCenterCreate,
+                                                          TrainingCenterDashboard,
+                                                          TrainingCenterListResponse,
+                                                          TrainingCenterResponse,
+                                                          TrainingCenterUpdate)
 from app.training.services.training_center_service import TrainingCenterService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -34,7 +32,9 @@ async def get_training_centers(
     """获取学生综合训练中心列表"""
     try:
         service = TrainingCenterService(db)
-        training_centers, total = await service.get_training_centers(current_user.id, skip, limit)
+        training_centers, total = await service.get_training_centers(
+            current_user.id, skip, limit
+        )
 
         logger.info(f"用户 {current_user.id} 查询训练中心列表，共 {total} 个")
 
@@ -47,7 +47,9 @@ async def get_training_centers(
         )
     except Exception as e:
         logger.error(f"查询训练中心列表失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
 @router.post("/", summary="创建学生综合训练中心", response_model=TrainingCenterResponse)
@@ -59,17 +61,23 @@ async def create_training_center(
     """创建学生综合训练中心"""
     try:
         service = TrainingCenterService(db)
-        training_center = await service.create_training_center(current_user.id, data.model_dump())
+        training_center = await service.create_training_center(
+            current_user.id, data.model_dump()
+        )
 
         logger.info(f"用户 {current_user.id} 创建训练中心成功: {training_center['id']}")
 
         return TrainingCenterResponse.model_validate(training_center)
     except Exception as e:
         logger.error(f"创建训练中心失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败"
+        ) from e
 
 
-@router.get("/{center_id}", summary="获取学生综合训练中心详情", response_model=TrainingCenterResponse)
+@router.get(
+    "/{center_id}", summary="获取学生综合训练中心详情", response_model=TrainingCenterResponse
+)
 async def get_training_center_detail(
     center_id: int,
     current_user: User = Depends(get_current_active_user),
@@ -90,7 +98,9 @@ async def get_training_center_detail(
         raise
     except Exception as e:
         logger.error(f"查询训练中心详情失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
 @router.put("/{center_id}", summary="更新学生综合训练中心", response_model=TrainingCenterResponse)
@@ -117,10 +127,16 @@ async def update_training_center(
         raise
     except Exception as e:
         logger.error(f"更新训练中心失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="更新失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="更新失败"
+        ) from e
 
 
-@router.get("/{center_id}/dashboard", summary="获取训练中心仪表板", response_model=TrainingCenterDashboard)
+@router.get(
+    "/{center_id}/dashboard",
+    summary="获取训练中心仪表板",
+    response_model=TrainingCenterDashboard,
+)
 async def get_training_center_dashboard(
     center_id: int,
     current_user: User = Depends(get_current_active_user),
@@ -129,15 +145,18 @@ async def get_training_center_dashboard(
     """获取训练中心仪表板"""
     try:
         service = TrainingCenterService(db)
-        dashboard = await service.get_training_center_dashboard(center_id, current_user.id)
-
+        dashboard = await service.get_training_center_dashboard(
+            center_id, current_user.id
+        )
 
         logger.info(f"用户 {current_user.id} 查询训练中心仪表板: {center_id}")
 
         return TrainingCenterDashboard.model_validate(dashboard)
     except Exception as e:
         logger.error(f"查询训练中心仪表板失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
 # ==================== 训练会话管理 ====================
@@ -156,14 +175,18 @@ async def start_training_session(
 
         # 模拟创建训练会话
         session_data = {"center_id": center_id, **data}
-        session_result = await service.create_training_session_simple(current_user.id, session_data)
+        session_result = await service.create_training_session_simple(
+            current_user.id, session_data
+        )
         session_id = session_result.get("id", 999)
 
         logger.info(f"用户 {current_user.id} 开始训练会话: {session_id}")
 
         return {"success": True, "session_id": session_id}
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"开始训练会话失败: {e}")
         raise HTTPException(
@@ -191,7 +214,9 @@ async def submit_training_answers(
         raise
     except Exception as e:
         logger.error(f"提交训练答案失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="提交失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="提交失败"
+        ) from e
 
 
 # ==================== 统计和推荐 ====================
@@ -213,7 +238,9 @@ async def get_training_statistics(
         return {"data": stats}
     except Exception as e:
         logger.error(f"查询训练统计失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
 @router.get("/{center_id}/recommendations", summary="获取个性化训练推荐")
@@ -225,7 +252,9 @@ async def get_training_recommendations(
     """获取个性化训练推荐"""
     try:
         service = TrainingCenterService(db)
-        recommendations = await service.get_personalized_recommendations(center_id, current_user.id)
+        recommendations = await service.get_personalized_recommendations(
+            center_id, current_user.id
+        )
 
         logger.info(f"用户 {current_user.id} 获取训练推荐: {center_id}")
 
@@ -259,7 +288,9 @@ async def create_training_goal(
         return {"goal_id": goal_id}
     except Exception as e:
         logger.error(f"创建训练目标失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败"
+        ) from e
 
 
 @router.get("/{center_id}/goals", summary="获取训练目标列表")
@@ -278,4 +309,6 @@ async def get_training_goals(
         return {"data": goals.get("goals", [])}
     except Exception as e:
         logger.error(f"查询训练目标失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e

@@ -15,10 +15,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.shared.models.enums import UserType
-from app.training.websocket.websocket_manager import (
-    RealTimePushService,
-    connection_manager,
-)
+from app.training.websocket.websocket_manager import (RealTimePushService,
+                                                      connection_manager)
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
 
@@ -82,11 +80,15 @@ async def broadcast_websocket_message(
             raise HTTPException(status_code=403, detail="无权限访问其他用户的连接")
 
         # 添加发送者信息
-        message.update({"sender": "system", "sender_id": current_user.id, "broadcast_time": "now"})
+        message.update(
+            {"sender": "system", "sender_id": current_user.id, "broadcast_time": "now"}
+        )
 
         # 广播消息
         if session_id:
-            await connection_manager.broadcast_to_session(student_id, session_id, message)
+            await connection_manager.broadcast_to_session(
+                student_id, session_id, message
+            )
             target = f"学生{student_id}的会话{session_id}"
         else:
             await connection_manager.broadcast_to_student(student_id, message)
@@ -126,7 +128,9 @@ async def get_student_active_connections(
         connections_info = []
 
         if student_id in connection_manager.active_connections:
-            for session_id, websockets in connection_manager.active_connections[student_id].items():
+            for session_id, websockets in connection_manager.active_connections[
+                student_id
+            ].items():
                 for websocket in websockets:
                     if websocket in connection_manager.connection_metadata:
                         metadata = connection_manager.connection_metadata[websocket]
@@ -145,7 +149,9 @@ async def get_student_active_connections(
                 "student_id": student_id,
                 "total_connections": len(connections_info),
                 "connections": connections_info,
-                "connection_limit": connection_manager.push_config["max_connections_per_student"],
+                "connection_limit": connection_manager.push_config[
+                    "max_connections_per_student"
+                ],
             },
             "message": f"学生{student_id}的活跃连接信息获取成功",
         }

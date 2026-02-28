@@ -235,7 +235,9 @@ class PerformanceService:
                 timestamp=datetime.utcnow(),
             )
 
-    def _generate_performance_metrics(self, usage: ResourceUsage) -> list[PerformanceMetric]:
+    def _generate_performance_metrics(
+        self, usage: ResourceUsage
+    ) -> list[PerformanceMetric]:
         """生成性能指标"""
         metrics = []
 
@@ -275,8 +277,11 @@ class PerformanceService:
         # 网络指标
         if usage.network_io:
             network_throughput = (
-                usage.network_io.get("bytes_sent", 0) + usage.network_io.get("bytes_recv", 0)
-            ) / (1024 * 1024)  # 转换为MB
+                usage.network_io.get("bytes_sent", 0)
+                + usage.network_io.get("bytes_recv", 0)
+            ) / (
+                1024 * 1024
+            )  # 转换为MB
 
             metrics.append(
                 PerformanceMetric(
@@ -330,9 +335,7 @@ class PerformanceService:
     async def _create_alert(self, metric: PerformanceMetric, level: AlertLevel) -> None:
         """创建告警"""
         try:
-            alert_id = (
-                f"{metric.resource_type.value}_{level.value}_{int(metric.timestamp.timestamp())}"
-            )
+            alert_id = f"{metric.resource_type.value}_{level.value}_{int(metric.timestamp.timestamp())}"
 
             # 避免重复告警
             existing_alerts = [
@@ -371,7 +374,9 @@ class PerformanceService:
         except Exception as e:
             self.logger.error(f"创建告警失败: {e}")
 
-    async def _resolve_alerts(self, resource_type: ResourceType, current_value: float) -> None:
+    async def _resolve_alerts(
+        self, resource_type: ResourceType, current_value: float
+    ) -> None:
         """解决告警"""
         try:
             alerts_to_resolve = []
@@ -421,7 +426,9 @@ class PerformanceService:
         else:
             return f"{resource_name} {level.value}: {metric.value:.2f} (阈值: {threshold:.2f})"
 
-    async def _generate_optimization_recommendations(self, usage: ResourceUsage) -> None:
+    async def _generate_optimization_recommendations(
+        self, usage: ResourceUsage
+    ) -> None:
         """生成优化建议"""
         try:
             recommendations = []
@@ -470,7 +477,8 @@ class PerformanceService:
 
             # 网络优化建议
             network_throughput = (
-                usage.network_io.get("bytes_sent", 0) + usage.network_io.get("bytes_recv", 0)
+                usage.network_io.get("bytes_sent", 0)
+                + usage.network_io.get("bytes_recv", 0)
             ) / (1024 * 1024)
 
             if network_throughput > 100:  # 100MB/s
@@ -549,7 +557,9 @@ class PerformanceService:
             summary: dict[str, Any] = {
                 "timestamp": datetime.utcnow().isoformat(),
                 "resource_levels": {},
-                "active_alerts": len([a for a in self.active_alerts.values() if not a.resolved]),
+                "active_alerts": len(
+                    [a for a in self.active_alerts.values() if not a.resolved]
+                ),
                 "total_recommendations": len(self.optimization_cache),
                 "monitoring_status": "active" if self.is_monitoring else "inactive",
             }

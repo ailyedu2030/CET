@@ -3,7 +3,8 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, Text)
 from sqlalchemy.orm import relationship
 
 from app.shared.models.base_model import BaseModel
@@ -84,7 +85,9 @@ class DiscussionForumModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     posts = relationship("ForumPostModel", back_populates="forum")
@@ -105,7 +108,9 @@ class ForumPostModel(BaseModel):
     id = Column(Integer, primary_key=True, index=True)
     forum_id = Column(Integer, ForeignKey("discussion_forums.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="发帖用户ID")
-    parent_id = Column(Integer, ForeignKey("forum_posts.id"), nullable=True, comment="父帖子ID")
+    parent_id = Column(
+        Integer, ForeignKey("forum_posts.id"), nullable=True, comment="父帖子ID"
+    )
 
     # 内容信息
     title = Column(String(200), nullable=False, comment="帖子标题")
@@ -140,18 +145,24 @@ class ForumPostModel(BaseModel):
     is_featured = Column(Boolean, default=False, comment="是否精选")
 
     # 审核信息
-    moderated_by = Column(Integer, ForeignKey("users.id"), nullable=True, comment="审核人ID")
+    moderated_by = Column(
+        Integer, ForeignKey("users.id"), nullable=True, comment="审核人ID"
+    )
     moderated_at = Column(DateTime, comment="审核时间")
     moderation_reason = Column(Text, comment="审核原因")
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     forum = relationship("DiscussionForumModel", back_populates="posts")
     replies = relationship(
-        "ForumPostModel", foreign_keys="ForumPostModel.parent_id", back_populates="parent"
+        "ForumPostModel",
+        foreign_keys="ForumPostModel.parent_id",
+        back_populates="parent",
     )
     parent = relationship(
         "ForumPostModel",
@@ -180,7 +191,9 @@ class PostLikeModel(BaseModel):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="点赞用户ID")
 
     # 点赞类型
-    like_type = Column(String(20), default="like", comment="点赞类型")  # like, love, helpful, etc.
+    like_type = Column(
+        String(20), default="like", comment="点赞类型"
+    )  # like, love, helpful, etc.
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
@@ -203,7 +216,9 @@ class PostReportModel(BaseModel):
 
     id = Column(Integer, primary_key=True, index=True)
     post_id = Column(Integer, ForeignKey("forum_posts.id"), nullable=False)
-    reporter_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="举报人ID")
+    reporter_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, comment="举报人ID"
+    )
 
     # 举报信息
     reason = Column(String(20), nullable=False, comment="举报原因")
@@ -218,7 +233,9 @@ class PostReportModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     post = relationship("ForumPostModel", back_populates="reports")
@@ -237,7 +254,9 @@ class StudyPartnerRequestModel(BaseModel):
     __tablename__ = "study_partner_requests"
 
     id = Column(Integer, primary_key=True, index=True)
-    requester_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="请求人ID")
+    requester_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, comment="请求人ID"
+    )
 
     # 匹配条件
     target_level = Column(String(20), comment="目标水平")
@@ -261,7 +280,9 @@ class StudyPartnerRequestModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
     expires_at = Column(DateTime, comment="过期时间")
 
     # 关系
@@ -283,8 +304,12 @@ class StudyPartnerMatchModel(BaseModel):
     __tablename__ = "study_partner_matches"
 
     id = Column(Integer, primary_key=True, index=True)
-    request_id = Column(Integer, ForeignKey("study_partner_requests.id"), nullable=False)
-    partner_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="匹配伙伴ID")
+    request_id = Column(
+        Integer, ForeignKey("study_partner_requests.id"), nullable=False
+    )
+    partner_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, comment="匹配伙伴ID"
+    )
 
     # 匹配信息
     match_score = Column(Float, nullable=False, comment="匹配度评分")
@@ -303,7 +328,9 @@ class StudyPartnerMatchModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     def __repr__(self: "StudyPartnerMatchModel") -> str:
         return f"<StudyPartnerMatchModel(id={getattr(self, 'id', None)}, match_score={getattr(self, 'match_score', None)})>"
@@ -319,7 +346,9 @@ class StudyGroupModel(BaseModel):
     __tablename__ = "study_groups"
 
     id = Column(Integer, primary_key=True, index=True)
-    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="创建者ID")
+    creator_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, comment="创建者ID"
+    )
 
     # 基本信息
     name = Column(String(100), nullable=False, comment="小组名称")
@@ -347,15 +376,15 @@ class StudyGroupModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     memberships = relationship("StudyGroupMembershipModel", back_populates="group")
 
     def __repr__(self: "StudyGroupModel") -> str:
-        return (
-            f"<StudyGroupModel(id={getattr(self, 'id', None)}, name={getattr(self, 'name', None)})>"
-        )
+        return f"<StudyGroupModel(id={getattr(self, 'id', None)}, name={getattr(self, 'name', None)})>"
 
 
 class StudyGroupMembershipModel(BaseModel):
@@ -372,7 +401,9 @@ class StudyGroupMembershipModel(BaseModel):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="成员用户ID")
 
     # 成员角色
-    role = Column(String(20), default="member", comment="成员角色")  # creator, admin, member
+    role = Column(
+        String(20), default="member", comment="成员角色"
+    )  # creator, admin, member
     permissions = Column(JSON, comment="权限列表")
 
     # 加入信息
@@ -410,8 +441,12 @@ class MessageModel(BaseModel):
 
     id = Column(Integer, primary_key=True, index=True)
     sender_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="发送者ID")
-    receiver_id = Column(Integer, ForeignKey("users.id"), nullable=True, comment="接收者ID")
-    group_id = Column(Integer, ForeignKey("study_groups.id"), nullable=True, comment="群组ID")
+    receiver_id = Column(
+        Integer, ForeignKey("users.id"), nullable=True, comment="接收者ID"
+    )
+    group_id = Column(
+        Integer, ForeignKey("study_groups.id"), nullable=True, comment="群组ID"
+    )
 
     # 消息内容
     content = Column(Text, nullable=False, comment="消息内容")
@@ -424,15 +459,21 @@ class MessageModel(BaseModel):
     read_at = Column(DateTime, comment="阅读时间")
 
     # 回复信息
-    reply_to_id = Column(Integer, ForeignKey("messages.id"), nullable=True, comment="回复消息ID")
+    reply_to_id = Column(
+        Integer, ForeignKey("messages.id"), nullable=True, comment="回复消息ID"
+    )
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     replies = relationship(
-        "MessageModel", foreign_keys="MessageModel.reply_to_id", back_populates="reply_to"
+        "MessageModel",
+        foreign_keys="MessageModel.reply_to_id",
+        back_populates="reply_to",
     )
     reply_to = relationship(
         "MessageModel",

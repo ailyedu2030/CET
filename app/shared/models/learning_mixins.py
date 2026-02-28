@@ -83,9 +83,13 @@ class LearningProgressMixin:
         """获取学习摘要."""
         return {
             "start_time": (
-                self.learning_start_time.isoformat() if self.learning_start_time else None
+                self.learning_start_time.isoformat()
+                if self.learning_start_time
+                else None
             ),
-            "end_time": (self.learning_end_time.isoformat() if self.learning_end_time else None),
+            "end_time": (
+                self.learning_end_time.isoformat() if self.learning_end_time else None
+            ),
             "duration_minutes": self.study_duration // 60,
             "progress": self.learning_progress,
             "knowledge_points": self.knowledge_points,
@@ -161,7 +165,9 @@ class AIAnalysisMixin:
         return {
             "confidence": self.ai_confidence_score,
             "model_version": self.ai_model_version,
-            "analysis_time": (self.ai_analysis_time.isoformat() if self.ai_analysis_time else None),
+            "analysis_time": (
+                self.ai_analysis_time.isoformat() if self.ai_analysis_time else None
+            ),
             "needs_review": self.human_review_required,
             "result": self.ai_analysis_result,
         }
@@ -326,7 +332,9 @@ class ComplianceMixin:
         """获取合规状态."""
         return {
             "daily_study_minutes": self.daily_study_time // 60,
-            "last_study_date": (self.last_study_date.isoformat() if self.last_study_date else None),
+            "last_study_date": (
+                self.last_study_date.isoformat() if self.last_study_date else None
+            ),
             "parental_consent": self.parental_consent,
             "content_filter": self.content_filter_level,
             "privacy_settings": self.privacy_settings,

@@ -48,7 +48,9 @@ class AlertManager:
                 continue
 
             # 评估条件
-            triggered = self._evaluate_condition(metric_value, rule.condition, rule.threshold)
+            triggered = self._evaluate_condition(
+                metric_value, rule.condition, rule.threshold
+            )
 
             alert_id = f"{rule.name}_{rule.metric_name}"
 
@@ -80,7 +82,9 @@ class AlertManager:
 
         return new_alerts
 
-    def _evaluate_condition(self, value: float, condition: str, threshold: float) -> bool:
+    def _evaluate_condition(
+        self, value: float, condition: str, threshold: float
+    ) -> bool:
         """评估告警条件."""
         condition_map = {
             ">": value > threshold,
@@ -127,7 +131,9 @@ class AlertManager:
 class NotificationChannel:
     """通知渠道基类."""
 
-    async def send_notification(self, alert: AlertRecord, recipients: list[str]) -> bool:
+    async def send_notification(
+        self, alert: AlertRecord, recipients: list[str]
+    ) -> bool:
         """发送通知."""
         raise NotImplementedError
 
@@ -143,7 +149,9 @@ class EmailNotifier(NotificationChannel):
         self.password = settings.EMAIL_PASSWORD
         self.from_email = settings.EMAIL_FROM
 
-    async def send_notification(self, alert: AlertRecord, recipients: list[str]) -> bool:
+    async def send_notification(
+        self, alert: AlertRecord, recipients: list[str]
+    ) -> bool:
         """发送邮件通知."""
         try:
             # 创建邮件内容
@@ -176,7 +184,9 @@ class EmailNotifier(NotificationChannel):
         英语四级学习系统监控
         """
 
-    async def _send_email_async(self, subject: str, body: str, recipients: list[str]) -> None:
+    async def _send_email_async(
+        self, subject: str, body: str, recipients: list[str]
+    ) -> None:
         """异步发送邮件."""
         loop = asyncio.get_event_loop()
 
@@ -208,7 +218,9 @@ class WebhookNotifier(NotificationChannel):
         """初始化Webhook通知器."""
         self.webhook_url = webhook_url
 
-    async def send_notification(self, alert: AlertRecord, recipients: list[str]) -> bool:
+    async def send_notification(
+        self, alert: AlertRecord, recipients: list[str]
+    ) -> bool:
         """发送Webhook通知."""
         try:
             payload = {
@@ -243,7 +255,9 @@ class SlackNotifier(NotificationChannel):
         """初始化Slack通知器."""
         self.webhook_url = webhook_url
 
-    async def send_notification(self, alert: AlertRecord, recipients: list[str]) -> bool:
+    async def send_notification(
+        self, alert: AlertRecord, recipients: list[str]
+    ) -> bool:
         """发送Slack通知."""
         try:
             # 根据告警级别设置颜色
@@ -277,7 +291,9 @@ class SlackNotifier(NotificationChannel):
                             },
                             {
                                 "title": "触发时间",
-                                "value": alert.triggered_at.strftime("%Y-%m-%d %H:%M:%S"),
+                                "value": alert.triggered_at.strftime(
+                                    "%Y-%m-%d %H:%M:%S"
+                                ),
                                 "short": True,
                             },
                             {"title": "消息", "value": alert.message, "short": False},
@@ -346,7 +362,9 @@ class AlertAggregator:
                 "duration_seconds": (latest - oldest).total_seconds(),
             },
             "critical_alerts": [
-                alert for alert in self.alert_buffer if alert.level == AlertLevel.CRITICAL
+                alert
+                for alert in self.alert_buffer
+                if alert.level == AlertLevel.CRITICAL
             ],
         }
 

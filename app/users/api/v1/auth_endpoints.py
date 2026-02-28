@@ -7,15 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.users.models import User
-from app.users.schemas.auth_schemas import (
-    LoginRequest,
-    LoginResponse,
-    PasswordChangeRequest,
-    ProfileUpdateRequest,
-    RefreshTokenRequest,
-    RefreshTokenResponse,
-    UserProfile,
-)
+from app.users.schemas.auth_schemas import (LoginRequest, LoginResponse,
+                                            PasswordChangeRequest, ProfileUpdateRequest,
+                                            RefreshTokenRequest, RefreshTokenResponse,
+                                            UserProfile)
 from app.users.services.auth_service import AuthService
 from app.users.utils.auth_decorators import get_current_active_user
 
@@ -54,7 +49,6 @@ async def login(
         ) from e
 
 
-
 @router.post(
     "/refresh-token",
     response_model=RefreshTokenResponse,
@@ -68,13 +62,16 @@ async def refresh_token(
     """刷新访问令牌端点."""
     try:
         service = AuthService(db)
-        result = await service.refresh_token(request.refresh_token, request.session_token)
+        result = await service.refresh_token(
+            request.refresh_token, request.session_token
+        )
         if not result:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="无效的刷新令牌或会话",
             )
         from app.core.config import settings
+
         expires_in = int(settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
         return RefreshTokenResponse(
             access_token=result["access_token"],
@@ -151,7 +148,9 @@ async def update_user_profile(
         )
         return UserProfile(**profile)
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="更新用户档案失败"
@@ -179,7 +178,9 @@ async def change_password(
         )
         return {"message": "密码修改成功"}
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="密码修改失败"
@@ -202,7 +203,9 @@ async def verify_token(
         "username": current_user.username,
         "user_type": current_user.user_type.value,
         "is_verified": current_user.is_verified,
-        "last_login": (current_user.last_login.isoformat() if current_user.last_login else None),
+        "last_login": (
+            current_user.last_login.isoformat() if current_user.last_login else None
+        ),
     }
 
 

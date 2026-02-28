@@ -172,7 +172,9 @@ class ProfileService:
             raise ValueError("用户不存在")
 
         # 如果提供了旧密码，则验证
-        if old_password and not jwt_manager.verify_password(old_password, user.password_hash):
+        if old_password and not jwt_manager.verify_password(
+            old_password, user.password_hash
+        ):
             raise ValueError("原密码错误")
 
         # 更新密码
@@ -406,13 +408,17 @@ class ProfileService:
                 "student_profiles": {
                     "total": len(student_profiles),
                     "complete_profiles": sum(
-                        1 for p in student_profiles if self._is_student_profile_complete(p)
+                        1
+                        for p in student_profiles
+                        if self._is_student_profile_complete(p)
                     ),
                 },
                 "teacher_profiles": {
                     "total": len(teacher_profiles),
                     "complete_profiles": sum(
-                        1 for p in teacher_profiles if self._is_teacher_profile_complete(p)
+                        1
+                        for p in teacher_profiles
+                        if self._is_teacher_profile_complete(p)
                     ),
                 },
             },
@@ -452,7 +458,9 @@ class ProfileService:
         user: User | None = result.scalar_one_or_none()
         return user
 
-    async def _validate_id_number(self, id_number: str, exclude_user_id: int | None = None) -> None:
+    async def _validate_id_number(
+        self, id_number: str, exclude_user_id: int | None = None
+    ) -> None:
         """验证身份证号."""
         # 格式验证
         if len(id_number) != 18:

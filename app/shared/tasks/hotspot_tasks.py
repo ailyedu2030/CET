@@ -178,7 +178,9 @@ def cleanup_expired_hotspots() -> dict[str, Any]:
                 cutoff_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
 
                 # 查询要删除的资源
-                stmt = select(HotspotResource).where(HotspotResource.expiry_date <= cutoff_date)
+                stmt = select(HotspotResource).where(
+                    HotspotResource.expiry_date <= cutoff_date
+                )
                 result = await db.execute(stmt)
                 expired_resources = result.scalars().all()
 

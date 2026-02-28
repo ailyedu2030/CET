@@ -138,7 +138,9 @@ class InteractionAnalyzer:
             logger.error(f"内容质量分析失败: {str(e)}")
             return {"overall_score": 0.5, "error": str(e)}
 
-    def analyze_interaction_pattern(self, interaction_data: dict[str, Any]) -> dict[str, Any]:
+    def analyze_interaction_pattern(
+        self, interaction_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """分析互动模式."""
         try:
             # 识别互动类型
@@ -151,7 +153,9 @@ class InteractionAnalyzer:
             participation_analysis = self._analyze_participation_level(interaction_data)
 
             # 分析互动效果
-            effectiveness_analysis = self._analyze_interaction_effectiveness(interaction_data)
+            effectiveness_analysis = self._analyze_interaction_effectiveness(
+                interaction_data
+            )
 
             # 网络分析
             network_analysis = self._analyze_interaction_network(interaction_data)
@@ -172,11 +176,15 @@ class InteractionAnalyzer:
             logger.error(f"互动模式分析失败: {str(e)}")
             return {"error": str(e)}
 
-    def analyze_learning_impact(self, interaction_history: list[dict[str, Any]]) -> dict[str, Any]:
+    def analyze_learning_impact(
+        self, interaction_history: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析互动对学习效果的影响."""
         try:
             # 学习成果关联分析
-            learning_correlation = self._analyze_learning_correlation(interaction_history)
+            learning_correlation = self._analyze_learning_correlation(
+                interaction_history
+            )
 
             # 知识传播分析
             knowledge_diffusion = self._analyze_knowledge_diffusion(interaction_history)
@@ -209,7 +217,9 @@ class InteractionAnalyzer:
             logger.error(f"学习影响分析失败: {str(e)}")
             return {"error": str(e)}
 
-    def generate_interaction_insights(self, user_id: int, period_days: int = 30) -> dict[str, Any]:
+    def generate_interaction_insights(
+        self, user_id: int, period_days: int = 30
+    ) -> dict[str, Any]:
         """生成用户互动洞察报告."""
         try:
             # 获取用户互动数据
@@ -222,10 +232,14 @@ class InteractionAnalyzer:
             quality_analysis = self._analyze_user_interaction_quality(user_interactions)
 
             # 社交网络位置分析
-            network_position = self._analyze_user_network_position(user_id, user_interactions)
+            network_position = self._analyze_user_network_position(
+                user_id, user_interactions
+            )
 
             # 学习影响分析
-            learning_influence = self._analyze_user_learning_influence(user_interactions)
+            learning_influence = self._analyze_user_learning_influence(
+                user_interactions
+            )
 
             # 改进建议
             improvement_suggestions = self._generate_improvement_suggestions(
@@ -386,7 +400,9 @@ class InteractionAnalyzer:
             sentiment = "neutral"
             polarity = 0.0
         else:
-            polarity = (positive_count - negative_count) / (positive_count + negative_count)
+            polarity = (positive_count - negative_count) / (
+                positive_count + negative_count
+            )
             if polarity > 0.2:
                 sentiment = "positive"
             elif polarity < -0.2:
@@ -505,7 +521,9 @@ class InteractionAnalyzer:
             "和",
             "与",
         }
-        meaningful_words = [word for word in words if word not in stop_words and len(word) > 1]
+        meaningful_words = [
+            word for word in words if word not in stop_words and len(word) > 1
+        ]
 
         density = len(meaningful_words) / len(words) if words else 0
         return min(density * 1.2, 1.0)  # 适当放大密度分数
@@ -514,10 +532,14 @@ class InteractionAnalyzer:
     def _identify_interaction_type(self, interaction_data: dict[str, Any]) -> str:
         return "discussion"
 
-    def _analyze_interaction_frequency(self, interaction_data: dict[str, Any]) -> dict[str, Any]:
+    def _analyze_interaction_frequency(
+        self, interaction_data: dict[str, Any]
+    ) -> dict[str, Any]:
         return {"frequency": "moderate", "trend": "stable"}
 
-    def _analyze_participation_level(self, interaction_data: dict[str, Any]) -> dict[str, Any]:
+    def _analyze_participation_level(
+        self, interaction_data: dict[str, Any]
+    ) -> dict[str, Any]:
         return {"level": "active", "engagement_score": 0.75}
 
     def _analyze_interaction_effectiveness(
@@ -525,7 +547,9 @@ class InteractionAnalyzer:
     ) -> dict[str, Any]:
         return {"effectiveness": "high", "impact_score": 0.8}
 
-    def _analyze_interaction_network(self, interaction_data: dict[str, Any]) -> dict[str, Any]:
+    def _analyze_interaction_network(
+        self, interaction_data: dict[str, Any]
+    ) -> dict[str, Any]:
         return {"centrality": 0.6, "connections": 15}
 
     def _generate_pattern_insights(
@@ -536,16 +560,24 @@ class InteractionAnalyzer:
     ) -> list[str]:
         return ["用户互动积极", "参与度较高", "有良好的学习氛围"]
 
-    def _analyze_learning_correlation(self, history: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_learning_correlation(
+        self, history: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         return {"correlation": 0.7, "significance": "high"}
 
-    def _analyze_knowledge_diffusion(self, history: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_knowledge_diffusion(
+        self, history: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         return {"diffusion_rate": 0.6, "reach": 25}
 
-    def _analyze_collaboration_effectiveness(self, history: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_collaboration_effectiveness(
+        self, history: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         return {"effectiveness": 0.75, "team_performance": "good"}
 
-    def _analyze_long_term_impact(self, history: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_long_term_impact(
+        self, history: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         return {"retention_improvement": 0.15, "skill_development": 0.2}
 
     def _calculate_impact_score(
@@ -561,10 +593,14 @@ class InteractionAnalyzer:
     ) -> list[str]:
         return ["继续保持积极互动", "可以尝试更多协作学习"]
 
-    def _get_user_interactions(self, user_id: int, period_days: int) -> list[dict[str, Any]]:
+    def _get_user_interactions(
+        self, user_id: int, period_days: int
+    ) -> list[dict[str, Any]]:
         return []
 
-    def _analyze_user_activity(self, interactions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_user_activity(
+        self, interactions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         return {"activity_level": "high", "consistency": 0.8}
 
     def _analyze_user_interaction_quality(

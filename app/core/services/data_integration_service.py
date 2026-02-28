@@ -275,7 +275,9 @@ class DataIntegrationService:
             flow_id = str(uuid4())
 
             # 数据预处理
-            processed_data = await self._preprocess_hotspot_data(source_data, target_system)
+            processed_data = await self._preprocess_hotspot_data(
+                source_data, target_system
+            )
 
             # 执行数据流动
             flow_result = await self._execute_data_flow(
@@ -296,7 +298,9 @@ class DataIntegrationService:
 
             # 缓存流动记录
             cache_key = f"data_flow:{flow_id}"
-            await self.cache_service.set(cache_key, flow_record, CacheType.SYSTEM_DATA, ttl=86400)
+            await self.cache_service.set(
+                cache_key, flow_record, CacheType.SYSTEM_DATA, ttl=86400
+            )
 
             # 追踪数据流转
             await self._track_data_flow("hotspot_data_flow", source_data, flow_result)
@@ -441,7 +445,9 @@ class DataIntegrationService:
         try:
             # 获取数据权属信息
             cache_key = f"data_ownership:{data_id}"
-            ownership_record = await self.cache_service.get(cache_key, CacheType.PERMISSION)
+            ownership_record = await self.cache_service.get(
+                cache_key, CacheType.PERMISSION
+            )
 
             if not ownership_record:
                 self.logger.warning(f"数据 {data_id} 的权属信息不存在")
@@ -472,7 +478,9 @@ class DataIntegrationService:
         try:
             # 获取当前权属信息
             cache_key = f"data_ownership:{data_id}"
-            ownership_record = await self.cache_service.get(cache_key, CacheType.PERMISSION)
+            ownership_record = await self.cache_service.get(
+                cache_key, CacheType.PERMISSION
+            )
 
             if not ownership_record:
                 raise BusinessLogicError(f"数据 {data_id} 的权属信息不存在")
@@ -493,7 +501,9 @@ class DataIntegrationService:
             # 更新权属信息
             ownership_record["owner_id"] = new_owner_id
             ownership_record["updated_at"] = datetime.utcnow().isoformat()
-            ownership_record["transfer_history"] = ownership_record.get("transfer_history", [])
+            ownership_record["transfer_history"] = ownership_record.get(
+                "transfer_history", []
+            )
             ownership_record["transfer_history"].append(transfer_record)
 
             # 更新缓存
@@ -521,7 +531,9 @@ class DataIntegrationService:
                 "metrics": quality_metrics,
                 "quality_score": self._calculate_quality_score(quality_metrics),
                 "monitored_at": datetime.utcnow().isoformat(),
-                "recommendations": self._generate_quality_recommendations(quality_metrics),
+                "recommendations": self._generate_quality_recommendations(
+                    quality_metrics
+                ),
             }
 
             # 缓存质量报告

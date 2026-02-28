@@ -9,22 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.training.models.learning_plan_models import PlanStatus, TaskStatus
 from app.training.schemas.learning_management_schemas import (
-    LearningDashboard,
-    LearningPlanCreate,
-    LearningPlanListResponse,
-    LearningPlanResponse,
-    LearningPlanUpdate,
-    LearningProgressCreate,
-    LearningProgressListResponse,
-    LearningProgressResponse,
-    LearningReportCreate,
-    LearningReportResponse,
-    LearningStatistics,
-    LearningTaskCreate,
-    LearningTaskListResponse,
-    LearningTaskResponse,
-    LearningTaskUpdate,
-)
+    LearningDashboard, LearningPlanCreate, LearningPlanListResponse,
+    LearningPlanResponse, LearningPlanUpdate, LearningProgressCreate,
+    LearningProgressListResponse, LearningProgressResponse, LearningReportCreate,
+    LearningReportResponse, LearningStatistics, LearningTaskCreate,
+    LearningTaskListResponse, LearningTaskResponse, LearningTaskUpdate)
 from app.training.services.learning_management_service import LearningManagementService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -362,7 +351,9 @@ async def record_learning_progress(
         ) from e
 
 
-@router.get("/progress", summary="获取学习进度列表", response_model=LearningProgressListResponse)
+@router.get(
+    "/progress", summary="获取学习进度列表", response_model=LearningProgressListResponse
+)
 async def get_learning_progress(
     skip: int = 0,
     limit: int = 10,

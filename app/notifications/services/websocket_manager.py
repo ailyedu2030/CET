@@ -9,10 +9,7 @@ from typing import Any
 from fastapi import WebSocket
 
 from app.notifications.schemas.notification_schemas import (
-    NotificationResponse,
-    WebSocketConnectionInfo,
-    WebSocketNotificationMessage,
-)
+    NotificationResponse, WebSocketConnectionInfo, WebSocketNotificationMessage)
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +142,9 @@ class WebSocketConnectionManager:
         results = {}
 
         for user_id in user_ids:
-            results[user_id] = await self.send_notification_to_user(user_id, notification)
+            results[user_id] = await self.send_notification_to_user(
+                user_id, notification
+            )
 
         return results
 
@@ -235,7 +234,8 @@ class WebSocketConnectionManager:
 
         # 按用户统计连接数
         user_connections = {
-            user_id: len(connections) for user_id, connections in self.active_connections.items()
+            user_id: len(connections)
+            for user_id, connections in self.active_connections.items()
         }
 
         return {
@@ -243,7 +243,8 @@ class WebSocketConnectionManager:
             "active_users": active_users,
             "user_connections": user_connections,
             "connection_info": {
-                conn_id: info.model_dump() for conn_id, info in self.connection_info.items()
+                conn_id: info.model_dump()
+                for conn_id, info in self.connection_info.items()
             },
         }
 

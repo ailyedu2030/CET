@@ -7,11 +7,9 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.courses.models.course_models import Class, Course
-from app.courses.schemas.assignment_schemas import (
-    CourseAssignmentRequest,
-    TeacherQualificationCheck,
-    TimeConflictCheck,
-)
+from app.courses.schemas.assignment_schemas import (CourseAssignmentRequest,
+                                                    TeacherQualificationCheck,
+                                                    TimeConflictCheck)
 from app.courses.services.assignment_service import AssignmentService
 
 logger = logging.getLogger(__name__)
@@ -37,7 +35,10 @@ class CourseAssignmentService:
                 assignment_request.teacher_ids[0], assignment_request.course_id
             )
 
-            if not qualification_result["is_qualified"] and not assignment_request.force_assign:
+            if (
+                not qualification_result["is_qualified"]
+                and not assignment_request.force_assign
+            ):
                 raise ValueError(f"教师资质不符合要求: {qualification_result['message']}")
 
             # 2. 检查教师工作量平衡分配
@@ -137,7 +138,9 @@ class CourseAssignmentService:
                     "custom_schedule": class_config.get("custom_schedule"),
                     "custom_resources": class_config.get("custom_resources"),
                     "custom_syllabus": class_config.get("custom_syllabus"),
-                    "difficulty_adjustment": class_config.get("difficulty_adjustment", 0),
+                    "difficulty_adjustment": class_config.get(
+                        "difficulty_adjustment", 0
+                    ),
                 }
 
                 # 更新班级配置（简化实现）
@@ -401,7 +404,9 @@ class CourseAssignmentService:
                 qualification_level="intermediate",  # 简化实现
             )
 
-            result = await self.assignment_service.check_teacher_qualification(qualification_check)
+            result = await self.assignment_service.check_teacher_qualification(
+                qualification_check
+            )
 
             return {
                 "is_qualified": result.is_qualified,

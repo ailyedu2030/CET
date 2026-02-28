@@ -5,11 +5,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.training.models.writing_models import (
-    WritingDifficulty,
-    WritingScoreLevel,
-    WritingType,
-)
+from app.training.models.writing_models import (WritingDifficulty, WritingScoreLevel,
+                                                WritingType)
 
 
 # 写作模板模式
@@ -182,7 +179,9 @@ class WritingSubmissionResponse(BaseModel):
     grammar_score: float = Field(..., description="语法分")
     ai_feedback: dict[str, Any] | None = Field(None, description="AI反馈")
     grammar_errors: list[dict[str, Any]] | None = Field(None, description="语法错误")
-    vocabulary_suggestions: list[dict[str, Any]] | None = Field(None, description="词汇建议")
+    vocabulary_suggestions: list[dict[str, Any]] | None = Field(
+        None, description="词汇建议"
+    )
     structure_analysis: dict[str, Any] | None = Field(None, description="结构分析")
     strengths: list[str] | None = Field(None, description="优点")
     weaknesses: list[str] | None = Field(None, description="不足")
@@ -291,10 +290,14 @@ class WritingStatistics(BaseModel):
 class WritingRecommendation(BaseModel):
     """写作推荐模式"""
 
-    recommended_templates: list[WritingTemplateResponse] = Field(..., description="推荐模板")
+    recommended_templates: list[WritingTemplateResponse] = Field(
+        ..., description="推荐模板"
+    )
     recommended_tasks: list[WritingTaskResponse] = Field(..., description="推荐任务")
     focus_areas: list[str] = Field(..., description="重点关注领域")
-    vocabulary_suggestions: list[WritingVocabularyResponse] = Field(..., description="词汇建议")
+    vocabulary_suggestions: list[WritingVocabularyResponse] = Field(
+        ..., description="词汇建议"
+    )
     practice_plan: dict[str, Any] = Field(..., description="练习计划")
 
 

@@ -37,7 +37,10 @@ class VersionUtils:
                 if isinstance(val1, dict) and isinstance(val2, dict):
                     # 递归比较字典
                     nested_diff = VersionUtils.compare_versions(val1, val2)
-                    if any(nested_diff[category] for category in ["added", "removed", "modified"]):
+                    if any(
+                        nested_diff[category]
+                        for category in ["added", "removed", "modified"]
+                    ):
                         diff_result["modified"][key] = nested_diff
                     else:
                         diff_result["unchanged"][key] = val1
@@ -115,7 +118,11 @@ class VersionUtils:
             # 手动合并策略（需要人工干预）
             conflicts = {}
 
-            all_keys = set(base_data.keys()) | set(version1_data.keys()) | set(version2_data.keys())
+            all_keys = (
+                set(base_data.keys())
+                | set(version1_data.keys())
+                | set(version2_data.keys())
+            )
 
             for key in all_keys:
                 base_val = base_data.get(key)
@@ -249,11 +256,14 @@ class VersionUtils:
             change_summary = VersionUtils.generate_change_summary(diff)
             key_changes = VersionUtils.extract_key_changes(diff)
 
-            change_count = len(diff["added"]) + len(diff["removed"]) + len(diff["modified"])
+            change_count = (
+                len(diff["added"]) + len(diff["removed"]) + len(diff["modified"])
+            )
 
             # 判断变更级别
             is_major_change = any(
-                field in diff["modified"] for field in ["name", "syllabus", "teaching_plan"]
+                field in diff["modified"]
+                for field in ["name", "syllabus", "teaching_plan"]
             )
 
             change_history.append(

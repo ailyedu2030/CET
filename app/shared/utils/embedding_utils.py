@@ -92,13 +92,17 @@ class EmbeddingUtils:
         # 获取未缓存的向量
         if uncached_texts:
             if model_type == "openai":
-                new_embeddings = await self._get_openai_embeddings(uncached_texts, config)
+                new_embeddings = await self._get_openai_embeddings(
+                    uncached_texts, config
+                )
             elif model_type == "sentence_transformer":
                 new_embeddings = await self._get_sentence_transformer_embeddings(
                     uncached_texts, config
                 )
             elif model_type == "chinese":
-                new_embeddings = await self._get_chinese_embeddings(uncached_texts, config)
+                new_embeddings = await self._get_chinese_embeddings(
+                    uncached_texts, config
+                )
             else:
                 raise EmbeddingError(f"Unsupported model type: {model_type}")
 
@@ -142,7 +146,9 @@ class EmbeddingUtils:
             loop = asyncio.get_event_loop()
             response = await loop.run_in_executor(
                 None,
-                lambda: openai.Embedding.create(input=truncated_texts, model=config.model_name),
+                lambda: openai.Embedding.create(
+                    input=truncated_texts, model=config.model_name
+                ),
             )
 
             # 提取向量
@@ -164,7 +170,9 @@ class EmbeddingUtils:
         """获取Sentence Transformer向量"""
         if not SENTENCE_TRANSFORMERS_AVAILABLE:
             # 返回模拟向量
-            logger.warning("Sentence Transformers not available, returning mock embeddings")
+            logger.warning(
+                "Sentence Transformers not available, returning mock embeddings"
+            )
             return [[0.0] * config.dimension for _ in texts]
 
         try:
@@ -195,7 +203,9 @@ class EmbeddingUtils:
 
         except Exception as e:
             logger.error(f"Sentence Transformer embedding failed: {str(e)}")
-            raise EmbeddingError(f"Sentence Transformer embedding failed: {str(e)}") from e
+            raise EmbeddingError(
+                f"Sentence Transformer embedding failed: {str(e)}"
+            ) from e
 
     async def _get_chinese_embeddings(
         self, texts: list[str], config: EmbeddingConfig
@@ -209,7 +219,9 @@ class EmbeddingUtils:
         if model_name not in self._models:
             if SENTENCE_TRANSFORMERS_AVAILABLE:
                 loop = asyncio.get_event_loop()
-                model = await loop.run_in_executor(None, SentenceTransformer, model_name)
+                model = await loop.run_in_executor(
+                    None, SentenceTransformer, model_name
+                )
                 self._models[model_name] = model
             else:
                 # 创建模拟模型
@@ -244,7 +256,9 @@ class EmbeddingUtils:
         text_hash = hashlib.md5(text.encode()).hexdigest()
         return f"{model_type}:{text_hash}"
 
-    async def get_single_embedding(self, text: str, model_type: str = "openai") -> list[float]:
+    async def get_single_embedding(
+        self, text: str, model_type: str = "openai"
+    ) -> list[float]:
         """获取单个文本向量"""
         embeddings = await self.get_embeddings([text], model_type)
         return embeddings[0] if embeddings else []

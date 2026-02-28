@@ -8,26 +8,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.security import get_current_user
-from app.training.schemas.social_schemas import (
-    AchievementResponse,
-    ClassLearningCircleResponse,
-    CompetitionAnswerRequest,
-    CompetitionCreateRequest,
-    CompetitionLeaderboardResponse,
-    CompetitionResponse,
-    ContentQualityResponse,
-    CustomAchievementCreateRequest,
-    DiscussionPostCreateRequest,
-    DiscussionPostResponse,
-    HelpRequestCreateRequest,
-    HelpResponseCreateRequest,
-    HelpResponseResponse,
-    InteractionInsightsResponse,
-    JoinGroupRequest,
-    StudyGroupCreateRequest,
-    StudyGroupResponse,
-    UserAchievementsResponse,
-)
+from app.training.schemas.social_schemas import (AchievementResponse,
+                                                 ClassLearningCircleResponse,
+                                                 CompetitionAnswerRequest,
+                                                 CompetitionCreateRequest,
+                                                 CompetitionLeaderboardResponse,
+                                                 CompetitionResponse,
+                                                 ContentQualityResponse,
+                                                 CustomAchievementCreateRequest,
+                                                 DiscussionPostCreateRequest,
+                                                 DiscussionPostResponse,
+                                                 HelpRequestCreateRequest,
+                                                 HelpResponseCreateRequest,
+                                                 HelpResponseResponse,
+                                                 InteractionInsightsResponse,
+                                                 JoinGroupRequest,
+                                                 StudyGroupCreateRequest,
+                                                 StudyGroupResponse,
+                                                 UserAchievementsResponse)
 from app.training.services.achievement_service import AchievementService
 from app.training.services.competition_service import CompetitionService
 from app.training.services.social_learning_service import SocialLearningService
@@ -175,7 +173,9 @@ async def provide_help_response(
 # ==================== 班级学习圈 ====================
 
 
-@router.get("/classes/{class_id}/learning-circle", response_model=ClassLearningCircleResponse)
+@router.get(
+    "/classes/{class_id}/learning-circle", response_model=ClassLearningCircleResponse
+)
 async def get_class_learning_circle(
     class_id: int,
     current_user: User = Depends(get_current_user),
@@ -211,7 +211,9 @@ async def get_user_achievements(
     try:
         service = AchievementService(db)
 
-        achievements_result = await service.get_user_achievements(user_id=current_user.id)
+        achievements_result = await service.get_user_achievements(
+            user_id=current_user.id
+        )
 
         return UserAchievementsResponse(**achievements_result)
 
@@ -232,7 +234,9 @@ async def check_achievements(
     try:
         service = AchievementService(db)
 
-        new_achievements = await service.check_and_award_achievements(user_id=current_user.id)
+        new_achievements = await service.check_and_award_achievements(
+            user_id=current_user.id
+        )
 
         return [AchievementResponse(**achievement) for achievement in new_achievements]
 
@@ -367,7 +371,9 @@ async def start_competition_session(
         ) from e
 
 
-@router.post("/competitions/sessions/{session_id}/answer", response_model=dict[str, Any])
+@router.post(
+    "/competitions/sessions/{session_id}/answer", response_model=dict[str, Any]
+)
 async def submit_competition_answer(
     session_id: str,
     answer_data: CompetitionAnswerRequest,
@@ -430,7 +436,9 @@ async def get_user_competition_history(
     try:
         service = CompetitionService(db)
 
-        history_result = await service.get_user_competition_history(user_id=current_user.id)
+        history_result = await service.get_user_competition_history(
+            user_id=current_user.id
+        )
 
         return history_result
 

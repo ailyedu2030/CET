@@ -17,7 +17,9 @@ class ErrorCategoryResponse(BaseModel):
     category_name: str = Field(..., description="类别名称")
     error_count: int = Field(..., description="错误数量")
     error_rate: float = Field(..., description="错误率")
-    recent_errors: list[dict[str, Any]] = Field(default_factory=list, description="最近错误")
+    recent_errors: list[dict[str, Any]] = Field(
+        default_factory=list, description="最近错误"
+    )
 
 
 class ErrorAnalysisResponse(BaseModel):
@@ -74,7 +76,9 @@ class ReinforcementPlanResponse(BaseModel):
     student_id: int = Field(..., description="学生ID")
     plan_created_at: datetime = Field(..., description="计划创建时间")
     knowledge_gaps_count: int = Field(..., description="知识缺口数量")
-    training_modules: list[dict[str, Any]] = Field(default_factory=list, description="训练模块")
+    training_modules: list[dict[str, Any]] = Field(
+        default_factory=list, description="训练模块"
+    )
     estimated_completion_days: int = Field(..., description="预计完成天数")
     priority_focus_areas: list[str] = Field(default_factory=list, description="重点关注领域")
 
@@ -149,7 +153,9 @@ class LearningStrategyResponse(BaseModel):
 
     student_id: int = Field(..., description="学生ID")
     learning_style: str = Field(..., description="学习风格")
-    current_performance: dict[str, Any] = Field(default_factory=dict, description="当前表现")
+    current_performance: dict[str, Any] = Field(
+        default_factory=dict, description="当前表现"
+    )
     weak_areas: list[str] = Field(default_factory=list, description="薄弱环节")
     recommendations: list[str] = Field(default_factory=list, description="策略建议")
     confidence_score: float = Field(..., description="推荐置信度")
@@ -186,7 +192,9 @@ class LearningPathResponse(BaseModel):
     start_knowledge_id: int = Field(..., description="起始知识点ID")
     target_knowledge_id: int = Field(..., description="目标知识点ID")
     path_length: int = Field(..., description="路径长度")
-    learning_path: list[LearningPathStep] = Field(default_factory=list, description="学习路径")
+    learning_path: list[LearningPathStep] = Field(
+        default_factory=list, description="学习路径"
+    )
     estimated_total_time: int = Field(..., description="预计总时间(分钟)")
 
 
@@ -194,8 +202,12 @@ class KnowledgeDependencyResponse(BaseModel):
     """知识点依赖关系响应."""
 
     knowledge_point_id: int = Field(..., description="知识点ID")
-    prerequisites: list[KnowledgePointInfo] = Field(default_factory=list, description="前置知识点")
-    dependents: list[KnowledgePointInfo] = Field(default_factory=list, description="后续知识点")
+    prerequisites: list[KnowledgePointInfo] = Field(
+        default_factory=list, description="前置知识点"
+    )
+    dependents: list[KnowledgePointInfo] = Field(
+        default_factory=list, description="后续知识点"
+    )
     dependency_depth: int = Field(..., description="依赖深度")
     critical_paths: list[list[int]] = Field(default_factory=list, description="关键路径")
     influence_scope: int = Field(..., description="影响范围")

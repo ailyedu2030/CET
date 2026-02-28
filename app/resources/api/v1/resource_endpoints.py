@@ -313,7 +313,9 @@ async def semantic_search(
         semantic_service = SemanticSearchService(cache_service)
 
         # 执行语义搜索
-        result = await semantic_service.semantic_search(query=query, filters=filters, top_k=top_k)
+        result = await semantic_service.semantic_search(
+            query=query, filters=filters, top_k=top_k
+        )
 
         return dict(result)
 

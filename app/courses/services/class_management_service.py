@@ -8,11 +8,7 @@ from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.courses.models.course_models import Class, Course
-from app.courses.schemas.class_schemas import (
-    ClassBatchCreate,
-    ClassCreate,
-    ClassUpdate,
-)
+from app.courses.schemas.class_schemas import ClassBatchCreate, ClassCreate, ClassUpdate
 from app.courses.services.class_service import ClassResourceService, ClassService
 
 logger = logging.getLogger(__name__)
@@ -167,7 +163,9 @@ class ClassManagementService:
         """批量创建班级 - 需求4验收标准2."""
         try:
             # 调用基础服务批量创建
-            created_classes = await self.class_service.batch_create_classes(batch_data, creator_id)
+            created_classes = await self.class_service.batch_create_classes(
+                batch_data, creator_id
+            )
 
             # 为每个班级记录资源变更历史
             for class_obj in created_classes:
@@ -205,7 +203,9 @@ class ClassManagementService:
             old_allocation = class_obj.resource_allocation or {}
 
             # 执行资源分配
-            result = await self.resource_service.allocate_resources(class_id, resource_allocation)
+            result = await self.resource_service.allocate_resources(
+                class_id, resource_allocation
+            )
 
             # 记录资源变更历史
             await self._record_resource_change(

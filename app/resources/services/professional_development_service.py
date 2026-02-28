@@ -9,18 +9,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import ColumnElement
 
-from app.resources.models.professional_development_models import (
-    CertificationMaterial,
-    CommunityPost,
-    LearningProgress,
-    NotificationSettings,
-    ResearchUpdate,
-    TrainingEnrollment,
-    TrainingResource,
-)
-from app.resources.schemas.professional_development_schemas import (
-    NotificationSettingsUpdate,
-)
+from app.resources.models.professional_development_models import (CertificationMaterial,
+                                                                  CommunityPost,
+                                                                  LearningProgress,
+                                                                  NotificationSettings,
+                                                                  ResearchUpdate,
+                                                                  TrainingEnrollment,
+                                                                  TrainingResource)
+from app.resources.schemas.professional_development_schemas import \
+    NotificationSettingsUpdate
 from app.users.models.user_models import User
 
 logger = logging.getLogger(__name__)
@@ -64,7 +61,9 @@ class ProfessionalDevelopmentService:
                 conditions.append(search_condition)
 
             # 查询总数
-            count_query = select(func.count(TrainingResource.id)).where(and_(*conditions))
+            count_query = select(func.count(TrainingResource.id)).where(
+                and_(*conditions)
+            )
             total_result = await self.db.execute(count_query)
             total = total_result.scalar() or 0
 
@@ -146,7 +145,9 @@ class ProfessionalDevelopmentService:
         """报名培训课程."""
         try:
             # 检查培训是否存在
-            training_query = select(TrainingResource).where(TrainingResource.id == training_id)
+            training_query = select(TrainingResource).where(
+                TrainingResource.id == training_id
+            )
             training_result = await self.db.execute(training_query)
             training = training_result.scalar_one_or_none()
 
@@ -251,7 +252,9 @@ class ProfessionalDevelopmentService:
                 conditions.append(search_condition)
 
             # 查询总数
-            count_query = select(func.count(CertificationMaterial.id)).where(and_(*conditions))
+            count_query = select(func.count(CertificationMaterial.id)).where(
+                and_(*conditions)
+            )
             total_result = await self.db.execute(count_query)
             total = total_result.scalar() or 0
 
@@ -314,7 +317,9 @@ class ProfessionalDevelopmentService:
         """下载认证材料."""
         try:
             # 检查材料是否存在
-            query = select(CertificationMaterial).where(CertificationMaterial.id == material_id)
+            query = select(CertificationMaterial).where(
+                CertificationMaterial.id == material_id
+            )
             result = await self.db.execute(query)
             material = result.scalar_one_or_none()
 
@@ -387,7 +392,11 @@ class ProfessionalDevelopmentService:
             offset = (page - 1) * page_size
             query = (
                 select(CommunityPost)
-                .options(selectinload(CommunityPost.author).selectinload(User.teacher_profile))
+                .options(
+                    selectinload(CommunityPost.author).selectinload(
+                        User.teacher_profile
+                    )
+                )
                 .order_by(order_by)
                 .offset(offset)
                 .limit(page_size)
@@ -622,7 +631,9 @@ class ProfessionalDevelopmentService:
     async def get_notification_settings(self, user_id: int) -> NotificationSettings:
         """获取通知设置."""
         try:
-            query = select(NotificationSettings).where(NotificationSettings.user_id == user_id)
+            query = select(NotificationSettings).where(
+                NotificationSettings.user_id == user_id
+            )
             result = await self.db.execute(query)
             settings = result.scalar_one_or_none()
 
@@ -685,7 +696,9 @@ class ProfessionalDevelopmentService:
             # 计算完成率
             completion_rate = 0.0
             if progress.total_trainings > 0:
-                completion_rate = (progress.completed_trainings / progress.total_trainings) * 100
+                completion_rate = (
+                    progress.completed_trainings / progress.total_trainings
+                ) * 100
 
             return {
                 "total_trainings": progress.total_trainings,
@@ -731,7 +744,11 @@ class ProfessionalDevelopmentService:
             # 推荐热门帖子
             post_query = (
                 select(CommunityPost)
-                .options(selectinload(CommunityPost.author).selectinload(User.teacher_profile))
+                .options(
+                    selectinload(CommunityPost.author).selectinload(
+                        User.teacher_profile
+                    )
+                )
                 .order_by(desc(CommunityPost.likes))
                 .limit(5)
             )

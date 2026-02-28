@@ -1,11 +1,6 @@
 """训练系统模块模型."""
 
-from .training_models import (
-    Question,
-    QuestionBatch,
-    TrainingRecord,
-    TrainingSession,
-)
+from .training_models import Question, QuestionBatch, TrainingRecord, TrainingSession
 
 __all__ = [
     "Question",

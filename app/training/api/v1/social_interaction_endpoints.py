@@ -8,28 +8,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.training.schemas.social_interaction_schemas import (
-    DiscussionForumCreate,
-    DiscussionForumListResponse,
-    DiscussionForumResponse,
-    DiscussionForumUpdate,
-    ForumPostCreate,
-    ForumPostListResponse,
-    ForumPostResponse,
-    ForumPostUpdate,
-    MessageCreate,
-    MessageListResponse,
-    MessageResponse,
-    PostLikeCreate,
-    PostLikeResponse,
-    PostReportCreate,
-    PostReportResponse,
-    StudyGroupCreate,
-    StudyGroupListResponse,
-    StudyGroupResponse,
-    StudyPartnerRequestCreate,
-    StudyPartnerRequestListResponse,
-    StudyPartnerRequestResponse,
-)
+    DiscussionForumCreate, DiscussionForumListResponse, DiscussionForumResponse,
+    DiscussionForumUpdate, ForumPostCreate, ForumPostListResponse, ForumPostResponse,
+    ForumPostUpdate, MessageCreate, MessageListResponse, MessageResponse,
+    PostLikeCreate, PostLikeResponse, PostReportCreate, PostReportResponse,
+    StudyGroupCreate, StudyGroupListResponse, StudyGroupResponse,
+    StudyPartnerRequestCreate, StudyPartnerRequestListResponse,
+    StudyPartnerRequestResponse)
 from app.training.services.social_service import SocialService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -99,7 +84,9 @@ async def get_discussion_forums(
         ) from e
 
 
-@router.put("/forums/{forum_id}", summary="更新讨论区", response_model=DiscussionForumResponse)
+@router.put(
+    "/forums/{forum_id}", summary="更新讨论区", response_model=DiscussionForumResponse
+)
 async def update_discussion_forum(
     forum_id: int,
     data: DiscussionForumUpdate,
@@ -202,7 +189,9 @@ async def update_forum_post(
         post = await service.update_post(post_id, current_user.id, data)
 
         if not post:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="帖子不存在或无权限")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="帖子不存在或无权限"
+            )
 
         logger.info(f"用户 {current_user.id} 更新帖子: {post_id}")
 
@@ -241,7 +230,9 @@ async def get_post_detail(
         ) from e
 
 
-@router.post("/posts/{post_id}/replies", summary="回复帖子", response_model=ForumPostResponse)
+@router.post(
+    "/posts/{post_id}/replies", summary="回复帖子", response_model=ForumPostResponse
+)
 async def reply_to_post(
     post_id: int,
     data: ForumPostCreate,
@@ -394,7 +385,9 @@ async def respond_to_partner_request(
         if action not in ["accept", "decline"]:
             raise HTTPException(status_code=400, detail="无效的操作类型")
 
-        await service.respond_to_partner_request(request_id, current_user.id, action, message)
+        await service.respond_to_partner_request(
+            request_id, current_user.id, action, message
+        )
 
         logger.info(f"用户 {current_user.id} 响应学习伙伴请求: {request_id}, 操作: {action}")
         return {"message": f"已{action}学习伙伴请求"}
@@ -554,7 +547,9 @@ async def send_message(
         return MessageResponse.model_validate(message)
     except ValueError as e:
         logger.warning(f"消息发送被拒绝: {e}")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"发送消息失败: {e}")
         raise HTTPException(

@@ -10,11 +10,8 @@ from typing import Any
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.schemas.analytics_schemas import (
-    ReportRequest,
-    ReportResponse,
-    UserBehaviorReport,
-)
+from app.analytics.schemas.analytics_schemas import (ReportRequest, ReportResponse,
+                                                     UserBehaviorReport)
 from app.analytics.utils.chart_utils import ChartGenerator
 from app.users.models.user_models import User
 
@@ -57,7 +54,9 @@ class UserAnalyticsReportGenerator:
             )
 
             # 获取用户留存分析
-            retention_analysis = await self._analyze_user_retention(start_date, end_date)
+            retention_analysis = await self._analyze_user_retention(
+                start_date, end_date
+            )
 
             # 生成可视化图表
             charts = await self._generate_user_behavior_charts(
@@ -86,7 +85,9 @@ class UserAnalyticsReportGenerator:
         """获取用户统计数据."""
         try:
             # 总用户数
-            total_users_query = select(func.count(User.id)).where(and_(*base_conditions))
+            total_users_query = select(func.count(User.id)).where(
+                and_(*base_conditions)
+            )
             total_users_result = await self.db.execute(total_users_query)
             total_users = total_users_result.scalar() or 0
 
@@ -113,10 +114,14 @@ class UserAnalyticsReportGenerator:
                 "total_users": total_users,
                 "user_type_distribution": user_type_stats,
                 "active_users_30d": active_users,
-                "activity_rate": ((active_users / total_users * 100) if total_users > 0 else 0),
+                "activity_rate": (
+                    (active_users / total_users * 100) if total_users > 0 else 0
+                ),
                 "monthly_growth": monthly_growth,
                 "average_users_per_month": (
-                    sum(monthly_growth.values()) / len(monthly_growth) if monthly_growth else 0
+                    sum(monthly_growth.values()) / len(monthly_growth)
+                    if monthly_growth
+                    else 0
                 ),
             }
 
@@ -131,7 +136,9 @@ class UserAnalyticsReportGenerator:
                 "average_users_per_month": 0,
             }
 
-    async def _get_monthly_user_growth(self, base_conditions: list[Any]) -> dict[str, int]:
+    async def _get_monthly_user_growth(
+        self, base_conditions: list[Any]
+    ) -> dict[str, int]:
         """获取月度用户增长数据."""
         monthly_growth = {}
 
@@ -165,7 +172,9 @@ class UserAnalyticsReportGenerator:
             )
 
             # 登录时间分布
-            login_time_distribution = await self._analyze_login_time_distribution(base_conditions)
+            login_time_distribution = await self._analyze_login_time_distribution(
+                base_conditions
+            )
 
             # 平均会话时长（模拟数据，实际需要会话记录）
             avg_session_duration = 28.5  # 分钟
@@ -235,12 +244,16 @@ class UserAnalyticsReportGenerator:
             )
 
             # 获取学习效果分析
-            effectiveness_analysis = await self._analyze_learning_effectiveness(base_conditions)
+            effectiveness_analysis = await self._analyze_learning_effectiveness(
+                base_conditions
+            )
 
             return {
                 "progress_statistics": progress_stats,
                 "effectiveness_analysis": effectiveness_analysis,
-                "completion_trends": await self._get_completion_trends(start_date, end_date),
+                "completion_trends": await self._get_completion_trends(
+                    start_date, end_date
+                ),
             }
 
         except Exception as e:
@@ -260,7 +273,9 @@ class UserAnalyticsReportGenerator:
             "difficulty_progression": {"easy": 65.2, "medium": 45.8, "hard": 28.9},
         }
 
-    async def _analyze_learning_effectiveness(self, base_conditions: list[Any]) -> dict[str, Any]:
+    async def _analyze_learning_effectiveness(
+        self, base_conditions: list[Any]
+    ) -> dict[str, Any]:
         """分析学习效果."""
         return {
             "improvement_rate": 23.5,  # 成绩提升百分比
@@ -334,7 +349,9 @@ class UserAnalyticsReportGenerator:
             monthly_data = user_stats.get("monthly_growth", {})
             if monthly_data:
                 line_data = [{"month": k, "users": v} for k, v in monthly_data.items()]
-                charts["monthly_growth_line"] = self.chart_generator.generate_line_chart(
+                charts[
+                    "monthly_growth_line"
+                ] = self.chart_generator.generate_line_chart(
                     line_data,
                     "month",
                     "users",
@@ -346,7 +363,9 @@ class UserAnalyticsReportGenerator:
             # 登录时间分布柱状图
             time_dist = login_behavior.get("time_distribution", {})
             if time_dist and self.chart_generator:
-                bar_data = [{"period": k, "percentage": v} for k, v in time_dist.items()]
+                bar_data = [
+                    {"period": k, "percentage": v} for k, v in time_dist.items()
+                ]
                 charts["login_time_bar"] = self.chart_generator.generate_bar_chart(
                     bar_data,
                     "period",
@@ -488,7 +507,9 @@ class TeachingEffectivenessReportGenerator:
         recommendations = []
 
         # 基于课程效果的建议
-        completion_rate = course_effectiveness.get("completion_rates", {}).get("overall", 0)
+        completion_rate = course_effectiveness.get("completion_rates", {}).get(
+            "overall", 0
+        )
         if completion_rate < 70:
             recommendations.append("课程完成率偏低，建议调整内容难度和节奏")
 
@@ -545,7 +566,9 @@ class ReportExporter:
             logger.error(f"导出CSV失败: {e}")
             raise e
 
-    def _write_dict_to_csv(self, writer: Any, data: dict[str, Any], prefix: str = "") -> None:
+    def _write_dict_to_csv(
+        self, writer: Any, data: dict[str, Any], prefix: str = ""
+    ) -> None:
         """递归写入字典数据到CSV."""
         for key, value in data.items():
             current_key = f"{prefix}.{key}" if prefix else key
@@ -580,7 +603,9 @@ class ReportService:
         """初始化报告服务."""
         self.db = db_session
         self.user_report_generator = UserAnalyticsReportGenerator(db_session)
-        self.teaching_report_generator = TeachingEffectivenessReportGenerator(db_session)
+        self.teaching_report_generator = TeachingEffectivenessReportGenerator(
+            db_session
+        )
         self.exporter = ReportExporter()
 
     async def generate_report(self, request: ReportRequest) -> ReportResponse:
@@ -589,18 +614,18 @@ class ReportService:
             report_data: dict[str, Any] = {}
 
             if request.report_type == "user_analytics":
-                report_data = await self.user_report_generator.generate_user_behavior_report(
-                    request.start_date,
-                    request.end_date,
-                    request.filters.get("user_type") if request.filters else None,
-                )
-            elif request.report_type == "teaching_effectiveness":
                 report_data = (
-                    await self.teaching_report_generator.generate_teaching_effectiveness_report(
+                    await self.user_report_generator.generate_user_behavior_report(
                         request.start_date,
                         request.end_date,
-                        request.filters.get("teacher_id") if request.filters else None,
+                        request.filters.get("user_type") if request.filters else None,
                     )
+                )
+            elif request.report_type == "teaching_effectiveness":
+                report_data = await self.teaching_report_generator.generate_teaching_effectiveness_report(
+                    request.start_date,
+                    request.end_date,
+                    request.filters.get("teacher_id") if request.filters else None,
                 )
             else:
                 raise ValueError(f"不支持的报告类型: {request.report_type}")

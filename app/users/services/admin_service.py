@@ -9,10 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.shared.models.enums import UserType
-from app.users.models import (
-    RegistrationApplication,
-    User,
-)
+from app.users.models import RegistrationApplication, User
 
 logger = logging.getLogger(__name__)
 
@@ -186,7 +183,9 @@ class AdminService:
             for i in range(7):
                 target_date = today - timedelta(days=i)
                 daily_registrations_result = await self.db.execute(
-                    select(func.count(User.id)).where(func.date(User.created_at) == target_date)
+                    select(func.count(User.id)).where(
+                        func.date(User.created_at) == target_date
+                    )
                 )
                 daily_count = daily_registrations_result.scalar() or 0
                 registration_trend.append(
@@ -243,7 +242,9 @@ class AdminService:
             logger.error(f"激活用户账号失败: {str(e)}")
             raise
 
-    async def deactivate_user_account(self, user_id: int, admin_id: int, reason: str) -> bool:
+    async def deactivate_user_account(
+        self, user_id: int, admin_id: int, reason: str
+    ) -> bool:
         """停用用户账号 - 需求1验收标准5."""
         try:
             # 获取用户
@@ -406,7 +407,9 @@ class AdminService:
             await self._validate_course_assignment_eligibility(course_id)
 
             # 3. 教学负荷和时间冲突检查
-            conflicts = await self.check_course_assignment_conflicts(course_id, teacher_id)
+            conflicts = await self.check_course_assignment_conflicts(
+                course_id, teacher_id
+            )
             if conflicts:
                 raise ValueError(f"教师时间安排冲突: {', '.join(conflicts)}")
 
@@ -487,7 +490,9 @@ class AdminService:
             )
             raise
 
-    async def check_course_assignment_conflicts(self, course_id: int, teacher_id: int) -> list[str]:
+    async def check_course_assignment_conflicts(
+        self, course_id: int, teacher_id: int
+    ) -> list[str]:
         """检查课程分配冲突 - 需求5验收标准1.
 
         教育业务冲突检查：
@@ -544,7 +549,9 @@ class AdminService:
             # 安全起见，返回通用冲突提示
             return ["系统检查异常，请稍后重试"]
 
-    async def _validate_teacher_qualifications(self, teacher_id: int, course_id: int) -> None:
+    async def _validate_teacher_qualifications(
+        self, teacher_id: int, course_id: int
+    ) -> None:
         """验证教师资质 - 教育系统核心业务逻辑"""
         # TODO: 实现教师资质验证
         # 1. 检查教师证书有效性
@@ -656,7 +663,9 @@ class AdminService:
             logger.error(f"获取系统规则配置失败: {str(e)}")
             raise
 
-    async def update_system_rules(self, rules_data: dict[str, Any], admin_id: int) -> bool:
+    async def update_system_rules(
+        self, rules_data: dict[str, Any], admin_id: int
+    ) -> bool:
         """更新系统规则配置 - 需求8验收标准1."""
         try:
             # TODO: 更新配置表
@@ -692,7 +701,9 @@ class AdminService:
 
     # ===== 需求9：数据备份与恢复 =====
 
-    async def create_backup(self, backup_type: str, description: str, admin_id: int) -> Any:
+    async def create_backup(
+        self, backup_type: str, description: str, admin_id: int
+    ) -> Any:
         """创建数据备份 - 需求9验收标准1."""
         try:
             # TODO: 实现数据备份
@@ -703,9 +714,7 @@ class AdminService:
                     self.id = 1
                     self.backup_type = backup_type
                     self.status = "in_progress"
-                    self.file_path = (
-                        f"/backups/backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
-                    )
+                    self.file_path = f"/backups/backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
                     self.file_size = None
                     self.description = description
                     self.created_by = admin_id
@@ -717,7 +726,9 @@ class AdminService:
             logger.error(f"创建数据备份失败: {str(e)}")
             raise
 
-    async def list_backups(self, page: int, size: int, backup_type: str) -> dict[str, Any]:
+    async def list_backups(
+        self, page: int, size: int, backup_type: str
+    ) -> dict[str, Any]:
         """获取备份列表 - 需求9验收标准1."""
         try:
             # TODO: 从备份表获取数据

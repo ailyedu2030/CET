@@ -8,26 +8,20 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.training.models.learning_plan_models import (
-    LearningPlanModel,
-    LearningProgressModel,
-    LearningReminderModel,
-    LearningReportModel,
-    LearningTaskModel,
-    PlanStatus,
-    TaskStatus,
-)
-
-from app.training.schemas.learning_management_schemas import (
-    LearningDashboard,
-    LearningPlanCreate,
-    LearningPlanUpdate,
-    LearningProgressCreate,
-    LearningReportCreate,
-    LearningStatistics,
-    LearningTaskCreate,
-    LearningTaskUpdate,
-)
+from app.training.models.learning_plan_models import (LearningPlanModel,
+                                                      LearningProgressModel,
+                                                      LearningReminderModel,
+                                                      LearningReportModel,
+                                                      LearningTaskModel, PlanStatus,
+                                                      TaskStatus)
+from app.training.schemas.learning_management_schemas import (LearningDashboard,
+                                                              LearningPlanCreate,
+                                                              LearningPlanUpdate,
+                                                              LearningProgressCreate,
+                                                              LearningReportCreate,
+                                                              LearningStatistics,
+                                                              LearningTaskCreate,
+                                                              LearningTaskUpdate)
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +127,10 @@ class LearningManagementService:
         return result.scalar_one_or_none()
 
     async def update_plan(
-        self: "LearningManagementService", plan_id: int, user_id: int, data: LearningPlanUpdate
+        self: "LearningManagementService",
+        plan_id: int,
+        user_id: int,
+        data: LearningPlanUpdate,
     ) -> LearningPlanModel | None:
         """更新学习计划"""
         logger.info(f"用户 {user_id} 更新学习计划: {plan_id}")
@@ -244,7 +241,10 @@ class LearningManagementService:
         return list(tasks), total
 
     async def update_task(
-        self: "LearningManagementService", task_id: int, user_id: int, data: LearningTaskUpdate
+        self: "LearningManagementService",
+        task_id: int,
+        user_id: int,
+        data: LearningTaskUpdate,
     ) -> LearningTaskModel | None:
         """更新学习任务"""
         logger.info(f"用户 {user_id} 更新学习任务: {task_id}")
@@ -357,7 +357,9 @@ class LearningManagementService:
 
     # ==================== 私有辅助方法 ====================
 
-    async def _update_plan_task_stats(self: "LearningManagementService", plan_id: int) -> None:
+    async def _update_plan_task_stats(
+        self: "LearningManagementService", plan_id: int
+    ) -> None:
         """更新计划的任务统计"""
         # 查询任务统计
         total_query = select(func.count(LearningTaskModel.id)).where(  # type: ignore[has-type]
@@ -394,12 +396,16 @@ class LearningManagementService:
             plan.total_tasks = total_tasks
             plan.completed_tasks = completed_tasks
             plan.overdue_tasks = overdue_tasks
-            plan.completion_rate = completed_tasks / total_tasks if total_tasks > 0 else 0.0
+            plan.completion_rate = (
+                completed_tasks / total_tasks if total_tasks > 0 else 0.0
+            )
             await self.db.commit()
 
     # ==================== 学习仪表板 ====================
 
-    async def get_dashboard(self: "LearningManagementService", user_id: int) -> LearningDashboard:
+    async def get_dashboard(
+        self: "LearningManagementService", user_id: int
+    ) -> LearningDashboard:
         """获取学习仪表板数据"""
         logger.info(f"生成用户 {user_id} 的学习仪表板")
 
@@ -442,16 +448,19 @@ class LearningManagementService:
         statistics = await self.get_user_statistics(user_id)
 
         from app.training.schemas.learning_management_schemas import (
-            LearningPlanResponse,
-            LearningProgressResponse,
-            LearningTaskResponse,
-        )
+            LearningPlanResponse, LearningProgressResponse, LearningTaskResponse)
 
         return LearningDashboard(
             today_tasks=[LearningTaskResponse.model_validate(t) for t in today_tasks],
-            upcoming_tasks=[LearningTaskResponse.model_validate(t) for t in upcoming_tasks],
-            overdue_tasks=[LearningTaskResponse.model_validate(t) for t in overdue_tasks],
-            recent_progress=[LearningProgressResponse.model_validate(p) for p in recent_progress],
+            upcoming_tasks=[
+                LearningTaskResponse.model_validate(t) for t in upcoming_tasks
+            ],
+            overdue_tasks=[
+                LearningTaskResponse.model_validate(t) for t in overdue_tasks
+            ],
+            recent_progress=[
+                LearningProgressResponse.model_validate(p) for p in recent_progress
+            ],
             active_plans=[LearningPlanResponse.model_validate(p) for p in active_plans],
             statistics=statistics,
             achievements=["连续学习3天", "完成5个任务"],
@@ -516,17 +525,17 @@ class LearningManagementService:
         overdue_tasks = overdue_tasks_result.scalar() or 0
 
         # 查询学习时间统计
-        total_study_time_query = select(func.sum(LearningProgressModel.study_minutes)).where(
-            LearningProgressModel.user_id == user_id
-        )
+        total_study_time_query = select(
+            func.sum(LearningProgressModel.study_minutes)
+        ).where(LearningProgressModel.user_id == user_id)
         total_study_time_result = await self.db.execute(total_study_time_query)
         total_study_time = total_study_time_result.scalar() or 0
 
         # 计算平均完成率
         if total_plans > 0:
-            completion_rate_query = select(func.avg(LearningPlanModel.completion_rate)).where(
-                LearningPlanModel.user_id == user_id
-            )
+            completion_rate_query = select(
+                func.avg(LearningPlanModel.completion_rate)
+            ).where(LearningPlanModel.user_id == user_id)
             completion_rate_result = await self.db.execute(completion_rate_query)
             average_completion_rate = completion_rate_result.scalar() or 0.0
         else:
@@ -546,8 +555,6 @@ class LearningManagementService:
             monthly_progress={},  # 需要时间序列分析
             skill_progress={},  # 需要从TrainingType枚举统计
         )
-
-
 
     # ==================== 学习报告生成 ====================
 
@@ -600,7 +607,9 @@ class LearningManagementService:
             # 计算汇总数据
             total_study_time = sum(p.study_minutes for p in progress_records)
             total_tasks_completed = sum(p.tasks_completed for p in progress_records)
-            completed_tasks = len([t for t in tasks if t.status == TaskStatus.COMPLETED])
+            completed_tasks = len(
+                [t for t in tasks if t.status == TaskStatus.COMPLETED]
+            )
 
             summary_data = {
                 "total_study_time": total_study_time,
@@ -639,7 +648,9 @@ class LearningManagementService:
             # 生成图表数据
             charts_data = {
                 "study_time_trend": [p.study_minutes for p in progress_records],
-                "score_trend": [p.overall_score for p in progress_records if p.overall_score],
+                "score_trend": [
+                    p.overall_score for p in progress_records if p.overall_score
+                ],
                 "task_completion_rate": [t.completion_rate for t in tasks],
             }
 
@@ -715,7 +726,9 @@ class LearningManagementService:
             }
 
             # 获取学习计划数据
-            plans_query = select(LearningPlanModel).where(LearningPlanModel.user_id == user_id)
+            plans_query = select(LearningPlanModel).where(
+                LearningPlanModel.user_id == user_id
+            )
             if start_date:
                 plans_query = plans_query.where(LearningPlanModel.created_at >= start_date)  # type: ignore[has-type]
 
@@ -723,7 +736,9 @@ class LearningManagementService:
             plans = plans_result.scalars().all()
 
             # 获取学习任务数据
-            tasks_query = select(LearningTaskModel).where(LearningTaskModel.user_id == user_id)
+            tasks_query = select(LearningTaskModel).where(
+                LearningTaskModel.user_id == user_id
+            )
             if start_date:
                 tasks_query = tasks_query.where(LearningTaskModel.created_at >= start_date)  # type: ignore[has-type]
 
@@ -749,11 +764,15 @@ class LearningManagementService:
                     "tasks_count": len(tasks),
                     "progress_records_count": len(progress_records),
                     "summary": {
-                        "total_study_time": sum(p.study_minutes for p in progress_records),
+                        "total_study_time": sum(
+                            p.study_minutes for p in progress_records
+                        ),
                         "completed_tasks": len(
                             [t for t in tasks if t.status == TaskStatus.COMPLETED]
                         ),
-                        "active_plans": len([p for p in plans if p.status == PlanStatus.ACTIVE]),
+                        "active_plans": len(
+                            [p for p in plans if p.status == PlanStatus.ACTIVE]
+                        ),
                     },
                 }
             )
@@ -781,7 +800,9 @@ class LearningManagementService:
                                 "type": t.task_type,  # 修正属性名
                                 "status": t.status,  # 修正属性名
                                 "priority": t.difficulty_level,  # 修正属性名
-                                "due_date": t.due_date.isoformat() if t.due_date else None,
+                                "due_date": t.due_date.isoformat()
+                                if t.due_date
+                                else None,
                                 "completed_at": t.completed_at.isoformat()
                                 if t.completed_at
                                 else None,
@@ -801,9 +822,7 @@ class LearningManagementService:
                 )
 
             # 模拟文件生成（实际应用中应该生成真实文件）
-            file_name = (
-                f"learning_data_{user_id}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.{format}"
-            )
+            file_name = f"learning_data_{user_id}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.{format}"
 
             return {
                 "download_url": f"/api/v1/files/download/{file_name}",
@@ -831,11 +850,15 @@ class LearningManagementService:
 
         try:
             # 构建查询
-            query = select(LearningReminderModel).where(LearningReminderModel.user_id == user_id)
+            query = select(LearningReminderModel).where(
+                LearningReminderModel.user_id == user_id
+            )
 
             # 根据类型过滤
             if reminder_type:
-                query = query.where(LearningReminderModel.reminder_type == reminder_type)
+                query = query.where(
+                    LearningReminderModel.reminder_type == reminder_type
+                )
 
             # 获取总数
             count_query = select(func.count(LearningReminderModel.id)).where(  # type: ignore[has-type]
@@ -934,7 +957,10 @@ class LearningManagementService:
             raise
 
     async def update_reminder(
-        self: "LearningManagementService", reminder_id: int, user_id: int, data: dict[str, Any]
+        self: "LearningManagementService",
+        reminder_id: int,
+        user_id: int,
+        data: dict[str, Any],
     ) -> dict[str, Any] | None:
         """更新学习提醒"""
         logger.info(f"用户 {user_id} 更新学习提醒: {reminder_id}")
@@ -1041,7 +1067,9 @@ class LearningManagementService:
 
         # 计算目标周的日期范围
         today = datetime.utcnow().date()
-        week_start = today - timedelta(days=today.weekday()) + timedelta(weeks=week_offset)
+        week_start = (
+            today - timedelta(days=today.weekday()) + timedelta(weeks=week_offset)
+        )
         week_end = week_start + timedelta(days=6)
 
         # 获取该周的学习任务
@@ -1092,7 +1120,9 @@ class LearningManagementService:
                     "is_today": day_date == today,
                     "tasks": day_tasks,
                     "total_tasks": len(day_tasks),
-                    "estimated_time": sum(t.get("estimated_minutes", 0) for t in day_tasks),
+                    "estimated_time": sum(
+                        t.get("estimated_minutes", 0) for t in day_tasks
+                    ),
                 }
             )
 
@@ -1100,7 +1130,9 @@ class LearningManagementService:
 
     # ==================== 删除操作 ====================
 
-    async def delete_plan(self: "LearningManagementService", plan_id: int, user_id: int) -> bool:
+    async def delete_plan(
+        self: "LearningManagementService", plan_id: int, user_id: int
+    ) -> bool:
         """删除学习计划"""
         logger.info(f"删除用户 {user_id} 的学习计划: {plan_id}")
 
@@ -1126,7 +1158,9 @@ class LearningManagementService:
             await self.db.rollback()
             raise
 
-    async def delete_task(self: "LearningManagementService", task_id: int, user_id: int) -> bool:
+    async def delete_task(
+        self: "LearningManagementService", task_id: int, user_id: int
+    ) -> bool:
         """删除学习任务"""
         logger.info(f"删除用户 {user_id} 的学习任务: {task_id}")
 

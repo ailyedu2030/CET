@@ -33,10 +33,14 @@ class EnhancedLearningAnalytics:
         """综合学情分析 - 多维度数据融合."""
         try:
             # 检查缓存
-            cache_key = f"comprehensive_analysis_{class_id}_{course_id}_{analysis_period_days}"
+            cache_key = (
+                f"comprehensive_analysis_{class_id}_{course_id}_{analysis_period_days}"
+            )
             if cache_key in self.analysis_cache:
                 cached_data = self.analysis_cache[cache_key]
-                if (datetime.now() - cached_data["timestamp"]).total_seconds() < self.cache_ttl:
+                if (
+                    datetime.now() - cached_data["timestamp"]
+                ).total_seconds() < self.cache_ttl:
                     data = cached_data["data"]
                     return data if isinstance(data, dict) else {}
 
@@ -54,11 +58,15 @@ class EnhancedLearningAnalytics:
             )
 
             # 4. 识别风险学生和预警
-            risk_assessment = await self._assess_learning_risks(multi_dimensional_data, ai_analysis)
+            risk_assessment = await self._assess_learning_risks(
+                multi_dimensional_data, ai_analysis
+            )
 
             # 5. 生成个性化建议
-            personalized_recommendations = await self._generate_personalized_recommendations(
-                multi_dimensional_data, ai_analysis, prediction_results
+            personalized_recommendations = (
+                await self._generate_personalized_recommendations(
+                    multi_dimensional_data, ai_analysis, prediction_results
+                )
             )
 
             # 整合分析结果
@@ -270,7 +278,11 @@ class EnhancedLearningAnalytics:
             }}
             """
 
-            success, prediction_response, error = await self.deepseek_service.generate_completion(
+            (
+                success,
+                prediction_response,
+                error,
+            ) = await self.deepseek_service.generate_completion(
                 prompt=prediction_prompt,
                 model=None,
                 temperature=0.2,
@@ -346,8 +358,12 @@ class EnhancedLearningAnalytics:
         return {
             "risk_assessment_summary": {
                 "total_students": len(data.get("students", [])),
-                "high_risk_count": len([s for s in risk_students if s["risk_level"] == "高"]),
-                "medium_risk_count": len([s for s in risk_students if s["risk_level"] == "中"]),
+                "high_risk_count": len(
+                    [s for s in risk_students if s["risk_level"] == "高"]
+                ),
+                "medium_risk_count": len(
+                    [s for s in risk_students if s["risk_level"] == "中"]
+                ),
                 "overall_risk_level": self._calculate_overall_risk_level(risk_students),
             },
             "risk_students": risk_students,
@@ -357,7 +373,9 @@ class EnhancedLearningAnalytics:
             )[:5],
         }
 
-    def _generate_intervention_recommendations(self, risk_factors: list[str]) -> list[str]:
+    def _generate_intervention_recommendations(
+        self, risk_factors: list[str]
+    ) -> list[str]:
         """生成干预建议."""
         recommendations = []
 
@@ -530,7 +548,9 @@ class EnhancedLearningAnalytics:
                 # 计算统计指标
                 total_records = len(records)
                 correct_records = len([r for r in records if r.is_correct])
-                accuracy_rate = correct_records / total_records if total_records > 0 else 0
+                accuracy_rate = (
+                    correct_records / total_records if total_records > 0 else 0
+                )
 
                 avg_time = (
                     sum(r.time_spent for r in records if r.time_spent) / total_records
@@ -717,7 +737,9 @@ class EnhancedLearningAnalytics:
             },
         }
 
-    def _generate_fallback_recommendations(self, data: dict[str, Any]) -> dict[str, Any]:
+    def _generate_fallback_recommendations(
+        self, data: dict[str, Any]
+    ) -> dict[str, Any]:
         """生成默认个性化建议."""
         return {
             "class_level_recommendations": {

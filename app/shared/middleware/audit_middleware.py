@@ -65,7 +65,9 @@ class AuditMiddleware(BaseHTTPMiddleware):
         ]
         self.max_body_size = max_body_size
 
-    async def dispatch(self, request: Request, call_next: Callable[[Request], Any]) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Any]
+    ) -> Response:
         """处理请求"""
         # 生成请求ID
         request_id = str(uuid.uuid4())
@@ -110,7 +112,9 @@ class AuditMiddleware(BaseHTTPMiddleware):
         """检查是否为排除路径"""
         return any(path.startswith(excluded) for excluded in self.excluded_paths)
 
-    async def _log_request(self, request: Request, request_id: str, start_time: float) -> None:
+    async def _log_request(
+        self, request: Request, request_id: str, start_time: float
+    ) -> None:
         """记录请求信息"""
         try:
             # 获取客户端信息
@@ -294,7 +298,9 @@ class SecurityAuditMiddleware(BaseHTTPMiddleware):
             "/api/v1/analytics",
         ]
 
-    async def dispatch(self, request: Request, call_next: Callable[[Request], Any]) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Any]
+    ) -> Response:
         """处理请求"""
         try:
             # 记录认证事件
@@ -302,7 +308,9 @@ class SecurityAuditMiddleware(BaseHTTPMiddleware):
                 await self._log_authentication_event(request)
 
             # 记录授权事件
-            if self.enable_authorization_logging and self._requires_authorization(request):
+            if self.enable_authorization_logging and self._requires_authorization(
+                request
+            ):
                 await self._log_authorization_event(request)
 
             # 记录管理员操作
@@ -332,9 +340,9 @@ class SecurityAuditMiddleware(BaseHTTPMiddleware):
 
     def _requires_authorization(self, request: Request) -> bool:
         """检查是否需要授权"""
-        return request.url.path.startswith("/api/v1/") and not request.url.path.startswith(
-            "/api/v1/auth/"
-        )
+        return request.url.path.startswith(
+            "/api/v1/"
+        ) and not request.url.path.startswith("/api/v1/auth/")
 
     def _is_admin_action(self, request: Request) -> bool:
         """检查是否为管理员操作"""

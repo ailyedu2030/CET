@@ -89,7 +89,9 @@ class CacheConfig:
 class LRUCache:
     """LRU本地缓存实现"""
 
-    def __init__(self, max_size: int = 1000, max_memory: int = 100 * 1024 * 1024) -> None:
+    def __init__(
+        self, max_size: int = 1000, max_memory: int = 100 * 1024 * 1024
+    ) -> None:
         self.max_size = max_size
         self.max_memory = max_memory
         self.cache: OrderedDict[str, CacheEntry] = OrderedDict()
@@ -113,7 +115,10 @@ class LRUCache:
             entry = self.cache[key]
 
             # 检查TTL
-            if entry.ttl and (datetime.utcnow() - entry.created_at).total_seconds() > entry.ttl:
+            if (
+                entry.ttl
+                and (datetime.utcnow() - entry.created_at).total_seconds() > entry.ttl
+            ):
                 self.delete(key)
                 self.stats.cache_misses += 1
                 return None
@@ -141,7 +146,8 @@ class LRUCache:
 
             # 检查是否需要淘汰
             while (
-                len(self.cache) >= self.max_size or self.total_size + size > self.max_memory
+                len(self.cache) >= self.max_size
+                or self.total_size + size > self.max_memory
             ) and self.cache:
                 self._evict_lru()
 
@@ -539,7 +545,9 @@ class CacheService:
 
             # 计算Redis命中率
             redis_total = redis_stats["keyspace_hits"] + redis_stats["keyspace_misses"]
-            redis_hit_rate = redis_stats["keyspace_hits"] / redis_total if redis_total > 0 else 0.0
+            redis_hit_rate = (
+                redis_stats["keyspace_hits"] / redis_total if redis_total > 0 else 0.0
+            )
 
             # 全局统计
             total_ops = self.global_stats["total_operations"]
@@ -641,7 +649,10 @@ class CacheService:
             keys_to_delete = []
 
             for key, entry in self.l1_cache.cache.items():
-                if entry.ttl and (current_time - entry.created_at).total_seconds() > entry.ttl:
+                if (
+                    entry.ttl
+                    and (current_time - entry.created_at).total_seconds() > entry.ttl
+                ):
                     keys_to_delete.append(key)
 
             for key in keys_to_delete:

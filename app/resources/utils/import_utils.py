@@ -10,13 +10,10 @@ from typing import Any
 import pandas as pd
 from openpyxl.workbook import Workbook
 
-from app.resources.schemas.resource_schemas import (
-    ExamSyllabusBase,
-    ImportResult,
-    KnowledgePointBase,
-    TeachingMaterialBase,
-    VocabularyItemBase,
-)
+from app.resources.schemas.resource_schemas import (ExamSyllabusBase, ImportResult,
+                                                    KnowledgePointBase,
+                                                    TeachingMaterialBase,
+                                                    VocabularyItemBase)
 from app.shared.models.enums import ContentType, DifficultyLevel
 
 logger = logging.getLogger(__name__)
@@ -192,11 +189,15 @@ class ResourceImportUtils:
                 for field in list_fields:
                     if field in df.columns and not pd.isna(row[field]):
                         vocab_data[field] = [
-                            item.strip() for item in str(row[field]).split(",") if item.strip()
+                            item.strip()
+                            for item in str(row[field]).split(",")
+                            if item.strip()
                         ]
 
                 # 处理枚举字段
-                if "difficulty_level" in df.columns and not pd.isna(row["difficulty_level"]):
+                if "difficulty_level" in df.columns and not pd.isna(
+                    row["difficulty_level"]
+                ):
                     try:
                         vocab_data["difficulty_level"] = DifficultyLevel(
                             str(row["difficulty_level"]).lower()
@@ -215,7 +216,9 @@ class ResourceImportUtils:
                     vocab_data["is_key_word"] = bool(row["is_key_word"])
 
                 # 处理复杂字段 - 例句列表
-                if "example_sentences" in df.columns and not pd.isna(row["example_sentences"]):
+                if "example_sentences" in df.columns and not pd.isna(
+                    row["example_sentences"]
+                ):
                     # 简单处理：将例句字符串转换为字典列表
                     sentences = str(row["example_sentences"]).split(";")
                     vocab_data["example_sentences"] = [
@@ -274,7 +277,9 @@ class ResourceImportUtils:
                         knowledge_data[field] = str(row[field]).strip()
 
                 # 处理列表字段
-                if "learning_objectives" in df.columns and not pd.isna(row["learning_objectives"]):
+                if "learning_objectives" in df.columns and not pd.isna(
+                    row["learning_objectives"]
+                ):
                     knowledge_data["learning_objectives"] = [
                         item.strip()
                         for item in str(row["learning_objectives"]).split(",")
@@ -283,11 +288,15 @@ class ResourceImportUtils:
 
                 if "tags" in df.columns and not pd.isna(row["tags"]):
                     knowledge_data["tags"] = [
-                        item.strip() for item in str(row["tags"]).split(",") if item.strip()
+                        item.strip()
+                        for item in str(row["tags"]).split(",")
+                        if item.strip()
                     ]
 
                 # 处理枚举字段
-                if "difficulty_level" in df.columns and not pd.isna(row["difficulty_level"]):
+                if "difficulty_level" in df.columns and not pd.isna(
+                    row["difficulty_level"]
+                ):
                     try:
                         knowledge_data["difficulty_level"] = DifficultyLevel(
                             str(row["difficulty_level"]).lower()
@@ -298,13 +307,19 @@ class ResourceImportUtils:
                         )
 
                 # 处理数值字段
-                if "importance_score" in df.columns and not pd.isna(row["importance_score"]):
+                if "importance_score" in df.columns and not pd.isna(
+                    row["importance_score"]
+                ):
                     knowledge_data["importance_score"] = float(row["importance_score"])
 
-                if "estimated_time" in df.columns and not pd.isna(row["estimated_time"]):
+                if "estimated_time" in df.columns and not pd.isna(
+                    row["estimated_time"]
+                ):
                     knowledge_data["estimated_time"] = int(row["estimated_time"])
 
-                if "review_frequency" in df.columns and not pd.isna(row["review_frequency"]):
+                if "review_frequency" in df.columns and not pd.isna(
+                    row["review_frequency"]
+                ):
                     knowledge_data["review_frequency"] = int(row["review_frequency"])
 
                 # 处理布尔字段
@@ -328,7 +343,9 @@ class ResourceImportUtils:
                         # 简单处理：将字符串转换为字典列表
                         items = str(row[field]).split(";")
                         knowledge_data[field] = [
-                            {"title": item.strip(), "content": ""} for item in items if item.strip()
+                            {"title": item.strip(), "content": ""}
+                            for item in items
+                            if item.strip()
                         ]
 
                 # 验证数据
@@ -390,10 +407,14 @@ class ResourceImportUtils:
                 # 处理列表字段
                 if "authors" in df.columns and not pd.isna(row["authors"]):
                     material_data["authors"] = [
-                        item.strip() for item in str(row["authors"]).split(",") if item.strip()
+                        item.strip()
+                        for item in str(row["authors"]).split(",")
+                        if item.strip()
                     ]
 
-                if "learning_objectives" in df.columns and not pd.isna(row["learning_objectives"]):
+                if "learning_objectives" in df.columns and not pd.isna(
+                    row["learning_objectives"]
+                ):
                     material_data["learning_objectives"] = [
                         item.strip()
                         for item in str(row["learning_objectives"]).split(",")
@@ -402,7 +423,9 @@ class ResourceImportUtils:
 
                 if "tags" in df.columns and not pd.isna(row["tags"]):
                     material_data["tags"] = [
-                        item.strip() for item in str(row["tags"]).split(",") if item.strip()
+                        item.strip()
+                        for item in str(row["tags"]).split(",")
+                        if item.strip()
                     ]
 
                 # 处理枚举字段
@@ -416,7 +439,9 @@ class ResourceImportUtils:
                             f"Row {index + 1}: Invalid content_type, using default"
                         )
 
-                if "difficulty_level" in df.columns and not pd.isna(row["difficulty_level"]):
+                if "difficulty_level" in df.columns and not pd.isna(
+                    row["difficulty_level"]
+                ):
                     try:
                         material_data["difficulty_level"] = DifficultyLevel(
                             str(row["difficulty_level"]).lower()
@@ -510,7 +535,9 @@ class ResourceImportUtils:
 
                 if "tags" in df.columns and not pd.isna(row["tags"]):
                     syllabus_data["tags"] = [
-                        item.strip() for item in str(row["tags"]).split(",") if item.strip()
+                        item.strip()
+                        for item in str(row["tags"]).split(",")
+                        if item.strip()
                     ]
 
                 # 处理布尔字段
@@ -754,7 +781,9 @@ class ResourceExportUtils:
             for column in df.columns:
                 df[column] = df[column].apply(
                     lambda x: (
-                        json.dumps(x, ensure_ascii=False) if isinstance(x, list | dict) else x
+                        json.dumps(x, ensure_ascii=False)
+                        if isinstance(x, list | dict)
+                        else x
                     )
                 )
 

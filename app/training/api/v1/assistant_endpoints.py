@@ -7,25 +7,21 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.assistant_schemas import (
-    KnowledgeBaseCreate,
-    KnowledgeBaseListResponse,
-    KnowledgeBaseResponse,
-    KnowledgeBaseUpdate,
-    LearningResourceCreate,
-    LearningResourceResponse,
-    QAFeedback,
-    QARecordListResponse,
-    QARecordResponse,
-    QARequest,
-    QAResponse,
-    ResourceRecommendationRequest,
-    ResourceRecommendationResponse,
-    UserResourceInteractionCreate,
-    VoiceRecognitionRecordListResponse,
-    VoiceRecognitionRequest,
-    VoiceRecognitionResponse,
-)
+from app.training.schemas.assistant_schemas import (KnowledgeBaseCreate,
+                                                    KnowledgeBaseListResponse,
+                                                    KnowledgeBaseResponse,
+                                                    KnowledgeBaseUpdate,
+                                                    LearningResourceCreate,
+                                                    LearningResourceResponse,
+                                                    QAFeedback, QARecordListResponse,
+                                                    QARecordResponse, QARequest,
+                                                    QAResponse,
+                                                    ResourceRecommendationRequest,
+                                                    ResourceRecommendationResponse,
+                                                    UserResourceInteractionCreate,
+                                                    VoiceRecognitionRecordListResponse,
+                                                    VoiceRecognitionRequest,
+                                                    VoiceRecognitionResponse)
 from app.training.services.assistant_service import AssistantService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -58,7 +54,9 @@ async def create_knowledge_base(
         ) from e
 
 
-@router.get("/knowledge-base", summary="获取知识库列表", response_model=KnowledgeBaseListResponse)
+@router.get(
+    "/knowledge-base", summary="获取知识库列表", response_model=KnowledgeBaseListResponse
+)
 async def get_knowledge_base_list(
     skip: int = 0,
     limit: int = 10,
@@ -94,7 +92,9 @@ async def get_knowledge_base_list(
 
 
 @router.put(
-    "/knowledge-base/{knowledge_id}", summary="更新知识库条目", response_model=KnowledgeBaseResponse
+    "/knowledge-base/{knowledge_id}",
+    summary="更新知识库条目",
+    response_model=KnowledgeBaseResponse,
 )
 async def update_knowledge_base(
     knowledge_id: int,
@@ -108,7 +108,9 @@ async def update_knowledge_base(
         knowledge = await service.update_knowledge_base(knowledge_id, data)
 
         if not knowledge:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="知识库条目不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="知识库条目不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 更新知识库条目: {knowledge_id}")
 
@@ -279,7 +281,9 @@ async def get_resource_recommendations(
             exclude_viewed=exclude_viewed,
         )
 
-        recommendations = await service.get_resource_recommendations(current_user.id, request)
+        recommendations = await service.get_resource_recommendations(
+            current_user.id, request
+        )
 
         logger.info(f"用户 {current_user.id} 获取资源推荐，共 {len(recommendations)} 个")
 
@@ -315,7 +319,9 @@ async def record_resource_interaction(
 # ==================== 语音识别功能 ====================
 
 
-@router.post("/voice/recognize", summary="语音识别", response_model=VoiceRecognitionResponse)
+@router.post(
+    "/voice/recognize", summary="语音识别", response_model=VoiceRecognitionResponse
+)
 async def recognize_voice(
     audio_file: UploadFile = File(...),
     exercise_type: str | None = None,
@@ -327,8 +333,12 @@ async def recognize_voice(
     """语音识别和分析"""
     try:
         # 验证文件类型
-        if not audio_file.content_type or not audio_file.content_type.startswith("audio/"):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="请上传音频文件")
+        if not audio_file.content_type or not audio_file.content_type.startswith(
+            "audio/"
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="请上传音频文件"
+            )
 
         # 保存音频文件
         import uuid
@@ -371,7 +381,9 @@ async def recognize_voice(
 
 
 @router.get(
-    "/voice/history", summary="获取语音识别历史", response_model=VoiceRecognitionRecordListResponse
+    "/voice/history",
+    summary="获取语音识别历史",
+    response_model=VoiceRecognitionRecordListResponse,
 )
 async def get_voice_recognition_history(
     skip: int = 0,

@@ -6,30 +6,23 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.ai.schemas.ai_schemas import (
-    AITaskRequest,
-    AITaskResponse,
-    CollaborationJoinRequest,
-    CollaborationSessionResponse,
-    CollaborationUpdateRequest,
-    LearningAnalysisListResponse,
-    LearningAnalysisRequest,
-    LearningAnalysisResponse,
-    LessonPlanGenerationRequest,
-    LessonPlanListResponse,
-    LessonPlanResponse,
-    LessonPlanUpdate,
-    SmartSuggestionRequest,
-    SmartSuggestionResponse,
-    SyllabusGenerationRequest,
-    SyllabusListResponse,
-    SyllabusResponse,
-    SyllabusUpdate,
-    TeachingAdjustmentListResponse,
-    TeachingAdjustmentRequest,
-    TeachingAdjustmentResponse,
-    TeachingAdjustmentUpdate,
-)
+from app.ai.schemas.ai_schemas import (AITaskRequest, AITaskResponse,
+                                       CollaborationJoinRequest,
+                                       CollaborationSessionResponse,
+                                       CollaborationUpdateRequest,
+                                       LearningAnalysisListResponse,
+                                       LearningAnalysisRequest,
+                                       LearningAnalysisResponse,
+                                       LessonPlanGenerationRequest,
+                                       LessonPlanListResponse, LessonPlanResponse,
+                                       LessonPlanUpdate, SmartSuggestionRequest,
+                                       SmartSuggestionResponse,
+                                       SyllabusGenerationRequest, SyllabusListResponse,
+                                       SyllabusResponse, SyllabusUpdate,
+                                       TeachingAdjustmentListResponse,
+                                       TeachingAdjustmentRequest,
+                                       TeachingAdjustmentResponse,
+                                       TeachingAdjustmentUpdate)
 from app.ai.services.deepseek_service import get_deepseek_service
 from app.ai.services.learning_adjustment_service import get_learning_adjustment_service
 from app.ai.services.lesson_plan_service import get_lesson_plan_service
@@ -37,11 +30,8 @@ from app.ai.services.syllabus_service import get_syllabus_service
 from app.ai.utils.content_generator import SmartSuggestionEngine
 from app.core.database import get_db
 from app.users.models.user_models import User
-from app.users.utils.auth_decorators import (
-    AuthRequired,
-    create_permission_dependency,
-    get_current_user,
-)
+from app.users.utils.auth_decorators import (AuthRequired, create_permission_dependency,
+                                             get_current_user)
 
 router = APIRouter(prefix="/ai", tags=["AI功能"])
 logger = logging.getLogger(__name__)
@@ -74,7 +64,9 @@ async def generate_syllabus(
         )
         return result  # type: ignore[no-any-return]
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"生成大纲失败: {str(e)}")
         raise HTTPException(
@@ -139,7 +131,9 @@ async def update_syllabus(
         )
 
         if not result:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="大纲不存在或无权限")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="大纲不存在或无权限"
+            )
 
         return result  # type: ignore[no-any-return]
     except Exception as e:
@@ -212,7 +206,9 @@ async def delete_syllabus(
         )
 
         if not success:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="大纲不存在或无权限")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="大纲不存在或无权限"
+            )
 
         return {"message": "大纲删除成功"}
     except Exception as e:
@@ -249,7 +245,9 @@ async def generate_lesson_plan(
         )
         return result  # type: ignore[no-any-return]
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"生成教案失败: {str(e)}")
         raise HTTPException(
@@ -415,7 +413,9 @@ async def create_collaboration_session(
         )
         return result  # type: ignore[no-any-return]
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"创建协作会话失败: {str(e)}")
         raise HTTPException(
@@ -626,7 +626,9 @@ async def analyze_learning_progress(
         )
         return result  # type: ignore[no-any-return]
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"学情分析失败: {str(e)}")
         raise HTTPException(
@@ -721,7 +723,9 @@ async def generate_teaching_adjustments(
         )
         return result  # type: ignore[no-any-return]
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"生成教学调整建议失败: {str(e)}")
         raise HTTPException(

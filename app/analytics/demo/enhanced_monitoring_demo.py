@@ -5,9 +5,8 @@ import json
 from datetime import datetime
 from typing import Any, Protocol, runtime_checkable
 
-from app.analytics.services.enhanced_performance_monitor import (
-    EnhancedPerformanceMonitor,
-)
+from app.analytics.services.enhanced_performance_monitor import \
+    EnhancedPerformanceMonitor
 from app.analytics.services.intelligent_alert_manager import IntelligentAlertManager
 
 
@@ -112,14 +111,18 @@ async def demo_enhanced_performance_monitoring() -> None:
     )
 
     try:
-        analysis_result = await performance_monitor.comprehensive_performance_analysis(24)
+        analysis_result = await performance_monitor.comprehensive_performance_analysis(
+            24
+        )
 
         print(f"✅ 分析完成时间: {analysis_result['analysis_metadata']['analysis_timestamp']}")
         print(f"📈 整体性能评分: {analysis_result['overall_performance_score']:.3f}")
         print(
             f"💾 系统内存使用率: {analysis_result['system_metrics']['memory']['usage_percent']:.1f}%"
         )
-        print(f"🖥️  CPU使用率: {analysis_result['system_metrics']['cpu']['usage_percent']:.1f}%")
+        print(
+            f"🖥️  CPU使用率: {analysis_result['system_metrics']['cpu']['usage_percent']:.1f}%"
+        )
         print(
             f"⚡ API平均响应时间: {analysis_result['application_metrics']['api_performance']['avg_response_time']:.0f}ms"
         )
@@ -160,12 +163,18 @@ async def demo_enhanced_performance_monitoring() -> None:
         alert_result = await alert_manager.intelligent_alert_processing(raw_alerts)
 
         print(f"📥 原始告警数量: {alert_result['processing_metadata']['raw_alerts_count']}")
-        print(f"📤 处理后告警数量: {alert_result['processing_metadata']['processed_alerts_count']}")
-        print(f"🔇 抑制告警数量: {alert_result['processing_metadata']['suppressed_alerts_count']}")
+        print(
+            f"📤 处理后告警数量: {alert_result['processing_metadata']['processed_alerts_count']}"
+        )
+        print(
+            f"🔇 抑制告警数量: {alert_result['processing_metadata']['suppressed_alerts_count']}"
+        )
 
         if alert_result["processed_alerts"]:
             for alert in alert_result["processed_alerts"]:
-                print(f"  🚨 {alert['message']} (优先级: {alert.get('priority_level', 'unknown')})")
+                print(
+                    f"  🚨 {alert['message']} (优先级: {alert.get('priority_level', 'unknown')})"
+                )
 
         if alert_result["predictive_alerts"]:
             print(f"🔮 预测性告警数量: {len(alert_result['predictive_alerts'])}")
@@ -185,13 +194,17 @@ async def demo_enhanced_performance_monitoring() -> None:
 
     try:
         # 使用性能监控器获取数据
-        performance_data = await performance_monitor.comprehensive_performance_analysis(1)
+        performance_data = await performance_monitor.comprehensive_performance_analysis(
+            1
+        )
 
         # 模拟仪表板数据结构
         dashboard_data = {
             "system_health": {
                 "status": "healthy",
-                "overall_score": performance_data.get("overall_performance_score", 0.85),
+                "overall_score": performance_data.get(
+                    "overall_performance_score", 0.85
+                ),
                 "health_grade": "A",
                 "critical_issues": 0,
             },
@@ -267,7 +280,9 @@ async def demo_enhanced_performance_monitoring() -> None:
 
     try:
         # 使用性能监控器生成报告数据
-        performance_data = await performance_monitor.comprehensive_performance_analysis(24)
+        performance_data = await performance_monitor.comprehensive_performance_analysis(
+            24
+        )
 
         # 模拟报告数据结构
         report_data = {
@@ -313,7 +328,9 @@ async def demo_enhanced_performance_monitoring() -> None:
 
     try:
         # 使用性能监控器获取数据并模拟导出
-        monitoring_data = await performance_monitor.comprehensive_performance_analysis(24)
+        monitoring_data = await performance_monitor.comprehensive_performance_analysis(
+            24
+        )
 
         import json
 

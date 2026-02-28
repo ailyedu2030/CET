@@ -23,7 +23,8 @@ router = APIRouter(prefix="/teacher/notifications", tags=["教师通知管理"])
 async def get_teacher_notifications(
     user_id: int = Query(..., description="教师用户ID"),
     status: str | None = Query(None, description="通知状态: unread/read/all"),
-    notification_type: str | None = Query(None, description="通知类型: system/review/reminder"),
+    notification_type: str
+    | None = Query(None, description="通知类型: system/review/reminder"),
     limit: int = Query(50, ge=1, le=200, description="返回记录数"),
     offset: int = Query(0, ge=0, description="偏移量"),
     current_user: User = Depends(get_current_active_user),

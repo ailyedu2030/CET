@@ -2,42 +2,14 @@
 
 from pydantic import BaseModel
 
-from .enums import (
-    AIModelType,
-    AITaskType,
-    CacheType,
-    ContentType,
-    CourseShareLevel,
-    CourseStatus,
-    DifficultyLevel,
-    EventType,
-    GradingStatus,
-    LearningStatus,
-    LogLevel,
-    NotificationStatus,
-    PermissionType,
-    QuestionType,
-    TaskStatus,
-    TrainingType,
-    UserType,
-)
-from .learning_mixins import (
-    AdaptiveLearningMixin,
-    AIAnalysisMixin,
-    ComplianceMixin,
-    LearningProgressMixin,
-)
-from .metrics import (
-    AIServiceMetrics,
-    LearningMetrics,
-    SystemMetrics,
-    TeachingMetrics,
-)
-from .validators import (
-    ResourceValidator,
-    TrainingValidator,
-    UserValidator,
-)
+from .enums import (AIModelType, AITaskType, CacheType, ContentType, CourseShareLevel,
+                    CourseStatus, DifficultyLevel, EventType, GradingStatus,
+                    LearningStatus, LogLevel, NotificationStatus, PermissionType,
+                    QuestionType, TaskStatus, TrainingType, UserType)
+from .learning_mixins import (AdaptiveLearningMixin, AIAnalysisMixin, ComplianceMixin,
+                              LearningProgressMixin)
+from .metrics import AIServiceMetrics, LearningMetrics, SystemMetrics, TeachingMetrics
+from .validators import ResourceValidator, TrainingValidator, UserValidator
 
 __all__ = [
     # Pydantic BaseModel

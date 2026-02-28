@@ -80,7 +80,9 @@ class PasswordValidator:
         if self.require_digits and not re.search(r"\d", password):
             errors.append("密码必须包含数字")
 
-        if self.require_special and not re.search(f"[{re.escape(self.special_chars)}]", password):
+        if self.require_special and not re.search(
+            f"[{re.escape(self.special_chars)}]", password
+        ):
             errors.append(f"密码必须包含特殊字符: {self.special_chars}")
 
         # 常见弱密码检查
@@ -173,7 +175,9 @@ class DataEncryption:
         self.key = key
 
     @classmethod
-    def from_password(cls, password: str, salt: bytes | None = None) -> "DataEncryption":
+    def from_password(
+        cls, password: str, salt: bytes | None = None
+    ) -> "DataEncryption":
         """从密码生成加密器"""
         if salt is None:
             salt = secrets.token_bytes(16)
@@ -356,7 +360,9 @@ class SecurityUtils:
     @staticmethod
     def generate_hmac(data: str, key: str) -> str:
         """生成HMAC"""
-        return hmac.new(key.encode("utf-8"), data.encode("utf-8"), hashlib.sha256).hexdigest()
+        return hmac.new(
+            key.encode("utf-8"), data.encode("utf-8"), hashlib.sha256
+        ).hexdigest()
 
     @staticmethod
     def verify_hmac(data: str, key: str, signature: str) -> bool:

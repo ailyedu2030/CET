@@ -48,7 +48,9 @@ class SQLInjectionGuard:
         # 高风险SQL关键词模式
         self.critical_patterns: list[Pattern[str]] = [
             re.compile(r"\b(union\s+select|union\s+all\s+select)\b", re.IGNORECASE),
-            re.compile(r"\b(drop\s+table|drop\s+database|truncate\s+table)\b", re.IGNORECASE),
+            re.compile(
+                r"\b(drop\s+table|drop\s+database|truncate\s+table)\b", re.IGNORECASE
+            ),
             re.compile(r"\b(delete\s+from|update\s+.*\s+set)\b", re.IGNORECASE),
             re.compile(r"\b(exec\s*\(|execute\s*\(|sp_executesql)\b", re.IGNORECASE),
             re.compile(r"\b(xp_cmdshell|sp_oacreate|sp_oamethod)\b", re.IGNORECASE),
@@ -58,9 +60,13 @@ class SQLInjectionGuard:
         self.high_patterns: list[Pattern[str]] = [
             re.compile(r"(\'\s*or\s*\'|\"\s*or\s*\")", re.IGNORECASE),
             re.compile(r"(\'\s*and\s*\'|\"\s*and\s*\")", re.IGNORECASE),
-            re.compile(r"\b(select\s+.*\s+from|insert\s+into|create\s+table)\b", re.IGNORECASE),
+            re.compile(
+                r"\b(select\s+.*\s+from|insert\s+into|create\s+table)\b", re.IGNORECASE
+            ),
             re.compile(r"(\-\-|\#|\/\*|\*\/)", re.IGNORECASE),
-            re.compile(r"\b(information_schema|sys\.tables|sys\.columns)\b", re.IGNORECASE),
+            re.compile(
+                r"\b(information_schema|sys\.tables|sys\.columns)\b", re.IGNORECASE
+            ),
         ]
 
         # 低风险可疑模式
@@ -149,7 +155,9 @@ class SQLInjectionGuard:
                     confidence = max(confidence, 0.35)
 
         is_malicious = len(detected_patterns) > 0 and confidence > 0.5
-        sanitized_input = self._sanitize_input(input_value) if is_malicious else input_value
+        sanitized_input = (
+            self._sanitize_input(input_value) if is_malicious else input_value
+        )
 
         return SQLInjectionDetection(
             is_malicious=is_malicious,
@@ -252,7 +260,9 @@ class SQLInjectionGuard:
 
         return True
 
-    def get_security_recommendations(self, detection: SQLInjectionDetection) -> list[str]:
+    def get_security_recommendations(
+        self, detection: SQLInjectionDetection
+    ) -> list[str]:
         """获取安全建议"""
         recommendations = []
 

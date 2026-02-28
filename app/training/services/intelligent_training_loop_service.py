@@ -13,16 +13,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
 from app.shared.models.enums import TrainingType
-from app.training.models.training_models import (
-    Question,
-    TrainingRecord,
-    TrainingSession,
-)
+from app.training.models.training_models import (Question, TrainingRecord,
+                                                 TrainingSession)
 from app.training.services.adaptive_service import AdaptiveLearningService
 from app.training.services.analytics_service import AnalyticsService
-from app.training.services.intelligent_training_loop_helpers import (
-    IntelligentTrainingLoopHelpers,
-)
+from app.training.services.intelligent_training_loop_helpers import \
+    IntelligentTrainingLoopHelpers
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +68,9 @@ class IntelligentTrainingLoopService:
             logger.info(f"开始执行智能训练闭环: 学生{student_id}, 训练类型{training_type}")
 
             # 第一步：数据采集
-            collected_data = await self._data_collection_phase(student_id, training_type)
+            collected_data = await self._data_collection_phase(
+                student_id, training_type
+            )
 
             # 第二步：AI分析
             analysis_result = await self._ai_analysis_phase(collected_data)
@@ -110,9 +108,7 @@ class IntelligentTrainingLoopService:
             # 记录闭环执行结果
             await self._record_loop_execution(loop_result)
 
-            logger.info(
-                f"智能训练闭环执行完成: 学生{student_id}, 成功={loop_result['loop_success']}"
-            )
+            logger.info(f"智能训练闭环执行完成: 学生{student_id}, 成功={loop_result['loop_success']}")
             return loop_result
 
         except Exception as e:
@@ -286,7 +282,9 @@ class IntelligentTrainingLoopService:
 
     # ==================== 第二步：AI分析阶段 ====================
 
-    async def _ai_analysis_phase(self, collected_data: dict[str, Any]) -> dict[str, Any]:
+    async def _ai_analysis_phase(
+        self, collected_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """AI分析阶段 - 智能分析知识点掌握度和薄弱环节."""
         try:
             analysis_config = self.loop_config["ai_analysis"]
@@ -303,7 +301,11 @@ class IntelligentTrainingLoopService:
             analysis_prompt = await self._build_ai_analysis_prompt(collected_data)
 
             # 调用DeepSeek进行分析
-            success, ai_response, error_msg = await self.deepseek_service.generate_completion(
+            (
+                success,
+                ai_response,
+                error_msg,
+            ) = await self.deepseek_service.generate_completion(
                 prompt=analysis_prompt,
                 temperature=0.2,  # 低温度确保分析准确性
                 max_tokens=2000,
@@ -331,7 +333,9 @@ class IntelligentTrainingLoopService:
                 "confidence_score": analysis_result.get("confidence", 0.0),
                 "knowledge_mastery": analysis_result.get("knowledge_mastery", {}),
                 "weak_areas": analysis_result.get("weak_areas", []),
-                "improvement_suggestions": analysis_result.get("improvement_suggestions", []),
+                "improvement_suggestions": analysis_result.get(
+                    "improvement_suggestions", []
+                ),
             }
 
             logger.info(
@@ -433,11 +437,17 @@ class IntelligentTrainingLoopService:
 """
         return prompt
 
-    async def _parse_ai_analysis_result(self, ai_response: dict[str, Any]) -> dict[str, Any]:
+    async def _parse_ai_analysis_result(
+        self, ai_response: dict[str, Any]
+    ) -> dict[str, Any]:
         """解析AI分析结果."""
         try:
             # 提取AI响应内容
-            content = ai_response.get("choices", [{}])[0].get("message", {}).get("content", "")
+            content = (
+                ai_response.get("choices", [{}])[0]
+                .get("message", {})
+                .get("content", "")
+            )
 
             # 解析JSON结果
             analysis_data: dict[str, Any] = json.loads(content)
@@ -489,7 +499,9 @@ class IntelligentTrainingLoopService:
 
             # 计算综合准确率
             overall_accuracy = (
-                knowledge_accuracy * 0.4 + weak_areas_accuracy * 0.4 + suggestions_accuracy * 0.2
+                knowledge_accuracy * 0.4
+                + weak_areas_accuracy * 0.4
+                + suggestions_accuracy * 0.2
             )
 
             verification_result = {
@@ -580,8 +592,10 @@ class IntelligentTrainingLoopService:
         improvement_suggestions = analysis_result.get("improvement_suggestions", [])
 
         # 难度调整策略
-        difficulty_adjustment = await self.helpers.calculate_difficulty_adjustment_strategy(
-            student_id, training_type, analysis_result
+        difficulty_adjustment = (
+            await self.helpers.calculate_difficulty_adjustment_strategy(
+                student_id, training_type, analysis_result
+            )
         )
 
         # 内容调整策略
@@ -590,8 +604,10 @@ class IntelligentTrainingLoopService:
         )
 
         # 频率调整策略
-        frequency_adjustment = await self.helpers.calculate_frequency_adjustment_strategy(
-            student_id, training_type, analysis_result
+        frequency_adjustment = (
+            await self.helpers.calculate_frequency_adjustment_strategy(
+                student_id, training_type, analysis_result
+            )
         )
 
         strategy = {
@@ -622,7 +638,9 @@ class IntelligentTrainingLoopService:
                 difficulty_result = await self.adaptive_service.update_adaptive_config(
                     student_id=student_id,
                     training_type=training_type,
-                    session_results=strategy["difficulty_adjustment"]["adjustment_data"],
+                    session_results=strategy["difficulty_adjustment"][
+                        "adjustment_data"
+                    ],
                 )
                 applied_changes.append(
                     {
@@ -808,7 +826,9 @@ class IntelligentTrainingLoopService:
         else:
             freshness_score = 0.0
 
-        overall_quality = completeness_score * 0.4 + volume_score * 0.4 + freshness_score * 0.2
+        overall_quality = (
+            completeness_score * 0.4 + volume_score * 0.4 + freshness_score * 0.2
+        )
 
         return {
             "completeness_score": completeness_score,
@@ -817,7 +837,9 @@ class IntelligentTrainingLoopService:
             "overall_quality": overall_quality,
         }
 
-    def _analyze_difficulty_progression(self, sessions: list[TrainingSession]) -> dict[str, Any]:
+    def _analyze_difficulty_progression(
+        self, sessions: list[TrainingSession]
+    ) -> dict[str, Any]:
         """分析难度进展."""
         if not sessions:
             return {"trend": "no_data", "progression_rate": 0.0}
@@ -837,7 +859,9 @@ class IntelligentTrainingLoopService:
                 trend_score -= 1
 
         progression_rate = (
-            trend_score / (len(difficulty_levels) - 1) if len(difficulty_levels) > 1 else 0
+            trend_score / (len(difficulty_levels) - 1)
+            if len(difficulty_levels) > 1
+            else 0
         )
 
         return {
@@ -852,7 +876,9 @@ class IntelligentTrainingLoopService:
             "difficulty_range": [min(difficulty_levels), max(difficulty_levels)],
         }
 
-    def _calculate_learning_velocity(self, sessions: list[TrainingSession]) -> dict[str, Any]:
+    def _calculate_learning_velocity(
+        self, sessions: list[TrainingSession]
+    ) -> dict[str, Any]:
         """计算学习速度."""
         if not sessions:
             return {"velocity": 0.0, "trend": "no_data"}
@@ -861,7 +887,9 @@ class IntelligentTrainingLoopService:
         velocities = []
         for session in sessions:
             if session.time_spent and session.time_spent > 0:
-                velocity = session.correct_answers / (session.time_spent / 60)  # 每分钟正确答题数
+                velocity = session.correct_answers / (
+                    session.time_spent / 60
+                )  # 每分钟正确答题数
                 velocities.append(velocity)
 
         if not velocities:
@@ -911,7 +939,9 @@ class IntelligentTrainingLoopService:
             else:
                 current_incorrect_streak += 1
                 current_correct_streak = 0
-                max_incorrect_streak = max(max_incorrect_streak, current_incorrect_streak)
+                max_incorrect_streak = max(
+                    max_incorrect_streak, current_incorrect_streak
+                )
 
         return {
             "accuracy_rate": accuracy_rate,
@@ -940,7 +970,9 @@ class IntelligentTrainingLoopService:
         return {
             "average_time": avg_time,
             "time_range": [min(time_spent_list), max(time_spent_list)],
-            "pattern": ("fast" if avg_time < 30 else "slow" if avg_time > 120 else "normal"),
+            "pattern": (
+                "fast" if avg_time < 30 else "slow" if avg_time > 120 else "normal"
+            ),
         }
 
     def _analyze_error_patterns(self, records: list[TrainingRecord]) -> dict[str, Any]:
@@ -965,7 +997,9 @@ class IntelligentTrainingLoopService:
             "pattern": "concentrated" if len(error_distribution) <= 3 else "scattered",
         }
 
-    def _calculate_engagement_metrics(self, records: list[TrainingRecord]) -> dict[str, Any]:
+    def _calculate_engagement_metrics(
+        self, records: list[TrainingRecord]
+    ) -> dict[str, Any]:
         """计算参与度指标."""
         if not records:
             return {"engagement": "no_data"}
@@ -993,7 +1027,11 @@ class IntelligentTrainingLoopService:
         return {
             "engagement_score": avg_engagement,
             "engagement_level": (
-                "high" if avg_engagement > 0.7 else "low" if avg_engagement < 0.4 else "medium"
+                "high"
+                if avg_engagement > 0.7
+                else "low"
+                if avg_engagement < 0.4
+                else "medium"
             ),
         }
 

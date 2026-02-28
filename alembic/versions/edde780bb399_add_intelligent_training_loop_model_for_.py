@@ -49,9 +49,7 @@ def upgrade() -> None:
             nullable=False,
             comment="尝试登录的用户名",
         ),
-        sa.Column(
-            "ip_address", sa.String(length=45), nullable=False, comment="来源IP地址"
-        ),
+        sa.Column("ip_address", sa.String(length=45), nullable=False, comment="来源IP地址"),
         sa.Column("user_agent", sa.Text(), nullable=True, comment="用户代理字符串"),
         sa.Column("success", sa.Boolean(), nullable=False, comment="是否成功"),
         sa.Column(
@@ -129,9 +127,7 @@ def upgrade() -> None:
             comment="角色等级（数字越大权限越高）",
         ),
         sa.Column("is_active", sa.Boolean(), nullable=False, comment="是否激活"),
-        sa.Column(
-            "is_system", sa.Boolean(), nullable=False, comment="是否系统内置角色"
-        ),
+        sa.Column("is_system", sa.Boolean(), nullable=False, comment="是否系统内置角色"),
         sa.Column(
             "id", sa.Integer(), autoincrement=True, nullable=False, comment="主键ID"
         ),
@@ -219,9 +215,7 @@ def upgrade() -> None:
         "buildings",
         sa.Column("campus_id", sa.Integer(), nullable=False, comment="校区ID"),
         sa.Column("name", sa.String(length=50), nullable=False, comment="楼栋名称"),
-        sa.Column(
-            "building_number", sa.String(length=20), nullable=True, comment="楼号"
-        ),
+        sa.Column("building_number", sa.String(length=20), nullable=True, comment="楼号"),
         sa.Column("floors", sa.Integer(), nullable=False, comment="楼层数"),
         sa.Column("description", sa.Text(), nullable=True, comment="楼栋描述"),
         sa.Column("is_active", sa.Boolean(), nullable=False, comment="是否启用"),
@@ -271,9 +265,7 @@ def upgrade() -> None:
         sa.Column(
             "data_collection_result", sa.JSON(), nullable=False, comment="数据采集结果"
         ),
-        sa.Column(
-            "ai_analysis_result", sa.JSON(), nullable=False, comment="AI分析结果"
-        ),
+        sa.Column("ai_analysis_result", sa.JSON(), nullable=False, comment="AI分析结果"),
         sa.Column(
             "strategy_adjustment_result",
             sa.JSON(),
@@ -324,9 +316,7 @@ def upgrade() -> None:
         sa.Column(
             "refresh_token", sa.String(length=255), nullable=True, comment="刷新令牌"
         ),
-        sa.Column(
-            "login_ip", sa.String(length=45), nullable=True, comment="登录IP地址"
-        ),
+        sa.Column("login_ip", sa.String(length=45), nullable=True, comment="登录IP地址"),
         sa.Column("user_agent", sa.Text(), nullable=True, comment="用户代理字符串"),
         sa.Column("device_info", sa.JSON(), nullable=True, comment="设备信息"),
         sa.Column(
@@ -436,9 +426,7 @@ def upgrade() -> None:
     )
     op.create_table(
         "rule_configurations",
-        sa.Column(
-            "rule_name", sa.String(length=100), nullable=False, comment="规则名称"
-        ),
+        sa.Column("rule_name", sa.String(length=100), nullable=False, comment="规则名称"),
         sa.Column(
             "rule_type",
             sa.String(length=50),
@@ -454,9 +442,7 @@ def upgrade() -> None:
         sa.Column("rule_config", sa.JSON(), nullable=False, comment="规则配置参数"),
         sa.Column("is_enabled", sa.Boolean(), nullable=False, comment="是否启用"),
         sa.Column("is_strict", sa.Boolean(), nullable=False, comment="是否严格执行"),
-        sa.Column(
-            "allow_exceptions", sa.Boolean(), nullable=False, comment="是否允许例外"
-        ),
+        sa.Column("allow_exceptions", sa.Boolean(), nullable=False, comment="是否允许例外"),
         sa.Column(
             "scope_type",
             sa.String(length=50),
@@ -569,18 +555,14 @@ def upgrade() -> None:
         sa.Column(
             "previous_status", sa.String(length=20), nullable=True, comment="变动前状态"
         ),
-        sa.Column(
-            "new_status", sa.String(length=20), nullable=False, comment="变动后状态"
-        ),
+        sa.Column("new_status", sa.String(length=20), nullable=False, comment="变动后状态"),
         sa.Column("reason", sa.Text(), nullable=False, comment="变动原因"),
         sa.Column("approved_by", sa.Integer(), nullable=True, comment="审批人ID"),
         sa.Column(
             "approved_at", sa.DateTime(timezone=True), nullable=True, comment="审批时间"
         ),
         sa.Column("approval_notes", sa.Text(), nullable=True, comment="审批备注"),
-        sa.Column(
-            "supporting_documents", sa.JSON(), nullable=False, comment="支持文档列表"
-        ),
+        sa.Column("supporting_documents", sa.JSON(), nullable=False, comment="支持文档列表"),
         sa.Column(
             "id", sa.Integer(), autoincrement=True, nullable=False, comment="主键ID"
         ),
@@ -612,9 +594,7 @@ def upgrade() -> None:
     op.create_table(
         "teaching_records",
         sa.Column("teacher_id", sa.Integer(), nullable=False, comment="教师ID"),
-        sa.Column(
-            "course_name", sa.String(length=200), nullable=False, comment="课程名称"
-        ),
+        sa.Column("course_name", sa.String(length=200), nullable=False, comment="课程名称"),
         sa.Column(
             "course_type",
             sa.String(length=50),
@@ -646,13 +626,9 @@ def upgrade() -> None:
             nullable=False,
             comment="教学状态：scheduled/ongoing/completed/cancelled",
         ),
-        sa.Column(
-            "teaching_rating", sa.Float(), nullable=True, comment="教学评分（1-5分）"
-        ),
+        sa.Column("teaching_rating", sa.Float(), nullable=True, comment="教学评分（1-5分）"),
         sa.Column("student_feedback", sa.JSON(), nullable=False, comment="学生反馈"),
-        sa.Column(
-            "effectiveness_metrics", sa.JSON(), nullable=False, comment="教学效果指标"
-        ),
+        sa.Column("effectiveness_metrics", sa.JSON(), nullable=False, comment="教学效果指标"),
         sa.Column("notes", sa.Text(), nullable=True, comment="备注信息"),
         sa.Column("created_by", sa.Integer(), nullable=True, comment="创建人ID"),
         sa.Column(
@@ -689,9 +665,7 @@ def upgrade() -> None:
         "classrooms",
         sa.Column("building_id", sa.Integer(), nullable=False, comment="楼栋ID"),
         sa.Column("name", sa.String(length=50), nullable=False, comment="教室名称"),
-        sa.Column(
-            "room_number", sa.String(length=20), nullable=False, comment="教室编号"
-        ),
+        sa.Column("room_number", sa.String(length=20), nullable=False, comment="教室编号"),
         sa.Column("floor", sa.Integer(), nullable=False, comment="楼层"),
         sa.Column("capacity", sa.Integer(), nullable=False, comment="座位数"),
         sa.Column("area", sa.Float(), nullable=True, comment="教室面积（平方米）"),
@@ -701,9 +675,7 @@ def upgrade() -> None:
             nullable=False,
             comment="设备列表：{设备类型: {数量, 状态, 型号}}",
         ),
-        sa.Column(
-            "has_projector", sa.Boolean(), nullable=False, comment="是否有投影仪"
-        ),
+        sa.Column("has_projector", sa.Boolean(), nullable=False, comment="是否有投影仪"),
         sa.Column("has_computer", sa.Boolean(), nullable=False, comment="是否有电脑"),
         sa.Column("has_audio", sa.Boolean(), nullable=False, comment="是否有音响设备"),
         sa.Column("has_whiteboard", sa.Boolean(), nullable=False, comment="是否有白板"),
@@ -762,9 +734,7 @@ def upgrade() -> None:
             nullable=False,
             comment="操作类型：course_assignment/course_multiple_classes/course_multiple_teachers",
         ),
-        sa.Column(
-            "operation_description", sa.Text(), nullable=False, comment="操作描述"
-        ),
+        sa.Column("operation_description", sa.Text(), nullable=False, comment="操作描述"),
         sa.Column("operation_data", sa.JSON(), nullable=False, comment="操作数据"),
         sa.Column(
             "operated_at",
@@ -828,14 +798,10 @@ def upgrade() -> None:
         sa.Column("course_id", sa.Integer(), nullable=False, comment="课程ID"),
         sa.Column("created_by", sa.Integer(), nullable=True, comment="创建者ID"),
         sa.Column("version", sa.String(length=20), nullable=False, comment="版本号"),
-        sa.Column(
-            "version_name", sa.String(length=100), nullable=True, comment="版本名称"
-        ),
+        sa.Column("version_name", sa.String(length=100), nullable=True, comment="版本名称"),
         sa.Column("change_log", sa.Text(), nullable=True, comment="版本变更说明"),
         sa.Column("snapshot_data", sa.JSON(), nullable=False, comment="课程数据快照"),
-        sa.Column(
-            "is_active", sa.Boolean(), nullable=False, comment="是否为当前激活版本"
-        ),
+        sa.Column("is_active", sa.Boolean(), nullable=False, comment="是否为当前激活版本"),
         sa.Column("is_backup", sa.Boolean(), nullable=False, comment="是否为备份版本"),
         sa.Column(
             "id", sa.Integer(), autoincrement=True, nullable=False, comment="主键ID"
@@ -855,9 +821,7 @@ def upgrade() -> None:
     )
     op.create_table(
         "invoices",
-        sa.Column(
-            "billing_record_id", sa.Integer(), nullable=False, comment="收费记录ID"
-        ),
+        sa.Column("billing_record_id", sa.Integer(), nullable=False, comment="收费记录ID"),
         sa.Column(
             "invoice_number", sa.String(length=50), nullable=False, comment="发票号码"
         ),
@@ -868,19 +832,13 @@ def upgrade() -> None:
             comment="发票类型：electronic/paper",
         ),
         sa.Column("invoice_date", sa.Date(), nullable=False, comment="开票日期"),
-        sa.Column(
-            "company_name", sa.String(length=200), nullable=True, comment="公司名称"
-        ),
+        sa.Column("company_name", sa.String(length=200), nullable=True, comment="公司名称"),
         sa.Column("tax_number", sa.String(length=50), nullable=True, comment="税号"),
         sa.Column(
             "company_address", sa.String(length=500), nullable=True, comment="公司地址"
         ),
-        sa.Column(
-            "company_phone", sa.String(length=50), nullable=True, comment="公司电话"
-        ),
-        sa.Column(
-            "bank_info", sa.String(length=200), nullable=True, comment="银行信息"
-        ),
+        sa.Column("company_phone", sa.String(length=50), nullable=True, comment="公司电话"),
+        sa.Column("bank_info", sa.String(length=200), nullable=True, comment="银行信息"),
         sa.Column("total_amount", sa.Float(), nullable=False, comment="发票总金额"),
         sa.Column("tax_amount", sa.Float(), nullable=False, comment="税额"),
         sa.Column("tax_rate", sa.Float(), nullable=False, comment="税率"),
@@ -894,9 +852,7 @@ def upgrade() -> None:
         sa.Column(
             "issued_at", sa.DateTime(timezone=True), nullable=True, comment="开票时间"
         ),
-        sa.Column(
-            "file_path", sa.String(length=500), nullable=True, comment="发票文件路径"
-        ),
+        sa.Column("file_path", sa.String(length=500), nullable=True, comment="发票文件路径"),
         sa.Column("file_size", sa.Integer(), nullable=True, comment="文件大小（字节）"),
         sa.Column(
             "id", sa.Integer(), autoincrement=True, nullable=False, comment="主键ID"
@@ -1051,9 +1007,7 @@ def upgrade() -> None:
             nullable=False,
             comment="周期结束时间",
         ),
-        sa.Column(
-            "total_executions", sa.Integer(), nullable=False, comment="总执行次数"
-        ),
+        sa.Column("total_executions", sa.Integer(), nullable=False, comment="总执行次数"),
         sa.Column(
             "successful_executions",
             sa.Integer(),
@@ -1068,12 +1022,8 @@ def upgrade() -> None:
             nullable=True,
             comment="效果评分（0-100）",
         ),
-        sa.Column(
-            "compliance_rate", sa.Float(), nullable=False, comment="合规率（0-1）"
-        ),
-        sa.Column(
-            "optimization_suggestions", sa.JSON(), nullable=True, comment="优化建议"
-        ),
+        sa.Column("compliance_rate", sa.Float(), nullable=False, comment="合规率（0-1）"),
+        sa.Column("optimization_suggestions", sa.JSON(), nullable=True, comment="优化建议"),
         sa.Column("created_by", sa.Integer(), nullable=False, comment="创建人ID"),
         sa.Column(
             "id", sa.Integer(), autoincrement=True, nullable=False, comment="主键ID"
@@ -1097,18 +1047,14 @@ def upgrade() -> None:
         "teacher_course_permissions",
         sa.Column("teacher_id", sa.Integer(), nullable=False, comment="教师ID"),
         sa.Column("course_id", sa.Integer(), nullable=False, comment="课程ID"),
-        sa.Column(
-            "assigned_modules", sa.JSON(), nullable=False, comment="分配的模块/章节"
-        ),
+        sa.Column("assigned_modules", sa.JSON(), nullable=False, comment="分配的模块/章节"),
         sa.Column(
             "permission_scope",
             sa.String(length=50),
             nullable=False,
             comment="权限范围：full_access/module_edit/module_only/view_all",
         ),
-        sa.Column(
-            "can_edit_content", sa.Boolean(), nullable=False, comment="是否可以编辑内容"
-        ),
+        sa.Column("can_edit_content", sa.Boolean(), nullable=False, comment="是否可以编辑内容"),
         sa.Column(
             "can_view_all_modules",
             sa.Boolean(),
@@ -1170,9 +1116,7 @@ def upgrade() -> None:
             comment="请假类型：sick/personal/emergency",
         ),
         sa.Column("leave_reason", sa.Text(), nullable=True, comment="请假原因"),
-        sa.Column(
-            "leave_approved", sa.Boolean(), nullable=False, comment="请假是否批准"
-        ),
+        sa.Column("leave_approved", sa.Boolean(), nullable=False, comment="请假是否批准"),
         sa.Column("approved_by", sa.Integer(), nullable=True, comment="批准人ID"),
         sa.Column("notes", sa.Text(), nullable=True, comment="备注信息"),
         sa.Column("recorded_by", sa.Integer(), nullable=True, comment="记录人ID"),
@@ -1225,12 +1169,8 @@ def upgrade() -> None:
             nullable=False,
             comment="变更类型：create/update/delete/allocate",
         ),
-        sa.Column(
-            "old_allocation", sa.JSON(), nullable=False, comment="变更前资源配置"
-        ),
-        sa.Column(
-            "new_allocation", sa.JSON(), nullable=False, comment="变更后资源配置"
-        ),
+        sa.Column("old_allocation", sa.JSON(), nullable=False, comment="变更前资源配置"),
+        sa.Column("new_allocation", sa.JSON(), nullable=False, comment="变更后资源配置"),
         sa.Column("change_reason", sa.Text(), nullable=True, comment="变更原因"),
         sa.Column(
             "changed_at", sa.DateTime(timezone=True), nullable=False, comment="变更时间"
@@ -1254,9 +1194,7 @@ def upgrade() -> None:
     op.create_table(
         "classroom_schedules",
         sa.Column("classroom_id", sa.Integer(), nullable=False, comment="教室ID"),
-        sa.Column(
-            "course_id", sa.Integer(), nullable=True, comment="课程ID（预留外键）"
-        ),
+        sa.Column("course_id", sa.Integer(), nullable=True, comment="课程ID（预留外键）"),
         sa.Column("teacher_id", sa.Integer(), nullable=True, comment="教师ID"),
         sa.Column("title", sa.String(length=100), nullable=False, comment="课程标题"),
         sa.Column(
@@ -1317,9 +1255,7 @@ def upgrade() -> None:
         ),
         sa.Column("brand", sa.String(length=50), nullable=True, comment="品牌"),
         sa.Column("model", sa.String(length=100), nullable=True, comment="型号"),
-        sa.Column(
-            "serial_number", sa.String(length=100), nullable=True, comment="序列号"
-        ),
+        sa.Column("serial_number", sa.String(length=100), nullable=True, comment="序列号"),
         sa.Column(
             "status",
             sa.String(length=20),
@@ -1397,9 +1333,7 @@ def upgrade() -> None:
         ),
         sa.Column("description", sa.Text(), nullable=False, comment="维护描述"),
         sa.Column("cost", sa.Float(), nullable=False, comment="维护费用"),
-        sa.Column(
-            "duration_hours", sa.Float(), nullable=False, comment="维护时长（小时）"
-        ),
+        sa.Column("duration_hours", sa.Float(), nullable=False, comment="维护时长（小时）"),
         sa.Column(
             "result",
             sa.String(length=20),
@@ -1498,27 +1432,19 @@ def upgrade() -> None:
     )
     op.add_column(
         "student_profiles",
-        sa.Column(
-            "total_exercises", sa.Integer(), nullable=False, comment="总练习次数"
-        ),
+        sa.Column("total_exercises", sa.Integer(), nullable=False, comment="总练习次数"),
     )
     op.add_column(
         "student_profiles",
-        sa.Column(
-            "parent_name", sa.String(length=50), nullable=True, comment="家长姓名"
-        ),
+        sa.Column("parent_name", sa.String(length=50), nullable=True, comment="家长姓名"),
     )
     op.add_column(
         "student_profiles",
-        sa.Column(
-            "parent_phone", sa.String(length=20), nullable=True, comment="家长电话"
-        ),
+        sa.Column("parent_phone", sa.String(length=20), nullable=True, comment="家长电话"),
     )
     op.add_column(
         "student_profiles",
-        sa.Column(
-            "parent_email", sa.String(length=100), nullable=True, comment="家长邮箱"
-        ),
+        sa.Column("parent_email", sa.String(length=100), nullable=True, comment="家长邮箱"),
     )
     op.add_column(
         "student_profiles",
@@ -1550,21 +1476,15 @@ def upgrade() -> None:
     )
     op.add_column(
         "teacher_profiles",
-        sa.Column(
-            "monthly_hours", sa.Integer(), nullable=False, comment="月度课时统计"
-        ),
+        sa.Column("monthly_hours", sa.Integer(), nullable=False, comment="月度课时统计"),
     )
     op.add_column(
         "teacher_profiles",
-        sa.Column(
-            "total_evaluations", sa.Integer(), nullable=False, comment="评价总数"
-        ),
+        sa.Column("total_evaluations", sa.Integer(), nullable=False, comment="评价总数"),
     )
     op.add_column(
         "teacher_profiles",
-        sa.Column(
-            "hourly_rate", sa.Float(), nullable=False, comment="课时费（元/小时）"
-        ),
+        sa.Column("hourly_rate", sa.Float(), nullable=False, comment="课时费（元/小时）"),
     )
     op.add_column(
         "teacher_profiles",
@@ -1572,9 +1492,7 @@ def upgrade() -> None:
     )
     op.add_column(
         "teacher_profiles",
-        sa.Column(
-            "total_salary_paid", sa.Float(), nullable=False, comment="累计已发薪资"
-        ),
+        sa.Column("total_salary_paid", sa.Float(), nullable=False, comment="累计已发薪资"),
     )
     op.add_column(
         "teacher_profiles",
@@ -1614,9 +1532,7 @@ def upgrade() -> None:
     )
     op.add_column(
         "teacher_profiles",
-        sa.Column(
-            "qualification_notes", sa.Text(), nullable=True, comment="资质审核备注"
-        ),
+        sa.Column("qualification_notes", sa.Text(), nullable=True, comment="资质审核备注"),
     )
     op.alter_column(
         "training_parameter_templates",

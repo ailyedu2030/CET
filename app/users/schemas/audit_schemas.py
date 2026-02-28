@@ -38,7 +38,9 @@ class PermissionAuditRequest(BaseModel):
 
     user_id: int | None = Field(None, description="用户ID")
     permission_code: str | None = Field(None, description="权限代码")
-    change_type: str | None = Field(None, description="变更类型", pattern="^(grant|revoke|modify)$")
+    change_type: str | None = Field(
+        None, description="变更类型", pattern="^(grant|revoke|modify)$"
+    )
     start_date: str | None = Field(None, description="开始日期")
     end_date: str | None = Field(None, description="结束日期")
     limit: int = Field(100, ge=1, le=1000, description="返回记录数")
@@ -201,7 +203,9 @@ class AnomalyDetectionResponse(BaseModel):
 class ComplianceCheckRequest(BaseModel):
     """合规性检查请求模型."""
 
-    check_type: str = Field(..., description="检查类型", pattern="^(gdpr|sox|iso27001|custom)$")
+    check_type: str = Field(
+        ..., description="检查类型", pattern="^(gdpr|sox|iso27001|custom)$"
+    )
     scope: str = Field(
         "all", description="检查范围", pattern="^(all|users|permissions|data_access)$"
     )

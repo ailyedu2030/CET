@@ -19,10 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.shared.models.enums import DifficultyLevel
-from app.training.models.training_models import (
-    TrainingRecord,
-    TrainingSession,
-)
+from app.training.models.training_models import TrainingRecord, TrainingSession
 
 logger = logging.getLogger(__name__)
 
@@ -94,19 +91,25 @@ class RealTimeMonitoringService:
             logger.error(f"Redis连接初始化失败: {str(e)}")
             self.redis_client = None
 
-    async def start_real_time_monitoring(self, student_id: int, session_id: int) -> dict[str, Any]:
+    async def start_real_time_monitoring(
+        self, student_id: int, session_id: int
+    ) -> dict[str, Any]:
         """开始实时监控训练会话."""
         try:
             logger.info(f"开始实时监控: 学生{student_id}, 会话{session_id}")
 
             # 初始化监控会话
-            monitoring_session = await self._initialize_monitoring_session(student_id, session_id)
+            monitoring_session = await self._initialize_monitoring_session(
+                student_id, session_id
+            )
 
             # 启动数据采集任务
             await self._start_data_collection_task(student_id, session_id)
 
             # 初始化性能基线
-            baseline_metrics = await self._establish_performance_baseline(student_id, session_id)
+            baseline_metrics = await self._establish_performance_baseline(
+                student_id, session_id
+            )
 
             return {
                 "monitoring_started": True,
@@ -114,7 +117,9 @@ class RealTimeMonitoringService:
                 "student_id": student_id,
                 "monitoring_session": monitoring_session,
                 "baseline_metrics": baseline_metrics,
-                "collection_interval": self.monitoring_config["data_collection_interval"],
+                "collection_interval": self.monitoring_config[
+                    "data_collection_interval"
+                ],
                 "start_time": datetime.now(),
             }
 
@@ -122,7 +127,9 @@ class RealTimeMonitoringService:
             logger.error(f"启动实时监控失败: {str(e)}")
             raise RuntimeError(f"启动实时监控失败: {str(e)}") from e
 
-    async def collect_real_time_metrics(self, student_id: int, session_id: int) -> dict[str, Any]:
+    async def collect_real_time_metrics(
+        self, student_id: int, session_id: int
+    ) -> dict[str, Any]:
         """采集实时性能指标."""
         try:
             current_time = datetime.now()
@@ -146,7 +153,9 @@ class RealTimeMonitoringService:
                     student_id, session_id
                 ),
                 # 学习进度指标
-                "progress_metrics": await self._calculate_learning_progress(student_id, session_id),
+                "progress_metrics": await self._calculate_learning_progress(
+                    student_id, session_id
+                ),
                 # 参与度指标
                 "engagement_metrics": await self._calculate_engagement_metrics(
                     student_id, session_id
@@ -189,11 +198,15 @@ class RealTimeMonitoringService:
 
         if self.redis_client:
             await self.redis_client.hset(session_key, mapping=session_data)
-            await self.redis_client.expire(session_key, self.monitoring_config["cache_ttl"])
+            await self.redis_client.expire(
+                session_key, self.monitoring_config["cache_ttl"]
+            )
 
         return session_data
 
-    async def _start_data_collection_task(self, student_id: int, session_id: int) -> None:
+    async def _start_data_collection_task(
+        self, student_id: int, session_id: int
+    ) -> None:
         """启动数据采集任务."""
         # 这里可以启动后台任务进行定期数据采集
         # 暂时记录启动信息
@@ -209,7 +222,9 @@ class RealTimeMonitoringService:
 
             # 计算基线指标
             baseline = {
-                "average_answer_time": historical_performance.get("avg_answer_time", 60.0),
+                "average_answer_time": historical_performance.get(
+                    "avg_answer_time", 60.0
+                ),
                 "average_accuracy": historical_performance.get("avg_accuracy", 0.7),
                 "typical_session_duration": historical_performance.get(
                     "avg_session_duration", 1800
@@ -225,7 +240,9 @@ class RealTimeMonitoringService:
                 baseline_key = f"baseline:{student_id}"
                 await self.redis_client.hset(
                     baseline_key,
-                    mapping={k: json.dumps(v, default=str) for k, v in baseline.items()},
+                    mapping={
+                        k: json.dumps(v, default=str) for k, v in baseline.items()
+                    },
                 )
                 await self.redis_client.expire(baseline_key, 86400)  # 24小时
 
@@ -283,7 +300,9 @@ class RealTimeMonitoringService:
                 return {"average_time": 0, "trend": "no_data", "sample_size": 0}
 
             # 计算平均答题时间
-            times = [record.time_spent for record in recent_records if record.time_spent]
+            times = [
+                record.time_spent for record in recent_records if record.time_spent
+            ]
             if not times:
                 return {"average_time": 0, "trend": "no_data", "sample_size": 0}
 
@@ -350,7 +369,9 @@ class RealTimeMonitoringService:
             # 分析趋势
             if len(all_records) >= 20:
                 first_half = all_records[10:20]
-                first_half_accuracy = sum(1 for r in first_half if r.is_correct) / len(first_half)
+                first_half_accuracy = sum(1 for r in first_half if r.is_correct) / len(
+                    first_half
+                )
 
                 if recent_accuracy > first_half_accuracy + 0.1:
                     trend = "improving"
@@ -405,7 +426,9 @@ class RealTimeMonitoringService:
             completed_questions = result.scalar() or 0
 
             target_questions = session_info["question_count"]
-            completion_rate = completed_questions / target_questions if target_questions > 0 else 0
+            completion_rate = (
+                completed_questions / target_questions if target_questions > 0 else 0
+            )
 
             # 计算时间进度
             session_start = session_info["created_at"]
@@ -431,7 +454,11 @@ class RealTimeMonitoringService:
                 "pace": (
                     "ahead"
                     if completion_rate > elapsed_time / 1800
-                    else ("behind" if completion_rate < elapsed_time / 2400 else "on_track")
+                    else (
+                        "behind"
+                        if completion_rate < elapsed_time / 2400
+                        else "on_track"
+                    )
                 ),
             }
 
@@ -487,7 +514,9 @@ class RealTimeMonitoringService:
             # 检查连续活动时间
             last_activity = recent_records[0].created_at if recent_records else None
             time_since_last = (
-                (datetime.now() - last_activity).total_seconds() if last_activity else float("inf")
+                (datetime.now() - last_activity).total_seconds()
+                if last_activity
+                else float("inf")
             )
 
             return {
@@ -524,7 +553,8 @@ class RealTimeMonitoringService:
                     and_(
                         TrainingSession.student_id == student_id,
                         TrainingSession.difficulty_level == current_difficulty,
-                        TrainingRecord.created_at >= datetime.now() - timedelta(hours=1),
+                        TrainingRecord.created_at
+                        >= datetime.now() - timedelta(hours=1),
                     )
                 )
                 .order_by(desc(TrainingRecord.created_at))
@@ -598,7 +628,9 @@ class RealTimeMonitoringService:
             )
 
             # 清理过期数据
-            cutoff = timestamp - self.monitoring_config["metrics_retention"]["real_time"]
+            cutoff = (
+                timestamp - self.monitoring_config["metrics_retention"]["real_time"]
+            )
             await self.redis_client.zremrangebyscore(timeseries_key, 0, cutoff)
 
         except Exception as e:
@@ -614,7 +646,10 @@ class RealTimeMonitoringService:
         try:
             # 检查正确率下降
             accuracy_metrics = metrics.get("accuracy_metrics", {})
-            if accuracy_metrics.get("accuracy_change", 0) < -thresholds["accuracy_drop"]:
+            if (
+                accuracy_metrics.get("accuracy_change", 0)
+                < -thresholds["accuracy_drop"]
+            ):
                 alerts.append(
                     {
                         "type": "accuracy_drop",
@@ -738,7 +773,9 @@ class RealTimeMonitoringService:
             # 平均会话时长
             session_durations = []
             for session in set(sessions):
-                session_records = [r for r in training_records if r.session_id == session.id]
+                session_records = [
+                    r for r in training_records if r.session_id == session.id
+                ]
                 if session_records:
                     duration = (
                         max(r.created_at for r in session_records)
@@ -747,7 +784,9 @@ class RealTimeMonitoringService:
                     session_durations.append(duration)
 
             avg_session_duration = (
-                sum(session_durations) / len(session_durations) if session_durations else 1800
+                sum(session_durations) / len(session_durations)
+                if session_durations
+                else 1800
             )
 
             # 偏好难度
@@ -775,7 +814,9 @@ class RealTimeMonitoringService:
             logger.error(f"获取历史表现数据失败: {str(e)}")
             return {}
 
-    async def stop_real_time_monitoring(self, student_id: int, session_id: int) -> dict[str, Any]:
+    async def stop_real_time_monitoring(
+        self, student_id: int, session_id: int
+    ) -> dict[str, Any]:
         """停止实时监控."""
         try:
             logger.info(f"停止实时监控: 学生{student_id}, 会话{session_id}")
@@ -787,7 +828,9 @@ class RealTimeMonitoringService:
             if self.redis_client:
                 session_key = f"monitoring:session:{student_id}:{session_id}"
                 await self.redis_client.hset(session_key, "status", "completed")
-                await self.redis_client.hset(session_key, "end_time", datetime.now().isoformat())
+                await self.redis_client.hset(
+                    session_key, "end_time", datetime.now().isoformat()
+                )
 
             return {
                 "monitoring_stopped": True,
@@ -801,7 +844,9 @@ class RealTimeMonitoringService:
             logger.error(f"停止实时监控失败: {str(e)}")
             raise RuntimeError(f"停止实时监控失败: {str(e)}") from e
 
-    async def get_cached_metrics(self, student_id: int, session_id: int) -> dict[str, Any] | None:
+    async def get_cached_metrics(
+        self, student_id: int, session_id: int
+    ) -> dict[str, Any] | None:
         """获取缓存的实时指标."""
         if not self.redis_client:
             return None

@@ -274,7 +274,9 @@ class ChartGenerator:
 
         metric_names = list(metrics.keys())[:4]  # 最多显示4个指标
 
-        for _i, (ax, metric_name) in enumerate(zip(axes.flat, metric_names, strict=False)):
+        for _i, (ax, metric_name) in enumerate(
+            zip(axes.flat, metric_names, strict=False)
+        ):
             value = metrics[metric_name]
 
             # 创建半圆仪表盘
@@ -287,7 +289,9 @@ class ChartGenerator:
             # 绘制数值弧
             value_theta = np.linspace(0, np.pi * (value / 100), int(100 * value / 100))
             color = "red" if value > 80 else "orange" if value > 60 else "green"
-            ax.plot(r * np.cos(value_theta), r * np.sin(value_theta), color, linewidth=8)
+            ax.plot(
+                r * np.cos(value_theta), r * np.sin(value_theta), color, linewidth=8
+            )
 
             # 添加数值文本
             ax.text(
@@ -407,7 +411,9 @@ class ChartColorPalette:
         return colors[:count]
 
     @staticmethod
-    def generate_gradient(start_color: str, end_color: str, steps: int = 10) -> list[str]:
+    def generate_gradient(
+        start_color: str, end_color: str, steps: int = 10
+    ) -> list[str]:
         """生成渐变色列表."""
         import matplotlib.colors as mcolors
 

@@ -339,7 +339,9 @@ class PriorityScheduler:
 
         for priority_level, queue in self.task_queues.items():
             for task in queue:
-                wait_time = current_time - self.wait_times.get(task.task_id, current_time)
+                wait_time = current_time - self.wait_times.get(
+                    task.task_id, current_time
+                )
 
                 # 如果等待时间超过阈值，提升优先级
                 if wait_time > self.starvation_threshold:
@@ -518,7 +520,9 @@ class PriorityScheduler:
         for category, stats in self.category_stats.items():
             if stats["submitted"] > 0:
                 avg_wait = (
-                    stats["total_wait_time"] / stats["completed"] if stats["completed"] > 0 else 0.0
+                    stats["total_wait_time"] / stats["completed"]
+                    if stats["completed"] > 0
+                    else 0.0
                 )
                 avg_exec = (
                     stats["total_execution_time"] / stats["completed"]
@@ -589,9 +593,13 @@ async def schedule_task(
 
 async def schedule_high_priority_task(task_id: str, payload: dict[str, Any]) -> str:
     """调度高优先级任务"""
-    return await schedule_task(task_id, PriorityLevel.HIGH, TaskCategory.INTERACTIVE, payload)
+    return await schedule_task(
+        task_id, PriorityLevel.HIGH, TaskCategory.INTERACTIVE, payload
+    )
 
 
 async def schedule_batch_task(task_id: str, payload: dict[str, Any]) -> str:
     """调度批处理任务"""
-    return await schedule_task(task_id, PriorityLevel.NORMAL, TaskCategory.BATCH, payload)
+    return await schedule_task(
+        task_id, PriorityLevel.NORMAL, TaskCategory.BATCH, payload
+    )

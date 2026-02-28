@@ -256,7 +256,9 @@ class StreamingOptimizer:
             compressed=compressed,
             metadata={
                 "original_size": original_size,
-                "compression_ratio": (len(serialized_data) / original_size if compressed else 1.0),
+                "compression_ratio": (
+                    len(serialized_data) / original_size if compressed else 1.0
+                ),
             },
         )
 
@@ -295,7 +297,9 @@ class StreamingOptimizer:
 
         # 计算平均延迟
         if self.latency_history:
-            self.metrics.average_latency = sum(self.latency_history) / len(self.latency_history)
+            self.metrics.average_latency = sum(self.latency_history) / len(
+                self.latency_history
+            )
 
         # 计算压缩比
         if self.metrics.total_chunks > 0:
@@ -314,7 +318,9 @@ class StreamingOptimizer:
 
         self.metrics.timestamp = datetime.utcnow()
 
-    async def optimize_for_network(self, chunks: list[StreamChunk]) -> list[StreamChunk]:
+    async def optimize_for_network(
+        self, chunks: list[StreamChunk]
+    ) -> list[StreamChunk]:
         """网络传输优化"""
         optimized_chunks = []
 
@@ -336,7 +342,9 @@ class StreamingOptimizer:
                 "network_optimized": True,
                 "transfer_encoding": "chunked",
                 "content_encoding": (
-                    self.config.compression_type.value if chunk.compressed else "identity"
+                    self.config.compression_type.value
+                    if chunk.compressed
+                    else "identity"
                 ),
             }
         )
@@ -435,6 +443,8 @@ async def create_buffered_stream(
     data_generator: AsyncGenerator[Any, None], buffer_size: int = 10
 ) -> AsyncGenerator[StreamChunk, None]:
     """创建缓冲数据流"""
-    config = StreamingConfig(mode=StreamingMode.BUFFERED, buffer_size=buffer_size, max_latency=0.5)
+    config = StreamingConfig(
+        mode=StreamingMode.BUFFERED, buffer_size=buffer_size, max_latency=0.5
+    )
     async for chunk in optimize_stream(data_generator, config):
         yield chunk

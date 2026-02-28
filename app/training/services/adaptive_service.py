@@ -9,17 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
 from app.shared.models.enums import DifficultyLevel, TrainingType
-from app.training.models.training_models import (
-    Question,
-    TrainingRecord,
-    TrainingSession,
-)
-from app.training.schemas.training_schemas import (
-    AdaptiveConfigRequest,
-    AdaptiveLearningResponse,
-    DifficultyAdjustment,
-    LearningRecommendation,
-)
+from app.training.models.training_models import (Question, TrainingRecord,
+                                                 TrainingSession)
+from app.training.schemas.training_schemas import (AdaptiveConfigRequest,
+                                                   AdaptiveLearningResponse,
+                                                   DifficultyAdjustment,
+                                                   LearningRecommendation)
 
 
 class AdaptiveLearningService:
@@ -73,7 +68,9 @@ class AdaptiveLearningService:
     ) -> DifficultyAdjustment | None:
         """根据训练结果更新自适应配置."""
         # 获取最新的训练记录
-        recent_performance = await self._get_recent_performance(student_id, training_type, limit=10)
+        recent_performance = await self._get_recent_performance(
+            student_id, training_type, limit=10
+        )
 
         if not recent_performance:
             return None
@@ -82,7 +79,9 @@ class AdaptiveLearningService:
         current_accuracy = sum(1 for r in recent_performance if r.is_correct) / len(
             recent_performance
         )
-        average_time = sum(r.time_spent for r in recent_performance) / len(recent_performance)
+        average_time = sum(r.time_spent for r in recent_performance) / len(
+            recent_performance
+        )
 
         # 基于表现调整难度
         current_level = recent_performance[0].question.difficulty_level
@@ -120,7 +119,9 @@ class AdaptiveLearningService:
         target_accuracy = config.target_accuracy
 
         # 获取当前难度等级
-        current_level = performance.get("current_difficulty", DifficultyLevel.ELEMENTARY)
+        current_level = performance.get(
+            "current_difficulty", DifficultyLevel.ELEMENTARY
+        )
 
         # 计算难度调整
         accuracy_diff = current_accuracy - target_accuracy
@@ -131,7 +132,9 @@ class AdaptiveLearningService:
             return None
 
         # 计算建议调整幅度
-        adjustment_magnitude = min(abs(accuracy_diff) * sensitivity * 2, config.max_difficulty_jump)
+        adjustment_magnitude = min(
+            abs(accuracy_diff) * sensitivity * 2, config.max_difficulty_jump
+        )
 
         if accuracy_diff > 0.1:  # 正确率太高，增加难度
             suggested_level = min(
@@ -187,13 +190,19 @@ class AdaptiveLearningService:
 
         # 根据综合表现调整难度
         if performance_score >= 0.85:  # 表现优秀，提高难度
-            return min(DifficultyLevel.ADVANCED, DifficultyLevel(current_level.value + 1))
+            return min(
+                DifficultyLevel.ADVANCED, DifficultyLevel(current_level.value + 1)
+            )
         elif performance_score >= 0.75:  # 表现良好，保持难度
             return current_level
         elif performance_score >= 0.6:  # 表现一般，略降难度
-            return max(DifficultyLevel.BEGINNER, DifficultyLevel(current_level.value - 1))
+            return max(
+                DifficultyLevel.BEGINNER, DifficultyLevel(current_level.value - 1)
+            )
         else:  # 表现较差，明显降低难度
-            return max(DifficultyLevel.BEGINNER, DifficultyLevel(current_level.value - 2))
+            return max(
+                DifficultyLevel.BEGINNER, DifficultyLevel(current_level.value - 2)
+            )
 
     def _calculate_confidence_score(
         self, performance: dict[str, Any], accuracy_diff: float
@@ -281,7 +290,9 @@ class AdaptiveLearningService:
             )
 
         # 推荐4：基于学习偏好的推荐
-        preferred_types = await self._identify_preferred_training_types(config.student_id)
+        preferred_types = await self._identify_preferred_training_types(
+            config.student_id
+        )
         for training_type in preferred_types[:2]:
             if training_type != config.training_type:
                 recommendations.append(
@@ -302,7 +313,9 @@ class AdaptiveLearningService:
 
         return recommendations[:4]  # 最多返回4个推荐
 
-    async def _identify_preferred_training_types(self, student_id: int) -> list[TrainingType]:
+    async def _identify_preferred_training_types(
+        self, student_id: int
+    ) -> list[TrainingType]:
         """识别学生偏好的训练类型."""
         # 统计各训练类型的参与度和表现
         stmt = (
@@ -319,7 +332,8 @@ class AdaptiveLearningService:
                 and_(
                     TrainingSession.student_id == student_id,
                     TrainingSession.status == "completed",
-                    TrainingSession.created_at >= datetime.utcnow() - timedelta(days=30),
+                    TrainingSession.created_at
+                    >= datetime.utcnow() - timedelta(days=30),
                 )
             )
             .group_by(TrainingSession.session_type)
@@ -362,9 +376,13 @@ class AdaptiveLearningService:
 
         if training_type:
             # 通过关联查询筛选训练类型
-            base_stmt = base_stmt.join(Question).where(Question.training_type == training_type)
+            base_stmt = base_stmt.join(Question).where(
+                Question.training_type == training_type
+            )
 
-        result = await self.db.execute(base_stmt.order_by(desc(TrainingRecord.created_at)))
+        result = await self.db.execute(
+            base_stmt.order_by(desc(TrainingRecord.created_at))
+        )
         records = result.scalars().all()
 
         if not records:
@@ -394,7 +412,9 @@ class AdaptiveLearningService:
             "total_attempts": total_attempts,
             "overall_accuracy": overall_accuracy,
             "correct_count": correct_count,
-            "current_difficulty": difficulty_stats.get("most_common", DifficultyLevel.ELEMENTARY),
+            "current_difficulty": difficulty_stats.get(
+                "most_common", DifficultyLevel.ELEMENTARY
+            ),
             "weak_knowledge_points": knowledge_point_stats["weak_points"],
             "strong_knowledge_points": knowledge_point_stats["strong_points"],
             "time_trend": time_trend,
@@ -411,7 +431,9 @@ class AdaptiveLearningService:
         # 统计每个知识点的对错情况
         for record in records:
             # 获取题目的知识点
-            stmt = select(Question.knowledge_points).where(Question.id == record.question_id)
+            stmt = select(Question.knowledge_points).where(
+                Question.id == record.question_id
+            )
             result = await self.db.execute(stmt)
             knowledge_points = result.scalar_one_or_none() or []
 
@@ -437,7 +459,9 @@ class AdaptiveLearningService:
 
         return {"weak_points": weak_points, "strong_points": strong_points}
 
-    async def _analyze_time_trend(self, records: list[TrainingRecord]) -> dict[str, Any]:
+    async def _analyze_time_trend(
+        self, records: list[TrainingRecord]
+    ) -> dict[str, Any]:
         """分析时间趋势."""
         if len(records) < 5:
             return {"trend": "insufficient_data"}
@@ -476,7 +500,9 @@ class AdaptiveLearningService:
 
         for record in records:
             # 获取题目难度
-            stmt = select(Question.difficulty_level).where(Question.id == record.question_id)
+            stmt = select(Question.difficulty_level).where(
+                Question.id == record.question_id
+            )
             result = await self.db.execute(stmt)
             difficulty = result.scalar_one_or_none() or DifficultyLevel.ELEMENTARY
 
@@ -496,7 +522,9 @@ class AdaptiveLearningService:
 
         return {"distribution": difficulty_stats, "most_common": most_common}
 
-    async def _calculate_performance_consistency(self, records: list[TrainingRecord]) -> float:
+    async def _calculate_performance_consistency(
+        self, records: list[TrainingRecord]
+    ) -> float:
         """计算表现一致性."""
         if len(records) < 5:
             return 0.5
@@ -515,7 +543,9 @@ class AdaptiveLearningService:
             return 0.8
 
         mean_accuracy = sum(chunk_accuracies) / len(chunk_accuracies)
-        variance = sum((a - mean_accuracy) ** 2 for a in chunk_accuracies) / len(chunk_accuracies)
+        variance = sum((a - mean_accuracy) ** 2 for a in chunk_accuracies) / len(
+            chunk_accuracies
+        )
         std_dev = math.sqrt(variance)
 
         # 将标准差转换为一致性分数（0-1）

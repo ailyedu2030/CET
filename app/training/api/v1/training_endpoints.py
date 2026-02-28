@@ -10,26 +10,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.shared.models.enums import DifficultyLevel, TrainingType
-from app.training.schemas.training_schemas import (
-    LearningProgressResponse,
-    PerformanceMetrics,
-    PerformanceReportResponse,
-    QuestionBatchListResponse,
-    QuestionBatchRequest,
-    QuestionBatchResponse,
-    QuestionFilter,
-    QuestionListResponse,
-    QuestionResponse,
-    SubmitAnswerRequest,
-    TrainingRecordResponse,
-    TrainingSessionRequest,
-    TrainingSessionResponse,
-)
+from app.training.schemas.training_schemas import (LearningProgressResponse,
+                                                   PerformanceMetrics,
+                                                   PerformanceReportResponse,
+                                                   QuestionBatchListResponse,
+                                                   QuestionBatchRequest,
+                                                   QuestionBatchResponse,
+                                                   QuestionFilter, QuestionListResponse,
+                                                   QuestionResponse,
+                                                   SubmitAnswerRequest,
+                                                   TrainingRecordResponse,
+                                                   TrainingSessionRequest,
+                                                   TrainingSessionResponse)
 from app.training.services.adaptive_service import AdaptiveLearningService
 from app.training.services.analytics_service import AnalyticsService
-from app.training.services.intelligent_training_loop_service import (
-    IntelligentTrainingLoopService,
-)
+from app.training.services.intelligent_training_loop_service import \
+    IntelligentTrainingLoopService
 from app.training.services.precise_adaptive_service import PreciseAdaptiveService
 from app.training.services.training_center_service import TrainingCenterService
 from app.users.models.user_models import User
@@ -555,7 +551,9 @@ async def get_recommended_questions(
         from app.training.schemas.training_schemas import PaginatedResponse
 
         return QuestionListResponse(
-            questions=[await training_service._build_question_response(q) for q in questions],
+            questions=[
+                await training_service._build_question_response(q) for q in questions
+            ],
             pagination=PaginatedResponse(
                 total=len(questions),
                 page=1,
@@ -603,7 +601,9 @@ async def execute_intelligent_training_loop(
             "message": "智能训练闭环执行成功",
             "data": loop_result,
             "success": loop_result["loop_success"],
-            "ai_analysis_accuracy": loop_result["phases"]["ai_analysis"]["analysis_accuracy"],
+            "ai_analysis_accuracy": loop_result["phases"]["ai_analysis"][
+                "analysis_accuracy"
+            ],
             "next_execution_time": loop_result["next_execution_time"],
         }
 
@@ -731,7 +731,9 @@ async def get_intelligent_loop_status(
             "average_improvement_rate": avg_improvement,
             "next_execution_time": next_execution,
             "loop_active": (
-                next_execution and next_execution > datetime.now() if next_execution else False
+                next_execution and next_execution > datetime.now()
+                if next_execution
+                else False
             ),
             "performance_metrics": {
                 "ai_analysis_accuracy_threshold": 0.9,
@@ -800,7 +802,9 @@ async def execute_precise_adaptive_algorithm(
                     "meets_personalization_target", False
                 ),
                 "precision_score": adjustment_result.get("algorithm_precision", 0.0),
-                "personalization_score": adjustment_result.get("personalization_score", 0.0),
+                "personalization_score": adjustment_result.get(
+                    "personalization_score", 0.0
+                ),
             },
         }
 
@@ -855,10 +859,13 @@ async def get_precise_adaptive_performance(
 
         # 计算性能指标
         total_adjustments = len(loop_records)
-        successful_adjustments = sum(1 for record in loop_records if record.loop_success)
+        successful_adjustments = sum(
+            1 for record in loop_records if record.loop_success
+        )
 
         avg_precision = (
-            sum(record.ai_analysis_accuracy for record in loop_records) / total_adjustments
+            sum(record.ai_analysis_accuracy for record in loop_records)
+            / total_adjustments
         )
         avg_improvement = (
             sum(record.improvement_rate for record in loop_records) / total_adjustments
@@ -883,7 +890,9 @@ async def get_precise_adaptive_performance(
             "total_adjustments": total_adjustments,
             "successful_adjustments": successful_adjustments,
             "success_rate": (
-                successful_adjustments / total_adjustments if total_adjustments > 0 else 0.0
+                successful_adjustments / total_adjustments
+                if total_adjustments > 0
+                else 0.0
             ),
             "average_improvement_rate": avg_improvement,
             "performance_trend": (

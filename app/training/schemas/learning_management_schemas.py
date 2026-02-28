@@ -5,11 +5,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.training.models.learning_plan_models import (
-    PlanStatus,
-    PlanType,
-    TaskStatus,
-)
+from app.training.models.learning_plan_models import PlanStatus, PlanType, TaskStatus
 
 
 # 学习计划模式
@@ -31,9 +27,15 @@ class LearningPlanBase(BaseModel):
 
     @field_validator("end_date")
     @classmethod
-    def validate_end_date(cls: type["LearningPlanBase"], v: datetime, info: Any) -> datetime:
+    def validate_end_date(
+        cls: type["LearningPlanBase"], v: datetime, info: Any
+    ) -> datetime:
         """验证结束日期必须晚于开始日期"""
-        if hasattr(info, "data") and "start_date" in info.data and v <= info.data["start_date"]:
+        if (
+            hasattr(info, "data")
+            and "start_date" in info.data
+            and v <= info.data["start_date"]
+        ):
             raise ValueError("结束日期必须晚于开始日期")
         return v
 

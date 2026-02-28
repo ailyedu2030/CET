@@ -88,7 +88,9 @@ class APIKeyPoolService:
         self.refresh_interval = timedelta(minutes=5)
 
         # 错峰时段配置（北京时间）
-        self.off_peak_hours = list(range(0, 8)) + list(range(22, 24))  # 00:00-08:00, 22:00-24:00
+        self.off_peak_hours = list(range(0, 8)) + list(
+            range(22, 24)
+        )  # 00:00-08:00, 22:00-24:00
         self.peak_hours = list(range(9, 21))  # 09:00-21:00
 
         # 成本控制配置
@@ -160,7 +162,9 @@ class APIKeyPoolService:
                 return None
 
             # 智能调度算法选择最优密钥
-            optimal_key = await self._select_optimal_key(available_keys, priority, estimated_tokens)
+            optimal_key = await self._select_optimal_key(
+                available_keys, priority, estimated_tokens
+            )
 
             if optimal_key:
                 # 更新密钥使用状态
@@ -186,7 +190,9 @@ class APIKeyPoolService:
         # 计算每个密钥的综合得分
         scored_keys = []
         for key in available_keys:
-            score = await self._calculate_key_score(key, priority, estimated_tokens, is_off_peak)
+            score = await self._calculate_key_score(
+                key, priority, estimated_tokens, is_off_peak
+            )
             scored_keys.append((key, score))
 
         # 按得分排序，选择最优密钥
@@ -306,7 +312,9 @@ class APIKeyPoolService:
             # 查询最近1小时的使用记录
             one_hour_ago = datetime.utcnow() - timedelta(hours=1)
             stmt = select(APIKeyUsage).where(
-                and_(APIKeyUsage.key_id == key_id, APIKeyUsage.created_at >= one_hour_ago)
+                and_(
+                    APIKeyUsage.key_id == key_id, APIKeyUsage.created_at >= one_hour_ago
+                )
             )
             result = await self.db.execute(stmt)
             records = result.scalars().all()
@@ -407,7 +415,9 @@ class APIKeyPoolService:
     async def get_pool_status(self) -> dict[str, Any]:
         """获取密钥池状态"""
         try:
-            active_keys = len([k for k in self.key_pool if k.status == KeyStatus.ACTIVE])
+            active_keys = len(
+                [k for k in self.key_pool if k.status == KeyStatus.ACTIVE]
+            )
             total_quota = sum(k.daily_quota for k in self.key_pool)
             used_quota = sum(k.used_quota for k in self.key_pool)
 
@@ -418,7 +428,9 @@ class APIKeyPoolService:
                 "active_keys": active_keys,
                 "total_daily_quota": total_quota,
                 "used_quota": used_quota,
-                "quota_utilization": ((used_quota / total_quota) * 100 if total_quota > 0 else 0),
+                "quota_utilization": (
+                    (used_quota / total_quota) * 100 if total_quota > 0 else 0
+                ),
                 "today_cost": today_cost,
                 "cost_limit": self.daily_cost_limit,
                 "cost_utilization": (today_cost / self.daily_cost_limit) * 100,
@@ -476,7 +488,9 @@ class APIKeyPoolService:
                 "total_requests": total_requests,
                 "successful_requests": successful_requests,
                 "success_rate": (
-                    (successful_requests / total_requests) * 100 if total_requests > 0 else 0
+                    (successful_requests / total_requests) * 100
+                    if total_requests > 0
+                    else 0
                 ),
                 "total_tokens": total_tokens,
                 "total_cost": total_cost,
@@ -496,7 +510,9 @@ class APIKeyPoolService:
             self.logger.error(f"获取使用分析数据失败: {e}")
             return {}
 
-    def _calculate_off_peak_savings(self, hourly_stats: dict[int, dict[str, Any]]) -> float:
+    def _calculate_off_peak_savings(
+        self, hourly_stats: dict[int, dict[str, Any]]
+    ) -> float:
         """计算错峰节省成本"""
         off_peak_cost = sum(
             hourly_stats.get(hour, {}).get("cost", 0) for hour in self.off_peak_hours

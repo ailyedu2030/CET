@@ -9,11 +9,9 @@ from sqlalchemy import and_, desc, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.resources.models.resource_models import HotspotResource, ResourceLibrary
-from app.resources.schemas.resource_schemas import (
-    HotspotResourceCreate,
-    HotspotResourceSearchRequest,
-    HotspotResourceUpdate,
-)
+from app.resources.schemas.resource_schemas import (HotspotResourceCreate,
+                                                    HotspotResourceSearchRequest,
+                                                    HotspotResourceUpdate)
 from app.shared.models.enums import DifficultyLevel
 
 
@@ -137,7 +135,9 @@ class HotspotService:
             stmt = stmt.where(HotspotResource.language == search_request.language)
 
         if search_request.difficulty_level:
-            stmt = stmt.where(HotspotResource.difficulty_level == search_request.difficulty_level)
+            stmt = stmt.where(
+                HotspotResource.difficulty_level == search_request.difficulty_level
+            )
 
         if search_request.topics:
             # 使用PostgreSQL的JSON操作符
@@ -148,7 +148,9 @@ class HotspotService:
             stmt = stmt.where(HotspotResource.is_trending == search_request.is_trending)
 
         if search_request.is_recommended is not None:
-            stmt = stmt.where(HotspotResource.is_recommended == search_request.is_recommended)
+            stmt = stmt.where(
+                HotspotResource.is_recommended == search_request.is_recommended
+            )
 
         # 过滤未过期的资源
         current_date = datetime.now().strftime("%Y-%m-%d")
@@ -225,13 +227,16 @@ class HotspotService:
         if user_preferences:
             if "difficulty_level" in user_preferences:
                 stmt = stmt.where(
-                    HotspotResource.difficulty_level == user_preferences["difficulty_level"]
+                    HotspotResource.difficulty_level
+                    == user_preferences["difficulty_level"]
                 )
             if "topics" in user_preferences:
                 for topic in user_preferences["topics"]:
                     stmt = stmt.where(HotspotResource.topics.op("@>")([topic]))
             if "language" in user_preferences:
-                stmt = stmt.where(HotspotResource.language == user_preferences["language"])
+                stmt = stmt.where(
+                    HotspotResource.language == user_preferences["language"]
+                )
 
         stmt = stmt.order_by(
             desc(HotspotResource.relevance_score),
@@ -270,11 +275,13 @@ class HotspotService:
         )
 
         if hotspot_resource.view_count > 0:
-            hotspot_resource.engagement_rate = total_interactions / hotspot_resource.view_count
+            hotspot_resource.engagement_rate = (
+                total_interactions / hotspot_resource.view_count
+            )
 
         # 重新计算热度分数
-        hotspot_resource.popularity_score = await self._calculate_popularity_from_metrics(
-            hotspot_resource
+        hotspot_resource.popularity_score = (
+            await self._calculate_popularity_from_metrics(hotspot_resource)
         )
 
         await self.db.commit()
@@ -322,7 +329,9 @@ class HotspotService:
 
         await self.db.commit()
 
-    async def get_hotspot_statistics(self, library_id: int | None = None) -> dict[str, Any]:
+    async def get_hotspot_statistics(
+        self, library_id: int | None = None
+    ) -> dict[str, Any]:
         """获取热点资源统计信息."""
         stmt = select(HotspotResource)
         if library_id:
@@ -346,7 +355,9 @@ class HotspotService:
         # 难度分布
         difficulty_stats = {}
         for level in DifficultyLevel:
-            difficulty_stats[level.value] = sum(1 for h in hotspots if h.difficulty_level == level)
+            difficulty_stats[level.value] = sum(
+                1 for h in hotspots if h.difficulty_level == level
+            )
 
         # 热门和推荐统计
         trending_count = sum(1 for h in hotspots if h.is_trending)
@@ -361,8 +372,12 @@ class HotspotService:
         avg_popularity = (
             sum(h.popularity_score for h in hotspots) / len(hotspots) if hotspots else 0
         )
-        avg_relevance = sum(h.relevance_score for h in hotspots) / len(hotspots) if hotspots else 0
-        avg_engagement = sum(h.engagement_rate for h in hotspots) / len(hotspots) if hotspots else 0
+        avg_relevance = (
+            sum(h.relevance_score for h in hotspots) / len(hotspots) if hotspots else 0
+        )
+        avg_engagement = (
+            sum(h.engagement_rate for h in hotspots) / len(hotspots) if hotspots else 0
+        )
 
         return {
             "total_count": len(hotspots),
@@ -382,7 +397,9 @@ class HotspotService:
             },
         }
 
-    async def _calculate_popularity_score(self, hotspot_data: HotspotResourceCreate) -> float:
+    async def _calculate_popularity_score(
+        self, hotspot_data: HotspotResourceCreate
+    ) -> float:
         """计算热度分数."""
         score = 0.0
 
@@ -423,7 +440,9 @@ class HotspotService:
 
         return min(score, 1.0)
 
-    async def _calculate_relevance_score(self, hotspot_data: Any, library_id: int) -> float:
+    async def _calculate_relevance_score(
+        self, hotspot_data: Any, library_id: int
+    ) -> float:
         """计算相关性分数."""
         # 这里可以基于资源库的主要话题、用户历史偏好等计算相关性
         # 暂时返回基础分数
@@ -439,7 +458,9 @@ class HotspotService:
 
         return min(score, 1.0)
 
-    async def _calculate_popularity_from_metrics(self, hotspot: HotspotResource) -> float:
+    async def _calculate_popularity_from_metrics(
+        self, hotspot: HotspotResource
+    ) -> float:
         """基于指标计算热度分数."""
         score = 0.0
 

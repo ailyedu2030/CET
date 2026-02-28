@@ -248,7 +248,9 @@ class SimilarityCalculator:
             from app.shared.utils.embedding_utils import embedding_utils
 
             # 获取文本向量
-            embeddings = await embedding_utils.get_embeddings([text1, text2], embedding_model)
+            embeddings = await embedding_utils.get_embeddings(
+                [text1, text2], embedding_model
+            )
 
             if len(embeddings) != 2:
                 raise ValueError("Failed to generate embeddings")
@@ -269,7 +271,9 @@ class SimilarityCalculator:
 
         except ImportError:
             # 如果embedding_utils不可用，使用文本相似度
-            logger.warning("Embedding utils not available, falling back to text similarity")
+            logger.warning(
+                "Embedding utils not available, falling back to text similarity"
+            )
             return await self.compute_text_similarity(text1, text2, "jaccard")
 
     async def find_most_similar(
@@ -285,10 +289,14 @@ class SimilarityCalculator:
         for i, candidate in enumerate(candidates):
             if isinstance(query, str) and isinstance(candidate, str):
                 # 文本相似度
-                similarity = await self.compute_text_similarity(query, candidate, metric)
+                similarity = await self.compute_text_similarity(
+                    query, candidate, metric
+                )
             elif isinstance(query, list) and isinstance(candidate, list):
                 # 向量相似度
-                similarity = await self.compute_vector_similarity(query, candidate, metric)
+                similarity = await self.compute_vector_similarity(
+                    query, candidate, metric
+                )
             else:
                 raise ValueError("Query and candidates must be of the same type")
 
@@ -317,7 +325,9 @@ class SimilarityCalculator:
         # 计算所有向量对的相似度
         for i in range(len(vectors)):
             for j in range(i + 1, len(vectors)):
-                similarity = await self.compute_vector_similarity(vectors[i], vectors[j], metric)
+                similarity = await self.compute_vector_similarity(
+                    vectors[i], vectors[j], metric
+                )
                 total_similarity += similarity.score
                 count += 1
 

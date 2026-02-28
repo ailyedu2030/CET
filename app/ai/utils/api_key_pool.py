@@ -31,7 +31,9 @@ class APIKeyPool:
     def __init__(self, keys: list[str], provider: str = "deepseek") -> None:
         """初始化密钥池."""
         self.provider = provider
-        self.keys: dict[str, APIKeyStatus] = {key: APIKeyStatus(key=key) for key in keys}
+        self.keys: dict[str, APIKeyStatus] = {
+            key: APIKeyStatus(key=key) for key in keys
+        }
         self.lock = asyncio.Lock()
         self._current_key_index = 0
 
@@ -46,7 +48,9 @@ class APIKeyPool:
         """获取可用的API密钥."""
         async with self.lock:
             available_keys = [
-                status for status in self.keys.values() if self._is_key_available(status)
+                status
+                for status in self.keys.values()
+                if self._is_key_available(status)
             ]
 
             if not available_keys:
@@ -96,7 +100,9 @@ class APIKeyPool:
 
                 # 如果是速率限制错误，设置重置时间
                 if "rate" in error_type.lower():
-                    self.keys[key].rate_limit_reset = datetime.utcnow() + timedelta(minutes=10)
+                    self.keys[key].rate_limit_reset = datetime.utcnow() + timedelta(
+                        minutes=10
+                    )
 
                 logger.warning(
                     f"密钥{key[:8]}...发生错误: {error_type}, "
@@ -114,13 +120,16 @@ class APIKeyPool:
     def get_pool_status(self) -> dict[str, dict[str, Any]]:
         """获取密钥池状态."""
         return {
-            key[:8] + "...": {
+            key[:8]
+            + "...": {
                 "active": status.is_active,
                 "usage_count": status.usage_count,
                 "error_count": status.error_count,
                 "last_used": status.last_used.isoformat() if status.last_used else None,
                 "rate_limit_reset": (
-                    status.rate_limit_reset.isoformat() if status.rate_limit_reset else None
+                    status.rate_limit_reset.isoformat()
+                    if status.rate_limit_reset
+                    else None
                 ),
             }
             for key, status in self.keys.items()
@@ -165,7 +174,9 @@ class DeepSeekAPIKeyPool(APIKeyPool):
         # 从环境变量加载备用密钥池
         backup_keys_env = getattr(settings, "DEEPSEEK_BACKUP_KEYS", "")
         if backup_keys_env:
-            backup_keys = [key.strip() for key in backup_keys_env.split(",") if key.strip()]
+            backup_keys = [
+                key.strip() for key in backup_keys_env.split(",") if key.strip()
+            ]
             keys.extend(backup_keys)
 
         if not keys:
@@ -273,15 +284,17 @@ class APIUsageStats:
                     self.stats["response_times"] = self.stats["response_times"][-1000:]
 
                 # 计算平均响应时间
-                self.stats["average_response_time"] = sum(self.stats["response_times"]) / len(
+                self.stats["average_response_time"] = sum(
                     self.stats["response_times"]
-                )
+                ) / len(self.stats["response_times"])
 
     def get_stats(self) -> dict[str, Any]:
         """获取统计数据."""
         success_rate = 0.0
         if self.stats["total_calls"] > 0:
-            success_rate = self.stats["successful_calls"] / self.stats["total_calls"] * 100
+            success_rate = (
+                self.stats["successful_calls"] / self.stats["total_calls"] * 100
+            )
 
         return {
             **self.stats,

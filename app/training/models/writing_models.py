@@ -3,18 +3,8 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import (
-    JSON,
-    Boolean,
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Index,
-    Integer,
-    String,
-    Text,
-)
+from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey, Index,
+                        Integer, String, Text)
 from sqlalchemy.orm import relationship
 
 from app.shared.models.base_model import BaseModel
@@ -269,7 +259,9 @@ class WritingDraftModel(BaseModel):
 
     # 关联信息
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="用户ID")
-    task_id = Column(Integer, ForeignKey("writing_tasks.id"), nullable=False, comment="写作任务ID")
+    task_id = Column(
+        Integer, ForeignKey("writing_tasks.id"), nullable=False, comment="写作任务ID"
+    )
 
     # 草稿内容
     content = Column(Text, nullable=False, comment="草稿内容")

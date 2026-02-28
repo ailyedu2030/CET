@@ -56,10 +56,14 @@ class KnowledgeGraph:
 
             # 使用最短路径算法
             try:
-                path = nx.shortest_path(self.graph, start_knowledge_id, target_knowledge_id)
+                path = nx.shortest_path(
+                    self.graph, start_knowledge_id, target_knowledge_id
+                )
             except nx.NetworkXNoPath:
                 logger.info("未找到直接路径，尝试查找间接路径")
-                path = await self._find_indirect_path(start_knowledge_id, target_knowledge_id)
+                path = await self._find_indirect_path(
+                    start_knowledge_id, target_knowledge_id
+                )
 
             # 构建详细路径信息
             detailed_path = []
@@ -99,7 +103,9 @@ class KnowledgeGraph:
 
             # 获取后续知识点（被依赖）
             dependents = list(self.graph.successors(knowledge_id))
-            dependent_details = [self._get_knowledge_point_info(kp_id) for kp_id in dependents]
+            dependent_details = [
+                self._get_knowledge_point_info(kp_id) for kp_id in dependents
+            ]
 
             # 计算依赖深度
             dependency_depth = self._calculate_dependency_depth(knowledge_id)
@@ -139,7 +145,9 @@ class KnowledgeGraph:
                     prerequisites = list(self.graph.predecessors(kp_id))
 
                     # 检查前置条件是否满足
-                    if all(prereq in mastered_knowledge_ids for prereq in prerequisites):
+                    if all(
+                        prereq in mastered_knowledge_ids for prereq in prerequisites
+                    ):
                         kp_info = self._get_knowledge_point_info(kp_id)
                         if kp_info:
                             # 计算推荐分数
@@ -179,7 +187,9 @@ class KnowledgeGraph:
 
                     # 找出缺失的前置知识点
                     missing_prerequisites = [
-                        kp_id for kp_id in required_prerequisites if kp_id not in mastered_points
+                        kp_id
+                        for kp_id in required_prerequisites
+                        if kp_id not in mastered_points
                     ]
 
                     if missing_prerequisites:
@@ -303,7 +313,9 @@ class KnowledgeGraph:
             depths = []
             for root in [n for n in self.graph.nodes() if self.graph.in_degree(n) == 0]:
                 try:
-                    path_length = nx.shortest_path_length(self.graph, root, knowledge_id)
+                    path_length = nx.shortest_path_length(
+                        self.graph, root, knowledge_id
+                    )
                     depths.append(path_length)
                 except nx.NetworkXNoPath:
                     continue
@@ -366,12 +378,16 @@ class KnowledgeGraph:
 
         # 前置条件满足度
         prerequisites = list(self.graph.predecessors(kp_id))
-        prerequisite_factor = 1.0 if all(p in mastered_ids for p in prerequisites) else 0.5
+        prerequisite_factor = (
+            1.0 if all(p in mastered_ids for p in prerequisites) else 0.5
+        )
 
         # 中心性加权
         centrality_factor = 1.0 + float(self.centrality_scores.get(kp_id, 0.0))
 
-        return float(base_score * difficulty_factor * prerequisite_factor * centrality_factor)
+        return float(
+            base_score * difficulty_factor * prerequisite_factor * centrality_factor
+        )
 
     def _assess_readiness_level(self, kp_id: int, mastered_ids: list[int]) -> str:
         """评估准备程度."""
@@ -415,7 +431,9 @@ class KnowledgeGraph:
         dfs(knowledge_id)
         return list(set(all_prerequisites))
 
-    def _calculate_gap_priority(self, target_id: int, missing_prerequisites: list[int]) -> float:
+    def _calculate_gap_priority(
+        self, target_id: int, missing_prerequisites: list[int]
+    ) -> float:
         """计算缺口优先级."""
         target_kp = self.knowledge_points[target_id]
 

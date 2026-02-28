@@ -63,7 +63,9 @@ class VectorService:
                     dict(field) if isinstance(field, dict) else {}
                     for field in self.collection_config["documents"]["fields"]
                 ]
-                description: str = str(self.collection_config["documents"]["description"])
+                description: str = str(
+                    self.collection_config["documents"]["description"]
+                )
                 await self.milvus_client.create_collection(
                     collection_name=collection_name,
                     fields=fields_config,
@@ -93,7 +95,9 @@ class VectorService:
             logger.error(f"Failed to initialize collections: {str(e)}")
             return False
 
-    async def insert_document_vectors(self, document_id: int, chunks: list[dict[str, Any]]) -> bool:
+    async def insert_document_vectors(
+        self, document_id: int, chunks: list[dict[str, Any]]
+    ) -> bool:
         """插入文档向量."""
         try:
             collection_name: str = str(self.collection_config["documents"]["name"])
@@ -216,7 +220,9 @@ class VectorService:
 
             # 删除指定文档的所有向量
             delete_expr = f"document_id == {document_id}"
-            await self.milvus_client.delete(collection_name=collection_name, expr=delete_expr)
+            await self.milvus_client.delete(
+                collection_name=collection_name, expr=delete_expr
+            )
 
             logger.info(f"Deleted vectors for document {document_id}")
             return True
@@ -244,7 +250,9 @@ class VectorService:
             logger.error(f"Failed to get collection stats: {str(e)}")
             return {}
 
-    async def update_document_vectors(self, document_id: int, chunks: list[dict[str, Any]]) -> bool:
+    async def update_document_vectors(
+        self, document_id: int, chunks: list[dict[str, Any]]
+    ) -> bool:
         """更新文档向量."""
         try:
             # 先删除旧向量
@@ -266,7 +274,9 @@ class VectorService:
             vectorization_tasks = [
                 self.embedding_service.vectorize_text(query) for query in queries
             ]
-            query_vectors = await asyncio.gather(*vectorization_tasks, return_exceptions=True)
+            query_vectors = await asyncio.gather(
+                *vectorization_tasks, return_exceptions=True
+            )
 
             # 过滤有效向量
             valid_vectors = []

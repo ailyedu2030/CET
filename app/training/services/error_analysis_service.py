@@ -11,10 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.resources.models.resource_models import KnowledgePoint
 from app.shared.models.enums import TrainingType
 from app.training.models.training_models import Question, TrainingRecord
-from app.training.schemas.adaptive_learning_schemas import (
-    ErrorPatternResponse,
-    KnowledgeGapResponse,
-)
+from app.training.schemas.adaptive_learning_schemas import (ErrorPatternResponse,
+                                                            KnowledgeGapResponse)
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +137,9 @@ class ErrorAnalysisService:
             logger.error(f"错题分类失败: {str(e)}")
             return {}
 
-    async def analyze_error_patterns(self, student_id: int, days: int = 30) -> ErrorPatternResponse:
+    async def analyze_error_patterns(
+        self, student_id: int, days: int = 30
+    ) -> ErrorPatternResponse:
         """分析学生的错题模式."""
         try:
             error_questions = await self.collect_error_questions(student_id, days)
@@ -154,7 +154,9 @@ class ErrorAnalysisService:
             error_trend = await self._analyze_error_trend(student_id, days)
 
             # 识别薄弱知识点
-            weak_knowledge_points = await self._identify_weak_knowledge_points(error_questions)
+            weak_knowledge_points = await self._identify_weak_knowledge_points(
+                error_questions
+            )
 
             # 生成改进建议
             improvement_suggestions = self._generate_improvement_suggestions(
@@ -198,7 +200,9 @@ class ErrorAnalysisService:
                     continue
 
                 # 计算错误率
-                total_attempts = await self._get_knowledge_point_attempts(student_id, kp_id)
+                total_attempts = await self._get_knowledge_point_attempts(
+                    student_id, kp_id
+                )
                 error_rate = len(errors) / max(total_attempts, 1)
 
                 # 分析错误类型分布
@@ -216,7 +220,9 @@ class ErrorAnalysisService:
                     error_rate=error_rate,
                     mastery_level=mastery_level,
                     error_types=error_types,
-                    last_error_time=max((error["error_time"] for error in errors), default=None),
+                    last_error_time=max(
+                        (error["error_time"] for error in errors), default=None
+                    ),
                     improvement_priority=self._calculate_improvement_priority(
                         error_rate, kp.importance_score, len(errors)
                     ),
@@ -262,7 +268,9 @@ class ErrorAnalysisService:
                     "current_mastery_level": gap.mastery_level,
                     "target_mastery_level": "proficient",
                     "training_intensity": training_intensity,
-                    "recommended_questions_per_day": training_intensity["daily_questions"],
+                    "recommended_questions_per_day": training_intensity[
+                        "daily_questions"
+                    ],
                     "estimated_days": training_intensity["estimated_days"],
                     "focus_areas": self._identify_focus_areas(gap),
                     "training_methods": self._recommend_training_methods(gap),
@@ -355,7 +363,8 @@ class ErrorAnalysisService:
                 "trend": trend,
                 "trend_value": trend_value,
                 "daily_errors": [
-                    {"date": row.error_date, "count": row.error_count} for row in daily_errors
+                    {"date": row.error_date, "count": row.error_count}
+                    for row in daily_errors
                 ],
             }
 
@@ -419,7 +428,9 @@ class ErrorAnalysisService:
 
         return suggestions
 
-    async def _get_knowledge_point_attempts(self, student_id: int, knowledge_point_id: int) -> int:
+    async def _get_knowledge_point_attempts(
+        self, student_id: int, knowledge_point_id: int
+    ) -> int:
         """获取学生在某个知识点上的总尝试次数."""
         stmt = (
             select(func.count(TrainingRecord.id))
@@ -466,7 +477,9 @@ class ErrorAnalysisService:
         priority = (error_rate * 0.4 + importance_score * 0.4 + error_count * 0.2) * 100
         return min(priority, 100.0)
 
-    def _determine_training_intensity(self, gap: KnowledgeGapResponse) -> dict[str, Any]:
+    def _determine_training_intensity(
+        self, gap: KnowledgeGapResponse
+    ) -> dict[str, Any]:
         """确定训练强度."""
         mastery_level = gap.mastery_level
 

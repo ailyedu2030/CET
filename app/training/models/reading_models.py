@@ -3,7 +3,8 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, Text)
 from sqlalchemy.orm import relationship
 
 from app.shared.models.base_model import BaseModel
@@ -71,11 +72,15 @@ class ReadingPassageModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     questions = relationship("ReadingQuestionModel", back_populates="passage")
-    training_records = relationship("ReadingTrainingRecordModel", back_populates="passage")
+    training_records = relationship(
+        "ReadingTrainingRecordModel", back_populates="passage"
+    )
 
     def __repr__(self: "ReadingPassageModel") -> str:
         return f"<ReadingPassageModel(id={getattr(self, 'id', None)}, title={getattr(self, 'title', None)})>"
@@ -117,7 +122,9 @@ class ReadingQuestionModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     passage = relationship("ReadingPassageModel", back_populates="questions")
@@ -159,10 +166,14 @@ class ReadingTrainingPlanModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
-    training_records = relationship("ReadingTrainingRecordModel", back_populates="training_plan")
+    training_records = relationship(
+        "ReadingTrainingRecordModel", back_populates="training_plan"
+    )
 
     def __repr__(self: "ReadingTrainingPlanModel") -> str:
         return f"<ReadingTrainingPlanModel(id={getattr(self, 'id', None)}, user_id={getattr(self, 'user_id', None)})>"
@@ -180,7 +191,9 @@ class ReadingTrainingRecordModel(BaseModel):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="学生ID")
     passage_id = Column(Integer, ForeignKey("reading_passages.id"), nullable=False)
-    training_plan_id = Column(Integer, ForeignKey("reading_training_plans.id"), nullable=True)
+    training_plan_id = Column(
+        Integer, ForeignKey("reading_training_plans.id"), nullable=True
+    )
 
     # 训练信息
     training_mode = Column(String(20), nullable=False, comment="训练模式")
@@ -208,12 +221,18 @@ class ReadingTrainingRecordModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
     passage = relationship("ReadingPassageModel", back_populates="training_records")
-    training_plan = relationship("ReadingTrainingPlanModel", back_populates="training_records")
-    answer_records = relationship("ReadingAnswerRecordModel", back_populates="training_record")
+    training_plan = relationship(
+        "ReadingTrainingPlanModel", back_populates="training_records"
+    )
+    answer_records = relationship(
+        "ReadingAnswerRecordModel", back_populates="training_record"
+    )
 
     def __repr__(self: "ReadingTrainingRecordModel") -> str:
         return f"<ReadingTrainingRecordModel(id={getattr(self, 'id', None)}, user_id={getattr(self, 'user_id', None)})>"
@@ -229,7 +248,9 @@ class ReadingAnswerRecordModel(BaseModel):
     __tablename__ = "reading_answer_records"
 
     id = Column(Integer, primary_key=True, index=True)
-    training_record_id = Column(Integer, ForeignKey("reading_training_records.id"), nullable=False)
+    training_record_id = Column(
+        Integer, ForeignKey("reading_training_records.id"), nullable=False
+    )
     question_id = Column(Integer, ForeignKey("reading_questions.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="学生ID")
 
@@ -246,7 +267,9 @@ class ReadingAnswerRecordModel(BaseModel):
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
 
     # 关系
-    training_record = relationship("ReadingTrainingRecordModel", back_populates="answer_records")
+    training_record = relationship(
+        "ReadingTrainingRecordModel", back_populates="answer_records"
+    )
     question = relationship("ReadingQuestionModel", back_populates="answer_records")
 
     def __repr__(self: "ReadingAnswerRecordModel") -> str:

@@ -6,14 +6,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.resources.schemas.hotspot_schemas import (
-    HotspotResourceResponse,
-)
-from app.resources.schemas.resource_schemas import (
-    HotspotResourceCreate,
-    HotspotResourceSearchRequest,
-    HotspotResourceUpdate,
-)
+from app.resources.schemas.hotspot_schemas import HotspotResourceResponse
+from app.resources.schemas.resource_schemas import (HotspotResourceCreate,
+                                                    HotspotResourceSearchRequest,
+                                                    HotspotResourceUpdate)
 from app.resources.services.hotspot_service import HotspotService
 from app.resources.utils.rss_utils import ExternalResourceCollector
 from app.users.models.user_models import User
@@ -181,7 +177,9 @@ async def get_hotspot_resource(
             )
 
         # 记录访问
-        await hotspot_service.update_engagement_metrics(hotspot_id, "view", current_user.id)
+        await hotspot_service.update_engagement_metrics(
+            hotspot_id, "view", current_user.id
+        )
 
         return HotspotResourceResponse.model_validate(hotspot_resource)
 
@@ -248,7 +246,9 @@ async def delete_hotspot_resource(
 
     try:
         hotspot_service = HotspotService(db)
-        success = await hotspot_service.delete_hotspot_resource(hotspot_id, current_user.id)
+        success = await hotspot_service.delete_hotspot_resource(
+            hotspot_id, current_user.id
+        )
 
         if not success:
             raise HTTPException(
@@ -279,7 +279,9 @@ async def search_hotspot_resources(
     """搜索热点资源."""
     try:
         hotspot_service = HotspotService(db)
-        resources, total_count = await hotspot_service.search_hotspot_resources(search_request)
+        resources, total_count = await hotspot_service.search_hotspot_resources(
+            search_request
+        )
 
         return {
             "success": True,

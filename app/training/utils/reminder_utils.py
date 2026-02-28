@@ -243,7 +243,9 @@ class ReminderUtils:
             reminders = await self._load_pending_reminders(student_id)
 
             # 按优先级和时间排序
-            reminders.sort(key=lambda x: (x["priority_score"], x["scheduled_time"]), reverse=True)
+            reminders.sort(
+                key=lambda x: (x["priority_score"], x["scheduled_time"]), reverse=True
+            )
 
             return reminders
 
@@ -273,14 +275,18 @@ class ReminderUtils:
             logger.error(f"忽略提醒失败: {str(e)}")
             return False
 
-    async def get_reminder_statistics(self, student_id: int, days: int = 30) -> dict[str, Any]:
+    async def get_reminder_statistics(
+        self, student_id: int, days: int = 30
+    ) -> dict[str, Any]:
         """获取提醒统计."""
         try:
             # 获取指定时间内的提醒数据
             end_date = datetime.now()
             start_date = end_date - timedelta(days=days)
 
-            reminders = await self._load_reminders_in_period(student_id, start_date, end_date)
+            reminders = await self._load_reminders_in_period(
+                student_id, start_date, end_date
+            )
 
             # 统计各类型提醒数量
             type_counts: dict[str, int] = {}
@@ -307,7 +313,9 @@ class ReminderUtils:
                 "priority_distribution": priority_counts,
                 "response_rate": response_rate,
                 "most_common_type": (
-                    max(type_counts.items(), key=lambda x: x[1])[0] if type_counts else None
+                    max(type_counts.items(), key=lambda x: x[1])[0]
+                    if type_counts
+                    else None
                 ),
                 "statistics_generated_at": datetime.now(),
             }
@@ -343,7 +351,9 @@ class ReminderUtils:
     async def _send_reminder(self, reminder: dict[str, Any]) -> None:
         """发送提醒."""
         # TODO: 实现实际的提醒发送逻辑
-        logger.info(f"发送提醒: {reminder['reminder_id']}, 渠道: {reminder['delivery_channels']}")
+        logger.info(
+            f"发送提醒: {reminder['reminder_id']}, 渠道: {reminder['delivery_channels']}"
+        )
 
     def _calculate_study_reminder_time(self, preferred_time: str) -> datetime:
         """计算学习提醒时间."""

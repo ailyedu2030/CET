@@ -84,7 +84,9 @@ class VerificationResponse(BaseModel):
 class MFASessionRequest(BaseModel):
     """MFA会话创建请求模型."""
 
-    mfa_method: str = Field(..., description="MFA方法", pattern="^(sms|email|totp|backup_code)$")
+    mfa_method: str = Field(
+        ..., description="MFA方法", pattern="^(sms|email|totp|backup_code)$"
+    )
     session_duration_minutes: int = Field(30, ge=5, le=120, description="会话持续时间（分钟）")
 
 
@@ -104,7 +106,9 @@ class MFAConfigRequest(BaseModel):
     """MFA配置请求模型."""
 
     enable_mfa: bool = Field(..., description="是否启用MFA")
-    primary_method: str = Field(..., description="主要MFA方法", pattern="^(sms|email|totp)$")
+    primary_method: str = Field(
+        ..., description="主要MFA方法", pattern="^(sms|email|totp)$"
+    )
     backup_methods: list[str] = Field([], description="备用MFA方法")
     require_for_admin: bool = Field(True, description="管理员操作是否需要MFA")
 

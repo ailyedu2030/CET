@@ -12,20 +12,13 @@ from loguru import logger
 from sqlalchemy import and_, desc, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import (
-    BusinessLogicError,
-    ResourceNotFoundError,
-    ValidationError,
-)
+from app.core.exceptions import (BusinessLogicError, ResourceNotFoundError,
+                                 ValidationError)
 from app.resources.models.resource_models import ResourceVersion
-from app.resources.schemas.version_schemas import (
-    ChangeType,
-    ResourceVersionResponse,
-    RollbackRequest,
-    RollbackResponse,
-    VersionChangeDetail,
-    VersionComparisonResponse,
-)
+from app.resources.schemas.version_schemas import (ChangeType, ResourceVersionResponse,
+                                                   RollbackRequest, RollbackResponse,
+                                                   VersionChangeDetail,
+                                                   VersionComparisonResponse)
 
 
 class VersionService:
@@ -109,7 +102,11 @@ class VersionService:
             raise
 
     async def rollback_to_version(
-        self, resource_type: str, resource_id: int, rollback_data: RollbackRequest, user_id: int
+        self,
+        resource_type: str,
+        resource_id: int,
+        rollback_data: RollbackRequest,
+        user_id: int,
     ) -> RollbackResponse:
         """
         回滚到指定版本 - 需求11验收标准6
@@ -117,7 +114,9 @@ class VersionService:
         """
         try:
             # 检查资源修改权限
-            await self._check_resource_modify_permission(resource_type, resource_id, user_id)
+            await self._check_resource_modify_permission(
+                resource_type, resource_id, user_id
+            )
 
             # 获取目标版本
             target_version = await self._get_version_by_id(rollback_data.version_id)
@@ -125,7 +124,9 @@ class VersionService:
                 target_version.resource_id != resource_id
                 or target_version.resource_type != resource_type
             ):
-                raise ValidationError(message="版本不属于指定资源", error_code="VERSION_MISMATCH")
+                raise ValidationError(
+                    message="版本不属于指定资源", error_code="VERSION_MISMATCH"
+                )
 
             # 获取当前活跃版本
             current_version = await self._get_active_version(resource_type, resource_id)
@@ -133,13 +134,19 @@ class VersionService:
             # 创建备份版本（如果需要）
             backup_version_id = None
             if rollback_data.create_backup and current_version:
-                backup_version_id = await self._create_backup_version(current_version, user_id)
+                backup_version_id = await self._create_backup_version(
+                    current_version, user_id
+                )
 
             # 应用回滚
-            await self._apply_rollback(resource_type, resource_id, target_version, user_id)
+            await self._apply_rollback(
+                resource_type, resource_id, target_version, user_id
+            )
 
             # 创建新的版本记录
-            new_version_number = await self._generate_next_version(resource_type, resource_id)
+            new_version_number = await self._generate_next_version(
+                resource_type, resource_id
+            )
             await self.create_version_record(
                 resource_type,
                 resource_id,
@@ -189,7 +196,12 @@ class VersionService:
             raise
 
     async def compare_versions(
-        self, resource_type: str, resource_id: int, version_id: int, compare_with: int, user_id: int
+        self,
+        resource_type: str,
+        resource_id: int,
+        version_id: int,
+        compare_with: int,
+        user_id: int,
     ) -> VersionComparisonResponse:
         """
         版本对比 - 需求11验收标准6
@@ -210,10 +222,14 @@ class VersionService:
                 or source_version.resource_type != resource_type
                 or target_version.resource_type != resource_type
             ):
-                raise ValidationError(message="版本不属于指定资源", error_code="VERSION_MISMATCH")
+                raise ValidationError(
+                    message="版本不属于指定资源", error_code="VERSION_MISMATCH"
+                )
 
             # 执行内容对比
-            changes = await self._compare_version_content(source_version, target_version)
+            changes = await self._compare_version_content(
+                source_version, target_version
+            )
 
             # 统计变更
             summary = {"added": 0, "modified": 0, "deleted": 0}
@@ -296,8 +312,13 @@ class VersionService:
             version = await self._get_version_by_id(version_id)
 
             # 验证版本属于指定资源
-            if version.resource_id != resource_id or version.resource_type != resource_type:
-                raise ValidationError(message="版本不属于指定资源", error_code="VERSION_MISMATCH")
+            if (
+                version.resource_id != resource_id
+                or version.resource_type != resource_type
+            ):
+                raise ValidationError(
+                    message="版本不属于指定资源", error_code="VERSION_MISMATCH"
+                )
 
             # 获取创建者名称
             creator_name = await self._get_user_name(version.created_by)
@@ -315,7 +336,9 @@ class VersionService:
                 is_active=version.is_active,
                 parent_version_id=version.parent_version_id,
                 content_hash=version.content_hash,
-                file_size=len(json.dumps(version.content_data)) if version.content_data else None,
+                file_size=len(json.dumps(version.content_data))
+                if version.content_data
+                else None,
             )
 
         except Exception as e:
@@ -339,14 +362,21 @@ class VersionService:
         """
         try:
             # 检查资源修改权限
-            await self._check_resource_modify_permission(resource_type, resource_id, user_id)
+            await self._check_resource_modify_permission(
+                resource_type, resource_id, user_id
+            )
 
             # 获取版本
             version = await self._get_version_by_id(version_id)
 
             # 验证版本属于指定资源
-            if version.resource_id != resource_id or version.resource_type != resource_type:
-                raise ValidationError(message="版本不属于指定资源", error_code="VERSION_MISMATCH")
+            if (
+                version.resource_id != resource_id
+                or version.resource_type != resource_type
+            ):
+                raise ValidationError(
+                    message="版本不属于指定资源", error_code="VERSION_MISMATCH"
+                )
 
             # 检查是否为活跃版本
             if version.is_active:
@@ -484,7 +514,9 @@ class VersionService:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def _create_backup_version(self, current_version: ResourceVersion, user_id: int) -> int:
+    async def _create_backup_version(
+        self, current_version: ResourceVersion, user_id: int
+    ) -> int:
         """创建备份版本"""
         backup_version = ResourceVersion(
             resource_type=current_version.resource_type,
@@ -504,19 +536,26 @@ class VersionService:
         return backup_version.id
 
     async def _apply_rollback(
-        self, resource_type: str, resource_id: int, target_version: ResourceVersion, user_id: int
+        self,
+        resource_type: str,
+        resource_id: int,
+        target_version: ResourceVersion,
+        user_id: int,
     ) -> None:
         """应用回滚操作"""
-        logger.info(f"应用回滚: type={resource_type}, id={resource_id}, version={target_version.version}, user={user_id}")
-        
+        logger.info(
+            f"应用回滚: type={resource_type}, id={resource_id}, version={target_version.version}, user={user_id}"
+        )
+
         # 获取快照数据
         snapshot = target_version.snapshot_data
         if not snapshot:
             raise ValueError("目标版本没有快照数据")
-        
+
         # 根据资源类型恢复数据
         if resource_type == "material":
             from app.resources.models import MaterialLibrary
+
             resource = await self.db.get(MaterialLibrary, resource_id)
             if resource:
                 resource.title = snapshot.get("title", resource.title)
@@ -524,12 +563,14 @@ class VersionService:
                 resource.updated_at = datetime.utcnow()
         elif resource_type == "syllabus":
             from app.resources.models import Syllabus
+
             resource = await self.db.get(Syllabus, resource_id)
             if resource:
                 resource.content = snapshot.get("content", resource.content)
                 resource.updated_at = datetime.utcnow()
         elif resource_type == "vocabulary":
             from app.resources.models import VocabularyLibrary
+
             resource = await self.db.get(VocabularyLibrary, resource_id)
             if resource:
                 resource.name = snapshot.get("name", resource.name)
@@ -537,20 +578,18 @@ class VersionService:
                 resource.updated_at = datetime.utcnow()
         elif resource_type == "knowledge":
             from app.resources.models import KnowledgeLibrary
+
             resource = await self.db.get(KnowledgeLibrary, resource_id)
             if resource:
                 resource.content = snapshot.get("content", resource.content)
                 resource.updated_at = datetime.utcnow()
-        
+
         # 创建新版本记录
-        await self._create_version(resource_type, resource_id, user_id, f"回滚到版本{target_version.version}")
-        
+        await self._create_version(
+            resource_type, resource_id, user_id, f"回滚到版本{target_version.version}"
+        )
+
         await self.db.commit()
-        logger.info(f"回滚完成: type={resource_type}, id={resource_id}")
-        self, resource_type: str, resource_id: int, target_version: ResourceVersion, user_id: int
-    ) -> None:
-        """应用回滚操作"""
-        logger.info(f"应用回滚: type={resource_type}, id={resource_id}, version={target_version.version}, user={user_id}")
 
     async def _generate_next_version(self, resource_type: str, resource_id: int) -> str:
         """生成下一个版本号"""

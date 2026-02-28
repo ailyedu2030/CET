@@ -16,8 +16,12 @@ class TrainingParameterConfig(BaseModel):
     knowledge_points: list[str] = Field(..., description="关联知识点列表")
     vocabulary_library_ids: list[int] = Field(..., description="词汇库ID列表")
     hot_topics_fusion_rate: int = Field(..., ge=0, le=100, description="热点融合程度(0-100%)")
-    lesson_plan_connection_rate: int = Field(..., ge=0, le=100, description="教案衔接度(0-100%)")
-    difficulty_distribution: dict[DifficultyLevel, int] = Field(..., description="难度分布配置")
+    lesson_plan_connection_rate: int = Field(
+        ..., ge=0, le=100, description="教案衔接度(0-100%)"
+    )
+    difficulty_distribution: dict[DifficultyLevel, int] = Field(
+        ..., description="难度分布配置"
+    )
     question_count_per_type: dict[TrainingType, int] = Field(..., description="各类型题目数量")
 
     @validator("difficulty_distribution")
@@ -106,7 +110,9 @@ class WeeklyTrainingRequest(BaseModel):
     scheduled_time: datetime | None = Field(None, description="定时发布时间")
 
     @validator("scheduled_time")
-    def validate_scheduled_time(cls, v: datetime | None, values: dict[str, Any]) -> datetime | None:
+    def validate_scheduled_time(
+        cls, v: datetime | None, values: dict[str, Any]
+    ) -> datetime | None:
         """验证定时发布时间."""
         if values.get("publish_type") == "scheduled" and not v:
             raise ValueError("定时发布必须指定发布时间")
@@ -193,8 +199,12 @@ class TrainingAnalyticsData(BaseModel):
     )
 
     # 学生表现
-    student_performance: list[dict[str, Any]] = Field(default_factory=list, description="学生表现")
-    risk_students: list[dict[str, Any]] = Field(default_factory=list, description="风险学生")
+    student_performance: list[dict[str, Any]] = Field(
+        default_factory=list, description="学生表现"
+    )
+    risk_students: list[dict[str, Any]] = Field(
+        default_factory=list, description="风险学生"
+    )
 
 
 class TrainingAnalyticsRequest(BaseModel):

@@ -3,7 +3,8 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, Text)
 from sqlalchemy.orm import relationship
 
 from app.shared.models.base_model import BaseModel
@@ -54,7 +55,9 @@ class TrainingCenterModel(BaseModel):
     is_active = Column(Boolean, default=True, comment="是否激活")
 
     # 训练配置
-    preferred_difficulty = Column(String(20), default=DifficultyLevel.INTERMEDIATE, comment="偏好难度")
+    preferred_difficulty = Column(
+        String(20), default=DifficultyLevel.INTERMEDIATE, comment="偏好难度"
+    )
     daily_target_minutes = Column(Integer, default=60, comment="每日目标训练时长(分钟)")
     weekly_target_sessions = Column(Integer, default=5, comment="每周目标训练次数")
 
@@ -66,12 +69,18 @@ class TrainingCenterModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
     last_training_at = Column(DateTime, nullable=True, comment="最后训练时间")
 
     # 关系
-    training_sessions = relationship("TrainingSessionModel", back_populates="training_center")
-    progress_records = relationship("TrainingProgressModel", back_populates="training_center")
+    training_sessions = relationship(
+        "TrainingSessionModel", back_populates="training_center"
+    )
+    progress_records = relationship(
+        "TrainingProgressModel", back_populates="training_center"
+    )
     training_goals = relationship("TrainingGoalModel", back_populates="training_center")
     training_achievements = relationship(
         "TrainingAchievementModel", back_populates="training_center"
@@ -91,7 +100,9 @@ class TrainingSessionModel(BaseModel):
     __tablename__ = "training_center_sessions"
 
     id = Column(Integer, primary_key=True, index=True)
-    training_center_id = Column(Integer, ForeignKey("training_centers.id"), nullable=False)
+    training_center_id = Column(
+        Integer, ForeignKey("training_centers.id"), nullable=False
+    )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="学生ID")
 
     # 训练基本信息
@@ -125,14 +136,20 @@ class TrainingSessionModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
-    training_center = relationship("TrainingCenterModel", back_populates="training_sessions")
+    training_center = relationship(
+        "TrainingCenterModel", back_populates="training_sessions"
+    )
     progress_record = relationship(
         "TrainingProgressModel", back_populates="training_session", uselist=False
     )
-    feedback_records = relationship("TrainingFeedbackModel", back_populates="training_session")
+    feedback_records = relationship(
+        "TrainingFeedbackModel", back_populates="training_session"
+    )
 
     def __repr__(self: "TrainingSessionModel") -> str:
         return f"<TrainingSessionModel(id={getattr(self, 'id', None)}, user_id={getattr(self, 'user_id', None)}, type={getattr(self, 'training_type', None)})>"
@@ -148,8 +165,12 @@ class TrainingProgressModel(BaseModel):
     __tablename__ = "training_progress"
 
     id = Column(Integer, primary_key=True, index=True)
-    training_center_id = Column(Integer, ForeignKey("training_centers.id"), nullable=False)
-    training_session_id = Column(Integer, ForeignKey("training_center_sessions.id"), nullable=True)
+    training_center_id = Column(
+        Integer, ForeignKey("training_centers.id"), nullable=False
+    )
+    training_session_id = Column(
+        Integer, ForeignKey("training_center_sessions.id"), nullable=True
+    )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="学生ID")
 
     # 进度信息
@@ -173,11 +194,17 @@ class TrainingProgressModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
-    training_center = relationship("TrainingCenterModel", back_populates="progress_records")
-    training_session = relationship("TrainingSessionModel", back_populates="progress_record")
+    training_center = relationship(
+        "TrainingCenterModel", back_populates="progress_records"
+    )
+    training_session = relationship(
+        "TrainingSessionModel", back_populates="progress_record"
+    )
 
     def __repr__(self: "TrainingProgressModel") -> str:
         return f"<TrainingProgressModel(id={getattr(self, 'id', None)}, user_id={getattr(self, 'user_id', None)}, knowledge_point={getattr(self, 'knowledge_point', None)})>"
@@ -193,7 +220,9 @@ class TrainingGoalModel(BaseModel):
     __tablename__ = "training_goals"
 
     id = Column(Integer, primary_key=True, index=True)
-    training_center_id = Column(Integer, ForeignKey("training_centers.id"), nullable=False)
+    training_center_id = Column(
+        Integer, ForeignKey("training_centers.id"), nullable=False
+    )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="学生ID")
 
     # 目标信息
@@ -218,10 +247,14 @@ class TrainingGoalModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
-    training_center = relationship("TrainingCenterModel", back_populates="training_goals")
+    training_center = relationship(
+        "TrainingCenterModel", back_populates="training_goals"
+    )
 
     def __repr__(self: "TrainingGoalModel") -> str:
         return f"<TrainingGoalModel(id={getattr(self, 'id', None)}, user_id={getattr(self, 'user_id', None)}, goal_title={getattr(self, 'goal_title', None)})>"
@@ -237,7 +270,9 @@ class TrainingAchievementModel(BaseModel):
     __tablename__ = "training_achievements"
 
     id = Column(Integer, primary_key=True, index=True)
-    training_center_id = Column(Integer, ForeignKey("training_centers.id"), nullable=False)
+    training_center_id = Column(
+        Integer, ForeignKey("training_centers.id"), nullable=False
+    )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="学生ID")
 
     # 成就信息
@@ -263,10 +298,14 @@ class TrainingAchievementModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
-    training_center = relationship("TrainingCenterModel", back_populates="training_achievements")
+    training_center = relationship(
+        "TrainingCenterModel", back_populates="training_achievements"
+    )
 
     def __repr__(self: "TrainingAchievementModel") -> str:
         return f"<TrainingAchievementModel(id={getattr(self, 'id', None)}, user_id={getattr(self, 'user_id', None)}, achievement_name={getattr(self, 'achievement_name', None)})>"
@@ -282,7 +321,9 @@ class TrainingFeedbackModel(BaseModel):
     __tablename__ = "training_feedback"
 
     id = Column(Integer, primary_key=True, index=True)
-    training_session_id = Column(Integer, ForeignKey("training_center_sessions.id"), nullable=False)
+    training_session_id = Column(
+        Integer, ForeignKey("training_center_sessions.id"), nullable=False
+    )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="学生ID")
 
     # 反馈内容
@@ -305,10 +346,14 @@ class TrainingFeedbackModel(BaseModel):
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
 
     # 关系
-    training_session = relationship("TrainingSessionModel", back_populates="feedback_records")
+    training_session = relationship(
+        "TrainingSessionModel", back_populates="feedback_records"
+    )
 
     def __repr__(self: "TrainingFeedbackModel") -> str:
         return f"<TrainingFeedbackModel(id={getattr(self, 'id', None)}, user_id={getattr(self, 'user_id', None)}, rating={getattr(self, 'rating', None)})>"

@@ -93,7 +93,11 @@ class IntelligentTrainingLoopHelpers:
             if area_name in error_areas:
                 error_count = error_areas[area_name]
                 expected_severity = (
-                    "high" if error_count >= 5 else "medium" if error_count >= 2 else "low"
+                    "high"
+                    if error_count >= 5
+                    else "medium"
+                    if error_count >= 2
+                    else "low"
                 )
 
                 if severity == expected_severity:
@@ -129,11 +133,15 @@ class IntelligentTrainingLoopHelpers:
             is_reasonable = False
 
             # 低准确率应该有基础练习建议
-            if accuracy_rate < 0.6 and ("基础" in suggestion_text or "练习" in suggestion_text):
+            if accuracy_rate < 0.6 and (
+                "基础" in suggestion_text or "练习" in suggestion_text
+            ):
                 is_reasonable = True
 
             # 高准确率应该有提升难度建议
-            elif accuracy_rate > 0.8 and ("难度" in suggestion_text or "挑战" in suggestion_text):
+            elif accuracy_rate > 0.8 and (
+                "难度" in suggestion_text or "挑战" in suggestion_text
+            ):
                 is_reasonable = True
 
             # 中等准确率应该有针对性建议
@@ -391,7 +399,8 @@ class IntelligentTrainingLoopHelpers:
             "meets_accuracy_threshold": meets_accuracy,
             "next_loop_recommended": not meets_improvement,
             "success_score": (
-                improvement_rate / improvement_threshold + current_accuracy / success_criteria
+                improvement_rate / improvement_threshold
+                + current_accuracy / success_criteria
             )
             / 2,
         }

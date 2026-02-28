@@ -75,7 +75,9 @@ def check_content_length(
     return result
 
 
-def check_content_repetition(content: str, max_repetition_rate: float = 0.5) -> dict[str, Any]:
+def check_content_repetition(
+    content: str, max_repetition_rate: float = 0.5
+) -> dict[str, Any]:
     """检查内容重复度
 
     Args:
@@ -117,7 +119,9 @@ def check_content_repetition(content: str, max_repetition_rate: float = 0.5) -> 
     return result
 
 
-def check_special_characters(content: str, max_special_char_rate: float = 0.1) -> dict[str, Any]:
+def check_special_characters(
+    content: str, max_special_char_rate: float = 0.1
+) -> dict[str, Any]:
     """检查特殊字符比例
 
     Args:
@@ -156,7 +160,9 @@ def check_special_characters(content: str, max_special_char_rate: float = 0.1) -
     return result
 
 
-def check_educational_relevance(content: str, content_type: str = "general") -> dict[str, Any]:
+def check_educational_relevance(
+    content: str, content_type: str = "general"
+) -> dict[str, Any]:
     """检查教育内容相关性
 
     Args:

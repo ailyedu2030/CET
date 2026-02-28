@@ -76,7 +76,9 @@ class GoalCreateRequest(BaseModel):
     description: str = Field(..., min_length=1, max_length=500, description="目标描述")
     goal_type: str = Field(..., description="目标类型")
     target_date: str = Field(..., description="目标日期")
-    target_metrics: list[dict[str, Any]] = Field(default_factory=list, description="目标指标")
+    target_metrics: list[dict[str, Any]] = Field(
+        default_factory=list, description="目标指标"
+    )
     priority: str = Field("medium", description="优先级")
 
 
@@ -103,7 +105,9 @@ class GoalProgressUpdateRequest(BaseModel):
 
     progress_data: dict[str, Any] = Field(..., description="进度数据")
     notes: str = Field("", description="备注")
-    milestone_updates: list[dict[str, Any]] = Field(default_factory=list, description="里程碑更新")
+    milestone_updates: list[dict[str, Any]] = Field(
+        default_factory=list, description="里程碑更新"
+    )
 
 
 class GoalSuggestionResponse(BaseModel):

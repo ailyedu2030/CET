@@ -86,7 +86,9 @@ class CompetitionService:
                 "title": validated_data["title"],
                 "description": validated_data.get("description", ""),
                 "competition_type": validated_data["competition_type"],
-                "difficulty_level": validated_data.get("difficulty_level", "intermediate"),
+                "difficulty_level": validated_data.get(
+                    "difficulty_level", "intermediate"
+                ),
                 "start_time": datetime.fromisoformat(validated_data["start_time"]),
                 "end_time": datetime.fromisoformat(validated_data["end_time"]),
                 "registration_deadline": datetime.fromisoformat(
@@ -118,7 +120,9 @@ class CompetitionService:
             logger.error(f"创建竞赛失败: {str(e)}")
             raise
 
-    async def register_for_competition(self, user_id: int, competition_id: str) -> dict[str, Any]:
+    async def register_for_competition(
+        self, user_id: int, competition_id: str
+    ) -> dict[str, Any]:
         """报名参加竞赛."""
         try:
             # 获取竞赛信息
@@ -171,11 +175,15 @@ class CompetitionService:
             logger.error(f"竞赛报名失败: {str(e)}")
             raise
 
-    async def start_competition_session(self, user_id: int, competition_id: str) -> dict[str, Any]:
+    async def start_competition_session(
+        self, user_id: int, competition_id: str
+    ) -> dict[str, Any]:
         """开始竞赛答题会话."""
         try:
             # 验证参赛资格
-            if not await self._verify_participation_eligibility(user_id, competition_id):
+            if not await self._verify_participation_eligibility(
+                user_id, competition_id
+            ):
                 raise ValueError("您没有参加此竞赛的资格")
 
             # 获取竞赛信息
@@ -186,7 +194,9 @@ class CompetitionService:
                 raise ValueError("竞赛尚未开始或已结束")
 
             # 检查是否已有进行中的会话
-            existing_session = await self._get_active_competition_session(user_id, competition_id)
+            existing_session = await self._get_active_competition_session(
+                user_id, competition_id
+            )
             if existing_session:
                 return existing_session
 
@@ -201,7 +211,9 @@ class CompetitionService:
                 "questions": questions,
                 "start_time": datetime.now(),
                 "end_time": datetime.now()
-                + timedelta(minutes=competition["duration_minutes"] if competition else 60),
+                + timedelta(
+                    minutes=competition["duration_minutes"] if competition else 60
+                ),
                 "current_question_index": 0,
                 "answers": [],
                 "score": 0.0,
@@ -248,7 +260,9 @@ class CompetitionService:
             current_question = session["questions"][session["current_question_index"]]
 
             # 评分
-            score_result = await self._score_competition_answer(current_question, validated_answer)
+            score_result = await self._score_competition_answer(
+                current_question, validated_answer
+            )
 
             # 记录答案
             answer_record = {
@@ -262,7 +276,9 @@ class CompetitionService:
             }
 
             # 更新会话
-            updated_session = await self._update_competition_session(session_id, answer_record)
+            updated_session = await self._update_competition_session(
+                session_id, answer_record
+            )
 
             # 检查是否完成所有题目
             if updated_session["current_question_index"] >= len(session["questions"]):
@@ -274,7 +290,9 @@ class CompetitionService:
                 }
 
             # 返回下一题
-            next_question = session["questions"][updated_session["current_question_index"]]
+            next_question = session["questions"][
+                updated_session["current_question_index"]
+            ]
             return {
                 "answer_result": score_result,
                 "next_question": next_question,
@@ -390,7 +408,9 @@ class CompetitionService:
         # TODO: 实现题库准备逻辑
         logger.info(f"准备竞赛题库: {competition_id}")
 
-    async def _publish_competition_announcement(self, competition: dict[str, Any]) -> None:
+    async def _publish_competition_announcement(
+        self, competition: dict[str, Any]
+    ) -> None:
         """发布竞赛公告."""
         # TODO: 实现公告发布逻辑
         logger.info(f"发布竞赛公告: {competition['title']}")
@@ -429,7 +449,9 @@ class CompetitionService:
         # TODO: 实现数据库保存逻辑
         logger.info(f"保存报名记录: {registration['registration_id']}")
 
-    async def _update_participant_count(self, competition_id: str, increment: int) -> None:
+    async def _update_participant_count(
+        self, competition_id: str, increment: int
+    ) -> None:
         """更新参与人数."""
         # TODO: 实现参与人数更新逻辑
         logger.info(f"更新竞赛参与人数: {competition_id}")
@@ -441,7 +463,9 @@ class CompetitionService:
         # TODO: 实现通知发送逻辑
         logger.info(f"发送报名确认: 用户{user_id}, 竞赛{competition['competition_id']}")
 
-    async def _verify_participation_eligibility(self, user_id: int, competition_id: str) -> bool:
+    async def _verify_participation_eligibility(
+        self, user_id: int, competition_id: str
+    ) -> bool:
         """验证参赛资格."""
         # TODO: 实现参赛资格验证逻辑
         return True
@@ -494,7 +518,9 @@ class CompetitionService:
         # TODO: 实现会话结束逻辑
         logger.info(f"结束竞赛会话: {session_id}")
 
-    async def _validate_answer_data(self, answer_data: dict[str, Any]) -> dict[str, Any]:
+    async def _validate_answer_data(
+        self, answer_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """验证答案数据."""
         if "answer" not in answer_data:
             raise ValueError("缺少答案数据")
@@ -527,7 +553,9 @@ class CompetitionService:
         # TODO: 实现会话完成逻辑
         return {"final_score": 0.8, "rank": 15, "total_participants": 50}
 
-    async def _get_leaderboard_data(self, competition_id: str, limit: int) -> list[dict[str, Any]]:
+    async def _get_leaderboard_data(
+        self, competition_id: str, limit: int
+    ) -> list[dict[str, Any]]:
         """获取排行榜数据."""
         # TODO: 实现排行榜数据获取逻辑
         return []
@@ -576,8 +604,12 @@ class CompetitionService:
 
         return {
             "total": len(competitions),
-            "wins": len([c for c in competitions if c.get("result", {}).get("rank", 999) == 1]),
+            "wins": len(
+                [c for c in competitions if c.get("result", {}).get("rank", 999) == 1]
+            ),
             "avg_rank": sum(c.get("result", {}).get("rank", 999) for c in competitions)
             / len(competitions),
-            "best_score": max(c.get("result", {}).get("score", 0) for c in competitions),
+            "best_score": max(
+                c.get("result", {}).get("score", 0) for c in competitions
+            ),
         }

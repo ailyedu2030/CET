@@ -8,11 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.courses.models.course_models import Course, CourseVersion
-from app.courses.schemas.course_schemas import (
-    CourseCreate,
-    CourseStatusUpdate,
-    CourseUpdate,
-)
+from app.courses.schemas.course_schemas import (CourseCreate, CourseStatusUpdate,
+                                                CourseUpdate)
 from app.courses.services.course_service import CourseService
 from app.shared.models.enums import CourseStatus
 
@@ -47,7 +44,9 @@ class CourseLifecycleService:
     ) -> Course | None:
         """更新课程 - 需求3验收标准1."""
         try:
-            course = await self.course_service.update_course(course_id, course_data, updater_id)
+            course = await self.course_service.update_course(
+                course_id, course_data, updater_id
+            )
 
             if course:
                 logger.info(f"课程更新成功: {course.name} (ID: {course.id})")
@@ -313,7 +312,11 @@ class CourseLifecycleService:
                 # 教师只能查看自己创建的课程和公开课程
                 query = query.where(
                     (Course.created_by == user_id)
-                    | (Course.share_level.in_(["class_shared", "school_shared", "public"]))
+                    | (
+                        Course.share_level.in_(
+                            ["class_shared", "school_shared", "public"]
+                        )
+                    )
                 )
             else:
                 # 学生只能查看公开课程

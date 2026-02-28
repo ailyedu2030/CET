@@ -6,9 +6,10 @@ Create Date: 2024-08-24 12:00:00.000000
 
 """
 
-from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "016_intelligent_training_loop"
@@ -57,9 +58,7 @@ def upgrade() -> None:
         sa.Column(
             "data_collection_result", sa.JSON(), nullable=False, comment="数据采集结果"
         ),
-        sa.Column(
-            "ai_analysis_result", sa.JSON(), nullable=False, comment="AI分析结果"
-        ),
+        sa.Column("ai_analysis_result", sa.JSON(), nullable=False, comment="AI分析结果"),
         sa.Column(
             "strategy_adjustment_result",
             sa.JSON(),

@@ -315,9 +315,7 @@ class PerformanceMonitor:
     async def _create_alert(self, metric: PerformanceMetric, level: AlertLevel) -> None:
         """创建告警"""
         try:
-            alert_id = (
-                f"{metric.metric_type.value}_{level.value}_{int(metric.timestamp.timestamp())}"
-            )
+            alert_id = f"{metric.metric_type.value}_{level.value}_{int(metric.timestamp.timestamp())}"
 
             # 避免重复告警
             existing_alerts = [
@@ -359,7 +357,9 @@ class PerformanceMonitor:
         except Exception as e:
             self.logger.error(f"创建告警失败: {e}")
 
-    async def _resolve_alerts(self, metric_type: MetricType, current_value: float) -> None:
+    async def _resolve_alerts(
+        self, metric_type: MetricType, current_value: float
+    ) -> None:
         """解决告警"""
         try:
             alerts_to_resolve = []
@@ -371,13 +371,21 @@ class PerformanceMonitor:
 
                     if metric_type in [MetricType.SUCCESS_RATE, MetricType.THROUGHPUT]:
                         # 这些指标需要恢复到正常水平
-                        threshold_dict_success: dict[str, float] = self.thresholds[metric_type]
-                        normal_threshold: float = threshold_dict_success.get("warning", 0.0)
+                        threshold_dict_success: dict[str, float] = self.thresholds[
+                            metric_type
+                        ]
+                        normal_threshold: float = threshold_dict_success.get(
+                            "warning", 0.0
+                        )
                         should_resolve = current_value > normal_threshold * 1.1  # 10%缓冲
                     else:
                         # 这些指标需要降低到正常水平
-                        threshold_dict_other: dict[str, float] = self.thresholds[metric_type]
-                        normal_threshold = threshold_dict_other.get("warning", float("inf"))
+                        threshold_dict_other: dict[str, float] = self.thresholds[
+                            metric_type
+                        ]
+                        normal_threshold = threshold_dict_other.get(
+                            "warning", float("inf")
+                        )
                         should_resolve = current_value < normal_threshold * 0.9  # 10%缓冲
 
                     if should_resolve:
@@ -402,13 +410,9 @@ class PerformanceMonitor:
             if metric.metric_type == MetricType.RESPONSE_TIME:
                 return f"{metric_name} {level.value}: {metric.value:.2f}s (threshold: {threshold:.2f}s)"
             elif metric.metric_type == MetricType.ERROR_RATE:
-                return (
-                    f"{metric_name} {level.value}: {metric.value:.1%} (threshold: {threshold:.1%})"
-                )
+                return f"{metric_name} {level.value}: {metric.value:.1%} (threshold: {threshold:.1%})"
             elif metric.metric_type == MetricType.SUCCESS_RATE:
-                return (
-                    f"{metric_name} {level.value}: {metric.value:.1%} (threshold: {threshold:.1%})"
-                )
+                return f"{metric_name} {level.value}: {metric.value:.1%} (threshold: {threshold:.1%})"
             elif metric.metric_type == MetricType.THROUGHPUT:
                 return f"{metric_name} {level.value}: {metric.value:.1f} req/s (threshold: {threshold:.1f} req/s)"
             elif metric.metric_type == MetricType.QUEUE_LENGTH:
@@ -438,7 +442,9 @@ class PerformanceMonitor:
             return {
                 "metrics": current_metrics,
                 "active_requests": len(self.active_requests),
-                "active_alerts": len([a for a in self.active_alerts.values() if not a.resolved]),
+                "active_alerts": len(
+                    [a for a in self.active_alerts.values() if not a.resolved]
+                ),
                 "total_requests_processed": len(self.request_history),
             }
 
@@ -533,14 +539,18 @@ class PerformanceMonitor:
 
             # 吞吐量计算
             duration_seconds = (end_time - start_time).total_seconds()
-            throughput = total_requests / duration_seconds if duration_seconds > 0 else 0
+            throughput = (
+                total_requests / duration_seconds if duration_seconds > 0 else 0
+            )
 
             # 错误率
             error_rate = failed_requests / total_requests if total_requests > 0 else 0
 
             # 告警统计
             period_alerts = [
-                alert for alert in self.alert_history if start_time <= alert.timestamp <= end_time
+                alert
+                for alert in self.alert_history
+                if start_time <= alert.timestamp <= end_time
             ]
             alerts_count = len(period_alerts)
 
@@ -553,9 +563,9 @@ class PerformanceMonitor:
 
             top_errors = [
                 {"error": error, "count": count}
-                for error, count in sorted(error_counts.items(), key=lambda x: x[1], reverse=True)[
-                    :5
-                ]
+                for error, count in sorted(
+                    error_counts.items(), key=lambda x: x[1], reverse=True
+                )[:5]
             ]
 
             return PerformanceReport(
@@ -590,7 +600,9 @@ class PerformanceMonitor:
                 top_errors=[],
             )
 
-    def add_alert_callback(self, callback: Callable[[PerformanceAlert], Awaitable[None]]) -> None:
+    def add_alert_callback(
+        self, callback: Callable[[PerformanceAlert], Awaitable[None]]
+    ) -> None:
         """添加告警回调"""
         self.alert_callbacks.append(callback)
 

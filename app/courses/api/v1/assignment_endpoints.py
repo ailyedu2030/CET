@@ -6,19 +6,17 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.assignment_schemas import (
-    BulkAssignmentRequest,
-    BulkAssignmentResponse,
-    CourseAssignmentRequest,
-    CourseAssignmentResponse,
-    QualificationCheckResult,
-    TeacherQualificationCheck,
-    TeacherWorkloadInfo,
-    TimeConflictCheck,
-    TimeConflictResult,
-    WorkloadBalanceRequest,
-    WorkloadBalanceResponse,
-)
+from app.courses.schemas.assignment_schemas import (BulkAssignmentRequest,
+                                                    BulkAssignmentResponse,
+                                                    CourseAssignmentRequest,
+                                                    CourseAssignmentResponse,
+                                                    QualificationCheckResult,
+                                                    TeacherQualificationCheck,
+                                                    TeacherWorkloadInfo,
+                                                    TimeConflictCheck,
+                                                    TimeConflictResult,
+                                                    WorkloadBalanceRequest,
+                                                    WorkloadBalanceResponse)
 from app.courses.services.assignment_service import AssignmentService
 from app.users.utils.auth_decorators import AuthRequired
 
@@ -66,7 +64,9 @@ async def assign_course_to_teacher(
 
 
 # 教师资质检查端点
-@router.post("/assignments/qualification-check", response_model=QualificationCheckResult)
+@router.post(
+    "/assignments/qualification-check", response_model=QualificationCheckResult
+)
 async def check_teacher_qualification(
     qualification_check: TeacherQualificationCheck,
     current_user: Annotated[dict[str, Any], AuthRequired()],
@@ -83,7 +83,9 @@ async def check_teacher_qualification(
         )
 
     try:
-        result = await assignment_service.check_teacher_qualification(qualification_check)
+        result = await assignment_service.check_teacher_qualification(
+            qualification_check
+        )
         return result
     except ValueError as e:
         raise HTTPException(
@@ -93,7 +95,9 @@ async def check_teacher_qualification(
 
 
 # 工作量管理端点
-@router.get("/assignments/teachers/{teacher_id}/workload", response_model=TeacherWorkloadInfo)
+@router.get(
+    "/assignments/teachers/{teacher_id}/workload", response_model=TeacherWorkloadInfo
+)
 async def get_teacher_workload(
     teacher_id: int,
     current_user: Annotated[dict[str, Any], AuthRequired()],
@@ -165,7 +169,10 @@ async def check_time_conflicts(
         )
 
     # 如果是教师，只能检查自己的时间冲突
-    if current_user.get("role") == "teacher" and conflict_check.teacher_id != current_user["id"]:
+    if (
+        current_user.get("role") == "teacher"
+        and conflict_check.teacher_id != current_user["id"]
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="教师只能检查自己的时间冲突",

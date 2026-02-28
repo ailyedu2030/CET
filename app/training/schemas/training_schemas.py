@@ -5,12 +5,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field, validator
 
-from app.shared.models.enums import (
-    DifficultyLevel,
-    GradingStatus,
-    QuestionType,
-    TrainingType,
-)
+from app.shared.models.enums import (DifficultyLevel, GradingStatus, QuestionType,
+                                     TrainingType)
 
 # ==================== 基础响应模式 ====================
 
@@ -101,7 +97,9 @@ class TrainingSessionResponse(BaseModel):
 class TrainingSessionUpdate(BaseModel):
     """更新训练会话请求模式."""
 
-    session_name: str | None = Field(None, min_length=1, max_length=200, description="会话名称")
+    session_name: str | None = Field(
+        None, min_length=1, max_length=200, description="会话名称"
+    )
     description: str | None = Field(None, max_length=1000, description="会话描述")
     status: str | None = Field(None, description="会话状态")
     completed_at: datetime | None = Field(None, description="完成时间")
@@ -270,9 +268,13 @@ class AdaptiveConfigRequest(BaseModel):
     student_id: int = Field(..., description="学生ID")
     training_type: TrainingType = Field(..., description="训练类型")
     target_accuracy: float = Field(default=0.75, ge=0.5, le=1.0, description="目标正确率")
-    adjustment_sensitivity: float = Field(default=0.5, ge=0.1, le=1.0, description="调整敏感度")
+    adjustment_sensitivity: float = Field(
+        default=0.5, ge=0.1, le=1.0, description="调整敏感度"
+    )
     max_difficulty_jump: int = Field(default=1, ge=1, le=3, description="最大难度跳跃")
-    knowledge_weight: dict[str, float] = Field(default_factory=dict, description="知识点权重")
+    knowledge_weight: dict[str, float] = Field(
+        default_factory=dict, description="知识点权重"
+    )
 
 
 class DifficultyAdjustment(BaseModel):

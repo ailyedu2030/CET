@@ -18,7 +18,9 @@ class SyllabusGenerationRequest(BaseModel):
     course_objectives: list[str] = Field(..., min_length=1, description="课程目标列表")
     source_materials: dict[str, Any] = Field(..., description="源材料信息(教材、考纲等)")
     target_hours: int = Field(..., gt=0, description="总课时数")
-    difficulty_level: str = Field(..., description="难度级别: beginner/intermediate/advanced")
+    difficulty_level: str = Field(
+        ..., description="难度级别: beginner/intermediate/advanced"
+    )
     special_requirements: str | None = Field(None, description="特殊要求说明")
 
 
@@ -336,7 +338,9 @@ class SmartSuggestionResponse(BaseModel):
     suggestions: list[dict[str, Any]] = Field(..., description="建议列表")
     confidence_scores: list[float] = Field(..., description="置信度分数")
     reasoning: list[str] = Field(..., description="建议理由")
-    implementation_difficulty: list[str] = Field(..., description="实施难度: easy/medium/hard")
+    implementation_difficulty: list[str] = Field(
+        ..., description="实施难度: easy/medium/hard"
+    )
 
 
 # =================== 学情分析相关 Schema ===================

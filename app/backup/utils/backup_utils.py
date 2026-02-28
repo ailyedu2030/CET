@@ -76,7 +76,9 @@ class BackupCompression:
             original_size = os.path.getsize(source_path)
 
             with open(source_path, "rb") as f_in:
-                with gzip.open(compressed_path, "wb", compresslevel=compression_level) as f_out:
+                with gzip.open(
+                    compressed_path, "wb", compresslevel=compression_level
+                ) as f_out:
                     shutil.copyfileobj(f_in, f_out)
 
             compressed_size = os.path.getsize(compressed_path)
@@ -136,7 +138,9 @@ class BackupValidator:
             raise e
 
     @staticmethod
-    def verify_checksum(file_path: str, expected_checksum: str, algorithm: str = "sha256") -> bool:
+    def verify_checksum(
+        file_path: str, expected_checksum: str, algorithm: str = "sha256"
+    ) -> bool:
         """验证文件校验和."""
         try:
             actual_checksum = BackupValidator.calculate_checksum(file_path, algorithm)
@@ -181,7 +185,9 @@ class BackupValidator:
             # 校验和验证
             checksum_valid = True
             if expected_checksum:
-                checksum_valid = BackupValidator.verify_checksum(file_path, expected_checksum)
+                checksum_valid = BackupValidator.verify_checksum(
+                    file_path, expected_checksum
+                )
 
             return {
                 "valid": checksum_valid,
@@ -251,7 +257,9 @@ class DatabaseDumper:
             end_time = datetime.now()
 
             if result.returncode != 0:
-                raise subprocess.CalledProcessError(result.returncode, pg_dump_cmd, result.stderr)
+                raise subprocess.CalledProcessError(
+                    result.returncode, pg_dump_cmd, result.stderr
+                )
 
             file_size = os.path.getsize(output_path)
             duration = (end_time - start_time).total_seconds()
@@ -265,7 +273,11 @@ class DatabaseDumper:
                 "duration": duration,
                 "tables_included": tables or ["all"],
                 "backup_type": (
-                    "data_only" if data_only else "schema_only" if schema_only else "full"
+                    "data_only"
+                    if data_only
+                    else "schema_only"
+                    if schema_only
+                    else "full"
                 ),
             }
 
@@ -314,7 +326,9 @@ class DatabaseDumper:
             end_time = datetime.now()
 
             if result.returncode != 0:
-                raise subprocess.CalledProcessError(result.returncode, psql_cmd, result.stderr)
+                raise subprocess.CalledProcessError(
+                    result.returncode, psql_cmd, result.stderr
+                )
 
             duration = (end_time - start_time).total_seconds()
 

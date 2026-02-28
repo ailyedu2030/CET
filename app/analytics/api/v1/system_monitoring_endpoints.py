@@ -124,7 +124,9 @@ async def generate_comprehensive_monitoring_report(
 
     try:
         service = SystemMonitoringService(db, cache_service)
-        report_data = await service.generate_comprehensive_monitoring_report(period_days)
+        report_data = await service.generate_comprehensive_monitoring_report(
+            period_days
+        )
 
         logger.info(f"管理员 {current_user.id} 生成了综合监控报告")
         return report_data
@@ -213,13 +215,19 @@ async def get_active_alerts(
 
         # 按严重程度排序
         all_alerts.sort(
-            key=lambda x: {"critical": 0, "warning": 1, "info": 2}.get(x.get("severity", "info"), 2)
+            key=lambda x: {"critical": 0, "warning": 1, "info": 2}.get(
+                x.get("severity", "info"), 2
+            )
         )
 
         alert_summary = {
             "total_alerts": len(all_alerts),
-            "critical_alerts": len([a for a in all_alerts if a.get("severity") == "critical"]),
-            "warning_alerts": len([a for a in all_alerts if a.get("severity") == "warning"]),
+            "critical_alerts": len(
+                [a for a in all_alerts if a.get("severity") == "critical"]
+            ),
+            "warning_alerts": len(
+                [a for a in all_alerts if a.get("severity") == "warning"]
+            ),
             "info_alerts": len([a for a in all_alerts if a.get("severity") == "info"]),
             "alerts": all_alerts[:20],  # 返回最多20个告警
             "last_updated": system_monitoring.get("last_updated"),

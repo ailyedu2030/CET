@@ -5,11 +5,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.training.models.assistant_models import (
-    QuestionType,
-    RecommendationSource,
-    ResourceType,
-)
+from app.training.models.assistant_models import (QuestionType, RecommendationSource,
+                                                  ResourceType)
 
 
 # 知识库模式
@@ -235,9 +232,13 @@ class VoiceRecognitionResponse(BaseModel):
     accuracy_score: float | None = Field(None, description="准确性评分")
     pronunciation_errors: list[dict[str, Any]] | None = Field(None, description="发音错误")
     grammar_errors: list[dict[str, Any]] | None = Field(None, description="语法错误")
-    vocabulary_suggestions: list[dict[str, Any]] | None = Field(None, description="词汇建议")
+    vocabulary_suggestions: list[dict[str, Any]] | None = Field(
+        None, description="词汇建议"
+    )
     improvement_suggestions: list[str] | None = Field(None, description="改进建议")
-    practice_recommendations: list[dict[str, Any]] | None = Field(None, description="练习推荐")
+    practice_recommendations: list[dict[str, Any]] | None = Field(
+        None, description="练习推荐"
+    )
 
 
 class VoiceRecognitionRecordResponse(BaseModel):
@@ -257,9 +258,13 @@ class VoiceRecognitionRecordResponse(BaseModel):
     accuracy_score: float | None = Field(None, description="准确性评分")
     pronunciation_errors: list[dict[str, Any]] | None = Field(None, description="发音错误")
     grammar_errors: list[dict[str, Any]] | None = Field(None, description="语法错误")
-    vocabulary_suggestions: list[dict[str, Any]] | None = Field(None, description="词汇建议")
+    vocabulary_suggestions: list[dict[str, Any]] | None = Field(
+        None, description="词汇建议"
+    )
     improvement_suggestions: list[str] | None = Field(None, description="改进建议")
-    practice_recommendations: list[dict[str, Any]] | None = Field(None, description="练习推荐")
+    practice_recommendations: list[dict[str, Any]] | None = Field(
+        None, description="练习推荐"
+    )
     exercise_type: str | None = Field(None, description="练习类型")
     target_text: str | None = Field(None, description="目标文本")
     created_at: datetime = Field(..., description="创建时间")

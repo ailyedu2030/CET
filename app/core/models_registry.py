@@ -4,10 +4,8 @@
 # 课程相关模型
 from app.courses.models import *  # noqa: F403
 from app.shared.models.base_model import Base  # noqa: F401
-
 # 训练相关模型
 from app.training.models import *  # noqa: F403
-
 # 用户相关模型
 from app.users.models import *  # noqa: F403
 

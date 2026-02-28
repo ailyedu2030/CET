@@ -6,18 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.class_schemas import (
-    ClassBatchCreate,
-    ClassConflictCheck,
-    ClassCreate,
-    ClassListResponse,
-    ClassResponse,
-    ClassStatistics,
-    ClassUpdate,
-    ConflictCheckResult,
-    StudentEnrollmentRequest,
-    StudentEnrollmentResponse,
-)
+from app.courses.schemas.class_schemas import (ClassBatchCreate, ClassConflictCheck,
+                                               ClassCreate, ClassListResponse,
+                                               ClassResponse, ClassStatistics,
+                                               ClassUpdate, ConflictCheckResult,
+                                               StudentEnrollmentRequest,
+                                               StudentEnrollmentResponse)
 from app.courses.services.class_service import ClassResourceService, ClassService
 from app.users.utils.auth_decorators import AuthRequired
 
@@ -25,7 +19,9 @@ router = APIRouter()
 
 
 # 班级基础管理端点
-@router.post("/classes/", response_model=ClassResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/classes/", response_model=ClassResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_class(
     class_data: ClassCreate,
     current_user: Annotated[dict[str, Any], AuthRequired()],
@@ -119,7 +115,10 @@ async def update_class(
             detail="班级不存在",
         )
 
-    if current_user.get("role") != "admin" and class_obj.teacher_id != current_user["id"]:
+    if (
+        current_user.get("role") != "admin"
+        and class_obj.teacher_id != current_user["id"]
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="无权限修改此班级",
@@ -183,7 +182,9 @@ async def batch_create_classes(
         )
 
     try:
-        classes = await class_service.batch_create_classes(batch_data, current_user["id"])
+        classes = await class_service.batch_create_classes(
+            batch_data, current_user["id"]
+        )
         return [ClassResponse.model_validate(class_obj) for class_obj in classes]  # type: ignore[no-any-return]
     except ValueError as e:
         raise HTTPException(
@@ -247,7 +248,10 @@ async def enroll_student(
         )
 
     # 检查权限
-    if current_user.get("role") == "student" and enrollment_data.student_id != current_user["id"]:
+    if (
+        current_user.get("role") == "student"
+        and enrollment_data.student_id != current_user["id"]
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="学生只能为自己选课",
@@ -354,7 +358,9 @@ async def allocate_class_resources(
         )
 
     try:
-        result = await resource_service.allocate_resources(class_id, resource_allocation)
+        result = await resource_service.allocate_resources(
+            class_id, resource_allocation
+        )
         return result
     except ValueError as e:
         raise HTTPException(
@@ -381,7 +387,9 @@ async def update_class_resources(
         )
 
     try:
-        result = await resource_service.update_resource_allocation(class_id, resource_updates)
+        result = await resource_service.update_resource_allocation(
+            class_id, resource_updates
+        )
         return result
     except ValueError as e:
         raise HTTPException(
@@ -442,7 +450,10 @@ async def update_class_schedule(
             detail="班级不存在",
         )
 
-    if current_user.get("role") != "admin" and class_obj.teacher_id != current_user["id"]:
+    if (
+        current_user.get("role") != "admin"
+        and class_obj.teacher_id != current_user["id"]
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="无权限修改班级课程表",

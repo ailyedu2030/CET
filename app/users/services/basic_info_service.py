@@ -9,17 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.shared.models.enums import UserType
-from app.users.models import (
-    Building,
-    Campus,
-    Classroom,
-    ClassroomSchedule,
-    Equipment,
-    EquipmentMaintenanceRecord,
-    StudentProfile,
-    TeacherProfile,
-    User,
-)
+from app.users.models import (Building, Campus, Classroom, ClassroomSchedule, Equipment,
+                              EquipmentMaintenanceRecord, StudentProfile,
+                              TeacherProfile, User)
 
 logger = logging.getLogger(__name__)
 
@@ -269,7 +261,9 @@ class BasicInfoService:
         profile.updated_at = datetime.now()
         await self.db.commit()
 
-        logger.info(f"Updated qualification status for teacher {teacher_id} to {status}")
+        logger.info(
+            f"Updated qualification status for teacher {teacher_id} to {status}"
+        )
         return True
 
     # ===== 教室信息管理 =====
@@ -577,10 +571,14 @@ class BasicInfoService:
                 equipment.next_maintenance_date = record.next_maintenance_date
             await self.db.commit()
 
-        logger.info(f"Created maintenance record {record.id} for equipment {equipment_id}")
+        logger.info(
+            f"Created maintenance record {record.id} for equipment {equipment_id}"
+        )
         return record
 
-    async def get_equipment_statistics(self, classroom_id: int | None = None) -> dict[str, Any]:
+    async def get_equipment_statistics(
+        self, classroom_id: int | None = None
+    ) -> dict[str, Any]:
         """获取设备使用统计 - 功能2：使用统计."""
         query = select(Equipment)
         if classroom_id:
@@ -611,7 +609,9 @@ class BasicInfoService:
             usage_stats["total_failures"] += eq.failure_count
 
         if total_equipment > 0:
-            usage_stats["average_usage_hours"] = usage_stats["total_usage_hours"] / total_equipment
+            usage_stats["average_usage_hours"] = (
+                usage_stats["total_usage_hours"] / total_equipment
+            )
 
         return {
             "total_equipment": total_equipment,
@@ -636,7 +636,9 @@ class BasicInfoService:
         offset = (page - 1) * size
 
         # 构建查询
-        query = select(AttendanceRecord).where(AttendanceRecord.student_id == student_id)
+        query = select(AttendanceRecord).where(
+            AttendanceRecord.student_id == student_id
+        )
 
         # 日期范围过滤
         if start_date:
@@ -657,19 +659,29 @@ class BasicInfoService:
         total = len(total_result.scalars().all())
 
         # 统计数据
-        stats_query = select(AttendanceRecord).where(AttendanceRecord.student_id == student_id)
+        stats_query = select(AttendanceRecord).where(
+            AttendanceRecord.student_id == student_id
+        )
         if start_date:
-            stats_query = stats_query.where(AttendanceRecord.attendance_date >= start_date)
+            stats_query = stats_query.where(
+                AttendanceRecord.attendance_date >= start_date
+            )
         if end_date:
-            stats_query = stats_query.where(AttendanceRecord.attendance_date <= end_date)
+            stats_query = stats_query.where(
+                AttendanceRecord.attendance_date <= end_date
+            )
 
         stats_result = await self.db.execute(stats_query)
         all_records = stats_result.scalars().all()
 
         attendance_stats = {
             "total_days": len(all_records),
-            "present_days": len([r for r in all_records if r.attendance_type == "present"]),
-            "absent_days": len([r for r in all_records if r.attendance_type == "absent"]),
+            "present_days": len(
+                [r for r in all_records if r.attendance_type == "present"]
+            ),
+            "absent_days": len(
+                [r for r in all_records if r.attendance_type == "absent"]
+            ),
             "late_days": len([r for r in all_records if r.attendance_type == "late"]),
             "leave_days": len([r for r in all_records if r.attendance_type == "leave"]),
         }
@@ -720,7 +732,8 @@ class BasicInfoService:
             select(AttendanceRecord).where(
                 and_(
                     AttendanceRecord.student_id == student_id,
-                    AttendanceRecord.attendance_date == attendance_data["attendance_date"],
+                    AttendanceRecord.attendance_date
+                    == attendance_data["attendance_date"],
                 )
             )
         )
@@ -825,7 +838,9 @@ class BasicInfoService:
 
         # 获取当前状态
         current_status = (
-            student.student_profile.learning_status if student.student_profile else "unknown"
+            student.student_profile.learning_status
+            if student.student_profile
+            else "unknown"
         )
 
         # 创建学籍变动记录
@@ -846,7 +861,9 @@ class BasicInfoService:
             student.student_profile.updated_at = datetime.now()
             await self.db.commit()
 
-        logger.info(f"Created enrollment change {change_record.id} for student {student_id}")
+        logger.info(
+            f"Created enrollment change {change_record.id} for student {student_id}"
+        )
         return {
             "id": change_record.id,
             "student_id": change_record.student_id,
@@ -935,7 +952,9 @@ class BasicInfoService:
         await self.db.commit()
         await self.db.refresh(billing_record)
 
-        logger.info(f"Created billing record {billing_record.id} for student {student_id}")
+        logger.info(
+            f"Created billing record {billing_record.id} for student {student_id}"
+        )
         return {
             "id": billing_record.id,
             "student_id": billing_record.student_id,
@@ -992,9 +1011,15 @@ class BasicInfoService:
 
         billing_stats = {
             "total_amount": sum(r.amount for r in all_records),
-            "paid_amount": sum(r.amount for r in all_records if r.payment_status == "paid"),
-            "pending_amount": sum(r.amount for r in all_records if r.payment_status == "pending"),
-            "overdue_amount": sum(r.amount for r in all_records if r.payment_status == "overdue"),
+            "paid_amount": sum(
+                r.amount for r in all_records if r.payment_status == "paid"
+            ),
+            "pending_amount": sum(
+                r.amount for r in all_records if r.payment_status == "pending"
+            ),
+            "overdue_amount": sum(
+                r.amount for r in all_records if r.payment_status == "overdue"
+            ),
         }
 
         return {
@@ -1087,7 +1112,9 @@ class BasicInfoService:
         # 生成发票号码
         import uuid
 
-        invoice_number = f"INV-{datetime.now().strftime('%Y%m%d')}-{str(uuid.uuid4())[:8].upper()}"
+        invoice_number = (
+            f"INV-{datetime.now().strftime('%Y%m%d')}-{str(uuid.uuid4())[:8].upper()}"
+        )
 
         # 创建发票
         invoice = Invoice(
@@ -1291,8 +1318,12 @@ class BasicInfoService:
 
         # 计算统计数据
         total_classes = len(records)
-        completed_classes = len([r for r in records if r.teaching_status == "completed"])
-        cancelled_classes = len([r for r in records if r.teaching_status == "cancelled"])
+        completed_classes = len(
+            [r for r in records if r.teaching_status == "completed"]
+        )
+        cancelled_classes = len(
+            [r for r in records if r.teaching_status == "cancelled"]
+        )
         total_hours = sum(r.teaching_duration for r in records) / 60  # 转换为小时
         total_students = sum(r.student_count for r in records)
 
@@ -1318,7 +1349,9 @@ class BasicInfoService:
             "total_classes": total_classes,
             "completed_classes": completed_classes,
             "cancelled_classes": cancelled_classes,
-            "completion_rate": (completed_classes / total_classes if total_classes > 0 else 0),
+            "completion_rate": (
+                completed_classes / total_classes if total_classes > 0 else 0
+            ),
             "total_hours": round(total_hours, 2),
             "total_students": total_students,
             "average_rating": round(average_rating, 2) if average_rating else None,
@@ -1429,7 +1462,9 @@ class BasicInfoService:
         await self.db.commit()
         await self.db.refresh(salary_record)
 
-        logger.info(f"Created salary record {salary_record.id} for teacher {teacher_id}")
+        logger.info(
+            f"Created salary record {salary_record.id} for teacher {teacher_id}"
+        )
         return {
             "id": salary_record.id,
             "teacher_id": salary_record.teacher_id,
@@ -1484,7 +1519,9 @@ class BasicInfoService:
 
         salary_stats = {
             "total_amount": sum(r.net_amount for r in all_records),
-            "paid_amount": sum(r.net_amount for r in all_records if r.payment_status == "paid"),
+            "paid_amount": sum(
+                r.net_amount for r in all_records if r.payment_status == "paid"
+            ),
             "pending_amount": sum(
                 r.net_amount for r in all_records if r.payment_status == "pending"
             ),
@@ -1544,7 +1581,9 @@ class BasicInfoService:
 
         # 更新备注信息
         if payment_data.get("notes"):
-            salary_record.notes = f"{salary_record.notes or ''}\n发放备注: {payment_data['notes']}"
+            salary_record.notes = (
+                f"{salary_record.notes or ''}\n发放备注: {payment_data['notes']}"
+            )
 
         salary_record.updated_at = datetime.now()
 
@@ -1589,7 +1628,9 @@ class BasicInfoService:
         await self.db.commit()
         await self.db.refresh(review_record)
 
-        logger.info(f"Created qualification review {review_record.id} for teacher {teacher_id}")
+        logger.info(
+            f"Created qualification review {review_record.id} for teacher {teacher_id}"
+        )
         return {
             "id": review_record.id,
             "teacher_id": review_record.teacher_id,
@@ -1753,7 +1794,9 @@ class BasicInfoService:
 
         # 统计信息
         total_qualifications = len(qualifications)
-        valid_qualifications = len([q for q in qualifications.values() if q["is_valid"]])
+        valid_qualifications = len(
+            [q for q in qualifications.values() if q["is_valid"]]
+        )
         expired_qualifications = total_qualifications - valid_qualifications
 
         return {

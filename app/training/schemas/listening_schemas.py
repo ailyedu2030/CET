@@ -29,7 +29,12 @@ class ListeningExerciseBase(BaseModel):
 
     @validator("exercise_type")
     def validate_exercise_type(cls, v: str) -> str:
-        allowed_types = ["short_conversation", "long_conversation", "passage", "lecture"]
+        allowed_types = [
+            "short_conversation",
+            "long_conversation",
+            "passage",
+            "lecture",
+        ]
         if v not in allowed_types:
             raise ValueError(f"练习类型必须是以下之一: {', '.join(allowed_types)}")
         return v
@@ -185,7 +190,9 @@ class ListeningResultBase(BaseModel):
     answer_analysis: dict[str, Any] = Field(default_factory=dict, description="答案分析")
     total_time_seconds: int = Field(..., ge=0, description="总用时（秒）")
     average_time_per_question: float = Field(..., ge=0, description="平均每题用时（秒）")
-    listening_ability_score: float | None = Field(None, ge=0, le=100, description="听力能力评分")
+    listening_ability_score: float | None = Field(
+        None, ge=0, le=100, description="听力能力评分"
+    )
     comprehension_score: float | None = Field(None, ge=0, le=100, description="理解能力评分")
     vocabulary_score: float | None = Field(None, ge=0, le=100, description="词汇掌握评分")
     improvement_suggestions: list[str] = Field(default_factory=list, description="改进建议")
@@ -249,7 +256,9 @@ class ListeningStatistics(BaseModel):
     improvement_rate: float = Field(..., description="进步率")
     weak_areas: list[str] = Field(default_factory=list, description="薄弱环节")
     strong_areas: list[str] = Field(default_factory=list, description="优势领域")
-    recent_performance: list[dict[str, Any]] = Field(default_factory=list, description="近期表现")
+    recent_performance: list[dict[str, Any]] = Field(
+        default_factory=list, description="近期表现"
+    )
 
 
 # ============ 响应Schema ============

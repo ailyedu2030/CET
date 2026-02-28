@@ -8,24 +8,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.training.models.writing_models import WritingDifficulty, WritingType
-from app.training.schemas.writing_schemas import (
-    GrammarCheckResult,
-    WritingRecommendation,
-    WritingStatistics,
-    WritingSubmissionCreate,
-    WritingSubmissionListResponse,
-    WritingSubmissionResponse,
-    WritingTaskCreate,
-    WritingTaskListResponse,
-    WritingTaskResponse,
-    WritingTemplateCreate,
-    WritingTemplateListResponse,
-    WritingTemplateResponse,
-    WritingTemplateUpdate,
-    WritingVocabularyCreate,
-    WritingVocabularyListResponse,
-    WritingVocabularyResponse,
-)
+from app.training.schemas.writing_schemas import (GrammarCheckResult,
+                                                  WritingRecommendation,
+                                                  WritingStatistics,
+                                                  WritingSubmissionCreate,
+                                                  WritingSubmissionListResponse,
+                                                  WritingSubmissionResponse,
+                                                  WritingTaskCreate,
+                                                  WritingTaskListResponse,
+                                                  WritingTaskResponse,
+                                                  WritingTemplateCreate,
+                                                  WritingTemplateListResponse,
+                                                  WritingTemplateResponse,
+                                                  WritingTemplateUpdate,
+                                                  WritingVocabularyCreate,
+                                                  WritingVocabularyListResponse,
+                                                  WritingVocabularyResponse)
 from app.training.services.writing_service import WritingService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -37,7 +35,9 @@ router = APIRouter(tags=["英语四级写作标准库"])
 # ==================== 写作模板管理 ====================
 
 
-@router.get("/templates", summary="获取写作模板列表", response_model=WritingTemplateListResponse)
+@router.get(
+    "/templates", summary="获取写作模板列表", response_model=WritingTemplateListResponse
+)
 async def get_writing_templates(
     skip: int = 0,
     limit: int = 10,
@@ -96,7 +96,9 @@ async def create_writing_template(
 
 
 @router.get(
-    "/templates/{template_id}", summary="获取写作模板详情", response_model=WritingTemplateResponse
+    "/templates/{template_id}",
+    summary="获取写作模板详情",
+    response_model=WritingTemplateResponse,
 )
 async def get_writing_template_detail(
     template_id: int,
@@ -273,7 +275,9 @@ async def get_my_submissions(
     """获取用户的写作提交列表"""
     try:
         service = WritingService(db)
-        submissions, total = await service.get_user_submissions(current_user.id, skip, limit)
+        submissions, total = await service.get_user_submissions(
+            current_user.id, skip, limit
+        )
 
         logger.info(f"用户 {current_user.id} 查询写作提交列表，共 {total} 个")
 
@@ -381,7 +385,9 @@ async def check_grammar(
 # ==================== 词汇管理 ====================
 
 
-@router.get("/vocabulary", summary="获取写作词汇列表", response_model=WritingVocabularyListResponse)
+@router.get(
+    "/vocabulary", summary="获取写作词汇列表", response_model=WritingVocabularyListResponse
+)
 async def get_writing_vocabulary(
     skip: int = 0,
     limit: int = 10,
@@ -399,7 +405,9 @@ async def get_writing_vocabulary(
             limit=limit,
             category=category,
             writing_type=WritingType(writing_type) if writing_type else None,
-            difficulty_level=WritingDifficulty(difficulty_level) if difficulty_level else None,
+            difficulty_level=WritingDifficulty(difficulty_level)
+            if difficulty_level
+            else None,
         )
 
         logger.info(f"用户 {current_user.id} 查询写作词汇列表，共 {total} 个")
@@ -509,7 +517,9 @@ async def get_writing_hints(
         return hints
     except ValueError as e:
         logger.error(f"获取写作提示失败: {e}")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"获取写作提示失败: {e}")
         raise HTTPException(
@@ -528,7 +538,9 @@ async def get_synonym_suggestions(
         word = request.get("word")
 
         if not word:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="word 参数是必需的")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="word 参数是必需的"
+            )
 
         service = WritingService(db)
         suggestions = await service.get_synonym_suggestions(word)
@@ -571,7 +583,9 @@ async def save_writing_draft(
         return draft
     except ValueError as e:
         logger.error(f"保存草稿失败: {e}")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"保存草稿失败: {e}")
         raise HTTPException(

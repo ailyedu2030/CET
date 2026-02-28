@@ -207,7 +207,9 @@ class VectorUtils:
             return []
 
     @staticmethod
-    def cluster_vectors(vectors: list[list[float]], num_clusters: int = 5) -> dict[str, Any]:
+    def cluster_vectors(
+        vectors: list[list[float]], num_clusters: int = 5
+    ) -> dict[str, Any]:
         """简单的向量聚类."""
         try:
             if not vectors or num_clusters <= 0:
@@ -218,17 +220,24 @@ class VectorUtils:
 
             # 随机初始化聚类中心
             np.random.seed(42)
-            centroids = vectors_array[np.random.choice(len(vectors), num_clusters, replace=False)]
+            centroids = vectors_array[
+                np.random.choice(len(vectors), num_clusters, replace=False)
+            ]
 
             max_iterations = 100
             for _iteration in range(max_iterations):
                 # 分配点到最近的聚类中心
-                distances = np.sqrt(((vectors_array - centroids[:, np.newaxis]) ** 2).sum(axis=2))
+                distances = np.sqrt(
+                    ((vectors_array - centroids[:, np.newaxis]) ** 2).sum(axis=2)
+                )
                 closest_cluster = np.argmin(distances, axis=0)
 
                 # 更新聚类中心
                 new_centroids = np.array(
-                    [vectors_array[closest_cluster == k].mean(axis=0) for k in range(num_clusters)]
+                    [
+                        vectors_array[closest_cluster == k].mean(axis=0)
+                        for k in range(num_clusters)
+                    ]
                 )
 
                 # 检查收敛
@@ -264,10 +273,18 @@ class VectorUtils:
             return {
                 "count": len(vectors),
                 "dimension": len(vectors[0]),
-                "mean_magnitude": float(np.mean([np.linalg.norm(v) for v in vectors_array])),
-                "std_magnitude": float(np.std([np.linalg.norm(v) for v in vectors_array])),
-                "min_magnitude": float(np.min([np.linalg.norm(v) for v in vectors_array])),
-                "max_magnitude": float(np.max([np.linalg.norm(v) for v in vectors_array])),
+                "mean_magnitude": float(
+                    np.mean([np.linalg.norm(v) for v in vectors_array])
+                ),
+                "std_magnitude": float(
+                    np.std([np.linalg.norm(v) for v in vectors_array])
+                ),
+                "min_magnitude": float(
+                    np.min([np.linalg.norm(v) for v in vectors_array])
+                ),
+                "max_magnitude": float(
+                    np.max([np.linalg.norm(v) for v in vectors_array])
+                ),
                 "mean_vector": np.mean(vectors_array, axis=0).tolist(),
                 "std_vector": np.std(vectors_array, axis=0).tolist(),
             }
@@ -306,7 +323,9 @@ class VectorUtils:
             return False
 
     @staticmethod
-    def generate_random_vector(dimension: int, mean: float = 0.0, std: float = 1.0) -> list[float]:
+    def generate_random_vector(
+        dimension: int, mean: float = 0.0, std: float = 1.0
+    ) -> list[float]:
         """生成随机向量."""
         try:
             np.random.seed()  # 使用当前时间作为种子

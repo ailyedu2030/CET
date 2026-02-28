@@ -9,10 +9,8 @@ from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.training.models.training_models import Question, TrainingRecord
-from app.training.schemas.adaptive_learning_schemas import (
-    ForgettingCurveResponse,
-    ReviewScheduleResponse,
-)
+from app.training.schemas.adaptive_learning_schemas import (ForgettingCurveResponse,
+                                                            ReviewScheduleResponse)
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +41,9 @@ class ForgettingCurveService:
             "maintenance": 60,  # 维护性复习
         }
 
-    async def calculate_retention_rate(self, student_id: int, question_id: int) -> float:
+    async def calculate_retention_rate(
+        self, student_id: int, question_id: int
+    ) -> float:
         """计算当前记忆保持率."""
         try:
             # 获取学生对该题目的学习记录
@@ -58,7 +58,9 @@ class ForgettingCurveService:
 
             for record in learning_records:
                 # 计算时间间隔（天）
-                time_elapsed = (current_time - record.created_at).total_seconds() / 86400
+                time_elapsed = (
+                    current_time - record.created_at
+                ).total_seconds() / 86400
 
                 # 计算初始记忆强度
                 initial_strength = self._calculate_initial_strength(record)
@@ -96,12 +98,16 @@ class ForgettingCurveService:
             daily_schedule = {}
             for day in range(days_ahead):
                 target_date = datetime.now() + timedelta(days=day)
-                daily_items = self._schedule_daily_reviews(prioritized_items, target_date, day)
+                daily_items = self._schedule_daily_reviews(
+                    prioritized_items, target_date, day
+                )
                 daily_schedule[target_date.strftime("%Y-%m-%d")] = daily_items
 
             # 计算统计信息
             total_items = len(prioritized_items)
-            urgent_items = len([item for item in prioritized_items if item["priority"] == "urgent"])
+            urgent_items = len(
+                [item for item in prioritized_items if item["priority"] == "urgent"]
+            )
 
             return ReviewScheduleResponse(
                 student_id=student_id,
@@ -122,20 +128,28 @@ class ForgettingCurveService:
         """更新记忆强度."""
         try:
             # 获取当前记忆状态
-            current_retention = await self.calculate_retention_rate(student_id, question_id)
+            current_retention = await self.calculate_retention_rate(
+                student_id, question_id
+            )
 
             # 计算新的记忆强度
             performance_factor = max(0.1, min(1.0, performance_score))
-            strength_boost = self.forgetting_curve_params["review_boost"] * performance_factor
+            strength_boost = (
+                self.forgetting_curve_params["review_boost"] * performance_factor
+            )
 
             # 更新记忆强度（考虑遗忘和复习的综合效应）
             new_retention = min(1.0, current_retention + strength_boost)
 
             # 计算下次复习时间
-            next_review_date = self._calculate_next_review_date(new_retention, performance_score)
+            next_review_date = self._calculate_next_review_date(
+                new_retention, performance_score
+            )
 
             # 评估掌握程度
-            mastery_level = self._evaluate_mastery_level(new_retention, performance_score)
+            mastery_level = self._evaluate_mastery_level(
+                new_retention, performance_score
+            )
 
             memory_update = {
                 "student_id": student_id,
@@ -180,7 +194,9 @@ class ForgettingCurveService:
                 )
 
             # 计算当前保持率
-            current_retention = await self.calculate_retention_rate(student_id, question_id)
+            current_retention = await self.calculate_retention_rate(
+                student_id, question_id
+            )
 
             # 生成遗忘曲线数据点
             curve_data = self._generate_curve_data(learning_records)
@@ -268,7 +284,9 @@ class ForgettingCurveService:
             processed_questions.add(question.id)
 
             # 计算当前保持率
-            retention_rate = await self.calculate_retention_rate(student_id, question.id)
+            retention_rate = await self.calculate_retention_rate(
+                student_id, question.id
+            )
 
             # 判断是否需要复习
             if retention_rate < self.forgetting_curve_params["review_threshold"]:
@@ -278,7 +296,9 @@ class ForgettingCurveService:
                         "question": question,
                         "last_record": record,
                         "retention_rate": retention_rate,
-                        "days_since_last_review": (datetime.now() - record.created_at).days,
+                        "days_since_last_review": (
+                            datetime.now() - record.created_at
+                        ).days,
                     }
                 )
 
@@ -362,7 +382,9 @@ class ForgettingCurveService:
 
         return datetime.now() + timedelta(days=interval_days)
 
-    def _evaluate_mastery_level(self, retention_rate: float, performance_score: float) -> str:
+    def _evaluate_mastery_level(
+        self, retention_rate: float, performance_score: float
+    ) -> str:
         """评估掌握程度."""
         if retention_rate >= 0.9 and performance_score >= 0.9:
             return "mastered"
@@ -375,7 +397,9 @@ class ForgettingCurveService:
         else:
             return "needs_review"
 
-    def _generate_curve_data(self, learning_records: list[TrainingRecord]) -> list[dict[str, Any]]:
+    def _generate_curve_data(
+        self, learning_records: list[TrainingRecord]
+    ) -> list[dict[str, Any]]:
         """生成遗忘曲线数据点."""
         curve_data: list[dict[str, Any]] = []
 
@@ -393,7 +417,9 @@ class ForgettingCurveService:
             target_time = start_time + timedelta(days=day)
 
             # 计算该时间点的理论保持率
-            retention = self._calculate_theoretical_retention(learning_records, target_time)
+            retention = self._calculate_theoretical_retention(
+                learning_records, target_time
+            )
 
             curve_data.append(
                 {

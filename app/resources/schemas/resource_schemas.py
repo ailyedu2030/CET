@@ -7,11 +7,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.shared.models.enums import (
-    ContentType,
-    DifficultyLevel,
-    PermissionType,
-)
+from app.shared.models.enums import ContentType, DifficultyLevel, PermissionType
 
 
 # ========== 资源库基础schemas ==========
@@ -68,7 +64,9 @@ class VocabularyItemBase(BaseModel):
     part_of_speech: str | None = Field(None, description="词性")
     chinese_meaning: str = Field(..., description="中文释义")
     english_meaning: str | None = Field(None, description="英文释义")
-    example_sentences: list[dict[str, Any]] = Field(default_factory=list, description="例句列表")
+    example_sentences: list[dict[str, Any]] = Field(
+        default_factory=list, description="例句列表"
+    )
     synonyms: list[str] = Field(default_factory=list, description="同义词")
     antonyms: list[str] = Field(default_factory=list, description="反义词")
     difficulty_level: DifficultyLevel = Field(
@@ -152,7 +150,9 @@ class KnowledgePointBase(BaseModel):
     )
     importance_score: float = Field(default=0.5, description="重要性分数", ge=0, le=1)
     learning_objectives: list[str] = Field(default_factory=list, description="学习目标")
-    prerequisite_points: list[int] = Field(default_factory=list, description="前置知识点ID列表")
+    prerequisite_points: list[int] = Field(
+        default_factory=list, description="前置知识点ID列表"
+    )
     related_points: list[int] = Field(default_factory=list, description="相关知识点ID列表")
     examples: list[dict[str, Any]] = Field(default_factory=list, description="示例列表")
     exercises: list[dict[str, Any]] = Field(default_factory=list, description="练习题列表")
@@ -310,12 +310,20 @@ class ExamSyllabusBase(BaseModel):
     description: str | None = Field(None, description="考纲描述")
     exam_structure: dict[str, Any] = Field(default_factory=dict, description="考试结构")
     skill_requirements: dict[str, Any] = Field(default_factory=dict, description="技能要求")
-    vocabulary_requirements: dict[str, Any] = Field(default_factory=dict, description="词汇要求")
-    grammar_requirements: list[dict[str, Any]] = Field(default_factory=list, description="语法要求")
+    vocabulary_requirements: dict[str, Any] = Field(
+        default_factory=dict, description="词汇要求"
+    )
+    grammar_requirements: list[dict[str, Any]] = Field(
+        default_factory=list, description="语法要求"
+    )
     topic_areas: list[dict[str, Any]] = Field(default_factory=list, description="话题领域")
-    question_types: list[dict[str, Any]] = Field(default_factory=list, description="题型说明")
+    question_types: list[dict[str, Any]] = Field(
+        default_factory=list, description="题型说明"
+    )
     scoring_criteria: dict[str, Any] = Field(default_factory=dict, description="评分标准")
-    sample_papers: list[dict[str, Any]] = Field(default_factory=list, description="样卷信息")
+    sample_papers: list[dict[str, Any]] = Field(
+        default_factory=list, description="样卷信息"
+    )
     preparation_suggestions: list[str] = Field(default_factory=list, description="备考建议")
     tags: list[str] = Field(default_factory=list, description="标签")
     is_current: bool = Field(default=True, description="是否为当前版本")

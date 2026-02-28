@@ -3,17 +3,8 @@
 from datetime import datetime, time
 from typing import TYPE_CHECKING, Any, Optional
 
-from sqlalchemy import (
-    JSON,
-    Boolean,
-    DateTime,
-    ForeignKey,
-    Index,
-    Integer,
-    String,
-    Text,
-    Time,
-)
+from sqlalchemy import (JSON, Boolean, DateTime, ForeignKey, Index, Integer, String,
+                        Text, Time)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.shared.models.base_model import BaseModel
@@ -111,9 +102,7 @@ class Notification(BaseModel):
 
     def __repr__(self) -> str:
         """通知模型字符串表示."""
-        return (
-            f"<Notification(id={self.id}, user_id={self.user_id}, type='{self.notification_type}')>"
-        )
+        return f"<Notification(id={self.id}, user_id={self.user_id}, type='{self.notification_type}')>"
 
 
 class NotificationTemplate(BaseModel):
@@ -191,9 +180,7 @@ class NotificationTemplate(BaseModel):
 
     def __repr__(self) -> str:
         """模板模型字符串表示."""
-        return (
-            f"<NotificationTemplate(id={self.id}, code='{self.code}', category='{self.category}')>"
-        )
+        return f"<NotificationTemplate(id={self.id}, code='{self.code}', category='{self.category}')>"
 
 
 class NotificationPreference(BaseModel):
@@ -332,7 +319,9 @@ class NotificationHistory(BaseModel):
     )
 
     # 索引
-    __table_args__ = (Index("idx_history_notification_sent", "notification_id", "sent_at"),)
+    __table_args__ = (
+        Index("idx_history_notification_sent", "notification_id", "sent_at"),
+    )
 
     def __repr__(self) -> str:
         """历史模型字符串表示."""
@@ -429,6 +418,4 @@ class NotificationBatch(BaseModel):
 
     def __repr__(self) -> str:
         """批次模型字符串表示."""
-        return (
-            f"<NotificationBatch(id={self.id}, name='{self.batch_name}', status='{self.status}')>"
-        )
+        return f"<NotificationBatch(id={self.id}, name='{self.batch_name}', status='{self.status}')>"

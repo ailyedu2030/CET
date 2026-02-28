@@ -204,7 +204,9 @@ class LearningPlanService:
             logger.error(f"调整计划难度失败: {str(e)}")
             raise
 
-    async def get_plan_statistics(self, student_id: int, days: int = 30) -> dict[str, Any]:
+    async def get_plan_statistics(
+        self, student_id: int, days: int = 30
+    ) -> dict[str, Any]:
         """获取学习计划统计数据."""
         try:
             # 获取时间范围
@@ -217,10 +219,14 @@ class LearningPlanService:
             )
 
             # 学习时间统计
-            time_stats = await self._calculate_time_stats(student_id, start_date, end_date)
+            time_stats = await self._calculate_time_stats(
+                student_id, start_date, end_date
+            )
 
             # 进度统计
-            progress_stats = await self._calculate_progress_stats(student_id, start_date, end_date)
+            progress_stats = await self._calculate_progress_stats(
+                student_id, start_date, end_date
+            )
 
             # 效果统计
             effectiveness_stats = await self._calculate_effectiveness_stats(
@@ -300,7 +306,9 @@ class LearningPlanService:
         stmt = select(
             func.count(TrainingRecord.id).label("total_records"),
             func.avg(TrainingRecord.score).label("avg_score"),
-            func.count(TrainingRecord.id).filter(TrainingRecord.is_correct).label("correct_count"),  # noqa: E712
+            func.count(TrainingRecord.id)
+            .filter(TrainingRecord.is_correct)
+            .label("correct_count"),  # noqa: E712
         ).where(TrainingRecord.student_id == student_id)
 
         result = await self.db.execute(stmt)
@@ -324,7 +332,9 @@ class LearningPlanService:
         for training_type in TrainingType:
             stmt = select(
                 func.count(TrainingRecord.id).label("total"),
-                func.count(TrainingRecord.id).filter(~TrainingRecord.is_correct).label("errors"),  # noqa: E712
+                func.count(TrainingRecord.id)
+                .filter(~TrainingRecord.is_correct)
+                .label("errors"),  # noqa: E712
                 func.avg(TrainingRecord.score).label("avg_score"),
             ).where(
                 and_(
@@ -364,7 +374,9 @@ class LearningPlanService:
         else:
             return "beginner"
 
-    async def _save_learning_plan(self, student_id: int, plan_data: dict[str, Any]) -> int:
+    async def _save_learning_plan(
+        self, student_id: int, plan_data: dict[str, Any]
+    ) -> int:
         """保存学习计划到数据库."""
         # 这里应该保存到数据库，简化处理返回模拟ID
         # TODO: 实现实际的数据库保存逻辑
@@ -380,17 +392,23 @@ class LearningPlanService:
         # TODO: 实现从数据库加载计划的逻辑
         return {"plan_id": plan_id, "status": "active"}
 
-    async def _calculate_plan_progress(self, student_id: int, plan_id: int) -> dict[str, Any]:
+    async def _calculate_plan_progress(
+        self, student_id: int, plan_id: int
+    ) -> dict[str, Any]:
         """计算计划进度."""
         # TODO: 实现进度计算逻辑
         return {"overall_progress": 0.6, "weekly_progress": 0.8}
 
-    async def _get_today_tasks(self, student_id: int, plan_id: int) -> list[dict[str, Any]]:
+    async def _get_today_tasks(
+        self, student_id: int, plan_id: int
+    ) -> list[dict[str, Any]]:
         """获取今日任务."""
         # TODO: 实现今日任务获取逻辑
         return []
 
-    async def _get_week_tasks(self, student_id: int, plan_id: int) -> list[dict[str, Any]]:
+    async def _get_week_tasks(
+        self, student_id: int, plan_id: int
+    ) -> list[dict[str, Any]]:
         """获取本周任务."""
         # TODO: 实现本周任务获取逻辑
         return []
@@ -413,7 +431,9 @@ class LearningPlanService:
         # TODO: 实现计划数据验证逻辑
         pass
 
-    async def _update_learning_plan_data(self, plan_id: int, plan_data: dict[str, Any]) -> None:
+    async def _update_learning_plan_data(
+        self, plan_id: int, plan_data: dict[str, Any]
+    ) -> None:
         """更新计划数据."""
         # TODO: 实现数据库更新逻辑
         pass
@@ -424,7 +444,9 @@ class LearningPlanService:
         """记录计划更新日志."""
         logger.info(f"计划更新: 学生{student_id}, 计划{plan_id}, 更新内容{updates}")
 
-    async def _analyze_performance(self, performance_data: dict[str, Any]) -> dict[str, Any]:
+    async def _analyze_performance(
+        self, performance_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """分析学习表现."""
         # TODO: 实现表现分析逻辑
         return {"trend": "improving", "score": 0.75}

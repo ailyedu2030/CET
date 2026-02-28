@@ -8,12 +8,8 @@ from fastapi import status as http_status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.class_schemas import (
-    ClassBatchCreate,
-    ClassCreate,
-    ClassResponse,
-    ClassUpdate,
-)
+from app.courses.schemas.class_schemas import (ClassBatchCreate, ClassCreate,
+                                               ClassResponse, ClassUpdate)
 from app.courses.services.class_management_service import ClassManagementService
 from app.shared.models.enums import UserType
 from app.users.models import User
@@ -287,7 +283,9 @@ async def update_class_resources(
 
     try:
         service = ClassManagementService(db)
-        result = await service.update_class_resources(class_id, resource_updates, current_user.id)
+        result = await service.update_class_resources(
+            class_id, resource_updates, current_user.id
+        )
 
         logger.info(f"用户 {current_user.id} 更新班级资源: 班级ID {class_id}")
 

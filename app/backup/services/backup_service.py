@@ -10,19 +10,11 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.schemas.analytics_schemas import (
-    BackupConfig,
-    BackupInfo,
-    BackupRequest,
-    BackupStatistics,
-)
-from app.backup.utils.backup_utils import (
-    BackupCompression,
-    BackupEncryption,
-    BackupStorageManager,
-    BackupValidator,
-    DatabaseDumper,
-)
+from app.analytics.schemas.analytics_schemas import (BackupConfig, BackupInfo,
+                                                     BackupRequest, BackupStatistics)
+from app.backup.utils.backup_utils import (BackupCompression, BackupEncryption,
+                                           BackupStorageManager, BackupValidator,
+                                           DatabaseDumper)
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -63,7 +55,9 @@ class BackupScheduler:
             return next_run
         elif cron_expr == "0 */6 * * *":  # 每6小时
             next_hour = (now.hour // 6 + 1) * 6
-            next_run = now.replace(hour=next_hour % 24, minute=0, second=0, microsecond=0)
+            next_run = now.replace(
+                hour=next_hour % 24, minute=0, second=0, microsecond=0
+            )
             if next_hour >= 24:
                 next_run += timedelta(days=1)
             return next_run
@@ -101,7 +95,9 @@ class BackupScheduler:
         if backup_name in self.scheduled_backups:
             backup_info = self.scheduled_backups[backup_name]
             backup_info["last_run"] = datetime.now()
-            backup_info["next_run"] = self.calculate_next_run_time(backup_info["config"].schedule)
+            backup_info["next_run"] = self.calculate_next_run_time(
+                backup_info["config"].schedule
+            )
 
 
 class BackupService:
@@ -131,7 +127,9 @@ class BackupService:
 
         try:
             # 生成备份文件路径
-            backup_path = self.storage_manager.organize_backup_path(backup_id, request.backup_type)
+            backup_path = self.storage_manager.organize_backup_path(
+                backup_id, request.backup_type
+            )
 
             # 创建数据库备份
             dump_result = self.db_dumper.create_postgresql_dump(
@@ -150,7 +148,9 @@ class BackupService:
             # 压缩处理
             if request.compression:
                 compressed_path = f"{backup_path}.gz"
-                compression_result = BackupCompression.compress_file(backup_path, compressed_path)
+                compression_result = BackupCompression.compress_file(
+                    backup_path, compressed_path
+                )
                 compression_ratio = compression_result["compression_ratio"]
 
                 # 删除原始文件，使用压缩文件
@@ -229,7 +229,9 @@ class BackupService:
                 "checksum": backup_info.checksum,
                 "created_at": backup_info.created_at.isoformat(),
                 "expires_at": (
-                    backup_info.expires_at.isoformat() if backup_info.expires_at else None
+                    backup_info.expires_at.isoformat()
+                    if backup_info.expires_at
+                    else None
                 ),
                 "status": backup_info.status,
                 "tables_included": backup_info.tables_included,
@@ -239,7 +241,9 @@ class BackupService:
             }
 
             # 保存到metadata文件
-            metadata_dir = Path(settings.BACKUP_STORAGE_PATH or "/var/backups/cet") / "metadata"
+            metadata_dir = (
+                Path(settings.BACKUP_STORAGE_PATH or "/var/backups/cet") / "metadata"
+            )
             metadata_dir.mkdir(parents=True, exist_ok=True)
 
             metadata_file = metadata_dir / f"{backup_info.backup_id}.json"
@@ -254,7 +258,9 @@ class BackupService:
     ) -> list[BackupInfo]:
         """列出备份."""
         try:
-            metadata_dir = Path(settings.BACKUP_STORAGE_PATH or "/var/backups/cet") / "metadata"
+            metadata_dir = (
+                Path(settings.BACKUP_STORAGE_PATH or "/var/backups/cet") / "metadata"
+            )
             if not metadata_dir.exists():
                 return []
 
@@ -429,7 +435,10 @@ class BackupService:
             # 下次计划备份时间（从调度器获取）
             next_scheduled = None
             if self.scheduler.scheduled_backups:
-                next_runs = [info["next_run"] for info in self.scheduler.scheduled_backups.values()]
+                next_runs = [
+                    info["next_run"]
+                    for info in self.scheduler.scheduled_backups.values()
+                ]
                 next_scheduled = min(next_runs) if next_runs else None
 
             return BackupStatistics(
@@ -474,7 +483,9 @@ class BackupService:
             if validation_result["valid"]:
                 logger.info(f"备份验证通过: {backup_id}")
             else:
-                logger.warning(f"备份验证失败: {backup_id} - {validation_result.get('error')}")
+                logger.warning(
+                    f"备份验证失败: {backup_id} - {validation_result.get('error')}"
+                )
 
             return validation_result
 

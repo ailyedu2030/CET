@@ -8,15 +8,12 @@ from fastapi import status as http_status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.courses.schemas.rule_schemas import (
-    RuleConfigurationCreate,
-    RuleConfigurationResponse,
-    RuleConfigurationUpdate,
-    RuleTemplateResponse,
-    RuleValidationRequest,
-    RuleValidationResponse,
-    RuleViolation,
-)
+from app.courses.schemas.rule_schemas import (RuleConfigurationCreate,
+                                              RuleConfigurationResponse,
+                                              RuleConfigurationUpdate,
+                                              RuleTemplateResponse,
+                                              RuleValidationRequest,
+                                              RuleValidationResponse, RuleViolation)
 from app.courses.services.rule_management_service import RuleManagementService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_admin_user
@@ -42,7 +39,9 @@ async def create_rule_configuration(
     """创建规则配置 - 需求8验收标准1."""
     try:
         service = RuleManagementService(db)
-        rule_config = await service.create_rule_configuration(rule_data, current_user.id)
+        rule_config = await service.create_rule_configuration(
+            rule_data, current_user.id
+        )
 
         logger.info(f"管理员 {current_user.id} 创建规则配置: {rule_data.rule_name}")
 
@@ -85,7 +84,9 @@ async def list_rule_configurations(
             limit=limit,
         )
 
-        return [RuleConfigurationResponse.model_validate(config) for config in rule_configs]
+        return [
+            RuleConfigurationResponse.model_validate(config) for config in rule_configs
+        ]
 
     except Exception as e:
         logger.error(f"获取规则配置列表异常: {str(e)}")
@@ -134,7 +135,9 @@ async def update_rule_configuration(
     """更新规则配置 - 需求8验收标准1."""
     try:
         service = RuleManagementService(db)
-        rule_config = await service.update_rule_configuration(rule_id, rule_data, current_user.id)
+        rule_config = await service.update_rule_configuration(
+            rule_id, rule_data, current_user.id
+        )
 
         logger.info(f"管理员 {current_user.id} 更新规则配置: {rule_id}")
 

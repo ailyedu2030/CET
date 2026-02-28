@@ -13,7 +13,9 @@ class ClassBase(BaseModel):
     description: str | None = Field(None, description="班级描述")
     code: str | None = Field(None, max_length=50, description="班级编码")
     max_students: int = Field(50, ge=1, le=200, description="最大学生数")
-    resource_allocation: dict[str, Any] = Field(default_factory=dict, description="资源分配")
+    resource_allocation: dict[str, Any] = Field(
+        default_factory=dict, description="资源分配"
+    )
     class_rules: dict[str, Any] = Field(default_factory=dict, description="班级规则")
     start_date: date | None = Field(None, description="开始日期")
     end_date: date | None = Field(None, description="结束日期")
@@ -152,7 +154,9 @@ class ConflictCheckResult(BaseModel):
 
     has_conflict: bool = Field(..., description="是否存在冲突")
     conflict_type: str | None = Field(None, description="冲突类型")
-    conflict_details: list[dict[str, Any]] = Field(default_factory=list, description="冲突详情")
+    conflict_details: list[dict[str, Any]] = Field(
+        default_factory=list, description="冲突详情"
+    )
     suggestions: list[str] = Field(default_factory=list, description="解决建议")
 
 
@@ -165,5 +169,9 @@ class ClassStatistics(BaseModel):
     average_attendance: float = Field(..., description="平均出勤率")
     average_score: float = Field(..., description="平均成绩")
     completion_rate: float = Field(..., description="完成率")
-    progress_distribution: dict[str, int] = Field(default_factory=dict, description="进度分布")
-    performance_metrics: dict[str, float] = Field(default_factory=dict, description="表现指标")
+    progress_distribution: dict[str, int] = Field(
+        default_factory=dict, description="进度分布"
+    )
+    performance_metrics: dict[str, float] = Field(
+        default_factory=dict, description="表现指标"
+    )

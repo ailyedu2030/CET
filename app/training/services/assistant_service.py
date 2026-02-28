@@ -10,24 +10,18 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.training.models.assistant_models import (
-    KnowledgeBaseModel,
-    LearningResourceModel,
-    QARecordModel,
-    UserResourceInteractionModel,
-    VoiceRecognitionRecordModel,
-)
-from app.training.schemas.assistant_schemas import (
-    KnowledgeBaseCreate,
-    KnowledgeBaseUpdate,
-    LearningResourceCreate,
-    QARequest,
-    QAResponse,
-    ResourceRecommendationRequest,
-    UserResourceInteractionCreate,
-    VoiceRecognitionRequest,
-    VoiceRecognitionResponse,
-)
+from app.training.models.assistant_models import (KnowledgeBaseModel,
+                                                  LearningResourceModel, QARecordModel,
+                                                  UserResourceInteractionModel,
+                                                  VoiceRecognitionRecordModel)
+from app.training.schemas.assistant_schemas import (KnowledgeBaseCreate,
+                                                    KnowledgeBaseUpdate,
+                                                    LearningResourceCreate, QARequest,
+                                                    QAResponse,
+                                                    ResourceRecommendationRequest,
+                                                    UserResourceInteractionCreate,
+                                                    VoiceRecognitionRequest,
+                                                    VoiceRecognitionResponse)
 
 logger = logging.getLogger(__name__)
 
@@ -137,7 +131,9 @@ class AssistantService:
             content_text = str(knowledge.content)
             embedding_vector = await self._generate_embedding(content_text)
             knowledge.embedding_vector = embedding_vector
-            knowledge.vector_dimension = len(embedding_vector) if embedding_vector else 0
+            knowledge.vector_dimension = (
+                len(embedding_vector) if embedding_vector else 0
+            )
 
         knowledge.updated_at = datetime.utcnow()  # type: ignore
         await self.db.commit()
@@ -158,7 +154,9 @@ class AssistantService:
 
         try:
             # 1. 检索相关知识
-            relevant_knowledge = await self._retrieve_relevant_knowledge(request.question, limit=5)
+            relevant_knowledge = await self._retrieve_relevant_knowledge(
+                request.question, limit=5
+            )
 
             # 2. 构建上下文
             context = self._build_context(relevant_knowledge, request.context)
@@ -173,7 +171,9 @@ class AssistantService:
 
             # 5. 生成相关资源和后续问题
             related_resources = await self._get_related_resources(request.question)
-            follow_up_questions = await self._generate_follow_up_questions(request.question, answer)
+            follow_up_questions = await self._generate_follow_up_questions(
+                request.question, answer
+            )
 
             processing_time_ms = int((time.time() - start_time) * 1000)
 
@@ -306,7 +306,9 @@ class AssistantService:
         )
 
         # 3. 基于内容的推荐
-        content_based_recommendations = await self._content_based_recommend(user_profile, request)
+        content_based_recommendations = await self._content_based_recommend(
+            user_profile, request
+        )
 
         # 4. 合并和排序推荐结果
         all_recommendations = await self._merge_recommendations(
@@ -384,7 +386,9 @@ class AssistantService:
                 accuracy_score=pronunciation_analysis.get("accuracy_score"),
                 pronunciation_errors=pronunciation_analysis.get("errors", []),
                 grammar_errors=grammar_errors,
-                vocabulary_suggestions=pronunciation_analysis.get("vocabulary_suggestions", []),
+                vocabulary_suggestions=pronunciation_analysis.get(
+                    "vocabulary_suggestions", []
+                ),
                 improvement_suggestions=improvement_suggestions,
                 practice_recommendations=practice_recommendations,
             )
@@ -465,7 +469,9 @@ class AssistantService:
 
     # ==================== 私有辅助方法 ====================
 
-    async def _generate_embedding(self: "AssistantService", text: str) -> list[float] | None:
+    async def _generate_embedding(
+        self: "AssistantService", text: str
+    ) -> list[float] | None:
         """生成文本向量表示"""
         try:
             logger.info("Method implemented")
@@ -507,7 +513,9 @@ class AssistantService:
 
         return "\n\n".join(context_parts)
 
-    async def _generate_answer(self: "AssistantService", question: str, context: str) -> str:
+    async def _generate_answer(
+        self: "AssistantService", question: str, context: str
+    ) -> str:
         """生成回答"""
         try:
             prompt = f"""
@@ -558,7 +566,9 @@ class AssistantService:
         logger.info("Method implemented")
         return []  # 占位符
 
-    async def _get_user_profile(self: "AssistantService", user_id: int) -> dict[str, Any]:
+    async def _get_user_profile(
+        self: "AssistantService", user_id: int
+    ) -> dict[str, Any]:
         """获取用户画像"""
         logger.info("Method implemented")
         return {}  # 占位符
@@ -592,14 +602,18 @@ class AssistantService:
 
             # 按资源类型过滤
             if request.resource_type:
-                query = query.where(LearningResourceModel.resource_type == request.resource_type)
+                query = query.where(
+                    LearningResourceModel.resource_type == request.resource_type
+                )
 
             # 排序：优先推荐质量分数高、受欢迎的资源
             query = query.order_by(
                 desc(LearningResourceModel.quality_score),
                 desc(LearningResourceModel.popularity_score),
                 desc(LearningResourceModel.view_count),
-            ).limit(request.limit * 2)  # 获取更多候选资源
+            ).limit(
+                request.limit * 2
+            )  # 获取更多候选资源
 
             result = await self.db.execute(query)
             resources = result.scalars().all()
@@ -683,16 +697,20 @@ class AssistantService:
                     # 合并分数
                     existing = resource_map[resource_id]
                     existing["final_score"] += rec["final_score"]
-                    existing["recommendation_reason"] += f", {rec.get('recommendation_reason', '')}"
-                    existing["recommendation_source"] = (
-                        f"{existing['recommendation_source']}, {rec['recommendation_source']}"
-                    )
+                    existing[
+                        "recommendation_reason"
+                    ] += f", {rec.get('recommendation_reason', '')}"
+                    existing[
+                        "recommendation_source"
+                    ] = f"{existing['recommendation_source']}, {rec['recommendation_source']}"
                 else:
                     resource_map[resource_id] = rec
 
             # 转换回列表并按最终分数排序
             merged_recommendations = list(resource_map.values())
-            merged_recommendations.sort(key=lambda x: x.get("final_score", 0), reverse=True)
+            merged_recommendations.sort(
+                key=lambda x: x.get("final_score", 0), reverse=True
+            )
 
             return merged_recommendations
 
@@ -719,7 +737,9 @@ class AssistantService:
                         resource_id=resource_id,
                         recommendation_score=rec.get("recommendation_score", 0.0),
                         recommendation_reason=rec.get("recommendation_reason", ""),
-                        recommendation_source=rec.get("recommendation_source", "unknown"),
+                        recommendation_source=rec.get(
+                            "recommendation_source", "unknown"
+                        ),
                         user_clicked=False,
                         user_viewed=False,
                     )
@@ -765,7 +785,10 @@ class AssistantService:
             return "语音识别失败"
 
     async def _analyze_pronunciation(
-        self: "AssistantService", audio_file: str, recognized_text: str, target_text: str | None
+        self: "AssistantService",
+        audio_file: str,
+        recognized_text: str,
+        target_text: str | None,
     ) -> dict[str, Any]:
         """发音分析"""
         try:
@@ -773,7 +796,6 @@ class AssistantService:
 
             # 模拟发音分析
             # 在实际应用中，这里会使用专业的发音评估API
-
             # 基础分数（随机生成，实际应用中基于音频分析）
             base_score = random.uniform(0.7, 0.95)
 
@@ -829,7 +851,9 @@ class AssistantService:
                 "vocabulary_suggestions": [],
             }
 
-    async def _check_grammar(self: "AssistantService", text: str) -> list[dict[str, Any]]:
+    async def _check_grammar(
+        self: "AssistantService", text: str
+    ) -> list[dict[str, Any]]:
         """语法检查"""
         try:
             # 模拟语法检查
@@ -857,7 +881,11 @@ class AssistantService:
                         )
 
                     if word in ["dont", "cant", "wont"]:  # 缺少撇号
-                        suggestions = {"dont": "don't", "cant": "can't", "wont": "won't"}
+                        suggestions = {
+                            "dont": "don't",
+                            "cant": "can't",
+                            "wont": "won't",
+                        }
                         grammar_errors.append(
                             {
                                 "error_type": "punctuation",
@@ -876,7 +904,9 @@ class AssistantService:
             logger.error(f"语法检查失败: {e}")
             return []
 
-    def _calculate_text_similarity(self: "AssistantService", text1: str, text2: str) -> float:
+    def _calculate_text_similarity(
+        self: "AssistantService", text1: str, text2: str
+    ) -> float:
         """计算两个文本的相似度"""
         try:
             # 简单的文本相似度计算（基于编辑距离）
@@ -1070,7 +1100,9 @@ class AssistantService:
                 }
             ]
 
-    async def _update_resource_stats(self: "AssistantService", resource_id: int) -> None:
+    async def _update_resource_stats(
+        self: "AssistantService", resource_id: int
+    ) -> None:
         """更新资源统计"""
         query = select(LearningResourceModel).where(LearningResourceModel.id == resource_id)  # type: ignore
         result = await self.db.execute(query)

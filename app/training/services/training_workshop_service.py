@@ -8,18 +8,11 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.training.models.training_models import (
-    TrainingParameterTemplate,
-    TrainingTask,
-    TrainingTaskSubmission,
-)
+from app.training.models.training_models import (TrainingParameterTemplate,
+                                                 TrainingTask, TrainingTaskSubmission)
 from app.training.schemas.training_workshop_schemas import (
-    TrainingParameterTemplateRequest,
-    TrainingParameterTemplateResponse,
-    TrainingTaskRequest,
-    TrainingTaskResponse,
-    WeeklyTrainingRequest,
-)
+    TrainingParameterTemplateRequest, TrainingParameterTemplateResponse,
+    TrainingTaskRequest, TrainingTaskResponse, WeeklyTrainingRequest)
 
 
 class TrainingWorkshopService:
@@ -161,7 +154,9 @@ class TrainingWorkshopService:
             updated_at=template.updated_at or template.created_at,
         )
 
-    async def delete_parameter_template(self, template_id: int, teacher_id: int) -> bool:
+    async def delete_parameter_template(
+        self, template_id: int, teacher_id: int
+    ) -> bool:
         """删除训练参数模板."""
         stmt = select(TrainingParameterTemplate).where(
             and_(
@@ -324,7 +319,9 @@ class TrainingWorkshopService:
         # 查询统计信息
         total_students = await self._get_class_student_count(task.class_id)
         completed_students = await self._get_task_completion_count(task.id)
-        completion_rate = completed_students / total_students if total_students > 0 else 0.0
+        completion_rate = (
+            completed_students / total_students if total_students > 0 else 0.0
+        )
 
         return TrainingTaskResponse(
             id=task.id,
@@ -369,7 +366,9 @@ class TrainingWorkshopService:
             training_types = config.get("training_types", [])
 
             # 创建题目批次标识
-            batch_name = f"{task.task_name}_batch_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+            batch_name = (
+                f"{task.task_name}_batch_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+            )
             logging.info(f"创建题目批次: {batch_name}")
 
             generated_questions = []
@@ -435,7 +434,11 @@ class TrainingWorkshopService:
                 )
 
                 # 调用DeepSeek生成阅读理解
-                success, content, error = await self.deepseek_service.generate_completion(
+                (
+                    success,
+                    content,
+                    error,
+                ) = await self.deepseek_service.generate_completion(
                     prompt=prompt,
                     user_id=task.teacher_id,
                     task_type="reading_generation",
@@ -446,7 +449,9 @@ class TrainingWorkshopService:
                 if success and content:
                     # 提取AI生成的文本内容
                     content_text = (
-                        content.get("choices", [{}])[0].get("message", {}).get("content", "")
+                        content.get("choices", [{}])[0]
+                        .get("message", {})
+                        .get("content", "")
                         if isinstance(content, dict)
                         else str(content)
                     )
@@ -459,7 +464,9 @@ class TrainingWorkshopService:
                                 "task_id": task.id,
                                 "content": passage_data,
                                 "difficulty": "intermediate",
-                                "topic": (topics[i] if i < len(topics) else f"阅读主题{i + 1}"),
+                                "topic": (
+                                    topics[i] if i < len(topics) else f"阅读主题{i + 1}"
+                                ),
                             }
                         )
 
@@ -487,7 +494,11 @@ class TrainingWorkshopService:
                 )
 
                 # 调用DeepSeek生成写作题目
-                success, content, error = await self.deepseek_service.generate_completion(
+                (
+                    success,
+                    content,
+                    error,
+                ) = await self.deepseek_service.generate_completion(
                     prompt=prompt,
                     user_id=task.teacher_id,
                     task_type="writing_generation",
@@ -498,7 +509,9 @@ class TrainingWorkshopService:
                 if success and content:
                     # 提取AI生成的文本内容
                     content_text = (
-                        content.get("choices", [{}])[0].get("message", {}).get("content", "")
+                        content.get("choices", [{}])[0]
+                        .get("message", {})
+                        .get("content", "")
                         if isinstance(content, dict)
                         else str(content)
                     )
@@ -542,7 +555,9 @@ class TrainingWorkshopService:
             if success and content:
                 # 提取AI生成的文本内容
                 content_text = (
-                    content.get("choices", [{}])[0].get("message", {}).get("content", "")
+                    content.get("choices", [{}])[0]
+                    .get("message", {})
+                    .get("content", "")
                     if isinstance(content, dict)
                     else str(content)
                 )
@@ -598,9 +613,7 @@ class TrainingWorkshopService:
     ) -> str:
         """构建写作题目生成提示词."""
         sources_text = "、".join(topic_sources)
-        standard_text = (
-            "严格按照大学英语四级考试写作评分标准" if cet4_standard else "按照一般英语写作标准"
-        )
+        standard_text = "严格按照大学英语四级考试写作评分标准" if cet4_standard else "按照一般英语写作标准"
 
         return f"""请生成一道大学英语四级{writing_type}写作题目。
 
@@ -681,7 +694,9 @@ class TrainingWorkshopService:
 
         return None
 
-    def _parse_general_content(self, content: str, training_type: str) -> dict[str, Any] | None:
+    def _parse_general_content(
+        self, content: str, training_type: str
+    ) -> dict[str, Any] | None:
         """解析通用题目AI生成内容."""
         try:
             # 简单的内容解析
@@ -813,7 +828,11 @@ class TrainingWorkshopService:
             # 计算统计指标
             performance_list = []
             for student_id, stats in student_stats.items():
-                avg_score = stats["total_score"] / len(stats["scores"]) if stats["scores"] else 0.0
+                avg_score = (
+                    stats["total_score"] / len(stats["scores"])
+                    if stats["scores"]
+                    else 0.0
+                )
                 avg_completion_rate = (
                     sum(stats["completion_rates"]) / len(stats["completion_rates"])
                     if stats["completion_rates"]
@@ -894,7 +913,9 @@ class TrainingWorkshopService:
                         "risk_factors": risk_factors,
                         "completion_ratio": student["completion_ratio"],
                         "average_score": student["average_score"],
-                        "suggestions": self._generate_improvement_suggestions(risk_factors),
+                        "suggestions": self._generate_improvement_suggestions(
+                            risk_factors
+                        ),
                     }
                 )
 
@@ -931,7 +952,9 @@ class TrainingWorkshopService:
             avg_completion_rate = (
                 sum(s["completion_ratio"] for s in student_performance) / total_students
             )
-            avg_score = sum(s["average_score"] for s in student_performance) / total_students
+            avg_score = (
+                sum(s["average_score"] for s in student_performance) / total_students
+            )
 
             # 计算表现分布
             performance_distribution = {"优秀": 0, "良好": 0, "一般": 0, "较差": 0}
@@ -941,7 +964,9 @@ class TrainingWorkshopService:
                     performance_distribution[level] += 1
 
             # 计算整体效果分数
-            effectiveness_score = (avg_completion_rate * 0.4 + avg_score / 100 * 0.6) * 100
+            effectiveness_score = (
+                avg_completion_rate * 0.4 + avg_score / 100 * 0.6
+            ) * 100
 
             return {
                 "overall_effectiveness": effectiveness_score,
@@ -966,7 +991,9 @@ class TrainingWorkshopService:
                 "improvement_trends": {},
             }
 
-    def _calculate_performance_level(self, avg_score: float, completion_ratio: float) -> str:
+    def _calculate_performance_level(
+        self, avg_score: float, completion_ratio: float
+    ) -> str:
         """计算学生表现等级."""
         # 综合分数计算
         composite_score = avg_score * 0.6 + completion_ratio * 100 * 0.4

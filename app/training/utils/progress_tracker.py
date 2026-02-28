@@ -79,13 +79,19 @@ class ProgressTracker:
         total_questions = session_data.get("total_questions", 0)
         correct_answers = session_data.get("correct_answers", 0)
         total_time = session_data.get("total_time_seconds", 0)
-        difficulty_level = session_data.get("difficulty_level", DifficultyLevel.ELEMENTARY)
+        difficulty_level = session_data.get(
+            "difficulty_level", DifficultyLevel.ELEMENTARY
+        )
 
         # 计算准确率
-        accuracy_rate = correct_answers / total_questions if total_questions > 0 else 0.0
+        accuracy_rate = (
+            correct_answers / total_questions if total_questions > 0 else 0.0
+        )
 
         # 计算平均用时
-        avg_time_per_question = total_time / total_questions if total_questions > 0 else 0.0
+        avg_time_per_question = (
+            total_time / total_questions if total_questions > 0 else 0.0
+        )
 
         # 计算经验值
         exp_gained = self._calculate_experience_points(session_data)
@@ -234,7 +240,9 @@ class ProgressTracker:
             return {"mastery_level": "未开始", "confidence": 0.0}
 
         # 筛选相关会话
-        relevant_sessions = [s for s in recent_sessions if s.get("training_type") == training_type]
+        relevant_sessions = [
+            s for s in recent_sessions if s.get("training_type") == training_type
+        ]
 
         if not relevant_sessions:
             return {"mastery_level": "未开始", "confidence": 0.0}
@@ -310,7 +318,9 @@ class ProgressTracker:
         session_dates = [
             s["created_at"] for s in recent_sessions if s.get("created_at") is not None
         ]
-        streak_info = self.track_learning_streak(student_id, datetime.utcnow(), session_dates)
+        streak_info = self.track_learning_streak(
+            student_id, datetime.utcnow(), session_dates
+        )
 
         # 各训练类型掌握情况
         mastery_by_type = {}
@@ -357,7 +367,9 @@ class ProgressTracker:
         exp += correct_answers * self.exp_weights["correct_answer"]
 
         # 难度奖励
-        difficulty_level = session_data.get("difficulty_level", DifficultyLevel.ELEMENTARY)
+        difficulty_level = session_data.get(
+            "difficulty_level", DifficultyLevel.ELEMENTARY
+        )
         difficulty_multiplier = {
             DifficultyLevel.BEGINNER: 0.5,
             DifficultyLevel.ELEMENTARY: 1,
@@ -365,7 +377,11 @@ class ProgressTracker:
             DifficultyLevel.UPPER_INTERMEDIATE: 3,
             DifficultyLevel.ADVANCED: 4,
         }[difficulty_level]
-        exp += correct_answers * self.exp_weights["difficulty_bonus"] * difficulty_multiplier
+        exp += (
+            correct_answers
+            * self.exp_weights["difficulty_bonus"]
+            * difficulty_multiplier
+        )
 
         # 速度奖励
         avg_time = session_data.get("avg_time_per_question", 0)
@@ -390,25 +406,43 @@ class ProgressTracker:
 
         # 首次会话
         if historical_data.get("total_sessions", 0) == 0:
-            achieved.append({"milestone": "first_session", **self.milestones["first_session"]})
+            achieved.append(
+                {"milestone": "first_session", **self.milestones["first_session"]}
+            )
 
         # 准确率里程碑
         accuracy = session_data.get("accuracy_rate", 0)
         if accuracy >= 0.9 and not historical_data.get("achieved_accuracy_90"):
-            achieved.append({"milestone": "accuracy_90", **self.milestones["accuracy_90"]})
+            achieved.append(
+                {"milestone": "accuracy_90", **self.milestones["accuracy_90"]}
+            )
         elif accuracy >= 0.8 and not historical_data.get("achieved_accuracy_80"):
-            achieved.append({"milestone": "accuracy_80", **self.milestones["accuracy_80"]})
+            achieved.append(
+                {"milestone": "accuracy_80", **self.milestones["accuracy_80"]}
+            )
 
         # 题目数量里程碑
-        total_questions = historical_data.get("total_questions_answered", 0) + session_data.get(
-            "total_questions", 0
-        )
-        if total_questions >= 1000 and not historical_data.get("achieved_questions_1000"):
-            achieved.append({"milestone": "questions_1000", **self.milestones["questions_1000"]})
-        elif total_questions >= 500 and not historical_data.get("achieved_questions_500"):
-            achieved.append({"milestone": "questions_500", **self.milestones["questions_500"]})
-        elif total_questions >= 100 and not historical_data.get("achieved_questions_100"):
-            achieved.append({"milestone": "questions_100", **self.milestones["questions_100"]})
+        total_questions = historical_data.get(
+            "total_questions_answered", 0
+        ) + session_data.get("total_questions", 0)
+        if total_questions >= 1000 and not historical_data.get(
+            "achieved_questions_1000"
+        ):
+            achieved.append(
+                {"milestone": "questions_1000", **self.milestones["questions_1000"]}
+            )
+        elif total_questions >= 500 and not historical_data.get(
+            "achieved_questions_500"
+        ):
+            achieved.append(
+                {"milestone": "questions_500", **self.milestones["questions_500"]}
+            )
+        elif total_questions >= 100 and not historical_data.get(
+            "achieved_questions_100"
+        ):
+            achieved.append(
+                {"milestone": "questions_100", **self.milestones["questions_100"]}
+            )
 
         return achieved
 
@@ -416,7 +450,9 @@ class ProgressTracker:
         self, exp_gained: int, historical_data: dict[str, Any] | None
     ) -> dict[str, Any]:
         """计算等级变化."""
-        current_exp = historical_data.get("total_experience", 0) if historical_data else 0
+        current_exp = (
+            historical_data.get("total_experience", 0) if historical_data else 0
+        )
         new_exp = current_exp + exp_gained
 
         current_level = self._exp_to_level(current_exp)
@@ -565,7 +601,9 @@ class ProgressTracker:
         sorted_dates = sorted(dates)
         intervals = []
         for i in range(1, len(sorted_dates)):
-            interval = (sorted_dates[i] - sorted_dates[i - 1]).total_seconds() / 3600  # 小时
+            interval = (
+                sorted_dates[i] - sorted_dates[i - 1]
+            ).total_seconds() / 3600  # 小时
             intervals.append(interval)
 
         avg_interval = sum(intervals) / len(intervals)
@@ -574,7 +612,9 @@ class ProgressTracker:
         predicted_time = last_session + timedelta(hours=avg_interval)
 
         # 计算置信度（基于间隔的一致性）
-        variance = sum((interval - avg_interval) ** 2 for interval in intervals) / len(intervals)
+        variance = sum((interval - avg_interval) ** 2 for interval in intervals) / len(
+            intervals
+        )
         confidence = max(0.0, 1.0 - (variance / (avg_interval**2)))
 
         return {
@@ -611,9 +651,13 @@ class ProgressTracker:
                 weekday_counts[created_at.weekday()] += 1
 
         # 找出最活跃时段
-        peak_hour = max(hour_counts.keys(), key=lambda h: hour_counts[h]) if hour_counts else 0
+        peak_hour = (
+            max(hour_counts.keys(), key=lambda h: hour_counts[h]) if hour_counts else 0
+        )
         peak_weekday = (
-            max(weekday_counts.keys(), key=lambda w: weekday_counts[w]) if weekday_counts else 0
+            max(weekday_counts.keys(), key=lambda w: weekday_counts[w])
+            if weekday_counts
+            else 0
         )
 
         weekday_names = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
@@ -622,16 +666,22 @@ class ProgressTracker:
             "peak_hour": peak_hour,
             "peak_weekday": weekday_names[peak_weekday],
             "hour_distribution": dict(hour_counts),
-            "weekday_distribution": {weekday_names[k]: v for k, v in weekday_counts.items()},
+            "weekday_distribution": {
+                weekday_names[k]: v for k, v in weekday_counts.items()
+            },
         }
 
-    def _analyze_difficulty_progression(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_difficulty_progression(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析难度进展."""
         if not sessions:
             return {}
 
         # 按时间排序
-        sorted_sessions = sorted(sessions, key=lambda s: s.get("created_at", datetime.min))
+        sorted_sessions = sorted(
+            sessions, key=lambda s: s.get("created_at", datetime.min)
+        )
 
         difficulty_progression = []
         for session in sorted_sessions:
@@ -641,7 +691,9 @@ class ProgressTracker:
                 {
                     "date": session.get("created_at"),
                     "difficulty": (
-                        difficulty.value if hasattr(difficulty, "value") else str(difficulty)
+                        difficulty.value
+                        if hasattr(difficulty, "value")
+                        else str(difficulty)
                     ),
                     "accuracy": accuracy,
                 }
@@ -678,7 +730,9 @@ class ProgressTracker:
         }
         return mapping.get(difficulty, 1.0)
 
-    def _analyze_type_preferences(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_type_preferences(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析训练类型偏好."""
         type_counts: defaultdict[str, int] = defaultdict(int)
         type_accuracy = defaultdict(list)
@@ -689,19 +743,24 @@ class ProgressTracker:
 
             if training_type:
                 type_name = (
-                    training_type.value if hasattr(training_type, "value") else str(training_type)
+                    training_type.value
+                    if hasattr(training_type, "value")
+                    else str(training_type)
                 )
                 type_counts[type_name] += 1
                 type_accuracy[type_name].append(accuracy)
 
         # 计算平均准确率
         type_avg_accuracy = {
-            t: sum(accuracies) / len(accuracies) for t, accuracies in type_accuracy.items()
+            t: sum(accuracies) / len(accuracies)
+            for t, accuracies in type_accuracy.items()
         }
 
         # 找出最喜欢和最擅长的类型
         most_practiced = (
-            max(type_counts.keys(), key=lambda t: type_counts[t]) if type_counts else None
+            max(type_counts.keys(), key=lambda t: type_counts[t])
+            if type_counts
+            else None
         )
         best_performance = (
             max(type_avg_accuracy.keys(), key=lambda t: type_avg_accuracy[t])
@@ -716,13 +775,17 @@ class ProgressTracker:
             "best_performance": best_performance,
         }
 
-    def _analyze_performance_trends(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_performance_trends(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析表现趋势."""
         if len(sessions) < 3:
             return {"trend": "数据不足"}
 
         # 按时间排序
-        sorted_sessions = sorted(sessions, key=lambda s: s.get("created_at", datetime.min))
+        sorted_sessions = sorted(
+            sessions, key=lambda s: s.get("created_at", datetime.min)
+        )
 
         # 计算移动平均
         window_size = min(5, len(sorted_sessions) // 2)
@@ -750,7 +813,9 @@ class ProgressTracker:
             ),
         }
 
-    def _analyze_efficiency_trends(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _analyze_efficiency_trends(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """分析效率趋势."""
         if not sessions:
             return {}
@@ -761,12 +826,18 @@ class ProgressTracker:
             avg_time = session.get("avg_time_per_question", 0)
             difficulty = session.get("difficulty_level", DifficultyLevel.ELEMENTARY)
 
-            efficiency = self._calculate_efficiency_score(accuracy, avg_time, difficulty)
+            efficiency = self._calculate_efficiency_score(
+                accuracy, avg_time, difficulty
+            )
             efficiency_scores.append(efficiency)
 
         if len(efficiency_scores) >= 2:
-            recent_efficiency = sum(efficiency_scores[-3:]) / min(3, len(efficiency_scores))
-            early_efficiency = sum(efficiency_scores[:3]) / min(3, len(efficiency_scores))
+            recent_efficiency = sum(efficiency_scores[-3:]) / min(
+                3, len(efficiency_scores)
+            )
+            early_efficiency = sum(efficiency_scores[:3]) / min(
+                3, len(efficiency_scores)
+            )
 
             trend = "提升" if recent_efficiency > early_efficiency else "稳定"
         else:
@@ -808,7 +879,9 @@ class ProgressTracker:
 
         return insights
 
-    def _calculate_total_statistics(self, sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _calculate_total_statistics(
+        self, sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """计算总体统计."""
         if not sessions:
             return {
@@ -824,7 +897,9 @@ class ProgressTracker:
         total_correct = sum(s.get("correct_answers", 0) for s in sessions)
         total_time = sum(s.get("total_time_seconds", 0) for s in sessions)
 
-        average_accuracy = total_correct / total_questions if total_questions > 0 else 0.0
+        average_accuracy = (
+            total_correct / total_questions if total_questions > 0 else 0.0
+        )
 
         return {
             "total_sessions": total_sessions,
@@ -858,7 +933,9 @@ class ProgressTracker:
         avg_accuracy = sum(accuracies) / len(accuracies)
 
         # 计算标准差
-        variance = sum((acc - avg_accuracy) ** 2 for acc in accuracies) / len(accuracies)
+        variance = sum((acc - avg_accuracy) ** 2 for acc in accuracies) / len(
+            accuracies
+        )
         std_dev = variance**0.5
 
         # 一致性分数（标准差越小，一致性越高）
@@ -872,16 +949,22 @@ class ProgressTracker:
             return 0.0
 
         # 按时间排序
-        sorted_sessions = sorted(sessions, key=lambda s: s.get("created_at", datetime.min))
+        sorted_sessions = sorted(
+            sessions, key=lambda s: s.get("created_at", datetime.min)
+        )
 
         # 比较前后期表现
         first_half = sorted_sessions[: len(sorted_sessions) // 2]
         second_half = sorted_sessions[len(sorted_sessions) // 2 :]
 
         early_avg = sum(s.get("accuracy_rate", 0) for s in first_half) / len(first_half)
-        recent_avg = sum(s.get("accuracy_rate", 0) for s in second_half) / len(second_half)
+        recent_avg = sum(s.get("accuracy_rate", 0) for s in second_half) / len(
+            second_half
+        )
 
-        improvement_rate = (recent_avg - early_avg) / early_avg if early_avg > 0 else 0.0
+        improvement_rate = (
+            (recent_avg - early_avg) / early_avg if early_avg > 0 else 0.0
+        )
 
         return max(-1.0, min(1.0, improvement_rate))  # 限制在-100%到100%之间
 
@@ -923,7 +1006,9 @@ class ProgressTracker:
 
         return recommendations
 
-    def _calculate_achievements(self, all_sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _calculate_achievements(
+        self, all_sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """计算成就和里程碑."""
         achievements: dict[str, Any] = {
             "unlocked": [],
@@ -936,7 +1021,9 @@ class ProgressTracker:
             return achievements
 
         # 计算总经验值
-        total_exp = sum(self._calculate_experience_points(session) for session in all_sessions)
+        total_exp = sum(
+            self._calculate_experience_points(session) for session in all_sessions
+        )
         achievements["total_exp"] = total_exp
         achievements["current_level"] = self._exp_to_level(total_exp)
 
@@ -966,16 +1053,18 @@ class ProgressTracker:
 
         return achievements
 
-    def _predict_future_progress(self, recent_sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    def _predict_future_progress(
+        self, recent_sessions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """预测未来进度."""
         if len(recent_sessions) < 3:
             return {"prediction": "数据不足进行预测"}
 
         # 计算学习速度趋势
         sessions_per_week = len(recent_sessions) / 4.0  # 假设是最近4周的数据
-        questions_per_session = sum(s.get("total_questions", 0) for s in recent_sessions) / len(
-            recent_sessions
-        )
+        questions_per_session = sum(
+            s.get("total_questions", 0) for s in recent_sessions
+        ) / len(recent_sessions)
 
         # 预测下个月的进度
         predicted_sessions = sessions_per_week * 4
@@ -984,8 +1073,12 @@ class ProgressTracker:
         # 预测准确率趋势
         recent_accuracies = [s.get("accuracy_rate", 0) for s in recent_sessions[-5:]]
         if len(recent_accuracies) >= 2:
-            accuracy_trend = (recent_accuracies[-1] - recent_accuracies[0]) / len(recent_accuracies)
-            predicted_accuracy = min(1.0, max(0.0, recent_accuracies[-1] + accuracy_trend * 4))
+            accuracy_trend = (recent_accuracies[-1] - recent_accuracies[0]) / len(
+                recent_accuracies
+            )
+            predicted_accuracy = min(
+                1.0, max(0.0, recent_accuracies[-1] + accuracy_trend * 4)
+            )
         else:
             predicted_accuracy = sum(recent_accuracies) / len(recent_accuracies)
 

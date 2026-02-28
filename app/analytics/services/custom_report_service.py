@@ -473,7 +473,9 @@ class CustomReportService:
 
         return charts
 
-    async def _export_report(self, report: GeneratedReport, format_type: OutputFormat) -> str:
+    async def _export_report(
+        self, report: GeneratedReport, format_type: OutputFormat
+    ) -> str:
         """导出报表文件"""
         file_name = f"{report.name}.{format_type.value}"
         file_path = self.output_dir / file_name
@@ -634,7 +636,11 @@ class CustomReportService:
                 now = datetime.now()
 
                 for schedule in self.schedules.values():
-                    if schedule.is_active and schedule.next_run and now >= schedule.next_run:
+                    if (
+                        schedule.is_active
+                        and schedule.next_run
+                        and now >= schedule.next_run
+                    ):
                         # 执行调度任务
                         await self._execute_scheduled_report(schedule)
 
@@ -704,7 +710,9 @@ class CustomReportService:
             "templates_count": len(self.templates),
             "schedules_count": len(self.schedules),
             "generated_reports_count": len(self.generated_reports),
-            "active_schedules": len([s for s in self.schedules.values() if s.is_active]),
+            "active_schedules": len(
+                [s for s in self.schedules.values() if s.is_active]
+            ),
             "output_directory": str(self.output_dir),
         }
 

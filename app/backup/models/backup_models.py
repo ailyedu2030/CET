@@ -4,15 +4,9 @@ from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING
 
-from sqlalchemy import (
-    DateTime,
-    Enum as SQLEnum,
-    ForeignKey,
-    Integer,
-    JSON,
-    String,
-    Text,
-)
+from sqlalchemy import JSON, DateTime
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy import ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.shared.models.base_model import BaseModel
@@ -166,4 +160,6 @@ class BackupRecord(BaseModel):
     )
 
     def __repr__(self) -> str:
-        return f"BackupRecord(id={self.id}, type={self.backup_type}, status={self.status})"
+        return (
+            f"BackupRecord(id={self.id}, type={self.backup_type}, status={self.status})"
+        )

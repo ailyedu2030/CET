@@ -24,7 +24,9 @@ logger = logging.getLogger(__name__)
 class EnhancedPerformanceMonitor:
     """增强的性能监控引擎."""
 
-    def __init__(self, db: AsyncSession, cache_service: CacheService | None = None) -> None:
+    def __init__(
+        self, db: AsyncSession, cache_service: CacheService | None = None
+    ) -> None:
         self.db = db
         self.cache_service = cache_service
         self.alert_manager = AlertManager()
@@ -90,7 +92,9 @@ class EnhancedPerformanceMonitor:
             database_metrics = await self._collect_database_metrics()
 
             # 4. 收集业务性能指标
-            business_metrics = await self._collect_business_metrics(analysis_period_hours)
+            business_metrics = await self._collect_business_metrics(
+                analysis_period_hours
+            )
 
             # 5. 执行性能基准对比
             baseline_analysis = await self._analyze_performance_baselines(
@@ -103,7 +107,9 @@ class EnhancedPerformanceMonitor:
             )
 
             # 7. 性能趋势分析
-            trend_analysis = await self._analyze_performance_trends(analysis_period_hours)
+            trend_analysis = await self._analyze_performance_trends(
+                analysis_period_hours
+            )
 
             # 8. 智能告警评估
             alert_assessment = await self._assess_intelligent_alerts(
@@ -111,8 +117,10 @@ class EnhancedPerformanceMonitor:
             )
 
             # 9. 性能优化建议
-            optimization_recommendations = await self._generate_optimization_recommendations(
-                baseline_analysis, sla_compliance, trend_analysis
+            optimization_recommendations = (
+                await self._generate_optimization_recommendations(
+                    baseline_analysis, sla_compliance, trend_analysis
+                )
             )
 
             return {
@@ -201,7 +209,9 @@ class EnhancedPerformanceMonitor:
                     "count": cpu_count,
                     "frequency_mhz": cpu_freq.current if cpu_freq else 0,
                     "load_average": (
-                        psutil.getloadavg() if hasattr(psutil, "getloadavg") else [0, 0, 0]
+                        psutil.getloadavg()
+                        if hasattr(psutil, "getloadavg")
+                        else [0, 0, 0]
                     ),
                 },
                 "memory": {
@@ -263,8 +273,12 @@ class EnhancedPerformanceMonitor:
                             if response_times
                             else 0
                         ),
-                        "min_response_time": (min(response_times) if response_times else 0),
-                        "max_response_time": (max(response_times) if response_times else 0),
+                        "min_response_time": (
+                            min(response_times) if response_times else 0
+                        ),
+                        "max_response_time": (
+                            max(response_times) if response_times else 0
+                        ),
                     }
 
                 # 获取错误率统计
@@ -274,7 +288,11 @@ class EnhancedPerformanceMonitor:
                 if error_counts and request_counts:
                     total_errors = sum(error_counts)
                     total_requests = sum(request_counts)
-                    error_rate = (total_errors / total_requests * 100) if total_requests > 0 else 0
+                    error_rate = (
+                        (total_errors / total_requests * 100)
+                        if total_requests > 0
+                        else 0
+                    )
 
                     app_metrics["reliability"] = {
                         "error_rate_percent": error_rate,
@@ -375,7 +393,9 @@ class EnhancedPerformanceMonitor:
                     "idle": connection_stats[2] if connection_stats else 0,
                 },
                 "storage": {
-                    "database_size_gb": size_stats[1] / (1024**3) if size_stats else 0,
+                    "database_size_gb": size_stats[1] / (1024**3)
+                    if size_stats
+                    else 0,
                     "database_size_pretty": size_stats[0] if size_stats else "0 bytes",
                 },
                 "query_performance": (
@@ -410,7 +430,9 @@ class EnhancedPerformanceMonitor:
             from app.users.models.user_models import User
 
             active_users_result = await self.db.execute(
-                select(func.count(User.id)).where(User.last_login >= start_time, User.is_active)
+                select(func.count(User.id)).where(
+                    User.last_login >= start_time, User.is_active
+                )
             )
             active_users = active_users_result.scalar() or 0
 
@@ -464,13 +486,17 @@ class EnhancedPerformanceMonitor:
             baseline_analysis = {}
 
             # API响应时间基准分析
-            api_response_time = app_metrics.get("api_performance", {}).get("avg_response_time", 0)
+            api_response_time = app_metrics.get("api_performance", {}).get(
+                "avg_response_time", 0
+            )
             baseline_analysis["api_response_time"] = self._evaluate_against_baseline(
                 "api_response_time", api_response_time
             )
 
             # 数据库查询时间基准分析
-            db_query_time = db_metrics.get("query_performance", {}).get("avg_query_time_ms", 0)
+            db_query_time = db_metrics.get("query_performance", {}).get(
+                "avg_query_time_ms", 0
+            )
             baseline_analysis["database_query_time"] = self._evaluate_against_baseline(
                 "database_query_time", db_query_time
             )
@@ -483,7 +509,9 @@ class EnhancedPerformanceMonitor:
 
             # CPU使用率基准分析
             cpu_usage = system_metrics.get("cpu", {}).get("usage_percent", 0)
-            baseline_analysis["cpu_usage"] = self._evaluate_against_baseline("cpu_usage", cpu_usage)
+            baseline_analysis["cpu_usage"] = self._evaluate_against_baseline(
+                "cpu_usage", cpu_usage
+            )
 
             # 错误率基准分析
             error_rate = app_metrics.get("reliability", {}).get("error_rate_percent", 0)
@@ -492,8 +520,12 @@ class EnhancedPerformanceMonitor:
             )
 
             # 计算整体基准评分
-            baseline_scores = [analysis["score"] for analysis in baseline_analysis.values()]
-            overall_baseline_score = statistics.mean(baseline_scores) if baseline_scores else 0
+            baseline_scores = [
+                analysis["score"] for analysis in baseline_analysis.values()
+            ]
+            overall_baseline_score = (
+                statistics.mean(baseline_scores) if baseline_scores else 0
+            )
 
             return {
                 "individual_baselines": baseline_analysis,
@@ -506,7 +538,9 @@ class EnhancedPerformanceMonitor:
             logger.error(f"性能基准分析失败: {str(e)}")
             return {"error": str(e)}
 
-    def _evaluate_against_baseline(self, metric_name: str, current_value: float) -> dict[str, Any]:
+    def _evaluate_against_baseline(
+        self, metric_name: str, current_value: float
+    ) -> dict[str, Any]:
         """评估指标与基准的对比."""
         baseline = self.performance_baselines.get(metric_name, {})
         if not baseline:
@@ -566,7 +600,9 @@ class EnhancedPerformanceMonitor:
         else:
             return "D"
 
-    async def _calculate_metric_trend(self, metric_name: str, hours: int) -> dict[str, Any]:
+    async def _calculate_metric_trend(
+        self, metric_name: str, hours: int
+    ) -> dict[str, Any]:
         """计算指标趋势."""
         try:
             # 从历史数据计算趋势（简化实现）
@@ -590,7 +626,9 @@ class EnhancedPerformanceMonitor:
             # 简单的趋势计算
             recent_values = [point["value"] for point in history[-10:]]
             if len(recent_values) >= 2:
-                trend_slope = (recent_values[-1] - recent_values[0]) / len(recent_values)
+                trend_slope = (recent_values[-1] - recent_values[0]) / len(
+                    recent_values
+                )
 
                 if abs(trend_slope) < 0.1:
                     direction = "stable"
@@ -696,7 +734,9 @@ class EnhancedPerformanceMonitor:
             }
 
             # 响应时间P95检查
-            p95_response_time = app_metrics.get("api_performance", {}).get("p95_response_time", 0)
+            p95_response_time = app_metrics.get("api_performance", {}).get(
+                "p95_response_time", 0
+            )
             sla_compliance["response_time_p95"] = {
                 "current": p95_response_time,
                 "target": self.sla_targets["response_time_p95"],
@@ -722,7 +762,9 @@ class EnhancedPerformanceMonitor:
             }
 
             # 计算整体SLA合规性
-            compliant_count = sum(1 for sla in sla_compliance.values() if sla["compliant"])
+            compliant_count = sum(
+                1 for sla in sla_compliance.values() if sla["compliant"]
+            )
             overall_compliance = (compliant_count / len(sla_compliance)) * 100
 
             return {
@@ -753,11 +795,21 @@ class EnhancedPerformanceMonitor:
         try:
             # 获取历史性能数据
             trend_analysis = {
-                "cpu_usage_trend": await self._calculate_metric_trend("cpu_usage", hours),
-                "memory_usage_trend": await self._calculate_metric_trend("memory_usage", hours),
-                "response_time_trend": await self._calculate_metric_trend("response_time", hours),
-                "error_rate_trend": await self._calculate_metric_trend("error_rate", hours),
-                "throughput_trend": await self._calculate_metric_trend("throughput", hours),
+                "cpu_usage_trend": await self._calculate_metric_trend(
+                    "cpu_usage", hours
+                ),
+                "memory_usage_trend": await self._calculate_metric_trend(
+                    "memory_usage", hours
+                ),
+                "response_time_trend": await self._calculate_metric_trend(
+                    "response_time", hours
+                ),
+                "error_rate_trend": await self._calculate_metric_trend(
+                    "error_rate", hours
+                ),
+                "throughput_trend": await self._calculate_metric_trend(
+                    "throughput", hours
+                ),
             }
 
             # 计算整体趋势
@@ -832,7 +884,9 @@ class EnhancedPerformanceMonitor:
                 )
 
             # API响应时间告警评估
-            response_time = app_metrics.get("api_performance", {}).get("avg_response_time", 0)
+            response_time = app_metrics.get("api_performance", {}).get(
+                "avg_response_time", 0
+            )
             if response_time > 1000:
                 alert_assessment["active_alerts"].append(
                     {
@@ -873,17 +927,28 @@ class EnhancedPerformanceMonitor:
                 "alert_summary": {
                     "total_active_alerts": len(alert_assessment["active_alerts"]),
                     "high_severity_alerts": len(
-                        [a for a in alert_assessment["active_alerts"] if a["severity"] == "high"]
+                        [
+                            a
+                            for a in alert_assessment["active_alerts"]
+                            if a["severity"] == "high"
+                        ]
                     ),
                     "medium_severity_alerts": len(
-                        [a for a in alert_assessment["active_alerts"] if a["severity"] == "medium"]
+                        [
+                            a
+                            for a in alert_assessment["active_alerts"]
+                            if a["severity"] == "medium"
+                        ]
                     ),
                     "potential_issues_count": len(alert_assessment["potential_issues"]),
                 },
                 "alerts": alert_assessment,
                 "alert_status": (
                     "critical"
-                    if any(a["severity"] == "high" for a in alert_assessment["active_alerts"])
+                    if any(
+                        a["severity"] == "high"
+                        for a in alert_assessment["active_alerts"]
+                    )
                     else "warning"
                     if alert_assessment["active_alerts"]
                     else "healthy"
@@ -1003,7 +1068,9 @@ class EnhancedPerformanceMonitor:
             return {
                 "recommendations": recommendations,
                 "total_recommendations": sum(
-                    len(recs) for recs in recommendations.values() if isinstance(recs, list)
+                    len(recs)
+                    for recs in recommendations.values()
+                    if isinstance(recs, list)
                 ),
                 "priority_distribution": {
                     "high": len(recommendations["high_priority"]),

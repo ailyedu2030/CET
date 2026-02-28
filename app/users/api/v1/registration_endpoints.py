@@ -11,17 +11,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.shared.models.enums import UserType
 from app.users.models import User
-from app.users.schemas.registration_schemas import (
-    ApplicationListFilter,
-    ApplicationListResponse,
-    ApplicationReviewRequest,
-    BatchReviewRequest,
-    RegistrationApplicationDetail,
-    RegistrationStatusResponse,
-    RegistrationSuccessResponse,
-    StudentRegistrationRequest,
-    TeacherRegistrationRequest,
-)
+from app.users.schemas.registration_schemas import (ApplicationListFilter,
+                                                    ApplicationListResponse,
+                                                    ApplicationReviewRequest,
+                                                    BatchReviewRequest,
+                                                    RegistrationApplicationDetail,
+                                                    RegistrationStatusResponse,
+                                                    RegistrationSuccessResponse,
+                                                    StudentRegistrationRequest,
+                                                    TeacherRegistrationRequest)
 from app.users.services.registration_service import RegistrationService
 from app.users.utils.auth_decorators import get_current_active_user
 
@@ -47,7 +45,9 @@ async def register_student(
         result = await service.register_student(request)
         return RegistrationSuccessResponse(**result)
     except ValueError as e:
-        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         raise HTTPException(
             status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -74,7 +74,9 @@ async def register_teacher(
         result = await service.register_teacher(request)
         return RegistrationSuccessResponse(**result)
     except ValueError as e:
-        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         raise HTTPException(
             status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -89,7 +91,9 @@ async def register_teacher(
 )
 async def upload_teacher_certificate(
     file: UploadFile = File(..., description="资质文件"),
-    certificate_type: str = Form(..., description="证书类型: teacher_cert/qualification/honor"),
+    certificate_type: str = Form(
+        ..., description="证书类型: teacher_cert/qualification/honor"
+    ),
     description: str = Form(None, description="证书描述"),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:
@@ -181,7 +185,9 @@ async def get_application_status(
         result = await service.get_application_status(application_id)
         return RegistrationStatusResponse(**result)
     except ValueError as e:
-        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND, detail=str(e)
+        ) from e
     except Exception as e:
         raise HTTPException(
             status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -255,7 +261,9 @@ async def get_application_detail(
         application = await service._get_application_by_id(application_id)
 
         if not application:
-            raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="申请不存在")
+            raise HTTPException(
+                status_code=http_status.HTTP_404_NOT_FOUND, detail="申请不存在"
+            )
 
         # 获取申请人信息
         user = await service._get_user_by_id(application.user_id)
@@ -307,7 +315,9 @@ async def review_application(
         )
         return result
     except ValueError as e:
-        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         raise HTTPException(
             status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -337,7 +347,9 @@ async def batch_review_applications(
         )
         return result
     except ValueError as e:
-        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         raise HTTPException(
             status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -373,7 +385,9 @@ async def get_teacher_qualification_status(
         user = await service._get_user_by_id(user_id)
 
         if not user:
-            raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="用户不存在")
+            raise HTTPException(
+                status_code=http_status.HTTP_404_NOT_FOUND, detail="用户不存在"
+            )
 
         if user.user_type.value != "teacher":
             raise HTTPException(
@@ -407,7 +421,9 @@ async def get_teacher_qualification_status(
         # 资质材料检查
         cert_status = {
             "teacher_certificate": bool(teacher_profile.teacher_certificate),
-            "qualification_certificates": bool(teacher_profile.qualification_certificates),
+            "qualification_certificates": bool(
+                teacher_profile.qualification_certificates
+            ),
             "honor_certificates": bool(teacher_profile.honor_certificates),
         }
 
@@ -442,10 +458,14 @@ async def get_teacher_qualification_status(
             "certificate_status": cert_status,
             "is_verified": user.is_verified,
             "profile_created_at": (
-                teacher_profile.created_at.isoformat() if teacher_profile.created_at else None
+                teacher_profile.created_at.isoformat()
+                if teacher_profile.created_at
+                else None
             ),
             "last_updated": (
-                teacher_profile.updated_at.isoformat() if teacher_profile.updated_at else None
+                teacher_profile.updated_at.isoformat()
+                if teacher_profile.updated_at
+                else None
             ),
         }
 
@@ -516,7 +536,9 @@ async def import_students_from_excel(
                 }
 
             # 执行导入
-            result = await service.import_students_from_excel(temp_file_path, current_user.id)
+            result = await service.import_students_from_excel(
+                temp_file_path, current_user.id
+            )
 
             return result
 

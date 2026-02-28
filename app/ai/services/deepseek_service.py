@@ -35,8 +35,12 @@ class DeepSeekService:
     """DeepSeek API服务."""
 
     def __init__(self) -> None:
-        self.base_url = getattr(settings, "DEEPSEEK_API_BASE_URL", "https://api.deepseek.com")
-        self.default_model = getattr(settings, "DEEPSEEK_DEFAULT_MODEL", "deepseek-chat")
+        self.base_url = getattr(
+            settings, "DEEPSEEK_API_BASE_URL", "https://api.deepseek.com"
+        )
+        self.default_model = getattr(
+            settings, "DEEPSEEK_DEFAULT_MODEL", "deepseek-chat"
+        )
         self.timeout = getattr(settings, "DEEPSEEK_TIMEOUT", 60)
         self.max_tokens = getattr(settings, "DEEPSEEK_MAX_TOKENS", 4096)
 
@@ -215,7 +219,9 @@ class DeepSeekService:
 
         return params
 
-    async def _make_api_call(self, api_key: str, request_params: dict[str, Any]) -> dict[str, Any]:
+    async def _make_api_call(
+        self, api_key: str, request_params: dict[str, Any]
+    ) -> dict[str, Any]:
         """执行单次API调用."""
         headers = {
             "Authorization": f"Bearer {api_key}",
@@ -229,13 +235,17 @@ class DeepSeekService:
             timeout=aiohttp.ClientTimeout(total=self.timeout)
         ) as session:
             try:
-                async with session.post(url, headers=headers, json=request_params) as response:
+                async with session.post(
+                    url, headers=headers, json=request_params
+                ) as response:
                     response_data = await response.json()
 
                     if response.status == 200:
                         return response_data  # type: ignore[no-any-return]
                     else:
-                        error_msg = response_data.get("error", {}).get("message", "未知错误")
+                        error_msg = response_data.get("error", {}).get(
+                            "message", "未知错误"
+                        )
                         raise DeepSeekAPIError(
                             message=error_msg,
                             error_code=response_data.get("error", {}).get("code"),
@@ -262,7 +272,9 @@ class DeepSeekService:
         )
 
         if success and result:
-            content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            content = (
+                result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            )
             return True, content, None
 
         return False, None, error_msg
@@ -280,7 +292,9 @@ class DeepSeekService:
         )
 
         if success and result:
-            content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            content = (
+                result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            )
             return True, content, None
 
         return False, None, error_msg
@@ -299,7 +313,9 @@ class DeepSeekService:
         )
 
         if success and result:
-            content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            content = (
+                result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            )
             return True, content, None
 
         return False, None, error_msg
@@ -394,13 +410,19 @@ class DeepSeekService:
         url = f"{self.base_url}/v1/chat/completions"
 
         try:
-            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as session:
-                async with session.post(url, headers=headers, json=test_params) as response:
+            async with aiohttp.ClientSession(
+                timeout=aiohttp.ClientTimeout(total=10)
+            ) as session:
+                async with session.post(
+                    url, headers=headers, json=test_params
+                ) as response:
                     if response.status == 200:
                         return True, None
                     else:
                         response_data = await response.json()
-                        error_msg = response_data.get("error", {}).get("message", "验证失败")
+                        error_msg = response_data.get("error", {}).get(
+                            "message", "验证失败"
+                        )
                         return False, error_msg
 
         except Exception as e:

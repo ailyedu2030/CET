@@ -9,11 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.resources.models.resource_models import KnowledgePoint, ResourceLibrary
-from app.resources.schemas.resource_schemas import (
-    KnowledgePointCreate,
-    KnowledgePointSearchRequest,
-    KnowledgePointUpdate,
-)
+from app.resources.schemas.resource_schemas import (KnowledgePointCreate,
+                                                    KnowledgePointSearchRequest,
+                                                    KnowledgePointUpdate)
 from app.shared.models.enums import DifficultyLevel
 
 
@@ -36,10 +34,14 @@ class KnowledgeService:
         if knowledge_data.parent_id:
             parent = await self.get_knowledge_point(knowledge_data.parent_id)
             if not parent:
-                raise ValueError(f"Parent knowledge point {knowledge_data.parent_id} not found")
+                raise ValueError(
+                    f"Parent knowledge point {knowledge_data.parent_id} not found"
+                )
             # 检查父知识点是否属于同一资源库
             if parent.library_id != knowledge_data.library_id:
-                raise ValueError("Parent knowledge point must belong to the same library")
+                raise ValueError(
+                    "Parent knowledge point must belong to the same library"
+                )
 
         # 检查知识点标题是否已存在（同一资源库内）
         existing = await self._check_knowledge_point_exists(
@@ -93,7 +95,9 @@ class KnowledgeService:
 
     async def delete_knowledge_point(self, knowledge_id: int, user_id: int) -> bool:
         """删除知识点（级联删除子知识点）."""
-        knowledge_point = await self.get_knowledge_point(knowledge_id, include_children=True)
+        knowledge_point = await self.get_knowledge_point(
+            knowledge_id, include_children=True
+        )
         if not knowledge_point:
             return False
 
@@ -130,7 +134,9 @@ class KnowledgeService:
             stmt = stmt.where(KnowledgePoint.category == search_request.category)
 
         if search_request.difficulty_level:
-            stmt = stmt.where(KnowledgePoint.difficulty_level == search_request.difficulty_level)
+            stmt = stmt.where(
+                KnowledgePoint.difficulty_level == search_request.difficulty_level
+            )
 
         if search_request.is_core is not None:
             stmt = stmt.where(KnowledgePoint.is_core == search_request.is_core)
@@ -249,7 +255,9 @@ class KnowledgeService:
         unique_prerequisites.sort(key=lambda x: x.importance_score, reverse=True)
         return unique_prerequisites
 
-    async def get_related_knowledge_points(self, knowledge_id: int) -> list[KnowledgePoint]:
+    async def get_related_knowledge_points(
+        self, knowledge_id: int
+    ) -> list[KnowledgePoint]:
         """获取相关知识点."""
         knowledge_point = await self.get_knowledge_point(knowledge_id)
         if not knowledge_point or not knowledge_point.related_points:
@@ -326,7 +334,9 @@ class KnowledgeService:
 
         return path
 
-    async def get_knowledge_statistics(self, library_id: int | None = None) -> dict[str, Any]:
+    async def get_knowledge_statistics(
+        self, library_id: int | None = None
+    ) -> dict[str, Any]:
         """获取知识点统计信息."""
         stmt = select(KnowledgePoint)
         if library_id:
@@ -353,7 +363,9 @@ class KnowledgeService:
 
         # 重要性分布
         importance_scores = [kp.importance_score for kp in knowledge_points]
-        avg_importance = sum(importance_scores) / len(importance_scores) if importance_scores else 0
+        avg_importance = (
+            sum(importance_scores) / len(importance_scores) if importance_scores else 0
+        )
 
         # 预估学习时间统计
         total_time = sum(kp.estimated_time for kp in knowledge_points)
@@ -370,7 +382,9 @@ class KnowledgeService:
             "knowledge_with_prerequisites": sum(
                 1 for kp in knowledge_points if kp.prerequisite_points
             ),
-            "knowledge_with_exercises": sum(1 for kp in knowledge_points if kp.exercises),
+            "knowledge_with_exercises": sum(
+                1 for kp in knowledge_points if kp.exercises
+            ),
         }
 
     async def _get_library_by_id(self, library_id: int) -> ResourceLibrary | None:

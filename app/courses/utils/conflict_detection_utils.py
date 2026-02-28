@@ -22,7 +22,9 @@ class ConflictDetectionUtils:
             # 检查每个时间段是否有重叠
             for new_slot in new_time_slots:
                 for existing_slot in existing_time_slots:
-                    if ConflictDetectionUtils._time_slots_overlap(new_slot, existing_slot):
+                    if ConflictDetectionUtils._time_slots_overlap(
+                        new_slot, existing_slot
+                    ):
                         conflicts.append(
                             {
                                 "type": "time_conflict",
@@ -67,7 +69,8 @@ class ConflictDetectionUtils:
             "new_total_students": current_student_count + new_student_count,
             "max_students": max_students,
             "class_utilization": (current_class_count + 1) / max_classes,
-            "student_utilization": (current_student_count + new_student_count) / max_students,
+            "student_utilization": (current_student_count + new_student_count)
+            / max_students,
         }
 
         # 检查是否超载
@@ -88,7 +91,9 @@ class ConflictDetectionUtils:
         return {
             "is_overloaded": is_overloaded,
             "workload_metrics": workload_metrics,
-            "risk_level": ConflictDetectionUtils._calculate_workload_risk(workload_metrics),
+            "risk_level": ConflictDetectionUtils._calculate_workload_risk(
+                workload_metrics
+            ),
             "recommendations": recommendations,
         }
 
@@ -188,7 +193,9 @@ class ConflictDetectionUtils:
 
         for i, schedule1 in enumerate(schedules):
             for j, schedule2 in enumerate(schedules[i + 1 :], i + 1):
-                conflict_result = ConflictDetectionUtils.check_time_conflict([schedule1], schedule2)
+                conflict_result = ConflictDetectionUtils.check_time_conflict(
+                    [schedule1], schedule2
+                )
 
                 if conflict_result["has_conflict"]:
                     for conflict in conflict_result["conflicts"]:
@@ -255,7 +262,12 @@ class ConflictDetectionUtils:
             return False
 
         # 检查时间重叠 (这里start1, end1, start2, end2都不是None)
-        assert start1 is not None and end1 is not None and start2 is not None and end2 is not None
+        assert (
+            start1 is not None
+            and end1 is not None
+            and start2 is not None
+            and end2 is not None
+        )
         return start1 < end2 and start2 < end1
 
     @staticmethod
@@ -294,7 +306,12 @@ class ConflictDetectionUtils:
             return 0
 
         # 计算重叠开始和结束时间 (这里start1, end1, start2, end2都不是None)
-        assert start1 is not None and end1 is not None and start2 is not None and end2 is not None
+        assert (
+            start1 is not None
+            and end1 is not None
+            and start2 is not None
+            and end2 is not None
+        )
         overlap_start = max(start1, start2)
         overlap_end = min(end1, end2)
 
@@ -313,7 +330,9 @@ class ConflictDetectionUtils:
         if not conflicts:
             return "none"
 
-        total_overlap = sum(conflict.get("overlap_duration", 0) for conflict in conflicts)
+        total_overlap = sum(
+            conflict.get("overlap_duration", 0) for conflict in conflicts
+        )
 
         if total_overlap > 120:  # 超过2小时
             return "critical"

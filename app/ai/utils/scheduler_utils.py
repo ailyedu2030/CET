@@ -155,7 +155,9 @@ class PriorityQueue:
             "utilization": len(self.queue) / self.max_size,
             "priority_distribution": priority_counts,
             "oldest_task_age": (
-                (datetime.utcnow() - min(task.created_at for task in self.queue)).total_seconds()
+                (
+                    datetime.utcnow() - min(task.created_at for task in self.queue)
+                ).total_seconds()
                 if self.queue
                 else 0
             ),
@@ -165,7 +167,9 @@ class PriorityQueue:
 class LoadBalancer:
     """负载均衡器"""
 
-    def __init__(self, algorithm: SchedulingAlgorithm = SchedulingAlgorithm.ADAPTIVE) -> None:
+    def __init__(
+        self, algorithm: SchedulingAlgorithm = SchedulingAlgorithm.ADAPTIVE
+    ) -> None:
         self.algorithm = algorithm
         self.nodes: list[ResourceNode] = []
         self.round_robin_index = 0
@@ -252,7 +256,9 @@ class LoadBalancer:
         """响应时间选择"""
         return min(nodes, key=lambda n: n.average_response_time)
 
-    def _adaptive_select(self, nodes: list[ResourceNode], task: ScheduledTask) -> ResourceNode:
+    def _adaptive_select(
+        self, nodes: list[ResourceNode], task: ScheduledTask
+    ) -> ResourceNode:
         """自适应选择"""
         # 综合考虑多个因素的评分
         scored_nodes = []
@@ -353,7 +359,9 @@ class LoadBalancer:
                         "capacity": node.capacity,
                         "current_load": node.current_load,
                         "utilization": (
-                            node.current_load / node.capacity if node.capacity > 0 else 0
+                            node.current_load / node.capacity
+                            if node.capacity > 0
+                            else 0
                         ),
                         "success_rate": node.success_rate,
                         "average_response_time": node.average_response_time,
@@ -367,7 +375,9 @@ class LoadBalancer:
                 "available_nodes": len([n for n in self.nodes if n.is_available]),
                 "total_capacity": total_capacity,
                 "total_load": total_load,
-                "overall_utilization": (total_load / total_capacity if total_capacity > 0 else 0),
+                "overall_utilization": (
+                    total_load / total_capacity if total_capacity > 0 else 0
+                ),
                 "algorithm": self.algorithm.value,
                 "node_stats": node_stats,
             }
@@ -385,7 +395,9 @@ class TimeWindowScheduler:
 
         # 时间窗口配置
         self.peak_hours = list(range(9, 21))  # 9:00-21:00
-        self.off_peak_hours = list(range(0, 8)) + list(range(22, 24))  # 00:00-08:00, 22:00-24:00
+        self.off_peak_hours = list(range(0, 8)) + list(
+            range(22, 24)
+        )  # 00:00-08:00, 22:00-24:00
 
         # 调度策略
         self.peak_capacity_limit = 0.8  # 高峰期容量限制
@@ -403,7 +415,9 @@ class TimeWindowScheduler:
                 return True, None
 
             # 检查截止时间
-            if task.deadline and task.deadline <= datetime.utcnow() + timedelta(hours=1):
+            if task.deadline and task.deadline <= datetime.utcnow() + timedelta(
+                hours=1
+            ):
                 return True, None
 
             # 错峰时段优先调度
@@ -441,7 +455,9 @@ class TimeWindowScheduler:
     def get_optimal_schedule_time(self, task: ScheduledTask) -> datetime:
         """获取最优调度时间"""
         try:
-            should_schedule, suggested_time = self.should_schedule_now(task, 0.5)  # 假设中等负载
+            should_schedule, suggested_time = self.should_schedule_now(
+                task, 0.5
+            )  # 假设中等负载
 
             if should_schedule:
                 return datetime.utcnow()

@@ -38,7 +38,9 @@ async def get_list(
         }
     except Exception as e:
         logger.error(f"查询AI智能批改系统列表失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
 @router.post("/", summary="创建AI智能批改系统")
@@ -54,7 +56,9 @@ async def create(
         return {"success": True, "message": "创建成功", "data": {"id": 1}}
     except Exception as e:
         logger.error(f"创建AI智能批改系统失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败"
+        ) from e
 
 
 @router.get("/{item_id}", summary="获取AI智能批改系统详情")
@@ -70,4 +74,6 @@ async def get_detail(
         return {"success": True, "data": {"id": item_id, "name": "示例数据"}}
     except Exception as e:
         logger.error(f"查询AI智能批改系统详情失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e

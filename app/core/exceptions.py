@@ -55,7 +55,9 @@ class AuthorizationError(BusinessLogicError):
 class ResourceNotFoundError(BusinessLogicError):
     """资源未找到错误异常."""
 
-    def __init__(self, message: str = "资源未找到", resource_type: str | None = None) -> None:
+    def __init__(
+        self, message: str = "资源未找到", resource_type: str | None = None
+    ) -> None:
         """初始化资源未找到错误.
 
         Args:

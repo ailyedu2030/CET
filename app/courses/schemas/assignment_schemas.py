@@ -24,7 +24,9 @@ class CourseAssignmentRequest(BaseModel):
 
     course_id: int = Field(..., description="课程ID")
     teacher_ids: list[int] = Field(..., description="候选教师ID列表")
-    priority_factors: dict[str, float] = Field(default_factory=dict, description="优先级因子")
+    priority_factors: dict[str, float] = Field(
+        default_factory=dict, description="优先级因子"
+    )
     force_assign: bool = Field(False, description="是否强制分配")
     assignment_reason: str | None = Field(None, description="分配原因")
 
@@ -81,7 +83,9 @@ class WorkloadBalanceResponse(BaseModel):
 
     teacher_workloads: list[TeacherWorkloadInfo] = Field(..., description="教师工作量信息")
     balance_score: float = Field(..., description="平衡评分")
-    recommendations: list[dict[str, Any]] = Field(default_factory=list, description="平衡建议")
+    recommendations: list[dict[str, Any]] = Field(
+        default_factory=list, description="平衡建议"
+    )
     redistribution_plan: list[dict[str, Any]] = Field(
         default_factory=list, description="重分配计划"
     )
@@ -101,7 +105,9 @@ class TimeConflictResult(BaseModel):
 
     has_conflict: bool = Field(..., description="是否存在冲突")
     conflict_count: int = Field(..., description="冲突数量")
-    conflict_details: list[dict[str, Any]] = Field(default_factory=list, description="冲突详情")
+    conflict_details: list[dict[str, Any]] = Field(
+        default_factory=list, description="冲突详情"
+    )
     resolution_suggestions: list[dict[str, Any]] = Field(
         default_factory=list, description="解决建议"
     )

@@ -22,11 +22,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import DifficultyLevel
 from app.shared.utils.metrics_collector import collect_metric
-from app.training.models.training_models import (
-    Question,
-    TrainingRecord,
-    TrainingSession,
-)
+from app.training.models.training_models import (Question, TrainingRecord,
+                                                 TrainingSession)
 
 
 class AnalysisType(Enum):
@@ -164,7 +161,9 @@ class LearningAnalyticsService:
             cache_key = f"user_analysis_{user_id}_{days}"
             if cache_key in self.analysis_cache:
                 cached_data = self.analysis_cache[cache_key]
-                if (datetime.utcnow() - cached_data["timestamp"]).total_seconds() < self.cache_ttl:
+                if (
+                    datetime.utcnow() - cached_data["timestamp"]
+                ).total_seconds() < self.cache_ttl:
                     return dict(cached_data["data"])
 
             # 获取时间范围
@@ -204,7 +203,9 @@ class LearningAnalyticsService:
             analyses["difficulty"] = difficulty_analysis
 
             # 5. 时间模式分析
-            time_analysis = await self._analyze_time_patterns(user_id, db, start_time, end_time)
+            time_analysis = await self._analyze_time_patterns(
+                user_id, db, start_time, end_time
+            )
             analyses["time_patterns"] = time_analysis
 
             # 6. 知识点掌握分析
@@ -223,7 +224,9 @@ class LearningAnalyticsService:
                 },
                 "learning_metrics": learning_metrics.__dict__,
                 "analyses": analyses,
-                "overall_assessment": self._generate_overall_assessment(learning_metrics, analyses),
+                "overall_assessment": self._generate_overall_assessment(
+                    learning_metrics, analyses
+                ),
                 "timestamp": datetime.utcnow().isoformat(),
             }
 
@@ -280,11 +283,15 @@ class LearningAnalyticsService:
         total_sessions = len(sessions)
         total_questions = len(records)
         correct_answers = sum(1 for record in records if record.is_correct)
-        accuracy_rate = correct_answers / total_questions if total_questions > 0 else 0.0
+        accuracy_rate = (
+            correct_answers / total_questions if total_questions > 0 else 0.0
+        )
 
         # 计算平均答题时间
         total_time = sum(record.time_spent or 0 for record in records)
-        average_time_per_question = total_time / total_questions if total_questions > 0 else 0.0
+        average_time_per_question = (
+            total_time / total_questions if total_questions > 0 else 0.0
+        )
 
         # 计算总学习时间
         total_study_time = sum(int(session.time_spent or 0) for session in sessions)
@@ -318,10 +325,14 @@ class LearningAnalyticsService:
         learning_streak = await self._calculate_learning_streak(user_id, db, end_time)
 
         # 最后活动时间
-        last_activity = max((session.created_at for session in sessions), default=start_time)
+        last_activity = max(
+            (session.created_at for session in sessions), default=start_time
+        )
 
         # 改进率计算
-        improvement_rate = await self._calculate_improvement_rate(user_id, db, start_time, end_time)
+        improvement_rate = await self._calculate_improvement_rate(
+            user_id, db, start_time, end_time
+        )
 
         return LearningMetrics(
             user_id=user_id,
@@ -362,7 +373,9 @@ class LearningAnalyticsService:
 
         # 分析学习时长模式
         session_durations = [session.time_spent or 0 for session in sessions]
-        avg_session_duration = statistics.mean(session_durations) if session_durations else 0
+        avg_session_duration = (
+            statistics.mean(session_durations) if session_durations else 0
+        )
 
         # 分析学习时间偏好
         hour_distribution: defaultdict[int, int] = defaultdict(int)
@@ -370,7 +383,9 @@ class LearningAnalyticsService:
             hour_distribution[session.created_at.hour] += 1
 
         # 确定学习模式
-        learning_pattern = self._identify_learning_pattern(daily_sessions, session_durations)
+        learning_pattern = self._identify_learning_pattern(
+            daily_sessions, session_durations
+        )
 
         return {
             "pattern": learning_pattern.value,
@@ -384,7 +399,9 @@ class LearningAnalyticsService:
                     "max": max(session_durations) if session_durations else 0,
                     "avg": avg_session_duration,
                     "std": (
-                        statistics.stdev(session_durations) if len(session_durations) > 1 else 0
+                        statistics.stdev(session_durations)
+                        if len(session_durations) > 1
+                        else 0
                     ),
                 },
             },
@@ -419,7 +436,9 @@ class LearningAnalyticsService:
         efficiency_score = 0.0
         if metrics.average_time_per_question > 0:
             # 效率 = 准确率 / 平均答题时间（标准化）
-            normalized_time = min(metrics.average_time_per_question / 60.0, 5.0)  # 最多5分钟
+            normalized_time = min(
+                metrics.average_time_per_question / 60.0, 5.0
+            )  # 最多5分钟
             efficiency_score = metrics.accuracy_rate / normalized_time
 
         return {
@@ -459,7 +478,9 @@ class LearningAnalyticsService:
                 weekly_progress[week_key] = {
                     "accuracy": correct / total,
                     "questions_answered": total,
-                    "study_time": sum(int(record.time_spent or 0) for record in week_records),
+                    "study_time": sum(
+                        int(record.time_spent or 0) for record in week_records
+                    ),
                 }
             else:
                 weekly_progress[week_key] = {
@@ -507,7 +528,9 @@ class LearningAnalyticsService:
                 difficulty_records = difficulty_records_result.scalars().all()
 
                 if difficulty_records:
-                    correct = sum(1 for record in difficulty_records if record.is_correct)
+                    correct = sum(
+                        1 for record in difficulty_records if record.is_correct
+                    )
                     accuracy = correct / len(difficulty_records)
                     difficulty_performance[difficulty.value] = {
                         "accuracy": accuracy,
@@ -560,10 +583,14 @@ class LearningAnalyticsService:
 
         # 找出最佳学习时间
         best_hour = (
-            max(hourly_distribution.items(), key=lambda x: x[1])[0] if hourly_distribution else 0
+            max(hourly_distribution.items(), key=lambda x: x[1])[0]
+            if hourly_distribution
+            else 0
         )
         best_day = (
-            max(daily_distribution.items(), key=lambda x: x[1])[0] if daily_distribution else 0
+            max(daily_distribution.items(), key=lambda x: x[1])[0]
+            if daily_distribution
+            else 0
         )
 
         # 学习规律性评分
@@ -601,7 +628,9 @@ class LearningAnalyticsService:
 
         # 知识点关联分析（简化实现）
         knowledge_gaps = [
-            topic for topic, level in mastery_levels.items() if level in ["basic", "needs_work"]
+            topic
+            for topic, level in mastery_levels.items()
+            if level in ["basic", "needs_work"]
         ]
 
         # 学习路径建议
@@ -627,10 +656,14 @@ class LearningAnalyticsService:
 
         # 分析频率稳定性
         session_counts = list(daily_sessions.values())
-        frequency_std = statistics.stdev(session_counts) if len(session_counts) > 1 else 0
+        frequency_std = (
+            statistics.stdev(session_counts) if len(session_counts) > 1 else 0
+        )
 
         # 分析时长稳定性
-        duration_std = statistics.stdev(session_durations) if len(session_durations) > 1 else 0
+        duration_std = (
+            statistics.stdev(session_durations) if len(session_durations) > 1 else 0
+        )
         avg_duration = statistics.mean(session_durations)
 
         # 判断模式
@@ -663,13 +696,17 @@ class LearningAnalyticsService:
 
         return min(1.0, base_score)
 
-    def _calculate_adaptation_score(self, difficulty_performance: dict[str, Any]) -> float:
+    def _calculate_adaptation_score(
+        self, difficulty_performance: dict[str, Any]
+    ) -> float:
         """计算难度适应性评分"""
         if not difficulty_performance:
             return 0.0
 
         # 计算各难度的表现平衡度
-        accuracies = [float(perf["accuracy"]) for perf in difficulty_performance.values()]
+        accuracies = [
+            float(perf["accuracy"]) for perf in difficulty_performance.values()
+        ]
         if len(accuracies) <= 1:
             return float(accuracies[0]) if accuracies else 0.0
 
@@ -705,11 +742,11 @@ class LearningAnalyticsService:
             recommendations.append("建议制定固定的学习时间表，提高学习规律性")
 
         if hourly_dist:
-            peak_hours = sorted(hourly_dist.items(), key=lambda x: x[1], reverse=True)[:3]
+            peak_hours = sorted(hourly_dist.items(), key=lambda x: x[1], reverse=True)[
+                :3
+            ]
             peak_hour_str = "、".join([f"{hour}点" for hour, _ in peak_hours])
-            recommendations.append(
-                f"您在{peak_hour_str}学习效果较好，建议在这些时间段安排重要学习内容"
-            )
+            recommendations.append(f"您在{peak_hour_str}学习效果较好，建议在这些时间段安排重要学习内容")
 
         if daily_dist:
             weekday_sessions = sum(daily_dist.get(i, 0) for i in range(5))  # 周一到周五
@@ -727,7 +764,9 @@ class LearningAnalyticsService:
         path = []
 
         # 优先处理基础薄弱的知识点
-        basic_gaps = [topic for topic, level in mastery_levels.items() if level == "needs_work"]
+        basic_gaps = [
+            topic for topic, level in mastery_levels.items() if level == "needs_work"
+        ]
         if basic_gaps:
             path.append(f"优先加强基础薄弱的知识点：{', '.join(basic_gaps)}")
 
@@ -754,9 +793,13 @@ class LearningAnalyticsService:
         # 计算综合评分
         performance_score = analyses.get("performance", {}).get("efficiency_score", 0.0)
         consistency_score = analyses.get("performance", {}).get("consistency", 0.0)
-        progress_score = max(0.0, analyses.get("progress", {}).get("total_improvement", 0.0))
+        progress_score = max(
+            0.0, analyses.get("progress", {}).get("total_improvement", 0.0)
+        )
 
-        overall_score = performance_score * 0.4 + consistency_score * 0.3 + progress_score * 0.3
+        overall_score = (
+            performance_score * 0.4 + consistency_score * 0.3 + progress_score * 0.3
+        )
 
         # 确定学习者类型
         learner_type = "developing"
@@ -841,12 +884,16 @@ class LearningAnalyticsService:
         if not early_records or not late_records:
             return 0.0
 
-        early_accuracy = sum(1 for r in early_records if r.is_correct) / len(early_records)
+        early_accuracy = sum(1 for r in early_records if r.is_correct) / len(
+            early_records
+        )
         late_accuracy = sum(1 for r in late_records if r.is_correct) / len(late_records)
 
         return late_accuracy - early_accuracy
 
-    async def _collect_analysis_metrics(self, user_id: str, analysis: dict[str, Any]) -> None:
+    async def _collect_analysis_metrics(
+        self, user_id: str, analysis: dict[str, Any]
+    ) -> None:
         """收集分析指标"""
         try:
             metrics = analysis.get("learning_metrics", {})
@@ -985,7 +1032,9 @@ class LearningAnalyticsService:
 
             # 1. 难度调整建议
             difficulty_analysis = analyses.get("difficulty", {})
-            recommended_difficulty = difficulty_analysis.get("recommended_difficulty", "medium")
+            recommended_difficulty = difficulty_analysis.get(
+                "recommended_difficulty", "medium"
+            )
 
             if recommended_difficulty != "medium":
                 recommendations.append(

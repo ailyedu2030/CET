@@ -10,17 +10,16 @@ from loguru import logger
 from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import BusinessLogicError, PermissionDeniedError, ResourceNotFoundError
+from app.core.exceptions import (BusinessLogicError, PermissionDeniedError,
+                                 ResourceNotFoundError)
 from app.resources.models.resource_models import PermissionLevel, ResourceLibrary
-from app.resources.schemas.course_resource_schemas import (
-    ImportError,
-    ImportResultResponse,
-    ImportWarning,
-    KnowledgeLibraryCreate,
-    KnowledgeLibraryResponse,
-    VocabularyLibraryCreate,
-    VocabularyLibraryResponse,
-)
+from app.resources.schemas.course_resource_schemas import (ImportError,
+                                                           ImportResultResponse,
+                                                           ImportWarning,
+                                                           KnowledgeLibraryCreate,
+                                                           KnowledgeLibraryResponse,
+                                                           VocabularyLibraryCreate,
+                                                           VocabularyLibraryResponse)
 from app.resources.services.file_processor import FileProcessor
 from app.resources.services.version_service import VersionService
 
@@ -53,7 +52,8 @@ class CourseResourceService:
                     ResourceLibrary.resource_type == "vocabulary",
                     or_(
                         ResourceLibrary.created_by == user_id,  # 自己创建的
-                        ResourceLibrary.permission_level == PermissionLevel.PUBLIC,  # 公开的
+                        ResourceLibrary.permission_level
+                        == PermissionLevel.PUBLIC,  # 公开的
                         and_(  # 班级共享且用户在同班级
                             ResourceLibrary.permission_level == PermissionLevel.CLASS,
                         ),
@@ -85,7 +85,8 @@ class CourseResourceService:
 
         except Exception as e:
             logger.error(
-                f"获取词汇库列表失败: {str(e)}", extra={"course_id": course_id, "user_id": user_id}
+                f"获取词汇库列表失败: {str(e)}",
+                extra={"course_id": course_id, "user_id": user_id},
             )
             raise
 
@@ -131,7 +132,11 @@ class CourseResourceService:
 
             logger.info(
                 f"词汇库创建成功: {library.name}",
-                extra={"library_id": library.id, "course_id": course_id, "user_id": user_id},
+                extra={
+                    "library_id": library.id,
+                    "course_id": course_id,
+                    "user_id": user_id,
+                },
             )
 
             return VocabularyLibraryResponse(
@@ -162,7 +167,9 @@ class CourseResourceService:
         """
         try:
             # 检查库访问权限
-            library = await self._get_library_with_permission(library_id, user_id, "vocabulary")
+            library = await self._get_library_with_permission(
+                library_id, user_id, "vocabulary"
+            )
 
             # 处理文件导入
             import_result = await self.file_processor.process_vocabulary_file(
@@ -189,7 +196,11 @@ class CourseResourceService:
 
             logger.info(
                 f"词汇导入完成: 成功{import_result.success}条，失败{import_result.failed}条",
-                extra={"library_id": library_id, "user_id": user_id, "file_name": file.filename},
+                extra={
+                    "library_id": library_id,
+                    "user_id": user_id,
+                    "file_name": file.filename,
+                },
             )
 
             return ImportResultResponse(
@@ -198,7 +209,10 @@ class CourseResourceService:
                 total=import_result.total,
                 errors=[
                     ImportError(
-                        row=error.row, field=error.field, value=error.value, message=error.message
+                        row=error.row,
+                        field=error.field,
+                        value=error.value,
+                        message=error.message,
                     )
                     for error in import_result.errors
                 ],
@@ -212,7 +226,11 @@ class CourseResourceService:
             await self.db.rollback()
             logger.error(
                 f"词汇导入失败: {str(e)}",
-                extra={"library_id": library_id, "user_id": user_id, "file_name": file.filename},
+                extra={
+                    "library_id": library_id,
+                    "user_id": user_id,
+                    "file_name": file.filename,
+                },
             )
             raise
 
@@ -234,7 +252,8 @@ class CourseResourceService:
                 and_(
                     or_(
                         ResourceLibrary.course_id == course_id,  # 本课程的
-                        ResourceLibrary.permission_level == PermissionLevel.PUBLIC,  # 公开共享的
+                        ResourceLibrary.permission_level
+                        == PermissionLevel.PUBLIC,  # 公开共享的
                     ),
                     ResourceLibrary.resource_type == "knowledge",
                     or_(
@@ -313,7 +332,11 @@ class CourseResourceService:
 
             logger.info(
                 f"知识点库创建成功: {library.name}",
-                extra={"library_id": library.id, "course_id": course_id, "user_id": user_id},
+                extra={
+                    "library_id": library.id,
+                    "course_id": course_id,
+                    "user_id": user_id,
+                },
             )
 
             return KnowledgeLibraryResponse(
@@ -331,7 +354,8 @@ class CourseResourceService:
         except Exception as e:
             await self.db.rollback()
             logger.error(
-                f"创建知识点库失败: {str(e)}", extra={"course_id": course_id, "user_id": user_id}
+                f"创建知识点库失败: {str(e)}",
+                extra={"course_id": course_id, "user_id": user_id},
             )
             raise
 
@@ -341,7 +365,9 @@ class CourseResourceService:
         """检查用户对课程的访问权限"""
         logger.info(f"检查课程访问: course={course_id}, user={user_id}")
 
-    async def _get_existing_vocabulary_library(self, course_id: int) -> ResourceLibrary | None:
+    async def _get_existing_vocabulary_library(
+        self, course_id: int
+    ) -> ResourceLibrary | None:
         """获取已存在的词汇库"""
         query = select(ResourceLibrary).where(
             and_(
@@ -352,11 +378,14 @@ class CourseResourceService:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def _get_existing_knowledge_library(self, course_id: int) -> ResourceLibrary | None:
+    async def _get_existing_knowledge_library(
+        self, course_id: int
+    ) -> ResourceLibrary | None:
         """获取已存在的知识点库"""
         query = select(ResourceLibrary).where(
             and_(
-                ResourceLibrary.course_id == course_id, ResourceLibrary.resource_type == "knowledge"
+                ResourceLibrary.course_id == course_id,
+                ResourceLibrary.resource_type == "knowledge",
             )
         )
         result = await self.db.execute(query)
@@ -367,7 +396,10 @@ class CourseResourceService:
     ) -> ResourceLibrary:
         """获取库并检查权限"""
         query = select(ResourceLibrary).where(
-            and_(ResourceLibrary.id == library_id, ResourceLibrary.resource_type == resource_type)
+            and_(
+                ResourceLibrary.id == library_id,
+                ResourceLibrary.resource_type == resource_type,
+            )
         )
         result = await self.db.execute(query)
         library = result.scalar_one_or_none()
@@ -410,7 +442,9 @@ class CourseResourceService:
         """导入知识点数据"""
         try:
             # 检查库访问权限
-            library = await self._get_library_with_permission(library_id, user_id, "knowledge")
+            library = await self._get_library_with_permission(
+                library_id, user_id, "knowledge"
+            )
 
             # 处理文件导入
             import_result = await self.file_processor.process_knowledge_file(
@@ -430,11 +464,14 @@ class CourseResourceService:
             )
         except Exception as e:
             logger.error(
-                f"导入知识点失败: {str(e)}", extra={"library_id": library_id, "user_id": user_id}
+                f"导入知识点失败: {str(e)}",
+                extra={"library_id": library_id, "user_id": user_id},
             )
             raise
 
-    async def get_material_library(self, course_id: int, user_id: int) -> dict[str, Any]:
+    async def get_material_library(
+        self, course_id: int, user_id: int
+    ) -> dict[str, Any]:
         """获取教材库"""
         try:
             await self._check_course_access(course_id, user_id)
@@ -477,7 +514,11 @@ class CourseResourceService:
         except Exception as e:
             logger.error(
                 f"上传自编教材失败: {str(e)}",
-                extra={"course_id": course_id, "filename": file.filename, "user_id": user_id},
+                extra={
+                    "course_id": course_id,
+                    "filename": file.filename,
+                    "user_id": user_id,
+                },
             )
             raise
 

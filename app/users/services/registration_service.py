@@ -10,17 +10,11 @@ from sqlalchemy.orm import selectinload
 from app.core.email import EmailService
 from app.shared.models.enums import UserType
 from app.shared.services.cache_service import CacheService
-from app.users.models import (
-    RegistrationApplication,
-    StudentProfile,
-    TeacherProfile,
-    User,
-)
-from app.users.schemas.registration_schemas import (
-    ApplicationListFilter,
-    StudentRegistrationRequest,
-    TeacherRegistrationRequest,
-)
+from app.users.models import (RegistrationApplication, StudentProfile, TeacherProfile,
+                              User)
+from app.users.schemas.registration_schemas import (ApplicationListFilter,
+                                                    StudentRegistrationRequest,
+                                                    TeacherRegistrationRequest)
 from app.users.utils.excel_import_utils import StudentExcelImportUtils
 from app.users.utils.jwt_utils import jwt_manager
 
@@ -41,10 +35,14 @@ class RegistrationService:
 
     # ===== 学生注册 =====
 
-    async def register_student(self, request: StudentRegistrationRequest) -> dict[str, Any]:
+    async def register_student(
+        self, request: StudentRegistrationRequest
+    ) -> dict[str, Any]:
         """学生注册流程."""
         # 检查用户名和邮箱是否已存在
-        existing_user = await self._check_username_email_exists(request.username, request.email)
+        existing_user = await self._check_username_email_exists(
+            request.username, request.email
+        )
         if existing_user:
             raise ValueError(f"用户名或邮箱已存在: {existing_user}")
 
@@ -99,10 +97,14 @@ class RegistrationService:
 
     # ===== 教师注册 =====
 
-    async def register_teacher(self, request: TeacherRegistrationRequest) -> dict[str, Any]:
+    async def register_teacher(
+        self, request: TeacherRegistrationRequest
+    ) -> dict[str, Any]:
         """教师注册流程."""
         # 检查用户名和邮箱是否已存在
-        existing_user = await self._check_username_email_exists(request.username, request.email)
+        existing_user = await self._check_username_email_exists(
+            request.username, request.email
+        )
         if existing_user:
             raise ValueError(f"用户名或邮箱已存在: {existing_user}")
 
@@ -199,7 +201,9 @@ class RegistrationService:
 
                 # 根据用户类型创建对应档案
                 if application.application_type == UserType.STUDENT:
-                    await self._create_student_profile(user.id, application.application_data)
+                    await self._create_student_profile(
+                        user.id, application.application_data
+                    )
                 elif application.application_type == UserType.TEACHER:
                     await self._create_teacher_profile(
                         user.id,
@@ -234,11 +238,17 @@ class RegistrationService:
 
         for app_id in application_ids:
             try:
-                result = await self.review_application(app_id, reviewer_id, action, review_notes)
-                results.append({"application_id": app_id, "status": "success", "result": result})
+                result = await self.review_application(
+                    app_id, reviewer_id, action, review_notes
+                )
+                results.append(
+                    {"application_id": app_id, "status": "success", "result": result}
+                )
                 success_count += 1
             except Exception as e:
-                results.append({"application_id": app_id, "status": "failed", "error": str(e)})
+                results.append(
+                    {"application_id": app_id, "status": "failed", "error": str(e)}
+                )
                 failed_count += 1
 
         return {
@@ -282,11 +292,15 @@ class RegistrationService:
 
     async def list_applications(self, filters: ApplicationListFilter) -> dict[str, Any]:
         """获取申请列表."""
-        stmt = select(RegistrationApplication).options(selectinload(RegistrationApplication.user))
+        stmt = select(RegistrationApplication).options(
+            selectinload(RegistrationApplication.user)
+        )
 
         # 应用过滤条件
         if filters.application_type:
-            stmt = stmt.where(RegistrationApplication.application_type == filters.application_type)
+            stmt = stmt.where(
+                RegistrationApplication.application_type == filters.application_type
+            )
 
         if filters.status:
             stmt = stmt.where(RegistrationApplication.status == filters.status)
@@ -314,11 +328,17 @@ class RegistrationService:
                 RegistrationApplication.application_type == filters.application_type
             )
         if filters.status:
-            count_stmt = count_stmt.where(RegistrationApplication.status == filters.status)
+            count_stmt = count_stmt.where(
+                RegistrationApplication.status == filters.status
+            )
         if filters.start_date:
-            count_stmt = count_stmt.where(RegistrationApplication.created_at >= filters.start_date)
+            count_stmt = count_stmt.where(
+                RegistrationApplication.created_at >= filters.start_date
+            )
         if filters.end_date:
-            count_stmt = count_stmt.where(RegistrationApplication.created_at <= filters.end_date)
+            count_stmt = count_stmt.where(
+                RegistrationApplication.created_at <= filters.end_date
+            )
 
         count_result = await self.db.execute(count_stmt)
         total = len(count_result.scalars().all())
@@ -332,7 +352,9 @@ class RegistrationService:
 
     # ===== 私有辅助方法 =====
 
-    async def _check_username_email_exists(self, username: str, email: str) -> str | None:
+    async def _check_username_email_exists(
+        self, username: str, email: str
+    ) -> str | None:
         """检查用户名和邮箱是否已存在."""
         stmt = select(User).where((User.username == username) | (User.email == email))
         result = await self.db.execute(stmt)
@@ -346,9 +368,13 @@ class RegistrationService:
 
         return None
 
-    async def _get_application_by_id(self, application_id: int) -> RegistrationApplication | None:
+    async def _get_application_by_id(
+        self, application_id: int
+    ) -> RegistrationApplication | None:
         """根据ID获取申请."""
-        stmt = select(RegistrationApplication).where(RegistrationApplication.id == application_id)
+        stmt = select(RegistrationApplication).where(
+            RegistrationApplication.id == application_id
+        )
         result = await self.db.execute(stmt)
         application: RegistrationApplication | None = result.scalar_one_or_none()
         return application
@@ -400,7 +426,9 @@ class RegistrationService:
             introduction=application_data.get("introduction"),
             phone=application_data.get("phone"),
             teacher_certificate=submitted_documents.get("teacher_certificate"),
-            qualification_certificates=submitted_documents.get("qualification_certificates", {}),
+            qualification_certificates=submitted_documents.get(
+                "qualification_certificates", {}
+            ),
             honor_certificates=submitted_documents.get("honor_certificates", {}),
         )
 
@@ -409,7 +437,9 @@ class RegistrationService:
 
     # ===== Excel批量导入功能 =====
 
-    async def import_students_from_excel(self, file_path: str, created_by: int) -> dict[str, Any]:
+    async def import_students_from_excel(
+        self, file_path: str, created_by: int
+    ) -> dict[str, Any]:
         """Excel批量导入学生信息."""
         # 1. 解析Excel文件
         import_result = await StudentExcelImportUtils.parse_excel_file(file_path)

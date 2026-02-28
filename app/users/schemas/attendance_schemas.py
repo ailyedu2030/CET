@@ -22,7 +22,9 @@ class AttendanceRecordCreateRequest(BaseModel):
 class AttendanceRecordUpdateRequest(BaseModel):
     """更新考勤记录请求."""
 
-    attendance_type: str | None = Field(None, description="考勤类型：present/absent/late/leave")
+    attendance_type: str | None = Field(
+        None, description="考勤类型：present/absent/late/leave"
+    )
     check_in_time: datetime | None = Field(None, description="签到时间")
     check_out_time: datetime | None = Field(None, description="签退时间")
     leave_type: str | None = Field(None, description="请假类型：sick/personal/emergency")
@@ -90,7 +92,9 @@ class EnrollmentChangeCreateRequest(BaseModel):
     new_status: str = Field(..., description="变动后状态")
     reason: str = Field(..., description="变动原因")
     approval_notes: str | None = Field(None, description="审批备注")
-    supporting_documents: dict[str, Any] = Field(default_factory=dict, description="支持文档")
+    supporting_documents: dict[str, Any] = Field(
+        default_factory=dict, description="支持文档"
+    )
 
 
 class EnrollmentChangeResponse(BaseModel):
@@ -137,7 +141,9 @@ class BillingRecordCreateRequest(BaseModel):
 class PaymentProcessRequest(BaseModel):
     """支付处理请求."""
 
-    payment_method: str = Field(..., description="支付方式：cash/card/transfer/alipay/wechat")
+    payment_method: str = Field(
+        ..., description="支付方式：cash/card/transfer/alipay/wechat"
+    )
     transaction_id: str | None = Field(None, description="交易流水号")
 
 

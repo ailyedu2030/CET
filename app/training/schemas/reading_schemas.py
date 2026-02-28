@@ -5,11 +5,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.training.models.reading_models import (
-    ReadingDifficulty,
-    ReadingQuestionType,
-    ReadingTheme,
-)
+from app.training.models.reading_models import (ReadingDifficulty, ReadingQuestionType,
+                                                ReadingTheme)
 
 
 # 阅读文章模式
@@ -23,7 +20,9 @@ class ReadingPassageBase(BaseModel):
     source: str | None = Field(None, description="文章来源", max_length=100)
     keywords: list[str] | None = Field(None, description="关键词列表")
     summary: str | None = Field(None, description="文章摘要")
-    reading_time_minutes: int | None = Field(None, description="建议阅读时间(分钟)", ge=1, le=60)
+    reading_time_minutes: int | None = Field(
+        None, description="建议阅读时间(分钟)", ge=1, le=60
+    )
 
 
 class ReadingPassageCreate(ReadingPassageBase):
@@ -40,7 +39,9 @@ class ReadingPassageUpdate(BaseModel):
     source: str | None = Field(None, description="文章来源", max_length=100)
     keywords: list[str] | None = Field(None, description="关键词列表")
     summary: str | None = Field(None, description="文章摘要")
-    reading_time_minutes: int | None = Field(None, description="建议阅读时间(分钟)", ge=1, le=60)
+    reading_time_minutes: int | None = Field(
+        None, description="建议阅读时间(分钟)", ge=1, le=60
+    )
     is_active: bool | None = Field(None, description="是否激活")
 
 
@@ -85,7 +86,9 @@ class ReadingQuestionUpdate(BaseModel):
     question_text: str | None = Field(None, description="题目内容")
     question_type: ReadingQuestionType | None = Field(None, description="题目类型")
     order_index: int | None = Field(None, description="题目顺序", ge=1)
-    options: list[str] | None = Field(None, description="选项列表", min_length=2, max_length=6)
+    options: list[str] | None = Field(
+        None, description="选项列表", min_length=2, max_length=6
+    )
     correct_answer: str | None = Field(None, description="正确答案", max_length=10)
     explanation: str | None = Field(None, description="答案解析")
     difficulty: ReadingDifficulty | None = Field(None, description="题目难度")
@@ -117,7 +120,9 @@ class ReadingTrainingPlanBase(BaseModel):
     description: str | None = Field(None, description="计划描述")
     weekly_target: int = Field(default=15, description="每周目标题数", ge=5, le=50)
     themes_per_week: list[ReadingTheme] | None = Field(None, description="每周主题安排")
-    difficulty_progression: list[ReadingDifficulty] | None = Field(None, description="难度递进安排")
+    difficulty_progression: list[ReadingDifficulty] | None = Field(
+        None, description="难度递进安排"
+    )
     start_date: datetime = Field(..., description="开始日期")
     end_date: datetime = Field(..., description="结束日期")
     training_days: list[int] | None = Field(
@@ -136,7 +141,9 @@ class ReadingTrainingPlanUpdate(BaseModel):
     description: str | None = Field(None, description="计划描述")
     weekly_target: int | None = Field(None, description="每周目标题数", ge=5, le=50)
     themes_per_week: list[ReadingTheme] | None = Field(None, description="每周主题安排")
-    difficulty_progression: list[ReadingDifficulty] | None = Field(None, description="难度递进安排")
+    difficulty_progression: list[ReadingDifficulty] | None = Field(
+        None, description="难度递进安排"
+    )
     end_date: datetime | None = Field(None, description="结束日期")
     training_days: list[int] | None = Field(
         None, description="训练日安排(1-7)", min_length=1, max_length=7

@@ -15,11 +15,8 @@ from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import DifficultyLevel, TrainingType
-from app.training.models.training_models import (
-    IntelligentTrainingLoop,
-    TrainingRecord,
-    TrainingSession,
-)
+from app.training.models.training_models import (IntelligentTrainingLoop,
+                                                 TrainingRecord, TrainingSession)
 
 logger = logging.getLogger(__name__)
 
@@ -126,7 +123,9 @@ class PreciseAdaptiveService:
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 
-    def _calculate_recent_accuracy(self, records: list[TrainingRecord]) -> dict[str, Any]:
+    def _calculate_recent_accuracy(
+        self, records: list[TrainingRecord]
+    ) -> dict[str, Any]:
         """计算近期答题正确率分析."""
         if not records:
             return {"accuracy": 0.0, "total_attempts": 0, "correct_attempts": 0}
@@ -144,7 +143,9 @@ class PreciseAdaptiveService:
             "total_attempts": total_count,
             "correct_attempts": correct_count,
             "recent_5_accuracy": recent_5_accuracy,
-            "accuracy_trend": ("improving" if recent_5_accuracy > accuracy else "declining"),
+            "accuracy_trend": (
+                "improving" if recent_5_accuracy > accuracy else "declining"
+            ),
             "consistency_score": self._calculate_consistency_score(records),
         }
 
@@ -188,7 +189,9 @@ class PreciseAdaptiveService:
         downgrade_threshold = self.precise_config["downgrade_threshold"]
 
         # 获取当前难度等级
-        current_difficulty = await self._get_current_difficulty(student_id, training_type)
+        current_difficulty = await self._get_current_difficulty(
+            student_id, training_type
+        )
 
         decision = {
             "should_adjust": False,
@@ -207,8 +210,12 @@ class PreciseAdaptiveService:
                     {
                         "should_adjust": True,
                         "adjustment_type": "upgrade",
-                        "target_difficulty": DifficultyLevel(current_difficulty.value + 1),
-                        "confidence_score": min(1.0, (accuracy - upgrade_threshold) * 10),
+                        "target_difficulty": DifficultyLevel(
+                            current_difficulty.value + 1
+                        ),
+                        "confidence_score": min(
+                            1.0, (accuracy - upgrade_threshold) * 10
+                        ),
                         "decision_reason": f"近10次正确率{accuracy:.1%}超过{upgrade_threshold:.0%}，执行升级",
                     }
                 )
@@ -219,8 +226,12 @@ class PreciseAdaptiveService:
                     {
                         "should_adjust": True,
                         "adjustment_type": "downgrade",
-                        "target_difficulty": DifficultyLevel(current_difficulty.value - 1),
-                        "confidence_score": min(1.0, (downgrade_threshold - accuracy) * 10),
+                        "target_difficulty": DifficultyLevel(
+                            current_difficulty.value - 1
+                        ),
+                        "confidence_score": min(
+                            1.0, (downgrade_threshold - accuracy) * 10
+                        ),
                         "decision_reason": f"近10次正确率{accuracy:.1%}低于{downgrade_threshold:.0%}，执行降级",
                     }
                 )
@@ -304,7 +315,9 @@ class PreciseAdaptiveService:
         """计算个性化程度>80%量化机制."""
         try:
             # 获取学生个人学习特征
-            learning_profile = await self._build_learning_profile(student_id, training_type)
+            learning_profile = await self._build_learning_profile(
+                student_id, training_type
+            )
 
             # 计算个性化匹配度
             personalization_factors = {
@@ -358,7 +371,9 @@ class PreciseAdaptiveService:
 
         try:
             # 记录调整决策到智能训练闭环
-            await self._record_adjustment_to_loop(student_id, training_type, adjustment_decision)
+            await self._record_adjustment_to_loop(
+                student_id, training_type, adjustment_decision
+            )
 
             return {
                 "applied": True,
@@ -429,9 +444,9 @@ class PreciseAdaptiveService:
                 return False  # 数据不足，无法验证
 
             # 计算调整后的表现
-            post_accuracy = sum(1 for r in post_adjustment_records if r.is_correct) / len(
-                post_adjustment_records
-            )
+            post_accuracy = sum(
+                1 for r in post_adjustment_records if r.is_correct
+            ) / len(post_adjustment_records)
 
             # 验证调整是否带来了预期效果
             improvement_rate = adjustment.get("improvement_rate", 0.0)
@@ -478,7 +493,9 @@ class PreciseAdaptiveService:
     ) -> dict[str, Any]:
         """构建学生个人学习特征档案."""
         # 获取最近30天的训练记录
-        recent_records = await self._get_recent_training_records(student_id, training_type, 50)
+        recent_records = await self._get_recent_training_records(
+            student_id, training_type, 50
+        )
 
         if not recent_records:
             return {
@@ -493,7 +510,9 @@ class PreciseAdaptiveService:
         learning_pace = self._analyze_learning_pace(recent_records)
 
         # 分析难度偏好
-        difficulty_preference = await self._analyze_difficulty_preference(student_id, training_type)
+        difficulty_preference = await self._analyze_difficulty_preference(
+            student_id, training_type
+        )
 
         # 识别知识薄弱点
         knowledge_gaps = self._identify_knowledge_gaps(recent_records)
@@ -526,8 +545,12 @@ class PreciseAdaptiveService:
         early_10 = records[-10:] if len(records) >= 20 else records[10:]
 
         if early_10:
-            recent_avg = sum(r.time_spent for r in recent_10 if r.time_spent) / len(recent_10)
-            early_avg = sum(r.time_spent for r in early_10 if r.time_spent) / len(early_10)
+            recent_avg = sum(r.time_spent for r in recent_10 if r.time_spent) / len(
+                recent_10
+            )
+            early_avg = sum(r.time_spent for r in early_10 if r.time_spent) / len(
+                early_10
+            )
 
             if recent_avg < early_avg * 0.8:
                 return "accelerating"  # 越来越快
@@ -568,7 +591,9 @@ class PreciseAdaptiveService:
 
             if len(records) >= 5:
                 accuracy = sum(1 for r in records if r.is_correct) / len(records)
-                avg_time = sum(r.time_spent for r in records if r.time_spent) / len(records)
+                avg_time = sum(r.time_spent for r in records if r.time_spent) / len(
+                    records
+                )
 
                 # 综合表现分数：准确率70% + 时间效率30%
                 time_efficiency = min(1.0, 120 / max(avg_time, 60))  # 2分钟为标准

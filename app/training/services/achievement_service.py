@@ -129,7 +129,9 @@ class AchievementService:
                 await self._save_achievements(user_id, awarded_achievements)
 
                 # 发送成就通知
-                await self._send_achievement_notifications(user_id, awarded_achievements)
+                await self._send_achievement_notifications(
+                    user_id, awarded_achievements
+                )
 
             logger.info(f"用户 {user_id} 获得 {len(awarded_achievements)} 个新成就")
             return awarded_achievements
@@ -153,7 +155,9 @@ class AchievementService:
             badges = await self._get_user_badges(user_id)
 
             # 计算成就统计
-            achievement_stats = await self._calculate_achievement_stats(achievements, badges)
+            achievement_stats = await self._calculate_achievement_stats(
+                achievements, badges
+            )
 
             # 获取进度信息
             progress_info = await self._get_achievement_progress(user_id)
@@ -173,7 +177,9 @@ class AchievementService:
                 "achievement_level": self._calculate_achievement_level(
                     achievement_stats["total_points"]
                 ),
-                "next_level_points": self._get_next_level_points(achievement_stats["total_points"]),
+                "next_level_points": self._get_next_level_points(
+                    achievement_stats["total_points"]
+                ),
             }
 
         except Exception as e:
@@ -249,16 +255,24 @@ class AchievementService:
             start_date = end_date - timedelta(days=days)
 
             # 成就颁发统计
-            achievement_stats = await self._get_achievement_statistics(start_date, end_date)
+            achievement_stats = await self._get_achievement_statistics(
+                start_date, end_date
+            )
 
             # 用户参与度分析
-            engagement_stats = await self._get_engagement_statistics(start_date, end_date)
+            engagement_stats = await self._get_engagement_statistics(
+                start_date, end_date
+            )
 
             # 成就效果分析
-            effectiveness_stats = await self._get_effectiveness_statistics(start_date, end_date)
+            effectiveness_stats = await self._get_effectiveness_statistics(
+                start_date, end_date
+            )
 
             # 热门成就排行
-            popular_achievements = await self._get_popular_achievements(start_date, end_date)
+            popular_achievements = await self._get_popular_achievements(
+                start_date, end_date
+            )
 
             return {
                 "analysis_period": {
@@ -295,7 +309,9 @@ class AchievementService:
         new_achievements = []
 
         # 获取当前该类型的最高等级
-        current_level = self._get_current_achievement_level(achievement_type, current_achievements)
+        current_level = self._get_current_achievement_level(
+            achievement_type, current_achievements
+        )
 
         # 获取用户数据
         user_data = await self._get_user_data_for_achievement(user_id, achievement_type)
@@ -331,7 +347,9 @@ class AchievementService:
 
         # 检查各种徽章条件
         for badge_id, config in self.badge_config.items():
-            if await self._check_badge_condition(user_id, badge_id, config, recent_data):
+            if await self._check_badge_condition(
+                user_id, badge_id, config, recent_data
+            ):
                 badge = {
                     "badge_id": badge_id,
                     "name": config["name"],
@@ -344,7 +362,9 @@ class AchievementService:
 
         return new_badges
 
-    async def _save_achievements(self, user_id: int, achievements: list[dict[str, Any]]) -> None:
+    async def _save_achievements(
+        self, user_id: int, achievements: list[dict[str, Any]]
+    ) -> None:
         """保存新获得的成就."""
         # TODO: 实现数据库保存逻辑
         logger.info(f"保存用户 {user_id} 的 {len(achievements)} 个新成就")
@@ -373,8 +393,12 @@ class AchievementService:
             "total_achievements": len(achievements),
             "total_badges": len(badges),
             "total_points": total_points,
-            "rare_achievements": len([a for a in achievements if a.get("rarity") == "rare"]),
-            "epic_achievements": len([a for a in achievements if a.get("rarity") == "epic"]),
+            "rare_achievements": len(
+                [a for a in achievements if a.get("rarity") == "rare"]
+            ),
+            "epic_achievements": len(
+                [a for a in achievements if a.get("rarity") == "epic"]
+            ),
         }
 
     async def _get_achievement_progress(self, user_id: int) -> dict[str, Any]:
@@ -382,14 +406,20 @@ class AchievementService:
         progress = {}
 
         for achievement_type, config in self.achievement_types.items():
-            user_data = await self._get_user_data_for_achievement(user_id, achievement_type)
-            current_value = self._get_achievement_current_value(achievement_type, user_data)
+            user_data = await self._get_user_data_for_achievement(
+                user_id, achievement_type
+            )
+            current_value = self._get_achievement_current_value(
+                achievement_type, user_data
+            )
 
             # 找到下一个目标
             next_target = None
             for threshold in config["levels"]:
                 threshold_value = (
-                    float(threshold) if isinstance(threshold, int | float | str) else 0.0
+                    float(threshold)
+                    if isinstance(threshold, int | float | str)
+                    else 0.0
                 )
                 if current_value < threshold_value:
                     next_target = threshold_value

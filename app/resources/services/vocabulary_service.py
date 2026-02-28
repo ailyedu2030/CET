@@ -8,12 +8,10 @@ from sqlalchemy import and_, desc, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.resources.models.resource_models import ResourceLibrary, VocabularyItem
-from app.resources.schemas.resource_schemas import (
-    VocabularyBatchImport,
-    VocabularyItemCreate,
-    VocabularyItemUpdate,
-    VocabularySearchRequest,
-)
+from app.resources.schemas.resource_schemas import (VocabularyBatchImport,
+                                                    VocabularyItemCreate,
+                                                    VocabularyItemUpdate,
+                                                    VocabularySearchRequest)
 from app.shared.models.enums import DifficultyLevel
 
 
@@ -112,7 +110,9 @@ class VocabularyService:
             )
 
         if search_request.difficulty_level:
-            stmt = stmt.where(VocabularyItem.difficulty_level == search_request.difficulty_level)
+            stmt = stmt.where(
+                VocabularyItem.difficulty_level == search_request.difficulty_level
+            )
 
         if search_request.tags:
             # 使用PostgreSQL的JSON操作符
@@ -208,7 +208,9 @@ class VocabularyService:
 
         return results
 
-    async def get_vocabulary_statistics(self, library_id: int | None = None) -> dict[str, Any]:
+    async def get_vocabulary_statistics(
+        self, library_id: int | None = None
+    ) -> dict[str, Any]:
         """获取词汇统计信息."""
         stmt = select(VocabularyItem)
         if library_id:
@@ -233,7 +235,9 @@ class VocabularyService:
 
         # 频率统计
         high_frequency_count = sum(1 for v in vocabularies if v.frequency > 100)
-        medium_frequency_count = sum(1 for v in vocabularies if 50 <= v.frequency <= 100)
+        medium_frequency_count = sum(
+            1 for v in vocabularies if 50 <= v.frequency <= 100
+        )
         low_frequency_count = sum(1 for v in vocabularies if v.frequency < 50)
 
         return {
@@ -291,7 +295,9 @@ class VocabularyService:
         library: ResourceLibrary | None = result.scalar_one_or_none()
         return library
 
-    async def _check_vocabulary_exists(self, library_id: int, word: str) -> VocabularyItem | None:
+    async def _check_vocabulary_exists(
+        self, library_id: int, word: str
+    ) -> VocabularyItem | None:
         """检查词汇是否已存在."""
         stmt = select(VocabularyItem).where(
             and_(VocabularyItem.library_id == library_id, VocabularyItem.word == word)

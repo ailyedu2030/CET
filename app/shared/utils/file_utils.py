@@ -39,7 +39,9 @@ class FileUtils:
                 return await self._extract_txt_content(file_path)
 
         except Exception as e:
-            raise RuntimeError(f"Failed to extract content from {file_path}: {str(e)}") from e
+            raise RuntimeError(
+                f"Failed to extract content from {file_path}: {str(e)}"
+            ) from e
 
     async def _extract_txt_content(self, file_path: str) -> str:
         """提取TXT文件内容."""

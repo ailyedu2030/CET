@@ -216,9 +216,7 @@ class StudentExcelImportUtils:
 
             # 检查行数限制（建议单次导入不超过1000条）
             if len(df) > 1000:
-                validation_result["warnings"].append(
-                    f"数据量较大({len(df)}行)，建议分批导入以提高成功率"
-                )
+                validation_result["warnings"].append(f"数据量较大({len(df)}行)，建议分批导入以提高成功率")
 
             # 检查必需列
             missing_columns = []
@@ -227,7 +225,9 @@ class StudentExcelImportUtils:
                     missing_columns.append(cn_name)
 
             if missing_columns:
-                validation_result["errors"].append(f"缺少必需列: {', '.join(missing_columns)}")
+                validation_result["errors"].append(
+                    f"缺少必需列: {', '.join(missing_columns)}"
+                )
                 return validation_result
 
             # 检查数据完整性

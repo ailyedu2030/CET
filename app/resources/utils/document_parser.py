@@ -79,7 +79,9 @@ class DocumentParser:
                 "file_path": file_path,
             }
 
-    def _detect_mime_type(self, file_path: str, file_content: bytes | None = None) -> str:
+    def _detect_mime_type(
+        self, file_path: str, file_content: bytes | None = None
+    ) -> str:
         """检测文件MIME类型."""
         # 首先尝试根据文件扩展名检测
         mime_type, _ = mimetypes.guess_type(file_path)
@@ -121,7 +123,10 @@ class DocumentParser:
             return "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
         # HTML文件标识
-        if b"<html" in content[:1000].lower() or b"<!doctype html" in content[:1000].lower():
+        if (
+            b"<html" in content[:1000].lower()
+            or b"<!doctype html" in content[:1000].lower()
+        ):
             return "text/html"
 
         # JSON文件标识
@@ -193,7 +198,9 @@ class DocumentParser:
             logger.error(f"Markdown parsing failed: {str(e)}")
             return {"success": False, "error": str(e)}
 
-    async def _parse_pdf(self, file_path: str, file_content: bytes | None = None) -> dict[str, Any]:
+    async def _parse_pdf(
+        self, file_path: str, file_content: bytes | None = None
+    ) -> dict[str, Any]:
         """解析PDF文件."""
         try:
             # 注意：实际项目中需要安装PyPDF2或pdfplumber
@@ -251,7 +258,9 @@ class DocumentParser:
             logger.error(f"DOCX parsing failed: {str(e)}")
             return {"success": False, "error": str(e)}
 
-    async def _parse_doc(self, file_path: str, file_content: bytes | None = None) -> dict[str, Any]:
+    async def _parse_doc(
+        self, file_path: str, file_content: bytes | None = None
+    ) -> dict[str, Any]:
         """解析DOC文件."""
         try:
             # 注意：实际项目中需要安装python-docx或其他库
@@ -345,7 +354,9 @@ class DocumentParser:
             logger.error(f"JSON parsing failed: {str(e)}")
             return {"success": False, "error": str(e)}
 
-    async def _parse_csv(self, file_path: str, file_content: bytes | None = None) -> dict[str, Any]:
+    async def _parse_csv(
+        self, file_path: str, file_content: bytes | None = None
+    ) -> dict[str, Any]:
         """解析CSV文件."""
         try:
             if file_content:
@@ -482,7 +493,9 @@ class DocumentParser:
                     chunk_index += 1
 
                 # 开始新section
-                current_header = next((h for h in headers if h["line_number"] == i + 1), None)
+                current_header = next(
+                    (h for h in headers if h["line_number"] == i + 1), None
+                )
                 current_section = [line]
             else:
                 current_section.append(line)
@@ -500,7 +513,9 @@ class DocumentParser:
                     "metadata": {
                         "chunk_type": "markdown_section",
                         "header": current_header,
-                        "section_title": (current_header["title"] if current_header else None),
+                        "section_title": (
+                            current_header["title"] if current_header else None
+                        ),
                     },
                 }
             )
@@ -535,7 +550,9 @@ class DocumentParser:
 
         for i, row in enumerate(rows):
             if len(row) == len(headers):
-                row_text = ", ".join(f"{headers[j]}: {row[j]}" for j in range(len(headers)))
+                row_text = ", ".join(
+                    f"{headers[j]}: {row[j]}" for j in range(len(headers))
+                )
                 text_parts.append(f"第{i + 1}行: {row_text}")
             else:
                 text_parts.append(f"第{i + 1}行: {', '.join(row)}")

@@ -30,7 +30,9 @@ class AdminDashboardResponse(BaseModel):
     api_response_time: float = Field(..., description="API平均响应时间")
 
     # 最近活动
-    recent_activities: list[dict[str, Any]] = Field(default_factory=list, description="最近活动")
+    recent_activities: list[dict[str, Any]] = Field(
+        default_factory=list, description="最近活动"
+    )
 
 
 class UserManagementStatsResponse(BaseModel):
@@ -55,7 +57,9 @@ class UserManagementStatsResponse(BaseModel):
     suspended_users: int = Field(..., description="停用用户数")
 
     # 最近注册趋势
-    registration_trend: list[dict[str, Any]] = Field(default_factory=list, description="注册趋势")
+    registration_trend: list[dict[str, Any]] = Field(
+        default_factory=list, description="注册趋势"
+    )
 
 
 class CourseManagementStatsResponse(BaseModel):
@@ -178,7 +182,9 @@ class SystemMonitoringResponse(BaseModel):
     ai_api_calls_today: int = Field(..., description="今日AI API调用次数")
     ai_api_success_rate: float = Field(..., description="AI API成功率")
     ai_cost_today: float = Field(..., description="今日AI服务费用")
-    ai_quota_remaining: dict[str, float] = Field(default_factory=dict, description="AI配额剩余")
+    ai_quota_remaining: dict[str, float] = Field(
+        default_factory=dict, description="AI配额剩余"
+    )
 
     # 用户活动
     active_users_now: int = Field(..., description="当前活跃用户数")
@@ -186,8 +192,12 @@ class SystemMonitoringResponse(BaseModel):
     user_sessions_today: int = Field(..., description="今日用户会话数")
 
     # 告警信息
-    active_alerts: list[dict[str, Any]] = Field(default_factory=list, description="活跃告警")
-    recent_errors: list[dict[str, Any]] = Field(default_factory=list, description="最近错误")
+    active_alerts: list[dict[str, Any]] = Field(
+        default_factory=list, description="活跃告警"
+    )
+    recent_errors: list[dict[str, Any]] = Field(
+        default_factory=list, description="最近错误"
+    )
 
 
 class SystemRulesConfigRequest(BaseModel):

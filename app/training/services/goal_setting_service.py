@@ -147,10 +147,14 @@ class GoalSettingService:
                 raise ValueError(f"目标不存在: {goal_id}")
 
             # 计算新进度
-            updated_progress = await self._calculate_updated_progress(goal, progress_data)
+            updated_progress = await self._calculate_updated_progress(
+                goal, progress_data
+            )
 
             # 检查里程碑完成情况
-            milestone_updates = await self._check_milestone_completion(goal_id, updated_progress)
+            milestone_updates = await self._check_milestone_completion(
+                goal_id, updated_progress
+            )
 
             # 评估目标状态
             goal_status = await self._evaluate_goal_status(goal, updated_progress)
@@ -227,10 +231,14 @@ class GoalSettingService:
             achievement_analysis = await self._analyze_achievement(goal, final_progress)
 
             # 生成总结报告
-            summary_report = await self._generate_achievement_summary(goal, achievement_analysis)
+            summary_report = await self._generate_achievement_summary(
+                goal, achievement_analysis
+            )
 
             # 提取经验教训
-            lessons_learned = await self._extract_lessons_learned(goal, achievement_analysis)
+            lessons_learned = await self._extract_lessons_learned(
+                goal, achievement_analysis
+            )
 
             # 生成后续建议
             next_steps = await self._generate_next_steps(goal, achievement_analysis)
@@ -280,8 +288,12 @@ class GoalSettingService:
         smart_goal = goal_data.copy()
 
         # Specific - 具体化目标
-        smart_goal["title"] = await self._make_specific(goal_data["title"], goal_data["goal_type"])
-        smart_goal["description"] = await self._enhance_description(goal_data["description"])
+        smart_goal["title"] = await self._make_specific(
+            goal_data["title"], goal_data["goal_type"]
+        )
+        smart_goal["description"] = await self._enhance_description(
+            goal_data["description"]
+        )
 
         # Measurable - 添加可衡量指标
         smart_goal["target_metrics"] = await self._define_metrics(
@@ -363,7 +375,9 @@ class GoalSettingService:
         # TODO: 实现里程碑检查逻辑
         return []
 
-    async def _evaluate_goal_status(self, goal: dict[str, Any], progress: dict[str, Any]) -> str:
+    async def _evaluate_goal_status(
+        self, goal: dict[str, Any], progress: dict[str, Any]
+    ) -> str:
         """评估目标状态."""
         overall_progress = progress.get("overall_progress", 0)
 
@@ -378,7 +392,9 @@ class GoalSettingService:
         else:
             return "at_risk"
 
-    async def _update_goal_data(self, goal_id: int, update_data: dict[str, Any]) -> None:
+    async def _update_goal_data(
+        self, goal_id: int, update_data: dict[str, Any]
+    ) -> None:
         """更新目标数据."""
         # TODO: 实现数据库更新逻辑
         logger.info(f"更新目标数据: {goal_id}")
@@ -461,7 +477,9 @@ class GoalSettingService:
         self, student_id: int, opportunity: dict[str, Any], analysis: dict[str, Any]
     ) -> dict[str, Any]:
         """生成目标建议."""
-        goal_type = self.goal_types.get(opportunity["type"], self.goal_types["skill_improvement"])
+        goal_type = self.goal_types.get(
+            opportunity["type"], self.goal_types["skill_improvement"]
+        )
 
         return {
             "title": f"提升{opportunity['description']}",
@@ -498,7 +516,9 @@ class GoalSettingService:
         """增强目标描述."""
         return f"{description}（基于SMART原则制定）"
 
-    async def _define_metrics(self, goal_type: str, student_level: str) -> list[dict[str, Any]]:
+    async def _define_metrics(
+        self, goal_type: str, student_level: str
+    ) -> list[dict[str, Any]]:
         """定义衡量指标."""
         type_config = self.goal_types.get(goal_type, {})
         metrics = []

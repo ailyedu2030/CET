@@ -9,20 +9,12 @@ from loguru import logger
 from sqlalchemy import and_, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import (
-    PermissionDeniedError,
-    ResourceNotFoundError,
-)
-from app.resources.models.resource_models import (
-    PermissionLevel,
-    ResourceLibrary,
-    ResourceShare,
-)
-from app.resources.schemas.permission_schemas import (
-    PermissionSettingRequest,
-    PermissionSettingResponse,
-    SharedResourceResponse,
-)
+from app.core.exceptions import PermissionDeniedError, ResourceNotFoundError
+from app.resources.models.resource_models import (PermissionLevel, ResourceLibrary,
+                                                  ResourceShare)
+from app.resources.schemas.permission_schemas import (PermissionSettingRequest,
+                                                      PermissionSettingResponse,
+                                                      SharedResourceResponse)
 
 
 class PermissionService:
@@ -41,18 +33,25 @@ class PermissionService:
         try:
             # 获取资源并检查所有权
             await self._get_resource_with_ownership(
-                permission_data.resource_type.value, permission_data.resource_id, user_id
+                permission_data.resource_type.value,
+                permission_data.resource_id,
+                user_id,
             )
 
             # 更新资源权限级别
             await self.db.execute(
                 update(ResourceLibrary)
                 .where(ResourceLibrary.id == permission_data.resource_id)
-                .values(permission_level=PermissionLevel(permission_data.permission.value))
+                .values(
+                    permission_level=PermissionLevel(permission_data.permission.value)
+                )
             )
 
             # 处理班级共享配置
-            if permission_data.permission.value == "class" and permission_data.shared_with:
+            if (
+                permission_data.permission.value == "class"
+                and permission_data.shared_with
+            ):
                 await self._update_class_sharing(
                     permission_data.resource_type.value,
                     permission_data.resource_id,
@@ -61,8 +60,7 @@ class PermissionService:
                 )
             elif permission_data.permission.value != "class":
                 # 清除班级共享配置
-                await self._clear_class_sharing(
-                )
+                await self._clear_class_sharing()
 
             await self.db.commit()
 
@@ -110,34 +108,39 @@ class PermissionService:
         """
         try:
             # 查询用户可访问的共享资源
-            query = select(ResourceLibrary).join(
-                ResourceShare, 
-                and_(
-                    ResourceShare.resource_id == ResourceLibrary.id,
-                    ResourceShare.resource_type == resource_type,
-                    ResourceShare.is_active == True,
-                ),
-                isouter=True
-            ).where(
-                and_(
-                    ResourceLibrary.resource_type == resource_type,
-                    or_(
-                        # 公开资源
-                        ResourceLibrary.permission_level == PermissionLevel.PUBLIC,
-                        # 班级共享资源（用户在共享班级中）
-                        and_(
-                            ResourceLibrary.permission_level == PermissionLevel.CLASS,
-                            ResourceShare.shared_with == user_id,
-                            ResourceShare.share_scope == "class",
+            query = (
+                select(ResourceLibrary)
+                .join(
+                    ResourceShare,
+                    and_(
+                        ResourceShare.resource_id == ResourceLibrary.id,
+                        ResourceShare.resource_type == resource_type,
+                        ResourceShare.is_active == True,
+                    ),
+                    isouter=True,
+                )
+                .where(
+                    and_(
+                        ResourceLibrary.resource_type == resource_type,
+                        or_(
+                            # 公开资源
+                            ResourceLibrary.permission_level == PermissionLevel.PUBLIC,
+                            # 班级共享资源（用户在共享班级中）
+                            and_(
+                                ResourceLibrary.permission_level
+                                == PermissionLevel.CLASS,
+                                ResourceShare.shared_with == user_id,
+                                ResourceShare.share_scope == "class",
+                            ),
+                            # 用户自己创建的资源
+                            ResourceLibrary.created_by == user_id,
                         ),
-                        # 用户自己创建的资源
-                        ResourceLibrary.created_by == user_id,
-                    ),
-                    # 排除用户自己创建的私有资源
-                    or_(
-                        ResourceLibrary.created_by != user_id,
-                        ResourceLibrary.permission_level != PermissionLevel.PRIVATE,
-                    ),
+                        # 排除用户自己创建的私有资源
+                        or_(
+                            ResourceLibrary.created_by != user_id,
+                            ResourceLibrary.permission_level != PermissionLevel.PRIVATE,
+                        ),
+                    )
                 )
             )
 
@@ -162,10 +165,16 @@ class PermissionService:
                         owner_name=owner_name,
                         permission=resource.permission_level.value,
                         description=resource.description,
-                        item_count=await self._get_resource_item_count(resource.id, resource_type),
+                        item_count=await self._get_resource_item_count(
+                            resource.id, resource_type
+                        ),
                         version=resource.version,
-                        created_at=resource.created_at.isoformat() if resource.created_at else "",
-                        updated_at=resource.updated_at.isoformat() if resource.updated_at else "",
+                        created_at=resource.created_at.isoformat()
+                        if resource.created_at
+                        else "",
+                        updated_at=resource.updated_at.isoformat()
+                        if resource.updated_at
+                        else "",
                     )
                 )
 
@@ -207,7 +216,9 @@ class PermissionService:
             # 获取班级共享配置
             shared_with = None
             if resource.permission_level == PermissionLevel.CLASS:
-                shared_with = await self._get_class_sharing_config(resource_type, resource_id)
+                shared_with = await self._get_class_sharing_config(
+                    resource_type, resource_id
+                )
 
             return PermissionSettingResponse(
                 success=True,
@@ -272,7 +283,9 @@ class PermissionService:
             )
             raise
 
-    async def get_my_shared_resources(self, user_id: int) -> list[SharedResourceResponse]:
+    async def get_my_shared_resources(
+        self, user_id: int
+    ) -> list[SharedResourceResponse]:
         """
         获取我分享的资源列表 - 需求11验收标准5
         返回当前用户分享给他人的所有资源
@@ -309,8 +322,12 @@ class PermissionService:
                             resource.id, resource.resource_type
                         ),
                         version=resource.version,
-                        created_at=resource.created_at.isoformat() if resource.created_at else "",
-                        updated_at=resource.updated_at.isoformat() if resource.updated_at else "",
+                        created_at=resource.created_at.isoformat()
+                        if resource.created_at
+                        else "",
+                        updated_at=resource.updated_at.isoformat()
+                        if resource.updated_at
+                        else "",
                         shared_at=resource.updated_at.isoformat()
                         if resource.updated_at
                         else "",  # 使用更新时间作为分享时间
@@ -343,10 +360,15 @@ class PermissionService:
 
         return resource
 
-    async def _get_resource_by_id(self, resource_type: str, resource_id: int) -> ResourceLibrary:
+    async def _get_resource_by_id(
+        self, resource_type: str, resource_id: int
+    ) -> ResourceLibrary:
         """根据ID获取资源"""
         query = select(ResourceLibrary).where(
-            and_(ResourceLibrary.id == resource_id, ResourceLibrary.resource_type == resource_type)
+            and_(
+                ResourceLibrary.id == resource_id,
+                ResourceLibrary.resource_type == resource_type,
+            )
         )
         result = await self.db.execute(query)
         resource = result.scalar_one_or_none()
@@ -358,7 +380,9 @@ class PermissionService:
 
         return resource
 
-    async def _can_view_permission(self, resource: ResourceLibrary, user_id: int) -> bool:
+    async def _can_view_permission(
+        self, resource: ResourceLibrary, user_id: int
+    ) -> bool:
         """检查用户是否可以查看权限设置"""
         # 资源创建者可以查看
         if resource.created_by == user_id:
@@ -368,16 +392,20 @@ class PermissionService:
         return False
 
     async def _update_class_sharing(
-        self, resource_type: str, resource_id: int, class_ids: list[int], teacher_ids: list[int]
+        self,
+        resource_type: str,
+        resource_id: int,
+        class_ids: list[int],
+        teacher_ids: list[int],
     ) -> None:
         """更新班级共享配置"""
         from app.resources.models.resource_models import ResourceShare
         from app.shared.models.enums import PermissionType
-        
+
         # 获取当前用户ID (从上下文)
         # 先清除旧的班级共享
         await self._clear_class_sharing(resource_type, resource_id)
-        
+
         # 为每个班级创建共享记录
         for class_id in class_ids:
             share = ResourceShare(
@@ -387,10 +415,10 @@ class PermissionService:
                 class_id=class_id,
                 share_scope="class",
                 permission_level=PermissionType.COURSE_READ,
-                is_active=True
+                is_active=True,
             )
             self.db.add(share)
-        
+
         # 为每个教师创建共享记录
         for teacher_id in teacher_ids:
             share = ResourceShare(
@@ -400,24 +428,24 @@ class PermissionService:
                 shared_with=teacher_id,
                 share_scope="private",
                 permission_level=PermissionType.COURSE_READ,
-                is_active=True
+                is_active=True,
             )
             self.db.add(share)
-        
+
         await self.db.commit()
-        logger.info(f"更新班级共享: type={resource_type}, id={resource_id}, classes={class_ids}")
+        logger.info(
+            f"更新班级共享: type={resource_type}, id={resource_id}, classes={class_ids}"
+        )
 
     async def _clear_class_sharing(self, resource_type: str, resource_id: int) -> None:
         """清除班级共享配置"""
         from app.resources.models.resource_models import ResourceShare
-        
+
         # 删除该资源的所有班级共享记录
-        stmt = (
-            ResourceShare.__table__.delete().where(
-                ResourceShare.resource_id == resource_id,
-                ResourceShare.resource_type == resource_type,
-                ResourceShare.share_scope == "class"
-            )
+        stmt = ResourceShare.__table__.delete().where(
+            ResourceShare.resource_id == resource_id,
+            ResourceShare.resource_type == resource_type,
+            ResourceShare.share_scope == "class",
         )
         await self.db.execute(stmt)
         await self.db.commit()
@@ -427,42 +455,44 @@ class PermissionService:
         self, resource_type: str, resource_id: int
     ) -> dict[str, Any] | None:
         """获取班级共享配置"""
-        from app.resources.models.resource_models import ResourceShare
         from sqlalchemy import select
-        
+
+        from app.resources.models.resource_models import ResourceShare
+
         stmt = select(ResourceShare).where(
             ResourceShare.resource_id == resource_id,
             ResourceShare.resource_type == resource_type,
             ResourceShare.share_scope == "class",
-            ResourceShare.is_active == True
+            ResourceShare.is_active == True,
         )
         result = await self.db.execute(stmt)
         shares = result.scalars().all()
-        
+
         if not shares:
             return None
-        
+
         return {
             "class_ids": [s.class_id for s in shares if s.class_id],
             "teacher_ids": [s.shared_with for s in shares if s.shared_with],
-            "count": len(shares)
+            "count": len(shares),
         }
 
     async def _get_course_name(self, course_id: int) -> str:
         """获取课程名称"""
         from app.courses.models import Course
-        
+
         course = await self.db.get(Course, course_id)
         return course.name if course else f"课程{course_id}"
 
     async def _get_user_name(self, user_id: int) -> str:
         """获取用户名称"""
         from app.users.models import User
-        
+
         user = await self.db.get(User, user_id)
         return user.username if user else f"用户{user_id}"
 
-
-    async def _get_resource_item_count(self, resource_id: int, resource_type: str) -> int:
+    async def _get_resource_item_count(
+        self, resource_id: int, resource_type: str
+    ) -> int:
         """获取资源项目数量"""
         return 0

@@ -4,7 +4,9 @@
 class BusinessLogicError(Exception):
     """业务逻辑错误."""
 
-    def __init__(self: "BusinessLogicError", message: str, error_code: str = None) -> None:
+    def __init__(
+        self: "BusinessLogicError", message: str, error_code: str = None
+    ) -> None:
         self.message = message
         self.error_code = error_code
         super().__init__(self.message)
@@ -22,7 +24,9 @@ class ValidationError(Exception):
 class AuthenticationError(Exception):
     """认证错误."""
 
-    def __init__(self: "AuthenticationError", message: str = "Authentication failed") -> None:
+    def __init__(
+        self: "AuthenticationError", message: str = "Authentication failed"
+    ) -> None:
         self.message = message
         super().__init__(self.message)
 
@@ -38,7 +42,9 @@ class AuthorizationError(Exception):
 class PermissionDeniedError(Exception):
     """权限拒绝错误."""
 
-    def __init__(self: "PermissionDeniedError", message: str = "Permission denied") -> None:
+    def __init__(
+        self: "PermissionDeniedError", message: str = "Permission denied"
+    ) -> None:
         self.message = message
         super().__init__(self.message)
 
@@ -46,7 +52,9 @@ class PermissionDeniedError(Exception):
 class ResourceNotFoundError(Exception):
     """资源未找到错误."""
 
-    def __init__(self: "ResourceNotFoundError", message: str, resource_type: str = None) -> None:
+    def __init__(
+        self: "ResourceNotFoundError", message: str, resource_type: str = None
+    ) -> None:
         self.message = message
         self.resource_type = resource_type
         super().__init__(self.message)
@@ -55,7 +63,9 @@ class ResourceNotFoundError(Exception):
 class ExternalServiceError(Exception):
     """外部服务错误."""
 
-    def __init__(self: "ExternalServiceError", message: str, service_name: str = None) -> None:
+    def __init__(
+        self: "ExternalServiceError", message: str, service_name: str = None
+    ) -> None:
         self.message = message
         self.service_name = service_name
         super().__init__(self.message)
@@ -73,7 +83,9 @@ class DatabaseError(Exception):
 class ConfigurationError(Exception):
     """配置错误."""
 
-    def __init__(self: "ConfigurationError", message: str, config_key: str = None) -> None:
+    def __init__(
+        self: "ConfigurationError", message: str, config_key: str = None
+    ) -> None:
         self.message = message
         self.config_key = config_key
         super().__init__(self.message)

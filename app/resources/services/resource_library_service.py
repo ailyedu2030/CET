@@ -22,17 +22,10 @@ from pydantic import BaseModel, Field
 from sqlalchemy import and_, desc, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import (
-    BusinessLogicError,
-    ResourceNotFoundError,
-    ValidationError,
-)
-from app.resources.models.resource_models import (
-    PermissionLevel,
-    ProcessingStatus,
-    ResourceLibrary,
-    ResourceType,
-)
+from app.core.exceptions import (BusinessLogicError, ResourceNotFoundError,
+                                 ValidationError)
+from app.resources.models.resource_models import (PermissionLevel, ProcessingStatus,
+                                                  ResourceLibrary, ResourceType)
 from app.resources.services.document_processing_service import DocumentProcessingService
 from app.shared.services.cache_service import CacheService
 from app.shared.utils.file_utils import FileUtils
@@ -205,7 +198,9 @@ class ResourceLibraryService:
                 ".docx",
                 ".txt",
             ]:
-                asyncio.create_task(self._async_process_document(resource.id, file_path))
+                asyncio.create_task(
+                    self._async_process_document(resource.id, file_path)
+                )
 
             # 5. 清理缓存
             await self._clear_resource_cache()
@@ -233,7 +228,9 @@ class ResourceLibraryService:
             )
             raise BusinessLogicError(f"Failed to create resource: {str(e)}") from e
 
-    async def get_resource(self, resource_id: int, user_id: int | None = None) -> ResourceResponse:
+    async def get_resource(
+        self, resource_id: int, user_id: int | None = None
+    ) -> ResourceResponse:
         """
         获取资源详情
 
@@ -249,7 +246,9 @@ class ResourceLibraryService:
             cache_key = f"resource:{resource_id}"
             cached_resource = await self.cache_service.get(cache_key)
             if cached_resource:
-                resource_data: ResourceResponse = ResourceResponse.model_validate(cached_resource)
+                resource_data: ResourceResponse = ResourceResponse.model_validate(
+                    cached_resource
+                )
                 # 权限检查
                 if await self._check_resource_permission(resource_data, user_id):
                     # 更新查看次数
@@ -392,7 +391,9 @@ class ResourceLibraryService:
                 try:
                     os.remove(resource.file_path)
                 except Exception as e:
-                    logger.warning(f"Failed to delete file {resource.file_path}: {str(e)}")
+                    logger.warning(
+                        f"Failed to delete file {resource.file_path}: {str(e)}"
+                    )
 
             # 4. 删除数据库记录
             await self.db.delete(resource)
@@ -440,15 +441,23 @@ class ResourceLibraryService:
                     )
                 )
             else:
-                conditions.append(ResourceLibrary.permission_level == PermissionLevel.PUBLIC)
+                conditions.append(
+                    ResourceLibrary.permission_level == PermissionLevel.PUBLIC
+                )
 
             # 其他过滤条件
             if request.resource_type:
-                conditions.append(ResourceLibrary.resource_type == request.resource_type)
+                conditions.append(
+                    ResourceLibrary.resource_type == request.resource_type
+                )
             if request.category:
-                conditions.append(ResourceLibrary.category.ilike(f"%{request.category}%"))
+                conditions.append(
+                    ResourceLibrary.category.ilike(f"%{request.category}%")
+                )
             if request.permission_level:
-                conditions.append(ResourceLibrary.permission_level == request.permission_level)
+                conditions.append(
+                    ResourceLibrary.permission_level == request.permission_level
+                )
             if request.created_by:
                 conditions.append(ResourceLibrary.created_by == request.created_by)
 
@@ -507,7 +516,8 @@ class ResourceLibraryService:
                     "page": request.page,
                     "page_size": request.page_size,
                     "total_count": total_count,
-                    "total_pages": (total_count + request.page_size - 1) // request.page_size,
+                    "total_pages": (total_count + request.page_size - 1)
+                    // request.page_size,
                 },
                 "filters": {
                     "resource_type": request.resource_type,
@@ -554,7 +564,9 @@ class ResourceLibraryService:
                 raise ValueError(f"File type {file_extension} not allowed")
 
             if len(file_content) > self.max_file_size:
-                raise ValueError(f"File size exceeds limit of {self.max_file_size} bytes")
+                raise ValueError(
+                    f"File size exceeds limit of {self.max_file_size} bytes"
+                )
 
             # 2. 生成文件路径
             file_hash = hashlib.md5(file_content).hexdigest()
@@ -623,7 +635,9 @@ class ResourceLibraryService:
                             update_request = ResourceUpdateRequest(
                                 permission_level=PermissionLevel(permission_level)
                             )
-                            await self.update_resource(resource_id, update_request, user_id)
+                            await self.update_resource(
+                                resource_id, update_request, user_id
+                            )
                     else:
                         raise ValueError(f"Unknown operation: {request.operation}")
 
@@ -631,7 +645,9 @@ class ResourceLibraryService:
 
                 except Exception as e:
                     results.failed_count += 1
-                    results.failed_items.append({"resource_id": resource_id, "error": str(e)})
+                    results.failed_items.append(
+                        {"resource_id": resource_id, "error": str(e)}
+                    )
 
             logger.info(
                 f"Batch operation completed: {request.operation}",
@@ -680,7 +696,9 @@ class ResourceLibraryService:
         try:
             await self.document_processing_service.process_large_document(resource_id)
         except Exception as e:
-            logger.error(f"Document processing failed for resource {resource_id}: {str(e)}")
+            logger.error(
+                f"Document processing failed for resource {resource_id}: {str(e)}"
+            )
 
     async def _to_response_model(self, resource: ResourceLibrary) -> ResourceResponse:
         """转换为响应模型"""
@@ -718,11 +736,15 @@ class ResourceLibraryService:
         # 这里可以添加更复杂的权限逻辑
         return False
 
-    async def _check_update_permission(self, resource: ResourceLibrary, user_id: int) -> bool:
+    async def _check_update_permission(
+        self, resource: ResourceLibrary, user_id: int
+    ) -> bool:
         """检查更新权限"""
         return bool(resource.created_by == user_id)
 
-    async def _check_delete_permission(self, resource: ResourceLibrary, user_id: int) -> bool:
+    async def _check_delete_permission(
+        self, resource: ResourceLibrary, user_id: int
+    ) -> bool:
         """检查删除权限"""
         return bool(resource.created_by == user_id)
 
@@ -737,7 +759,9 @@ class ResourceLibraryService:
             await self.db.execute(stmt)
             await self.db.commit()
         except Exception as e:
-            logger.error(f"Failed to increment view count for resource {resource_id}: {str(e)}")
+            logger.error(
+                f"Failed to increment view count for resource {resource_id}: {str(e)}"
+            )
 
     async def _clear_resource_cache(self, resource_id: int | None = None) -> None:
         """清理资源缓存"""

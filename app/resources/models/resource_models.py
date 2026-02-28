@@ -4,28 +4,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import (
-    Boolean,
-    DateTime,
-    Enum,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-)
+from sqlalchemy import Boolean, DateTime, Enum, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.shared.models.base_model import BaseModel
-from app.shared.models.enums import (
-    ContentType,
-    DifficultyLevel,
-    PermissionLevel,
-    PermissionType,
-    ProcessingStatus,
-    ResourceType,
-)
+from app.shared.models.enums import (ContentType, DifficultyLevel, PermissionLevel,
+                                     PermissionType, ProcessingStatus, ResourceType)
 
 # 导出枚举以供其他模块使用
 __all__ = [
@@ -58,9 +43,15 @@ class ResourceLibrary(BaseModel):
     )
     category: Mapped[str] = mapped_column(String(100), nullable=False, comment="资源分类")
     description: Mapped[str | None] = mapped_column(Text, nullable=True, comment="资源描述")
-    file_path: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="文件路径")
-    file_size: Mapped[int | None] = mapped_column(Integer, nullable=True, comment="文件大小")
-    file_format: Mapped[str | None] = mapped_column(String(20), nullable=True, comment="文件格式")
+    file_path: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="文件路径"
+    )
+    file_size: Mapped[int | None] = mapped_column(
+        Integer, nullable=True, comment="文件大小"
+    )
+    file_format: Mapped[str | None] = mapped_column(
+        String(20), nullable=True, comment="文件格式"
+    )
     permission_level: Mapped[PermissionLevel] = mapped_column(
         Enum(PermissionLevel),
         default=PermissionLevel.PRIVATE,
@@ -82,8 +73,12 @@ class ResourceLibrary(BaseModel):
     download_count: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="下载次数"
     )
-    view_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="查看次数")
-    rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=False, comment="评分")
+    view_count: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="查看次数"
+    )
+    rating: Mapped[float] = mapped_column(
+        Float, default=0.0, nullable=False, comment="评分"
+    )
     created_by: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), nullable=False, comment="创建者ID"
     )
@@ -106,11 +101,19 @@ class VocabularyItem(BaseModel):
         nullable=False,
         comment="资源库ID",
     )
-    word: Mapped[str] = mapped_column(String(100), nullable=False, index=True, comment="单词")
-    pronunciation: Mapped[str | None] = mapped_column(String(200), nullable=True, comment="音标")
-    part_of_speech: Mapped[str | None] = mapped_column(String(50), nullable=True, comment="词性")
+    word: Mapped[str] = mapped_column(
+        String(100), nullable=False, index=True, comment="单词"
+    )
+    pronunciation: Mapped[str | None] = mapped_column(
+        String(200), nullable=True, comment="音标"
+    )
+    part_of_speech: Mapped[str | None] = mapped_column(
+        String(50), nullable=True, comment="词性"
+    )
     chinese_meaning: Mapped[str] = mapped_column(Text, nullable=False, comment="中文释义")
-    english_meaning: Mapped[str | None] = mapped_column(Text, nullable=True, comment="英文释义")
+    english_meaning: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="英文释义"
+    )
     example_sentences: Mapped[list[dict[str, Any]]] = mapped_column(
         JSON, default=list, nullable=False, comment="例句列表"
     )
@@ -126,11 +129,21 @@ class VocabularyItem(BaseModel):
         nullable=False,
         comment="难度等级",
     )
-    frequency: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="使用频率")
-    tags: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False, comment="标签")
-    audio_url: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="音频URL")
-    image_url: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="图片URL")
-    learning_tips: Mapped[str | None] = mapped_column(Text, nullable=True, comment="学习提示")
+    frequency: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="使用频率"
+    )
+    tags: Mapped[list[str]] = mapped_column(
+        JSON, default=list, nullable=False, comment="标签"
+    )
+    audio_url: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="音频URL"
+    )
+    image_url: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="图片URL"
+    )
+    learning_tips: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="学习提示"
+    )
     is_key_word: Mapped[bool] = mapped_column(
         Boolean, default=False, nullable=False, comment="是否关键词"
     )
@@ -165,7 +178,9 @@ class KnowledgePoint(BaseModel):
         comment="父知识点ID",
     )
     title: Mapped[str] = mapped_column(String(200), nullable=False, comment="知识点标题")
-    category: Mapped[str | None] = mapped_column(String(100), nullable=True, comment="知识点分类")
+    category: Mapped[str | None] = mapped_column(
+        String(100), nullable=True, comment="知识点分类"
+    )
     content: Mapped[str] = mapped_column(Text, nullable=False, comment="知识点内容")
     description: Mapped[str | None] = mapped_column(Text, nullable=True, comment="详细描述")
     difficulty_level: Mapped[DifficultyLevel] = mapped_column(
@@ -195,7 +210,9 @@ class KnowledgePoint(BaseModel):
     resources: Mapped[list[dict[str, Any]]] = mapped_column(
         JSON, default=list, nullable=False, comment="相关资源"
     )
-    tags: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False, comment="标签")
+    tags: Mapped[list[str]] = mapped_column(
+        JSON, default=list, nullable=False, comment="标签"
+    )
     estimated_time: Mapped[int] = mapped_column(
         Integer, default=30, nullable=False, comment="预估学习时间(分钟)"
     )
@@ -213,7 +230,9 @@ class KnowledgePoint(BaseModel):
     parent: Mapped[KnowledgePoint | None] = relationship(
         "KnowledgePoint", remote_side="KnowledgePoint.id", back_populates="children"
     )
-    children: Mapped[list[KnowledgePoint]] = relationship("KnowledgePoint", back_populates="parent")
+    children: Mapped[list[KnowledgePoint]] = relationship(
+        "KnowledgePoint", back_populates="parent"
+    )
 
 
 class TeachingMaterial(BaseModel):
@@ -231,7 +250,9 @@ class TeachingMaterial(BaseModel):
     authors: Mapped[list[str]] = mapped_column(
         JSON, default=list, nullable=False, comment="作者列表"
     )
-    publisher: Mapped[str | None] = mapped_column(String(200), nullable=True, comment="出版社")
+    publisher: Mapped[str | None] = mapped_column(
+        String(200), nullable=True, comment="出版社"
+    )
     publication_date: Mapped[str | None] = mapped_column(
         String(20), nullable=True, comment="出版日期"
     )
@@ -246,13 +267,21 @@ class TeachingMaterial(BaseModel):
         nullable=False,
         comment="内容类型",
     )
-    file_path: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="文件路径")
+    file_path: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="文件路径"
+    )
     file_size: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="文件大小(字节)"
     )
-    file_format: Mapped[str | None] = mapped_column(String(20), nullable=True, comment="文件格式")
-    preview_url: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="预览URL")
-    download_url: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="下载URL")
+    file_format: Mapped[str | None] = mapped_column(
+        String(20), nullable=True, comment="文件格式"
+    )
+    preview_url: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="预览URL"
+    )
+    download_url: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="下载URL"
+    )
     chapters: Mapped[list[dict[str, Any]]] = mapped_column(
         JSON, default=list, nullable=False, comment="章节信息"
     )
@@ -268,9 +297,15 @@ class TeachingMaterial(BaseModel):
     learning_objectives: Mapped[list[str]] = mapped_column(
         JSON, default=list, nullable=False, comment="学习目标"
     )
-    tags: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False, comment="标签")
-    usage_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="使用次数")
-    rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=False, comment="评分 (0-5)")
+    tags: Mapped[list[str]] = mapped_column(
+        JSON, default=list, nullable=False, comment="标签"
+    )
+    usage_count: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="使用次数"
+    )
+    rating: Mapped[float] = mapped_column(
+        Float, default=0.0, nullable=False, comment="评分 (0-5)"
+    )
     review_count: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="评价数量"
     )
@@ -282,7 +317,9 @@ class TeachingMaterial(BaseModel):
     )
 
     # 关系
-    library: Mapped[ResourceLibrary] = relationship("ResourceLibrary", back_populates="materials")
+    library: Mapped[ResourceLibrary] = relationship(
+        "ResourceLibrary", back_populates="materials"
+    )
 
 
 class ExamSyllabus(BaseModel):
@@ -298,14 +335,18 @@ class ExamSyllabus(BaseModel):
     )
     title: Mapped[str] = mapped_column(String(300), nullable=False, comment="考纲标题")
     exam_type: Mapped[str] = mapped_column(String(100), nullable=False, comment="考试类型")
-    exam_level: Mapped[str | None] = mapped_column(String(50), nullable=True, comment="考试级别")
+    exam_level: Mapped[str | None] = mapped_column(
+        String(50), nullable=True, comment="考试级别"
+    )
     version: Mapped[str] = mapped_column(
         String(20), default="1.0", nullable=False, comment="版本号"
     )
     effective_date: Mapped[str | None] = mapped_column(
         String(20), nullable=True, comment="生效日期"
     )
-    expiry_date: Mapped[str | None] = mapped_column(String(20), nullable=True, comment="失效日期")
+    expiry_date: Mapped[str | None] = mapped_column(
+        String(20), nullable=True, comment="失效日期"
+    )
     issuing_authority: Mapped[str | None] = mapped_column(
         String(200), nullable=True, comment="颁布机构"
     )
@@ -337,7 +378,9 @@ class ExamSyllabus(BaseModel):
     preparation_suggestions: Mapped[list[str]] = mapped_column(
         JSON, default=list, nullable=False, comment="备考建议"
     )
-    tags: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False, comment="标签")
+    tags: Mapped[list[str]] = mapped_column(
+        JSON, default=list, nullable=False, comment="标签"
+    )
     is_current: Mapped[bool] = mapped_column(
         Boolean, default=True, nullable=False, comment="是否为当前版本"
     )
@@ -346,7 +389,9 @@ class ExamSyllabus(BaseModel):
     )
 
     # 关系
-    library: Mapped[ResourceLibrary] = relationship("ResourceLibrary", back_populates="syllabi")
+    library: Mapped[ResourceLibrary] = relationship(
+        "ResourceLibrary", back_populates="syllabi"
+    )
 
 
 class HotspotResource(BaseModel):
@@ -364,18 +409,28 @@ class HotspotResource(BaseModel):
     source_type: Mapped[str] = mapped_column(
         String(50), nullable=False, comment="来源类型 (news, paper, blog, etc.)"
     )
-    source_url: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="来源URL")
+    source_url: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="来源URL"
+    )
     author: Mapped[str | None] = mapped_column(String(200), nullable=True, comment="作者")
-    publish_date: Mapped[str | None] = mapped_column(String(20), nullable=True, comment="发布日期")
-    content_preview: Mapped[str | None] = mapped_column(Text, nullable=True, comment="内容预览")
-    full_content: Mapped[str | None] = mapped_column(Text, nullable=True, comment="完整内容")
+    publish_date: Mapped[str | None] = mapped_column(
+        String(20), nullable=True, comment="发布日期"
+    )
+    content_preview: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="内容预览"
+    )
+    full_content: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="完整内容"
+    )
     content_type: Mapped[ContentType] = mapped_column(
         Enum(ContentType),
         default=ContentType.TEXT,
         nullable=False,
         comment="内容类型",
     )
-    language: Mapped[str] = mapped_column(String(20), default="en", nullable=False, comment="语言")
+    language: Mapped[str] = mapped_column(
+        String(20), default="en", nullable=False, comment="语言"
+    )
     difficulty_level: Mapped[DifficultyLevel] = mapped_column(
         Enum(DifficultyLevel),
         default=DifficultyLevel.INTERMEDIATE,
@@ -394,7 +449,9 @@ class HotspotResource(BaseModel):
     grammar_points: Mapped[list[str]] = mapped_column(
         JSON, default=list, nullable=False, comment="语法点"
     )
-    cultural_notes: Mapped[str | None] = mapped_column(Text, nullable=True, comment="文化注释")
+    cultural_notes: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="文化注释"
+    )
     comprehension_questions: Mapped[list[dict[str, Any]]] = mapped_column(
         JSON, default=list, nullable=False, comment="理解问题"
     )
@@ -410,9 +467,15 @@ class HotspotResource(BaseModel):
     engagement_rate: Mapped[float] = mapped_column(
         Float, default=0.0, nullable=False, comment="参与度"
     )
-    view_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="浏览次数")
-    like_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="点赞次数")
-    share_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="分享次数")
+    view_count: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="浏览次数"
+    )
+    like_count: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="点赞次数"
+    )
+    share_count: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="分享次数"
+    )
     comment_count: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="评论次数"
     )
@@ -425,10 +488,14 @@ class HotspotResource(BaseModel):
     recommendation_reason: Mapped[str | None] = mapped_column(
         Text, nullable=True, comment="推荐理由"
     )
-    expiry_date: Mapped[str | None] = mapped_column(String(20), nullable=True, comment="过期日期")
+    expiry_date: Mapped[str | None] = mapped_column(
+        String(20), nullable=True, comment="过期日期"
+    )
 
     # 关系
-    library: Mapped[ResourceLibrary] = relationship("ResourceLibrary", back_populates="hotspots")
+    library: Mapped[ResourceLibrary] = relationship(
+        "ResourceLibrary", back_populates="hotspots"
+    )
 
 
 class ResourceShare(BaseModel):
@@ -437,7 +504,9 @@ class ResourceShare(BaseModel):
     __tablename__ = "resource_shares"
 
     resource_id: Mapped[int] = mapped_column(Integer, nullable=False, comment="资源ID")
-    resource_type: Mapped[str] = mapped_column(String(50), nullable=False, comment="资源类型")
+    resource_type: Mapped[str] = mapped_column(
+        String(50), nullable=False, comment="资源类型"
+    )
     shared_by: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"),
@@ -462,14 +531,18 @@ class ResourceShare(BaseModel):
         nullable=False,
         comment="权限级别",
     )
-    share_message: Mapped[str | None] = mapped_column(Text, nullable=True, comment="分享说明")
+    share_message: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="分享说明"
+    )
     access_count: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="访问次数"
     )
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=True, nullable=False, comment="是否激活"
     )
-    expires_at: Mapped[DateTime | None] = mapped_column(DateTime, nullable=True, comment="过期时间")
+    expires_at: Mapped[DateTime | None] = mapped_column(
+        DateTime, nullable=True, comment="过期时间"
+    )
 
     # 关系
     sharer: Mapped[User] = relationship("User", foreign_keys=[shared_by])
@@ -482,7 +555,9 @@ class ResourceUsage(BaseModel):
     __tablename__ = "resource_usage"
 
     resource_id: Mapped[int] = mapped_column(Integer, nullable=False, comment="资源ID")
-    resource_type: Mapped[str] = mapped_column(String(50), nullable=False, comment="资源类型")
+    resource_type: Mapped[str] = mapped_column(
+        String(50), nullable=False, comment="资源类型"
+    )
     user_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"),
@@ -492,7 +567,9 @@ class ResourceUsage(BaseModel):
     action: Mapped[str] = mapped_column(
         String(50), nullable=False, comment="操作类型 (view, download, edit, etc.)"
     )
-    session_id: Mapped[str | None] = mapped_column(String(100), nullable=True, comment="会话ID")
+    session_id: Mapped[str | None] = mapped_column(
+        String(100), nullable=True, comment="会话ID"
+    )
     duration: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="使用时长(秒)"
     )
@@ -540,7 +617,9 @@ class DocumentChunk(BaseModel):
     end_position: Mapped[int] = mapped_column(
         Integer, nullable=False, comment="在原文档中的结束位置"
     )
-    page_number: Mapped[int | None] = mapped_column(Integer, nullable=True, comment="页码")
+    page_number: Mapped[int | None] = mapped_column(
+        Integer, nullable=True, comment="页码"
+    )
     section_title: Mapped[str | None] = mapped_column(
         String(200), nullable=True, comment="章节标题"
     )

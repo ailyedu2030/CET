@@ -243,13 +243,19 @@ class StorageConfig:
     def _load_security_config(self) -> dict[str, Any]:
         """加载安全配置"""
         return {
-            "enable_encryption": os.getenv("MINIO_ENABLE_ENCRYPTION", "true").lower() == "true",
+            "enable_encryption": os.getenv("MINIO_ENABLE_ENCRYPTION", "true").lower()
+            == "true",
             "encryption_key": os.getenv("MINIO_ENCRYPTION_KEY", ""),
-            "enable_access_log": os.getenv("MINIO_ENABLE_ACCESS_LOG", "true").lower() == "true",
-            "max_concurrent_uploads": int(os.getenv("MINIO_MAX_CONCURRENT_UPLOADS", "10")),
+            "enable_access_log": os.getenv("MINIO_ENABLE_ACCESS_LOG", "true").lower()
+            == "true",
+            "max_concurrent_uploads": int(
+                os.getenv("MINIO_MAX_CONCURRENT_UPLOADS", "10")
+            ),
             "upload_timeout": int(os.getenv("MINIO_UPLOAD_TIMEOUT", "300")),  # 5分钟
             "download_timeout": int(os.getenv("MINIO_DOWNLOAD_TIMEOUT", "300")),  # 5分钟
-            "presigned_url_expiry": int(os.getenv("MINIO_PRESIGNED_URL_EXPIRY", "3600")),  # 1小时
+            "presigned_url_expiry": int(
+                os.getenv("MINIO_PRESIGNED_URL_EXPIRY", "3600")
+            ),  # 1小时
         }
 
     def _load_performance_config(self) -> dict[str, Any]:
@@ -259,9 +265,14 @@ class StorageConfig:
             "retry_attempts": int(os.getenv("MINIO_RETRY_ATTEMPTS", "3")),
             "retry_delay": float(os.getenv("MINIO_RETRY_DELAY", "1.0")),
             "chunk_size": int(os.getenv("MINIO_CHUNK_SIZE", "8192")),  # 8KB
-            "multipart_threshold": int(os.getenv("MINIO_MULTIPART_THRESHOLD", "64")),  # 64MB
-            "multipart_chunksize": int(os.getenv("MINIO_MULTIPART_CHUNKSIZE", "16")),  # 16MB
-            "enable_compression": os.getenv("MINIO_ENABLE_COMPRESSION", "true").lower() == "true",
+            "multipart_threshold": int(
+                os.getenv("MINIO_MULTIPART_THRESHOLD", "64")
+            ),  # 64MB
+            "multipart_chunksize": int(
+                os.getenv("MINIO_MULTIPART_CHUNKSIZE", "16")
+            ),  # 16MB
+            "enable_compression": os.getenv("MINIO_ENABLE_COMPRESSION", "true").lower()
+            == "true",
         }
 
     def get_bucket_config(self, bucket_type: str) -> BucketConfig | None:

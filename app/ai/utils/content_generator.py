@@ -230,7 +230,9 @@ class SyllabusGenerator:
         if "textbooks" in materials:
             formatted.append("教材：")
             for book in materials["textbooks"]:
-                formatted.append(f"  - {book.get('name', '未知')} ({book.get('chapters', '全册')})")
+                formatted.append(
+                    f"  - {book.get('name', '未知')} ({book.get('chapters', '全册')})"
+                )
 
         if "exam_syllabus" in materials:
             formatted.append("考纲要求：")

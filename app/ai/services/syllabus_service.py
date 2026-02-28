@@ -9,12 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.ai.models.ai_models import AISyllabus
-from app.ai.schemas.ai_schemas import (
-    SyllabusCreate,
-    SyllabusGenerationRequest,
-    SyllabusResponse,
-    SyllabusUpdate,
-)
+from app.ai.schemas.ai_schemas import (SyllabusCreate, SyllabusGenerationRequest,
+                                       SyllabusResponse, SyllabusUpdate)
 from app.ai.services.deepseek_service import get_deepseek_service
 from app.ai.utils.content_generator import SyllabusGenerator
 from app.courses.models.course_models import Course
@@ -74,9 +70,11 @@ class SyllabusService:
                 raise ValueError(f"AI生成失败: {error_msg}")
 
             # 验证和解析生成的内容
-            is_valid, parsed_content, validation_error = (
-                self.content_generator.validate_generated_content(generated_content)
-            )
+            (
+                is_valid,
+                parsed_content,
+                validation_error,
+            ) = self.content_generator.validate_generated_content(generated_content)
 
             if not is_valid or not parsed_content:
                 raise ValueError(f"生成内容验证失败: {validation_error}")
@@ -211,7 +209,9 @@ class SyllabusService:
 
             # 如果内容有变更，自动更新版本
             if "content" in update_fields:
-                syllabus.version = await self._get_next_version(db, syllabus.course_id, teacher_id)
+                syllabus.version = await self._get_next_version(
+                    db, syllabus.course_id, teacher_id
+                )
 
             await db.commit()
             await db.refresh(syllabus)
@@ -326,7 +326,9 @@ class SyllabusService:
     ) -> SyllabusResponse | None:
         """审批大纲."""
         try:
-            result = await db.execute(select(AISyllabus).where(AISyllabus.id == syllabus_id))
+            result = await db.execute(
+                select(AISyllabus).where(AISyllabus.id == syllabus_id)
+            )
 
             syllabus = result.scalar_one_or_none()
             if not syllabus:
@@ -471,7 +473,9 @@ class SyllabusService:
                     status=None,
                     source_materials=None,
                 )
-                return await self.update_syllabus(db, syllabus_id, update_data, teacher_id)
+                return await self.update_syllabus(
+                    db, syllabus_id, update_data, teacher_id
+                )
 
             except json.JSONDecodeError as e:
                 raise ValueError("生成内容格式错误") from e
@@ -480,7 +484,9 @@ class SyllabusService:
             logger.error(f"重新生成大纲部分失败: {str(e)}")
             raise
 
-    def _update_nested_dict(self, target_dict: dict[str, Any], path: str, value: Any) -> None:
+    def _update_nested_dict(
+        self, target_dict: dict[str, Any], path: str, value: Any
+    ) -> None:
         """更新嵌套字典的特定路径."""
         keys = path.split(".")
         current = target_dict

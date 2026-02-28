@@ -14,22 +14,19 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.models.ai_models import LearningAnalysis, TeachingAdjustment
-from app.ai.schemas.ai_schemas import (
-    LearningAnalysisCreate,
-    LearningAnalysisListResponse,
-    LearningAnalysisRequest,
-    LearningAnalysisResponse,
-    TeachingAdjustmentCreate,
-    TeachingAdjustmentListResponse,
-    TeachingAdjustmentRequest,
-    TeachingAdjustmentResponse,
-    TeachingAdjustmentUpdate,
-)
+from app.ai.schemas.ai_schemas import (LearningAnalysisCreate,
+                                       LearningAnalysisListResponse,
+                                       LearningAnalysisRequest,
+                                       LearningAnalysisResponse,
+                                       TeachingAdjustmentCreate,
+                                       TeachingAdjustmentListResponse,
+                                       TeachingAdjustmentRequest,
+                                       TeachingAdjustmentResponse,
+                                       TeachingAdjustmentUpdate)
 from app.ai.services.deepseek_service import get_deepseek_service
 from app.ai.services.enhanced_learning_analytics import EnhancedLearningAnalytics
-from app.ai.services.intelligent_teaching_adjustment import (
-    IntelligentTeachingAdjustment,
-)
+from app.ai.services.intelligent_teaching_adjustment import \
+    IntelligentTeachingAdjustment
 from app.courses.models.course_models import Class, Course
 from app.training.models.training_models import TrainingRecord, TrainingSession
 from app.users.models.user_models import StudentProfile, User
@@ -106,7 +103,9 @@ class LearningAdjustmentService:
             # 如果有关联分析，获取分析数据
             analysis_data = None
             if request.learning_analysis_id:
-                analysis_data = await self._get_analysis_data(db, request.learning_analysis_id)
+                analysis_data = await self._get_analysis_data(
+                    db, request.learning_analysis_id
+                )
 
             # 收集当前教学状态
             teaching_context = await self._collect_teaching_context(
@@ -114,7 +113,9 @@ class LearningAdjustmentService:
             )
 
             # 使用AI生成调整建议
-            adjustment_suggestions = await self._generate_ai_adjustments(teaching_context, request)
+            adjustment_suggestions = await self._generate_ai_adjustments(
+                teaching_context, request
+            )
 
             # 创建调整建议记录
             adjustments = []
@@ -137,8 +138,12 @@ class LearningAdjustmentService:
                     reasoning=suggestion.get("reasoning"),
                 )
 
-                adjustment_record = await self._create_adjustment_record(db, adjustment_create)
-                adjustments.append(TeachingAdjustmentResponse.model_validate(adjustment_record))
+                adjustment_record = await self._create_adjustment_record(
+                    db, adjustment_create
+                )
+                adjustments.append(
+                    TeachingAdjustmentResponse.model_validate(adjustment_record)
+                )
 
             return adjustments
 
@@ -196,7 +201,9 @@ class LearningAdjustmentService:
             query = query.order_by(desc(LearningAnalysis.analysis_date))
 
             # 计算总数
-            count_query = select(func.count(LearningAnalysis.id)).select_from(query.subquery())
+            count_query = select(func.count(LearningAnalysis.id)).select_from(
+                query.subquery()
+            )
             count_result = await db.execute(count_query)
             total = count_result.scalar() or 0
 
@@ -223,7 +230,9 @@ class LearningAdjustmentService:
     ) -> TeachingAdjustmentResponse | None:
         """根据ID获取教学调整建议."""
         try:
-            query = select(TeachingAdjustment).where(TeachingAdjustment.id == adjustment_id)
+            query = select(TeachingAdjustment).where(
+                TeachingAdjustment.id == adjustment_id
+            )
 
             if teacher_id:
                 query = query.where(TeachingAdjustment.teacher_id == teacher_id)
@@ -308,7 +317,9 @@ class LearningAdjustmentService:
             if teacher_id:
                 query = query.where(TeachingAdjustment.teacher_id == teacher_id)
             if adjustment_type:
-                query = query.where(TeachingAdjustment.adjustment_type == adjustment_type)
+                query = query.where(
+                    TeachingAdjustment.adjustment_type == adjustment_type
+                )
             if implementation_status:
                 query = query.where(
                     TeachingAdjustment.implementation_status == implementation_status
@@ -318,7 +329,9 @@ class LearningAdjustmentService:
             query = query.order_by(desc(TeachingAdjustment.created_at))
 
             # 计算总数
-            count_query = select(func.count(TeachingAdjustment.id)).select_from(query.subquery())
+            count_query = select(func.count(TeachingAdjustment.id)).select_from(
+                query.subquery()
+            )
             count_result = await db.execute(count_query)
             total = count_result.scalar() or 0
 
@@ -330,7 +343,9 @@ class LearningAdjustmentService:
             adjustments = result.scalars().all()
 
             return TeachingAdjustmentListResponse(
-                adjustments=[TeachingAdjustmentResponse.model_validate(a) for a in adjustments],
+                adjustments=[
+                    TeachingAdjustmentResponse.model_validate(a) for a in adjustments
+                ],
                 total=total,
                 page=page,
                 size=size,
@@ -347,7 +362,9 @@ class LearningAdjustmentService:
     ) -> None:
         """验证班级权限."""
         result = await db.execute(
-            select(Class).where(and_(Class.id == class_id, Class.teacher_id == teacher_id))
+            select(Class).where(
+                and_(Class.id == class_id, Class.teacher_id == teacher_id)
+            )
         )
         if not result.scalar_one_or_none():
             raise ValueError("无权限访问该班级")
@@ -357,7 +374,9 @@ class LearningAdjustmentService:
     ) -> None:
         """验证课程访问权限."""
         result = await db.execute(
-            select(Course).where(and_(Course.id == course_id, Course.created_by == teacher_id))
+            select(Course).where(
+                and_(Course.id == course_id, Course.created_by == teacher_id)
+            )
         )
         if not result.scalar_one_or_none():
             raise ValueError("无权限访问该课程")
@@ -404,7 +423,9 @@ class LearningAdjustmentService:
         # 获取课程相关班级的学生训练记录
         from app.courses.models.course_models import Class
 
-        classes_result = await db.execute(select(Class).where(Class.course_id == course_id))
+        classes_result = await db.execute(
+            select(Class).where(Class.course_id == course_id)
+        )
         classes = classes_result.scalars().all()
 
         if not classes:
@@ -642,13 +663,17 @@ class LearningAdjustmentService:
                 "name": course.name if course else None,
                 "description": course.description if course else None,
             },
-            "analysis_insights": (analysis_data.get("insights", []) if analysis_data else []),
+            "analysis_insights": (
+                analysis_data.get("insights", []) if analysis_data else []
+            ),
             "current_date": datetime.utcnow().isoformat(),
         }
 
         return context
 
-    async def _get_analysis_data(self, db: AsyncSession, analysis_id: int) -> dict[str, Any] | None:
+    async def _get_analysis_data(
+        self, db: AsyncSession, analysis_id: int
+    ) -> dict[str, Any] | None:
         """获取分析数据."""
         result = await db.execute(
             select(LearningAnalysis).where(LearningAnalysis.id == analysis_id)

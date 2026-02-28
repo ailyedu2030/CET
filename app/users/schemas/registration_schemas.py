@@ -22,9 +22,13 @@ class StudentRegistrationRequest(BaseModel):
     real_name: str = Field(..., min_length=2, max_length=50, description="真实姓名")
     age: int | None = Field(None, ge=16, le=100, description="年龄")
     gender: str | None = Field(None, pattern=r"^(男|女|其他)$", description="性别")
-    id_number: str | None = Field(None, min_length=18, max_length=18, description="身份证号")
+    id_number: str | None = Field(
+        None, min_length=18, max_length=18, description="身份证号"
+    )
     phone: str | None = Field(None, pattern=r"^1[3-9]\d{9}$", description="手机号码")
-    emergency_contact_name: str | None = Field(None, max_length=50, description="紧急联系人姓名")
+    emergency_contact_name: str | None = Field(
+        None, max_length=50, description="紧急联系人姓名"
+    )
     emergency_contact_phone: str | None = Field(
         None, pattern=r"^1[3-9]\d{9}$", description="紧急联系人电话"
     )
@@ -70,11 +74,15 @@ class TeacherRegistrationRequest(BaseModel):
     phone: str | None = Field(None, pattern=r"^1[3-9]\d{9}$", description="联系电话")
 
     # 资质材料文件（3类文件）
-    teacher_certificate: str | None = Field(None, max_length=500, description="教师证扫描件路径")
+    teacher_certificate: str | None = Field(
+        None, max_length=500, description="教师证扫描件路径"
+    )
     qualification_certificates: list[str] = Field(
         default_factory=list, description="职业资格证书文件路径列表"
     )
-    honor_certificates: list[str] = Field(default_factory=list, description="荣誉证书文件路径列表")
+    honor_certificates: list[str] = Field(
+        default_factory=list, description="荣誉证书文件路径列表"
+    )
 
 
 class RegistrationApplicationResponse(BaseModel):

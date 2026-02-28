@@ -116,10 +116,14 @@ class PlanGenerator:
             )
 
             # 生成每日任务
-            daily_tasks = await self._generate_daily_tasks(weekly_plans, plan_config, student_level)
+            daily_tasks = await self._generate_daily_tasks(
+                weekly_plans, plan_config, student_level
+            )
 
             # 设置复习计划
-            review_schedule = await self._generate_review_schedule(plan_structure, plan_config)
+            review_schedule = await self._generate_review_schedule(
+                plan_structure, plan_config
+            )
 
             # 设置里程碑
             milestones = await self._generate_milestones(plan_structure, weekly_plans)
@@ -180,7 +184,9 @@ class PlanGenerator:
         difficulty_progression = await self._plan_difficulty_progression(level, config)
 
         # 计算时间分配
-        time_allocation = await self._calculate_time_allocation(config, training_allocation)
+        time_allocation = await self._calculate_time_allocation(
+            config, training_allocation
+        )
 
         return {
             "overall_goals": overall_goals,
@@ -203,7 +209,9 @@ class PlanGenerator:
 
         for week in range(1, duration_weeks + 1):
             # 计算本周难度
-            week_difficulty = self._calculate_week_difficulty(week, duration_weeks, plan_structure)
+            week_difficulty = self._calculate_week_difficulty(
+                week, duration_weeks, plan_structure
+            )
 
             # 分配本周训练类型
             week_training_types = self._allocate_week_training_types(
@@ -211,7 +219,9 @@ class PlanGenerator:
             )
 
             # 设置本周目标
-            week_goals = self._set_week_goals(week, week_difficulty, week_training_types)
+            week_goals = self._set_week_goals(
+                week, week_difficulty, week_training_types
+            )
 
             # 计算本周时间分配
             week_time_allocation = self._calculate_week_time_allocation(
@@ -224,7 +234,9 @@ class PlanGenerator:
                 "training_types": week_training_types,
                 "goals": week_goals,
                 "time_allocation": week_time_allocation,
-                "estimated_questions": self._estimate_week_questions(week_time_allocation),
+                "estimated_questions": self._estimate_week_questions(
+                    week_time_allocation
+                ),
             }
 
             weekly_plans.append(weekly_plan)
@@ -247,7 +259,9 @@ class PlanGenerator:
             # 生成本周的每日任务
             week_tasks = []
             for day in range(1, sessions_per_week + 1):
-                daily_task = self._generate_single_day_task(week_number, day, weekly_plan, config)
+                daily_task = self._generate_single_day_task(
+                    week_number, day, weekly_plan, config
+                )
                 week_tasks.append(daily_task)
 
             daily_tasks[f"week_{week_number}"] = week_tasks
@@ -314,7 +328,9 @@ class PlanGenerator:
 
     # ==================== 辅助方法 ====================
 
-    async def _define_overall_goals(self, level: str, config: dict[str, Any]) -> dict[str, Any]:
+    async def _define_overall_goals(
+        self, level: str, config: dict[str, Any]
+    ) -> dict[str, Any]:
         """定义总体目标."""
         level_goals = {
             "beginner": {
@@ -349,8 +365,12 @@ class PlanGenerator:
         self, level: str, weak_areas: list[dict[str, Any]]
     ) -> dict[str, float]:
         """分配训练类型权重."""
-        base_weights = self.training_weights.get(level, self.training_weights["beginner"])
-        adjusted_weights: dict[str, float] = {k.value: v for k, v in base_weights.items()}
+        base_weights = self.training_weights.get(
+            level, self.training_weights["beginner"]
+        )
+        adjusted_weights: dict[str, float] = {
+            k.value: v for k, v in base_weights.items()
+        }
 
         # 根据薄弱环节调整权重
         for weak_area in weak_areas:
@@ -363,7 +383,9 @@ class PlanGenerator:
         # 归一化权重
         total_weight = sum(adjusted_weights.values())
         if total_weight > 0:
-            adjusted_weights = {k: v / total_weight for k, v in adjusted_weights.items()}
+            adjusted_weights = {
+                k: v / total_weight for k, v in adjusted_weights.items()
+            }
 
         return adjusted_weights
 
@@ -383,7 +405,9 @@ class PlanGenerator:
         for week in range(1, duration_weeks + 1):
             # 线性增长，但有上限
             base_difficulty = 0.3 if level == "beginner" else 0.5
-            week_difficulty = min(0.9, base_difficulty + float(week - 1) * progression_rate)
+            week_difficulty = min(
+                0.9, base_difficulty + float(week - 1) * progression_rate
+            )
             weekly_difficulties.append(week_difficulty)
 
         return {
@@ -410,7 +434,9 @@ class PlanGenerator:
     ) -> float:
         """计算本周难度."""
         difficulties = plan_structure["difficulty_progression"]["weekly_difficulties"]
-        return float(difficulties[week - 1] if week <= len(difficulties) else difficulties[-1])
+        return float(
+            difficulties[week - 1] if week <= len(difficulties) else difficulties[-1]
+        )
 
     def _allocate_week_training_types(
         self,
@@ -469,7 +495,9 @@ class PlanGenerator:
 
         return week_allocation
 
-    def _estimate_week_questions(self, time_allocation: dict[str, int]) -> dict[str, int]:
+    def _estimate_week_questions(
+        self, time_allocation: dict[str, int]
+    ) -> dict[str, int]:
         """估算本周题目数量."""
         # 假设每分钟完成1题
         return dict(time_allocation)

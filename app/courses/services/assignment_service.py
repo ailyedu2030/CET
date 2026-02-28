@@ -7,19 +7,17 @@ from sqlalchemy import and_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.courses.models import Class, Course
-from app.courses.models.assignment_models import CourseAssignment, AssignmentStatus
-from app.courses.schemas.assignment_schemas import (
-    BulkAssignmentRequest,
-    BulkAssignmentResponse,
-    CourseAssignmentRequest,
-    QualificationCheckResult,
-    TeacherQualificationCheck,
-    TeacherWorkloadInfo,
-    TimeConflictCheck,
-    TimeConflictResult,
-    WorkloadBalanceRequest,
-    WorkloadBalanceResponse,
-)
+from app.courses.models.assignment_models import AssignmentStatus, CourseAssignment
+from app.courses.schemas.assignment_schemas import (BulkAssignmentRequest,
+                                                    BulkAssignmentResponse,
+                                                    CourseAssignmentRequest,
+                                                    QualificationCheckResult,
+                                                    TeacherQualificationCheck,
+                                                    TeacherWorkloadInfo,
+                                                    TimeConflictCheck,
+                                                    TimeConflictResult,
+                                                    WorkloadBalanceRequest,
+                                                    WorkloadBalanceResponse)
 from app.courses.utils.conflict_detection_utils import ConflictDetectionUtils
 from app.users.models import User
 
@@ -57,7 +55,9 @@ class AssignmentService:
 
         # 执行分配
         selected_teacher_id = (
-            best_teacher["teacher_id"] if best_teacher else assignment_request.teacher_ids[0]
+            best_teacher["teacher_id"]
+            if best_teacher
+            else assignment_request.teacher_ids[0]
         )
 
         # 创建分配记录
@@ -65,7 +65,9 @@ class AssignmentService:
             course_id=assignment_request.course_id,
             teacher_id=selected_teacher_id,
             assigned_by=assigner_id,
-            assignment_type=("direct" if assignment_request.force_assign else "optimal"),
+            assignment_type=(
+                "direct" if assignment_request.force_assign else "optimal"
+            ),
             notes=assignment_request.assignment_reason,
             status=AssignmentStatus.ACTIVE,
         )
@@ -87,7 +89,9 @@ class AssignmentService:
             "teacher_id": selected_teacher_id,
             "assigned_at": datetime.utcnow(),
             "assigned_by": assigner_id,
-            "assignment_type": ("direct" if assignment_request.force_assign else "optimal"),
+            "assignment_type": (
+                "direct" if assignment_request.force_assign else "optimal"
+            ),
             "assignment_reason": assignment_request.assignment_reason,
             "evaluation_score": best_teacher["total_score"] if best_teacher else 0.0,
         }
@@ -145,7 +149,9 @@ class AssignmentService:
         required_level = course_requirements.get("required_level", "intermediate")
         if qualification_check.qualification_level == required_level:
             qualification_score += 20
-        elif self._is_higher_qualification(qualification_check.qualification_level, required_level):
+        elif self._is_higher_qualification(
+            qualification_check.qualification_level, required_level
+        ):
             qualification_score += 25
         else:
             missing_qualifications.append(f"资质等级不符合要求（需要{required_level}）")
@@ -175,7 +181,9 @@ class AssignmentService:
         current_classes = await self._get_teacher_current_classes(teacher_id)
 
         # 计算工作量指标
-        total_students = sum(class_obj.current_students for class_obj in current_classes)
+        total_students = sum(
+            class_obj.current_students for class_obj in current_classes
+        )
         max_classes = 5  # 可配置
         current_class_count = len(current_classes)
 
@@ -233,10 +241,14 @@ class AssignmentService:
             redistribution_plan=redistribution_plan,
         )
 
-    async def check_time_conflicts(self, conflict_check: TimeConflictCheck) -> TimeConflictResult:
+    async def check_time_conflicts(
+        self, conflict_check: TimeConflictCheck
+    ) -> TimeConflictResult:
         """检查时间冲突."""
         # 获取教师现有课程安排
-        existing_schedules = await self._get_teacher_schedules(conflict_check.teacher_id)
+        existing_schedules = await self._get_teacher_schedules(
+            conflict_check.teacher_id
+        )
 
         # 使用冲突检测工具
         conflict_result = ConflictDetectionUtils.check_time_conflict(
@@ -263,7 +275,9 @@ class AssignmentService:
             alternative_schedules=alternative_schedules,
         )
 
-    async def bulk_assignment(self, bulk_request: BulkAssignmentRequest) -> BulkAssignmentResponse:
+    async def bulk_assignment(
+        self, bulk_request: BulkAssignmentRequest
+    ) -> BulkAssignmentResponse:
         """批量分配."""
         import uuid
 
@@ -279,7 +293,9 @@ class AssignmentService:
             try:
                 # 预检查冲突（如果不是预演模式）
                 if not bulk_request.dry_run:
-                    conflict_check = await self._check_assignment_conflicts(assignment_data)
+                    conflict_check = await self._check_assignment_conflicts(
+                        assignment_data
+                    )
 
                     if conflict_check["has_conflict"]:
                         conflicts_detected += 1
@@ -354,7 +370,9 @@ class AssignmentService:
             error_summary=error_summary,
         )
 
-    async def _evaluate_teacher_for_course(self, teacher_id: int, course_id: int) -> dict[str, Any]:
+    async def _evaluate_teacher_for_course(
+        self, teacher_id: int, course_id: int
+    ) -> dict[str, Any]:
         """评估教师是否适合教授课程."""
         teacher = await self.db.get(User, teacher_id)
         course = await self.db.get(Course, course_id)
@@ -455,7 +473,9 @@ class AssignmentService:
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 
-    async def _calculate_teacher_expertise_match(self, teacher_id: int) -> dict[str, float]:
+    async def _calculate_teacher_expertise_match(
+        self, teacher_id: int
+    ) -> dict[str, float]:
         """计算教师专业匹配度."""
         # 这里应该基于教师的专业背景、教学记录等计算
         # 简化实现返回模拟数据
@@ -466,7 +486,9 @@ class AssignmentService:
             "technology_integration": 0.65,
         }
 
-    async def _get_target_teachers(self, balance_request: WorkloadBalanceRequest) -> list[User]:
+    async def _get_target_teachers(
+        self, balance_request: WorkloadBalanceRequest
+    ) -> list[User]:
         """获取目标教师列表."""
         stmt = select(User).where(User.user_type == "teacher")
 
@@ -582,7 +604,9 @@ class AssignmentService:
                 "conflict_id": conflict.get("id"),
                 "suggestion_type": "time_adjustment",
                 "description": "建议调整课程时间以避免冲突",
-                "priority": ("high" if conflict.get("overlap_duration", 0) > 60 else "medium"),
+                "priority": (
+                    "high" if conflict.get("overlap_duration", 0) > 60 else "medium"
+                ),
             }
             suggestions.append(suggestion)
 
@@ -616,7 +640,9 @@ class AssignmentService:
 
         return alternatives
 
-    async def _check_assignment_conflicts(self, assignment_data: dict[str, Any]) -> dict[str, Any]:
+    async def _check_assignment_conflicts(
+        self, assignment_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """检查单个分配的冲突."""
         # 简化实现
         return {
@@ -624,7 +650,9 @@ class AssignmentService:
             "conflicts": [],
         }
 
-    async def _execute_single_assignment(self, assignment_data: dict[str, Any]) -> dict[str, Any]:
+    async def _execute_single_assignment(
+        self, assignment_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """执行单个分配."""
         # 根据分配类型执行不同的操作
         assignment_type = assignment_data.get("type")

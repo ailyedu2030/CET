@@ -149,11 +149,15 @@ class AIConfig:
                 APIKeyConfig(
                     key_id="main",
                     api_key=main_key,
-                    endpoint=os.getenv("DEEPSEEK_API_ENDPOINT", "https://api.deepseek.com/v1"),
+                    endpoint=os.getenv(
+                        "DEEPSEEK_API_ENDPOINT", "https://api.deepseek.com/v1"
+                    ),
                     daily_quota=int(os.getenv("DEEPSEEK_DAILY_QUOTA", "1000000")),
                     rate_limit_per_minute=int(os.getenv("DEEPSEEK_RATE_LIMIT", "60")),
                     priority=1,
-                    cost_per_token=float(os.getenv("DEEPSEEK_COST_PER_TOKEN", "0.0014")),
+                    cost_per_token=float(
+                        os.getenv("DEEPSEEK_COST_PER_TOKEN", "0.0014")
+                    ),
                 )
             )
 
@@ -169,10 +173,16 @@ class AIConfig:
                         endpoint=os.getenv(
                             f"DEEPSEEK_API_ENDPOINT_{i}", "https://api.deepseek.com/v1"
                         ),
-                        daily_quota=int(os.getenv(f"DEEPSEEK_DAILY_QUOTA_{i}", "500000")),
-                        rate_limit_per_minute=int(os.getenv(f"DEEPSEEK_RATE_LIMIT_{i}", "30")),
+                        daily_quota=int(
+                            os.getenv(f"DEEPSEEK_DAILY_QUOTA_{i}", "500000")
+                        ),
+                        rate_limit_per_minute=int(
+                            os.getenv(f"DEEPSEEK_RATE_LIMIT_{i}", "30")
+                        ),
                         priority=i + 1,
-                        cost_per_token=float(os.getenv(f"DEEPSEEK_COST_PER_TOKEN_{i}", "0.0014")),
+                        cost_per_token=float(
+                            os.getenv(f"DEEPSEEK_COST_PER_TOKEN_{i}", "0.0014")
+                        ),
                     )
                 )
 
@@ -252,7 +262,9 @@ class AIConfig:
                 os.getenv("AI_HOURLY_COST_LIMIT", base_hourly_limit * hourly_multiplier)
             ),
             monthly_limit=float(
-                os.getenv("AI_MONTHLY_COST_LIMIT", base_daily_limit * daily_multiplier * 30)
+                os.getenv(
+                    "AI_MONTHLY_COST_LIMIT", base_daily_limit * daily_multiplier * 30
+                )
             ),
             per_request_limit=float(os.getenv("AI_PER_REQUEST_LIMIT", "5.0")),
             alert_thresholds={
@@ -261,7 +273,8 @@ class AIConfig:
                 "hourly_80_percent": base_hourly_limit * hourly_multiplier * 0.8,
                 "hourly_90_percent": base_hourly_limit * hourly_multiplier * 0.9,
             },
-            auto_throttle_enabled=os.getenv("AI_AUTO_THROTTLE", "true").lower() == "true",
+            auto_throttle_enabled=os.getenv("AI_AUTO_THROTTLE", "true").lower()
+            == "true",
             emergency_stop_threshold=float(
                 os.getenv(
                     "AI_EMERGENCY_STOP_THRESHOLD",

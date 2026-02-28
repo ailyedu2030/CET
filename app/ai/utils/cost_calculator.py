@@ -205,9 +205,13 @@ class CostCalculator:
             input_tokens = self.estimate_tokens(prompt, model_type)
 
             # 估算实际输出token数（通常比max_tokens少）
-            estimated_output_tokens = min(max_output_tokens, int(max_output_tokens * 0.8))
+            estimated_output_tokens = min(
+                max_output_tokens, int(max_output_tokens * 0.8)
+            )
 
-            return self.calculate_cost(input_tokens, estimated_output_tokens, model_type)
+            return self.calculate_cost(
+                input_tokens, estimated_output_tokens, model_type
+            )
 
         except Exception as e:
             self.logger.error(f"请求成本估算失败: {e}")
@@ -225,7 +229,9 @@ class CostCalculator:
             for request in requests:
                 prompt = request.get("prompt", "")
                 max_tokens = request.get("max_tokens", 1000)
-                model_type = AIModelType(request.get("model_type", AIModelType.DEEPSEEK_CHAT.value))
+                model_type = AIModelType(
+                    request.get("model_type", AIModelType.DEEPSEEK_CHAT.value)
+                )
 
                 cost = self.estimate_request_cost(prompt, max_tokens, model_type)
 
@@ -259,7 +265,9 @@ class CostCalculator:
                 "total_requests": len(requests),
                 "total_cost": total_cost,
                 "total_tokens": total_tokens,
-                "average_cost_per_request": (total_cost / len(requests) if requests else 0),
+                "average_cost_per_request": (
+                    total_cost / len(requests) if requests else 0
+                ),
                 "model_breakdown": model_costs,
                 "cost_details": cost_details,
             }
@@ -315,7 +323,8 @@ class CostCalculator:
                 y_mean = sum(costs) / n
 
                 numerator = sum(
-                    (x - x_mean) * (y - y_mean) for x, y in zip(x_values, costs, strict=False)
+                    (x - x_mean) * (y - y_mean)
+                    for x, y in zip(x_values, costs, strict=False)
                 )
                 denominator = sum((x - x_mean) ** 2 for x in x_values)
 
@@ -377,7 +386,9 @@ class CostCalculator:
                 factors={},
             )
 
-    def _analyze_cost_factors(self, historical_usage: list[UsageCost]) -> dict[str, float]:
+    def _analyze_cost_factors(
+        self, historical_usage: list[UsageCost]
+    ) -> dict[str, float]:
         """分析成本影响因子"""
         try:
             factors: dict[str, float] = {}
@@ -397,7 +408,9 @@ class CostCalculator:
 
             # 计算各模型成本占比
             for model, cost in model_usage.items():
-                factors[f"model_{model}_ratio"] = cost / total_cost if total_cost > 0 else 0
+                factors[f"model_{model}_ratio"] = (
+                    cost / total_cost if total_cost > 0 else 0
+                )
 
             # 时间分布分析
             hourly_costs = {}
@@ -410,7 +423,9 @@ class CostCalculator:
             # 峰值时段成本占比
             peak_hours = list(range(9, 21))
             peak_cost = sum(hourly_costs.get(hour, 0) for hour in peak_hours)
-            factors["peak_hours_ratio"] = peak_cost / total_cost if total_cost > 0 else 0
+            factors["peak_hours_ratio"] = (
+                peak_cost / total_cost if total_cost > 0 else 0
+            )
 
             # 平均请求成本
             if historical_usage:
@@ -435,7 +450,10 @@ class CostCalculator:
             suggestions = []
 
             # 检查预测成本是否超过阈值
-            if predicted_cost.predicted_daily_cost > self.optimization_thresholds["daily_limit"]:
+            if (
+                predicted_cost.predicted_daily_cost
+                > self.optimization_thresholds["daily_limit"]
+            ):
                 suggestions.append(
                     f"预测日成本 ${predicted_cost.predicted_daily_cost:.2f} "
                     f"超过限制 ${self.optimization_thresholds['daily_limit']:.2f}，"
@@ -467,7 +485,10 @@ class CostCalculator:
             # 分析token效率
             if "cost_per_token" in predicted_cost.factors:
                 cost_per_token = predicted_cost.factors["cost_per_token"]
-                if cost_per_token > self.optimization_thresholds["efficiency_threshold"]:
+                if (
+                    cost_per_token
+                    > self.optimization_thresholds["efficiency_threshold"]
+                ):
                     suggestions.append("Token使用效率较低，建议压缩输入内容或优化输出长度")
 
             # 通用建议
@@ -522,7 +543,9 @@ class CostCalculator:
                 savings_potential["content_compression"] = potential_savings
 
             # 计算总节省潜力（避免重复计算）
-            total_savings = min(sum(savings_potential.values()), total_current_cost * 0.6)
+            total_savings = min(
+                sum(savings_potential.values()), total_current_cost * 0.6
+            )
             savings_potential["total_potential"] = total_savings
 
             return savings_potential
@@ -531,13 +554,18 @@ class CostCalculator:
             self.logger.error(f"计算节省潜力失败: {e}")
             return {}
 
-    def convert_currency(self, amount: float, from_currency: str, to_currency: str) -> float:
+    def convert_currency(
+        self, amount: float, from_currency: str, to_currency: str
+    ) -> float:
         """货币转换"""
         try:
             if from_currency == to_currency:
                 return amount
 
-            if from_currency not in self.exchange_rates or to_currency not in self.exchange_rates:
+            if (
+                from_currency not in self.exchange_rates
+                or to_currency not in self.exchange_rates
+            ):
                 self.logger.warning(f"不支持的货币: {from_currency} -> {to_currency}")
                 return amount
 
@@ -607,12 +635,16 @@ class CostCalculator:
                 "total_cost": total_cost,
                 "total_tokens": total_tokens,
                 "average_cost_per_request": total_cost / len(usage_data),
-                "average_cost_per_token": (total_cost / total_tokens if total_tokens > 0 else 0),
+                "average_cost_per_token": (
+                    total_cost / total_tokens if total_tokens > 0 else 0
+                ),
                 "model_breakdown": model_breakdown,
                 "daily_costs": daily_costs,
                 "hourly_distribution": hourly_costs,
                 "peak_hour_cost": max(hourly_costs.values()) if hourly_costs else 0,
-                "off_peak_savings_potential": self._calculate_off_peak_savings(hourly_costs),
+                "off_peak_savings_potential": self._calculate_off_peak_savings(
+                    hourly_costs
+                ),
             }
 
         except Exception as e:

@@ -36,7 +36,9 @@ async def assign_course_to_teacher(
 
     try:
         service = CourseAssignmentService(db)
-        result = await service.assign_course_to_teacher(assignment_request, current_user.id)
+        result = await service.assign_course_to_teacher(
+            assignment_request, current_user.id
+        )
 
         logger.info(
             f"管理员 {current_user.id} 分配课程: "
@@ -153,7 +155,9 @@ async def request_rule_exemption(
 
     try:
         service = CourseAssignmentService(db)
-        result = await service.request_rule_exemption(exemption_request, current_user.id)
+        result = await service.request_rule_exemption(
+            exemption_request, current_user.id
+        )
 
         logger.info(
             f"用户 {current_user.id} 申请规则豁免: 类型 {exemption_request.get('exemption_type')}"
@@ -191,7 +195,9 @@ async def approve_rule_exemption(
 
     try:
         service = CourseAssignmentService(db)
-        result = await service.approve_rule_exemption(exemption_id, current_user.id, approval_notes)
+        result = await service.approve_rule_exemption(
+            exemption_id, current_user.id, approval_notes
+        )
 
         logger.info(f"管理员 {current_user.id} 审批规则豁免: ID {exemption_id}")
 

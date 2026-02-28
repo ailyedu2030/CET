@@ -8,14 +8,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.adaptive_learning_schemas import (
-    ErrorAnalysisResponse,
-    ForgettingCurveResponse,
-    KnowledgeGapResponse,
-    LearningStrategyResponse,
-    ReinforcementPlanResponse,
-    ReviewScheduleResponse,
-)
+from app.training.schemas.adaptive_learning_schemas import (ErrorAnalysisResponse,
+                                                            ForgettingCurveResponse,
+                                                            KnowledgeGapResponse,
+                                                            LearningStrategyResponse,
+                                                            ReinforcementPlanResponse,
+                                                            ReviewScheduleResponse)
 from app.training.services.error_analysis_service import ErrorAnalysisService
 from app.training.services.forgetting_curve_service import ForgettingCurveService
 from app.training.utils.knowledge_graph import KnowledgeGraph
@@ -45,7 +43,9 @@ async def get_error_analysis(
     """获取学生错题分析."""
     try:
         # 权限检查：只能查看自己的数据或教师查看学生数据
-        if current_user.id != student_id and getattr(current_user, "role", "student") not in [
+        if current_user.id != student_id and getattr(
+            current_user, "role", "student"
+        ) not in [
             "teacher",
             "admin",
         ]:
@@ -94,7 +94,9 @@ async def get_knowledge_gaps(
     """获取知识缺口分析."""
     try:
         # 权限检查
-        if current_user.id != student_id and getattr(current_user, "role", "student") not in [
+        if current_user.id != student_id and getattr(
+            current_user, "role", "student"
+        ) not in [
             "teacher",
             "admin",
         ]:
@@ -132,7 +134,9 @@ async def generate_reinforcement_plan(
     """生成强化训练计划."""
     try:
         # 权限检查
-        if current_user.id != student_id and getattr(current_user, "role", "student") not in [
+        if current_user.id != student_id and getattr(
+            current_user, "role", "student"
+        ) not in [
             "teacher",
             "admin",
         ]:
@@ -147,7 +151,9 @@ async def generate_reinforcement_plan(
         knowledge_gaps = await error_service.get_knowledge_gaps(student_id)
 
         # 生成强化计划
-        plan_data = await error_service.generate_reinforcement_plan(student_id, knowledge_gaps)
+        plan_data = await error_service.generate_reinforcement_plan(
+            student_id, knowledge_gaps
+        )
 
         return ReinforcementPlanResponse(
             student_id=student_id,
@@ -186,7 +192,9 @@ async def get_forgetting_curve(
     """获取遗忘曲线分析."""
     try:
         # 权限检查
-        if current_user.id != student_id and getattr(current_user, "role", "student") not in [
+        if current_user.id != student_id and getattr(
+            current_user, "role", "student"
+        ) not in [
             "teacher",
             "admin",
         ]:
@@ -227,7 +235,9 @@ async def get_review_schedule(
     """获取复习计划."""
     try:
         # 权限检查
-        if current_user.id != student_id and getattr(current_user, "role", "student") not in [
+        if current_user.id != student_id and getattr(
+            current_user, "role", "student"
+        ) not in [
             "teacher",
             "admin",
         ]:
@@ -237,7 +247,9 @@ async def get_review_schedule(
             )
 
         forgetting_service = ForgettingCurveService(db)
-        review_schedule = await forgetting_service.get_review_schedule(student_id, days_ahead)
+        review_schedule = await forgetting_service.get_review_schedule(
+            student_id, days_ahead
+        )
 
         return review_schedule
 
@@ -266,7 +278,9 @@ async def update_memory_strength(
     """更新记忆强度."""
     try:
         # 权限检查
-        if current_user.id != student_id and getattr(current_user, "role", "student") not in [
+        if current_user.id != student_id and getattr(
+            current_user, "role", "student"
+        ) not in [
             "teacher",
             "admin",
         ]:
@@ -313,7 +327,9 @@ async def get_learning_strategy(
     """获取学习策略推荐."""
     try:
         # 权限检查
-        if current_user.id != student_id and getattr(current_user, "role", "student") not in [
+        if current_user.id != student_id and getattr(
+            current_user, "role", "student"
+        ) not in [
             "teacher",
             "admin",
         ]:
@@ -383,7 +399,9 @@ async def get_learning_path(
             "target_knowledge_id": target_knowledge_id,
             "path_length": len(learning_path),
             "learning_path": learning_path,
-            "estimated_total_time": sum(step.get("estimated_time", 0) for step in learning_path),
+            "estimated_total_time": sum(
+                step.get("estimated_time", 0) for step in learning_path
+            ),
         }
 
     except Exception as e:
@@ -412,7 +430,9 @@ async def get_knowledge_dependencies(
         await knowledge_graph.build_knowledge_graph()
 
         # 分析依赖关系
-        dependencies = await knowledge_graph.analyze_knowledge_dependencies(knowledge_id)
+        dependencies = await knowledge_graph.analyze_knowledge_dependencies(
+            knowledge_id
+        )
 
         return dependencies
 
@@ -438,7 +458,9 @@ async def get_next_knowledge_points(
     """推荐下一个学习知识点."""
     try:
         # 权限检查
-        if current_user.id != student_id and getattr(current_user, "role", "student") not in [
+        if current_user.id != student_id and getattr(
+            current_user, "role", "student"
+        ) not in [
             "teacher",
             "admin",
         ]:

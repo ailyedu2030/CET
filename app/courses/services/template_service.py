@@ -7,10 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.courses.models import Course, CourseTemplate
-from app.courses.schemas.course_schemas import (
-    CourseTemplateCreate,
-    CourseTemplateUpdate,
-)
+from app.courses.schemas.course_schemas import (CourseTemplateCreate,
+                                                CourseTemplateUpdate)
 
 
 class CourseTemplateService:
@@ -88,7 +86,9 @@ class CourseTemplateService:
 
         # 按使用次数排序
         stmt = (
-            stmt.order_by(desc(CourseTemplate.usage_count), desc(CourseTemplate.updated_at))
+            stmt.order_by(
+                desc(CourseTemplate.usage_count), desc(CourseTemplate.updated_at)
+            )
             .offset(skip)
             .limit(limit)
         )
@@ -103,7 +103,9 @@ class CourseTemplateService:
         category: str | None = None,
     ) -> list[CourseTemplate]:
         """获取公开模板列表."""
-        return await self.get_templates(skip=skip, limit=limit, category=category, is_public=True)
+        return await self.get_templates(
+            skip=skip, limit=limit, category=category, is_public=True
+        )
 
     async def get_popular_templates(
         self, limit: int = 10, category: str | None = None
@@ -120,7 +122,11 @@ class CourseTemplateService:
         if category:
             conditions.append(CourseTemplate.category == category)
 
-        stmt = stmt.where(and_(*conditions)).order_by(desc(CourseTemplate.usage_count)).limit(limit)
+        stmt = (
+            stmt.where(and_(*conditions))
+            .order_by(desc(CourseTemplate.usage_count))
+            .limit(limit)
+        )
 
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
@@ -137,7 +143,9 @@ class CourseTemplateService:
         update_data = template_data.model_dump(exclude_unset=True)
         if update_data:
             stmt = (
-                update(CourseTemplate).where(CourseTemplate.id == template_id).values(**update_data)
+                update(CourseTemplate)
+                .where(CourseTemplate.id == template_id)
+                .values(**update_data)
             )
             await self.db.execute(stmt)
             await self.db.commit()
@@ -152,7 +160,9 @@ class CourseTemplateService:
 
         # 软删除：设为不激活
         stmt = (
-            update(CourseTemplate).where(CourseTemplate.id == template_id).values(is_active=False)
+            update(CourseTemplate)
+            .where(CourseTemplate.id == template_id)
+            .values(is_active=False)
         )
         await self.db.execute(stmt)
         await self.db.commit()
@@ -171,7 +181,9 @@ class CourseTemplateService:
         await self._increment_usage_count(template_id)
 
         # 生成课程数据
-        course_data = self._generate_course_from_template(template, course_name, creator_id)
+        course_data = self._generate_course_from_template(
+            template, course_name, creator_id
+        )
 
         return course_data
 
@@ -250,8 +262,12 @@ class CourseTemplateService:
 
         return {
             "name": course_name,
-            "description": template_data.get("basic_info", {}).get("description_template", ""),
-            "target_audience": template_data.get("basic_info", {}).get("target_audience"),
+            "description": template_data.get("basic_info", {}).get(
+                "description_template", ""
+            ),
+            "target_audience": template_data.get("basic_info", {}).get(
+                "target_audience"
+            ),
             "total_hours": template_data.get("basic_info", {}).get("total_hours"),
             "difficulty_level": default_settings.get("difficulty_level", "elementary"),
             "share_level": default_settings.get("share_level", "private"),

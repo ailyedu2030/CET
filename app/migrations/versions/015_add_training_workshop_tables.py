@@ -96,11 +96,15 @@ def upgrade() -> None:
     op.create_index("ix_training_tasks_class_id", "training_tasks", ["class_id"])
     op.create_index("ix_training_tasks_teacher_id", "training_tasks", ["teacher_id"])
     op.create_index("ix_training_tasks_template_id", "training_tasks", ["template_id"])
-    op.create_index("ix_training_tasks_publish_time", "training_tasks", ["publish_time"])
+    op.create_index(
+        "ix_training_tasks_publish_time", "training_tasks", ["publish_time"]
+    )
     op.create_index("ix_training_tasks_deadline", "training_tasks", ["deadline"])
 
     # 创建复合索引用于查询优化
-    op.create_index("ix_training_tasks_teacher_class", "training_tasks", ["teacher_id", "class_id"])
+    op.create_index(
+        "ix_training_tasks_teacher_class", "training_tasks", ["teacher_id", "class_id"]
+    )
     op.create_index(
         "ix_training_tasks_status_publish_time",
         "training_tasks",
@@ -111,7 +115,9 @@ def upgrade() -> None:
     op.create_table(
         "training_task_submissions",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("submission_data", postgresql.JSON(astext_type=sa.Text()), nullable=False),
+        sa.Column(
+            "submission_data", postgresql.JSON(astext_type=sa.Text()), nullable=False
+        ),
         sa.Column("score", sa.Float(), nullable=True),
         sa.Column("completion_rate", sa.Float(), nullable=False, default=0.0),
         sa.Column("started_at", sa.DateTime(), nullable=True),
@@ -127,7 +133,9 @@ def upgrade() -> None:
             "completion_rate >= 0.0 AND completion_rate <= 1.0",
             name="ck_completion_rate_range",
         ),
-        sa.CheckConstraint("score IS NULL OR score >= 0.0", name="ck_score_non_negative"),
+        sa.CheckConstraint(
+            "score IS NULL OR score >= 0.0", name="ck_score_non_negative"
+        ),
         comment="训练任务提交记录表 - 需求15验收标准5",
     )
 
@@ -171,7 +179,9 @@ def downgrade() -> None:
         "ix_training_task_submissions_student_id",
         table_name="training_task_submissions",
     )
-    op.drop_index("ix_training_task_submissions_task_id", table_name="training_task_submissions")
+    op.drop_index(
+        "ix_training_task_submissions_task_id", table_name="training_task_submissions"
+    )
 
     op.drop_index("ix_training_tasks_status_publish_time", table_name="training_tasks")
     op.drop_index("ix_training_tasks_teacher_class", table_name="training_tasks")

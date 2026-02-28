@@ -237,7 +237,9 @@ class XSSProtection:
                     confidence = max(confidence, 0.35)
 
         is_malicious = len(detected_patterns) > 0 and confidence > 0.5
-        sanitized_content = self._sanitize_content(content, context) if is_malicious else content
+        sanitized_content = (
+            self._sanitize_content(content, context) if is_malicious else content
+        )
 
         return XSSDetection(
             is_malicious=is_malicious,

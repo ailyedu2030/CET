@@ -15,7 +15,9 @@ logger = logging.getLogger(__name__)
 class IntelligentAlertManager:
     """智能告警管理器."""
 
-    def __init__(self, db: AsyncSession, cache_service: CacheService | None = None) -> None:
+    def __init__(
+        self, db: AsyncSession, cache_service: CacheService | None = None
+    ) -> None:
         self.db = db
         self.cache_service = cache_service
 
@@ -112,19 +114,29 @@ class IntelligentAlertManager:
                 current_value = alert.get("current_value", 0)
 
                 # 获取自适应阈值
-                adaptive_threshold = await self._calculate_adaptive_threshold(alert_type)
+                adaptive_threshold = await self._calculate_adaptive_threshold(
+                    alert_type
+                )
 
                 # 检查是否应该触发告警
-                if self._should_trigger_alert(alert_type, current_value, adaptive_threshold):
+                if self._should_trigger_alert(
+                    alert_type, current_value, adaptive_threshold
+                ):
                     # 更新告警阈值
                     alert["adaptive_threshold"] = adaptive_threshold
-                    alert["threshold_adjustment"] = adaptive_threshold - alert.get("threshold", 0)
-                    alert["confidence_score"] = await self._calculate_alert_confidence(alert)
+                    alert["threshold_adjustment"] = adaptive_threshold - alert.get(
+                        "threshold", 0
+                    )
+                    alert["confidence_score"] = await self._calculate_alert_confidence(
+                        alert
+                    )
 
                     adjusted_alerts.append(alert)
                 else:
                     # 记录被抑制的告警
-                    self.suppressed_alerts[f"{alert_type}_{datetime.now().timestamp()}"] = {
+                    self.suppressed_alerts[
+                        f"{alert_type}_{datetime.now().timestamp()}"
+                    ] = {
                         "alert": alert,
                         "reason": "adaptive_threshold_not_met",
                         "adaptive_threshold": adaptive_threshold,
@@ -153,12 +165,17 @@ class IntelligentAlertManager:
                     learning_window_hours = 24
             except (ValueError, TypeError):
                 learning_window_hours = 24
-            historical_data = await self._get_historical_metrics(alert_type, learning_window_hours)
+            historical_data = await self._get_historical_metrics(
+                alert_type, learning_window_hours
+            )
 
             if len(historical_data) < 10:  # 数据不足，使用基础阈值
                 base_threshold = threshold_config.get("base_threshold", 0.0)
                 try:
-                    if isinstance(base_threshold, int | float | str) and base_threshold is not None:
+                    if (
+                        isinstance(base_threshold, int | float | str)
+                        and base_threshold is not None
+                    ):
                         return float(base_threshold)
                     else:
                         return 0.0
@@ -167,7 +184,9 @@ class IntelligentAlertManager:
 
             # 计算统计指标
             mean_value = statistics.mean(historical_data)
-            std_dev = statistics.stdev(historical_data) if len(historical_data) > 1 else 0
+            std_dev = (
+                statistics.stdev(historical_data) if len(historical_data) > 1 else 0
+            )
             p95_value = (
                 statistics.quantiles(historical_data, n=20)[18]
                 if len(historical_data) > 20
@@ -179,7 +198,8 @@ class IntelligentAlertManager:
             try:
                 adaptive_range = (
                     (float(adaptive_range_raw[0]), float(adaptive_range_raw[1]))
-                    if isinstance(adaptive_range_raw, list | tuple) and len(adaptive_range_raw) >= 2
+                    if isinstance(adaptive_range_raw, list | tuple)
+                    and len(adaptive_range_raw) >= 2
                     else (0.0, 100.0)
                 )
             except (ValueError, TypeError, IndexError):
@@ -228,7 +248,9 @@ class IntelligentAlertManager:
             except (ValueError, TypeError):
                 return 0.0
 
-    async def _aggregate_similar_alerts(self, alerts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    async def _aggregate_similar_alerts(
+        self, alerts: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """聚合相似告警."""
         try:
             if not alerts:
@@ -269,7 +291,9 @@ class IntelligentAlertManager:
             logger.error(f"聚合相似告警失败: {str(e)}")
             return alerts
 
-    async def _apply_noise_reduction(self, alerts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    async def _apply_noise_reduction(
+        self, alerts: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """应用告警降噪."""
         try:
             filtered_alerts = []
@@ -402,11 +426,15 @@ class IntelligentAlertManager:
         else:
             return current_value > threshold
 
-    def _calculate_alert_similarity(self, alert1: dict[str, Any], alert2: dict[str, Any]) -> float:
+    def _calculate_alert_similarity(
+        self, alert1: dict[str, Any], alert2: dict[str, Any]
+    ) -> float:
         """计算告警相似度."""
         # 简化的相似度计算
         type_match = 1.0 if alert1.get("type") == alert2.get("type") else 0.0
-        severity_match = 1.0 if alert1.get("severity") == alert2.get("severity") else 0.5
+        severity_match = (
+            1.0 if alert1.get("severity") == alert2.get("severity") else 0.5
+        )
 
         # 时间相似度
         time1 = alert1.get("timestamp", datetime.now().isoformat())
@@ -422,7 +450,9 @@ class IntelligentAlertManager:
 
         return type_match * 0.5 + severity_match * 0.3 + time_similarity * 0.2
 
-    def _create_aggregated_alert(self, similar_alerts: list[dict[str, Any]]) -> dict[str, Any]:
+    def _create_aggregated_alert(
+        self, similar_alerts: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """创建聚合告警."""
         if not similar_alerts:
             return {}
@@ -435,8 +465,12 @@ class IntelligentAlertManager:
             "message": f"聚合告警: {len(similar_alerts)}个相似的{base_alert.get('type', '未知')}告警",
             "aggregated_count": len(similar_alerts),
             "individual_alerts": similar_alerts,
-            "first_occurrence": min(alert.get("timestamp", "") for alert in similar_alerts),
-            "last_occurrence": max(alert.get("timestamp", "") for alert in similar_alerts),
+            "first_occurrence": min(
+                alert.get("timestamp", "") for alert in similar_alerts
+            ),
+            "last_occurrence": max(
+                alert.get("timestamp", "") for alert in similar_alerts
+            ),
             "confidence_score": statistics.mean(
                 [alert.get("confidence_score", 1.0) for alert in similar_alerts]
             ),
@@ -455,7 +489,9 @@ class IntelligentAlertManager:
         # 基于当前值与阈值的差距
         current_value_raw = alert.get("current_value", 0)
         threshold_raw = alert.get("threshold", 0)
-        current_value = float(current_value_raw) if current_value_raw is not None else 0.0
+        current_value = (
+            float(current_value_raw) if current_value_raw is not None else 0.0
+        )
         threshold = float(threshold_raw) if threshold_raw is not None else 0.0
 
         if threshold > 0:
@@ -487,7 +523,9 @@ class IntelligentAlertManager:
         business_impact = await self._assess_business_impact(alert)
 
         # 综合计算
-        priority_score = float(base_score) * 0.4 + confidence * 0.3 + float(business_impact) * 0.3
+        priority_score = (
+            float(base_score) * 0.4 + confidence * 0.3 + float(business_impact) * 0.3
+        )
 
         return min(max(priority_score, 0.0), 1.0)
 
@@ -507,7 +545,9 @@ class IntelligentAlertManager:
         return impact_scores.get(alert_type, 0.5)
 
     # 辅助方法的简化实现
-    async def _get_historical_metrics(self, metric_type: str, hours: int) -> list[float]:
+    async def _get_historical_metrics(
+        self, metric_type: str, hours: int
+    ) -> list[float]:
         """获取历史指标数据."""
         # 简化实现，返回模拟数据
         import random
@@ -541,7 +581,9 @@ class IntelligentAlertManager:
         # 简化实现
         return 1800.0  # 30分钟
 
-    async def _plan_alert_notifications(self, alerts: list[dict[str, Any]]) -> dict[str, Any]:
+    async def _plan_alert_notifications(
+        self, alerts: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """规划告警通知."""
         return {
             "immediate_notifications": len(

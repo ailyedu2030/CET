@@ -37,7 +37,9 @@ class JWTManager:
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=self.access_token_expire_minutes)
+            expire = datetime.utcnow() + timedelta(
+                minutes=self.access_token_expire_minutes
+            )
 
         to_encode.update({"exp": expire, "iat": datetime.utcnow(), "type": "access"})
 
@@ -104,7 +106,9 @@ class JWTManager:
         }
 
         access_token = self.create_access_token(data=token_data)
-        refresh_token = self.create_refresh_token(data={"sub": str(user_id), "username": username})
+        refresh_token = self.create_refresh_token(
+            data={"sub": str(user_id), "username": username}
+        )
 
         return {
             "access_token": access_token,

@@ -8,8 +8,9 @@ Create Date: 2026-02-27
 
 from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 # revision identifiers
 revision: str = "add_user_security_fields"

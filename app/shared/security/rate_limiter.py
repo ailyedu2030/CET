@@ -129,7 +129,9 @@ class RateLimiter:
 
         # 清理滑动窗口
         keys_to_remove = [
-            key for key in self.sliding_windows.keys() if key.startswith(f"{rule_name}:")
+            key
+            for key in self.sliding_windows.keys()
+            if key.startswith(f"{rule_name}:")
         ]
         for key in keys_to_remove:
             del self.sliding_windows[key]
@@ -236,7 +238,8 @@ class RateLimiter:
             return RateLimitStatus(
                 result=RateLimitResult.ALLOWED,
                 remaining_requests=int(bucket.tokens),
-                reset_time=current_time + (bucket.capacity - bucket.tokens) / bucket.refill_rate,
+                reset_time=current_time
+                + (bucket.capacity - bucket.tokens) / bucket.refill_rate,
                 retry_after=None,
                 rule_name=rule.name,
                 details={"algorithm": "token_bucket", "tokens": bucket.tokens},

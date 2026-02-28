@@ -67,7 +67,9 @@ class TeacherSalaryUpdateRequest(BaseModel):
 class TeacherQualificationReviewRequest(BaseModel):
     """教师资质审核请求."""
 
-    qualification_status: str = Field(..., pattern="^(pending|approved|rejected|expired)$")
+    qualification_status: str = Field(
+        ..., pattern="^(pending|approved|rejected|expired)$"
+    )
     notes: str | None = None
 
 
@@ -87,7 +89,9 @@ class EquipmentCreateRequest(BaseModel):
     """设备创建请求."""
 
     name: str = Field(..., min_length=1, max_length=100)
-    equipment_type: str = Field(..., pattern="^(projector|computer|audio|whiteboard|other)$")
+    equipment_type: str = Field(
+        ..., pattern="^(projector|computer|audio|whiteboard|other)$"
+    )
     brand: str | None = Field(None, max_length=50)
     model: str | None = Field(None, max_length=100)
     serial_number: str | None = Field(None, max_length=100)
@@ -107,7 +111,9 @@ class EquipmentUpdateRequest(BaseModel):
     brand: str | None = Field(None, max_length=50)
     model: str | None = Field(None, max_length=100)
     serial_number: str | None = Field(None, max_length=100)
-    status: str | None = Field(None, pattern="^(normal|maintenance|repair|broken|retired)$")
+    status: str | None = Field(
+        None, pattern="^(normal|maintenance|repair|broken|retired)$"
+    )
     purchase_date: datetime | None = None
     warranty_end_date: datetime | None = None
     specifications: dict[str, Any] | None = None
@@ -166,7 +172,9 @@ async def get_student_detail(
     """获取学生详细信息."""
     # 权限检查：管理员或学生本人
     if current_user.user_type != UserType.ADMIN and current_user.id != student_id:
-        raise HTTPException(status_code=http_status.HTTP_403_FORBIDDEN, detail="无权访问该学生信息")
+        raise HTTPException(
+            status_code=http_status.HTTP_403_FORBIDDEN, detail="无权访问该学生信息"
+        )
 
     service = BasicInfoService(db)
     student = await service.get_student_detail(student_id)
@@ -284,7 +292,9 @@ async def get_teacher_detail(
     """获取教师详细信息."""
     # 权限检查：管理员或教师本人
     if current_user.user_type != UserType.ADMIN and current_user.id != teacher_id:
-        raise HTTPException(status_code=http_status.HTTP_403_FORBIDDEN, detail="无权访问该教师信息")
+        raise HTTPException(
+            status_code=http_status.HTTP_403_FORBIDDEN, detail="无权访问该教师信息"
+        )
 
     service = BasicInfoService(db)
     teacher = await service.get_teacher_detail(teacher_id)
@@ -471,7 +481,9 @@ async def check_classroom_conflict(
     """检查教室排期冲突 - 需求2验收标准5."""
     # 权限检查：管理员和教师可以检查
     if current_user.user_type not in [UserType.ADMIN, UserType.TEACHER]:
-        raise HTTPException(status_code=http_status.HTTP_403_FORBIDDEN, detail="无权检查教室冲突")
+        raise HTTPException(
+            status_code=http_status.HTTP_403_FORBIDDEN, detail="无权检查教室冲突"
+        )
 
     service = BasicInfoService(db)
     has_conflict = await service.check_classroom_conflict(
@@ -915,11 +927,15 @@ async def create_teaching_record(
         if "teaching_start_time" in request:
             from datetime import datetime
 
-            request["teaching_start_time"] = datetime.fromisoformat(request["teaching_start_time"])
+            request["teaching_start_time"] = datetime.fromisoformat(
+                request["teaching_start_time"]
+            )
         if "teaching_end_time" in request:
             from datetime import datetime
 
-            request["teaching_end_time"] = datetime.fromisoformat(request["teaching_end_time"])
+            request["teaching_end_time"] = datetime.fromisoformat(
+                request["teaching_end_time"]
+            )
 
         record = await service.create_teaching_record(
             teacher_id=teacher_id,
@@ -958,11 +974,15 @@ async def update_teaching_record(
     if "teaching_start_time" in request:
         from datetime import datetime
 
-        request["teaching_start_time"] = datetime.fromisoformat(request["teaching_start_time"])
+        request["teaching_start_time"] = datetime.fromisoformat(
+            request["teaching_start_time"]
+        )
     if "teaching_end_time" in request:
         from datetime import datetime
 
-        request["teaching_end_time"] = datetime.fromisoformat(request["teaching_end_time"])
+        request["teaching_end_time"] = datetime.fromisoformat(
+            request["teaching_end_time"]
+        )
 
     record = await service.update_teaching_record(record_id, request)
 

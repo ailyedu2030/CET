@@ -1,7 +1,8 @@
 """Token blocklist service - 用于JWT令牌黑名单管理."""
 
-import redis.asyncio as redis
 from typing import Optional
+
+import redis.asyncio as redis
 
 from app.core.config import settings
 

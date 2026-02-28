@@ -161,7 +161,7 @@ class ListeningService:
 
     async def submit_answers(self, session_id: int, answers_data: dict[str, Any]):
         """提交答案并生成结果"""
-        from app.training.models import ListeningResult, ListeningSession
+        from app.training.models import ListeningResult
 
         session = await self.get_session_by_id(session_id)
         if not session:
@@ -200,7 +200,8 @@ class ListeningService:
             question_results=result_data["question_results"],
             answer_analysis=result_data["answer_analysis"],
             total_time_seconds=session.total_time_seconds,
-            average_time_per_question=session.total_time_seconds / exercise.total_questions
+            average_time_per_question=session.total_time_seconds
+            / exercise.total_questions
             if exercise.total_questions
             else 0,
             listening_ability_score=result_data.get("listening_ability_score"),
@@ -214,7 +215,9 @@ class ListeningService:
         await self.db.refresh(result)
         return result
 
-    async def _calculate_score(self, exercise, answers: dict[str, Any]) -> dict[str, Any]:
+    async def _calculate_score(
+        self, exercise, answers: dict[str, Any]
+    ) -> dict[str, Any]:
         """计算得分"""
         questions = exercise.questions_data.get("questions", [])
         total_questions = len(questions)
@@ -262,7 +265,9 @@ class ListeningService:
         percentage = (total_score / max_score * 100) if max_score > 0 else 0
 
         # 能力评估
-        listening_ability_score = min(100, percentage + 10) if percentage > 60 else percentage
+        listening_ability_score = (
+            min(100, percentage + 10) if percentage > 60 else percentage
+        )
         comprehension_score = percentage
         vocabulary_score = percentage * 0.9
 
@@ -345,7 +350,9 @@ class ListeningService:
             recent_avg = sum(recent_scores) / len(recent_scores)
             earlier_avg = sum(earlier_scores) / len(earlier_scores)
             improvement_rate = (
-                ((recent_avg - earlier_avg) / earlier_avg) * 100 if earlier_avg > 0 else 0
+                ((recent_avg - earlier_avg) / earlier_avg) * 100
+                if earlier_avg > 0
+                else 0
             )
         else:
             improvement_rate = 0
@@ -368,10 +375,16 @@ class ListeningService:
         for r in results[:10]:
             recent_performance.append(
                 {
-                    "date": r.completion_time.isoformat() if r.completion_time else None,
+                    "date": r.completion_time.isoformat()
+                    if r.completion_time
+                    else None,
                     "score": r.percentage,
-                    "exercise_type": r.exercise.exercise_type if r.exercise else "unknown",
-                    "difficulty": r.exercise.difficulty_level.value if r.exercise else "unknown",
+                    "exercise_type": r.exercise.exercise_type
+                    if r.exercise
+                    else "unknown",
+                    "difficulty": r.exercise.difficulty_level.value
+                    if r.exercise
+                    else "unknown",
                 }
             )
 
@@ -475,23 +488,23 @@ class ListeningService:
         return None
 
     # ============ H13: Performance Statistics with Time Range ============
-    
+
     async def get_performance_trend(
         self, user_id: int, days: int = 30
     ) -> list[dict[str, Any]]:
         """获取用户表现趋势
-        
+
         Args:
             user_id: 用户ID
             days: 统计天数
-            
+
         Returns:
             每日正确率趋势
         """
         from datetime import timedelta
-        
+
         start_date = datetime.utcnow() - timedelta(days=days)
-        
+
         query = (
             select(ListeningResult)
             .where(
@@ -502,59 +515,58 @@ class ListeningService:
             )
             .order_by(ListeningResult.completed_at)
         )
-        
+
         result = await self.db.execute(query)
         results = result.scalars().all()
-        
+
         if not results:
             return []
-        
+
         # 按天分组统计
         daily_stats = {}
         for r in results:
             date_key = r.completed_at.date().isoformat() if r.completed_at else None
             if date_key not in daily_stats:
                 daily_stats[date_key] = {"total": 0, "correct": 0}
-            
+
             daily_stats[date_key]["total"] += r.total_questions
             daily_stats[date_key]["correct"] += r.correct_count
-        
+
         # 计算每日正确率
         trend = []
         for date_key in sorted(daily_stats.keys()):
             stats = daily_stats[date_key]
-            correct_rate = (stats["correct"] / stats["total"] * 100) if stats["total"] > 0 else 0
-            trend.append({
-                "date": date_key,
-                "correct_rate": round(correct_rate, 2),
-                "total_questions": stats["total"],
-                "correct_questions": stats["correct"],
-            })
-        
+            correct_rate = (
+                (stats["correct"] / stats["total"] * 100) if stats["total"] > 0 else 0
+            )
+            trend.append(
+                {
+                    "date": date_key,
+                    "correct_rate": round(correct_rate, 2),
+                    "total_questions": stats["total"],
+                    "correct_questions": stats["correct"],
+                }
+            )
+
         return trend
 
     # ============ H14: Favorite Exercises ============
-    
-    async def add_favorite(
-        self, user_id: int, exercise_id: int
-    ) -> dict[str, Any]:
+
+    async def add_favorite(self, user_id: int, exercise_id: int) -> dict[str, Any]:
         """添加收藏"""
-        from app.training.models import ListeningExercise
-        
+
         # 检查练习是否存在
         exercise = await self.get_exercise_by_id(exercise_id)
         if not exercise:
             raise ValueError(f"Exercise {exercise_id} not found")
-        
+
         # 创建收藏记录（使用简单的JSON字段存储）
         # 实际项目中应该创建专门的Favorite表
         logger.info(f"User {user_id} favorited exercise {exercise_id}")
-        
+
         return {"success": True, "message": "Added to favorites"}
 
-    async def remove_favorite(
-        self, user_id: int, exercise_id: int
-    ) -> dict[str, Any]:
+    async def remove_favorite(self, user_id: int, exercise_id: int) -> dict[str, Any]:
         """移除收藏"""
         logger.info(f"User {user_id} unfavorited exercise {exercise_id}")
         return {"success": True, "message": "Removed from favorites"}
@@ -565,27 +577,25 @@ class ListeningService:
         return []
 
     # ============ H15: Share Exercise ============
-    
-    async def create_share_link(
-        self, exercise_id: int, user_id: int
-    ) -> dict[str, Any]:
+
+    async def create_share_link(self, exercise_id: int, user_id: int) -> dict[str, Any]:
         """创建练习分享链接
-        
+
         Returns:
             包含分享token的链接信息
         """
         import uuid
-        
+
         exercise = await self.get_exercise_by_id(exercise_id)
         if not exercise:
             raise ValueError(f"Exercise {exercise_id} not found")
-        
+
         # 生成唯一分享token
         share_token = str(uuid.uuid4())
-        
+
         # 在实际实现中，应该保存到数据库
         share_url = f"/listening/shared/{share_token}"
-        
+
         return {
             "success": True,
             "share_url": share_url,
@@ -595,12 +605,12 @@ class ListeningService:
         }
 
     # ============ H17: Exercise Tags ============
-    
+
     async def get_exercises_by_tag(
         self, tag: str, skip: int = 0, limit: int = 20
     ) -> list[dict[str, Any]]:
         """根据标签获取练习
-        
+
         Args:
             tag: 标签名称
             skip: 跳过数量
@@ -617,17 +627,19 @@ class ListeningService:
             .offset(skip)
             .limit(limit)
         )
-        
+
         result = await self.db.execute(query)
         exercises = result.scalars().all()
-        
+
         return [
             {
                 "id": e.id,
                 "title": e.title,
                 "description": e.description,
                 "exercise_type": e.exercise_type,
-                "difficulty_level": e.difficulty_level.value if e.difficulty_level else None,
+                "difficulty_level": e.difficulty_level.value
+                if e.difficulty_level
+                else None,
                 "tags": e.tags,
             }
             for e in exercises
@@ -637,14 +649,14 @@ class ListeningService:
         self, keyword: str, skip: int = 0, limit: int = 20
     ) -> list[dict[str, Any]]:
         """搜索练习（标题和描述）
-        
+
         Args:
             keyword: 搜索关键词
             skip: 跳过数量
             limit: 返回数量
         """
-        from sqlalchemy import or_,ilike
-        
+        from sqlalchemy import or_
+
         query = (
             select(ListeningExercise)
             .where(
@@ -659,24 +671,26 @@ class ListeningService:
             .offset(skip)
             .limit(limit)
         )
-        
+
         result = await self.db.execute(query)
         exercises = result.scalars().all()
-        
+
         return [
             {
                 "id": e.id,
                 "title": e.title,
                 "description": e.description,
                 "exercise_type": e.exercise_type,
-                "difficulty_level": e.difficulty_level.value if e.difficulty_level else None,
+                "difficulty_level": e.difficulty_level.value
+                if e.difficulty_level
+                else None,
                 "tags": e.tags,
             }
             for e in exercises
         ]
 
     # ============ H11: Difficulty Level Classification ============
-    
+
     async def get_exercises_by_difficulty(
         self,
         difficulty: DifficultyLevel,
@@ -684,7 +698,7 @@ class ListeningService:
         limit: int = 20,
     ) -> list[dict[str, Any]]:
         """根据难度获取练习
-        
+
         Args:
             difficulty: 难度等级
             skip: 跳过数量
@@ -701,17 +715,19 @@ class ListeningService:
             .offset(skip)
             .limit(limit)
         )
-        
+
         result = await self.db.execute(query)
         exercises = result.scalars().all()
-        
+
         return [
             {
                 "id": e.id,
                 "title": e.title,
                 "description": e.description,
                 "exercise_type": e.exercise_type,
-                "difficulty_level": e.difficulty_level.value if e.difficulty_level else None,
+                "difficulty_level": e.difficulty_level.value
+                if e.difficulty_level
+                else None,
                 "tags": e.tags,
                 "total_questions": e.total_questions,
             }
@@ -719,23 +735,23 @@ class ListeningService:
         ]
 
     # ============ H18: Batch Import/Export ============
-    
+
     async def batch_import_exercises(
         self, exercises_data: list[dict], creator_id: int
     ) -> dict[str, Any]:
         """批量导入听力练习
-        
+
         Args:
             exercises_data: 练习数据列表
             creator_id: 创建者ID
-            
+
         Returns:
             导入结果
         """
         imported = 0
         failed = 0
         errors = []
-        
+
         for idx, ex_data in enumerate(exercises_data):
             try:
                 await self.create_listening_exercise(
@@ -751,11 +767,11 @@ class ListeningService:
                     created_by=creator_id,
                 )
                 imported += 1
-                
+
             except Exception as e:
                 failed += 1
                 errors.append(f"Row {idx}: {str(e)}")
-        
+
         return {
             "success": True,
             "imported": imported,
@@ -765,29 +781,33 @@ class ListeningService:
 
     async def export_exercises(self, exercise_ids: list[int]) -> list[dict]:
         """导出听力练习
-        
+
         Args:
             exercise_ids: 练习ID列表
-            
+
         Returns:
             练习数据列表
         """
         exercises = []
-        
+
         for ex_id in exercise_ids:
             exercise = await self.get_exercise_by_id(ex_id)
             if exercise:
-                exercises.append({
-                    "id": exercise.id,
-                    "title": exercise.title,
-                    "description": exercise.description,
-                    "exercise_type": exercise.exercise_type,
-                    "difficulty_level": exercise.difficulty_level.value if exercise.difficulty_level else None,
-                    "questions_data": exercise.questions_data,
-                    "total_questions": exercise.total_questions,
-                    "duration_seconds": exercise.duration_seconds,
-                    "audio_duration": exercise.audio_duration,
-                    "tags": exercise.tags,
-                })
-        
+                exercises.append(
+                    {
+                        "id": exercise.id,
+                        "title": exercise.title,
+                        "description": exercise.description,
+                        "exercise_type": exercise.exercise_type,
+                        "difficulty_level": exercise.difficulty_level.value
+                        if exercise.difficulty_level
+                        else None,
+                        "questions_data": exercise.questions_data,
+                        "total_questions": exercise.total_questions,
+                        "duration_seconds": exercise.duration_seconds,
+                        "audio_duration": exercise.audio_duration,
+                        "tags": exercise.tags,
+                    }
+                )
+
         return exercises

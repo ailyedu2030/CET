@@ -7,15 +7,11 @@ from sqlalchemy import and_, desc, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.courses.models import Class, Course, ClassStudent
-from app.courses.schemas.class_schemas import (
-    ClassBatchCreate,
-    ClassConflictCheck,
-    ClassCreate,
-    ClassUpdate,
-    ConflictCheckResult,
-    StudentEnrollmentRequest,
-)
+from app.courses.models import Class, ClassStudent, Course
+from app.courses.schemas.class_schemas import (ClassBatchCreate, ClassConflictCheck,
+                                               ClassCreate, ClassUpdate,
+                                               ConflictCheckResult,
+                                               StudentEnrollmentRequest)
 from app.courses.utils.conflict_detection_utils import ConflictDetectionUtils
 
 
@@ -35,7 +31,9 @@ class ClassService:
 
         # 检查绑定规则
         if class_data.teacher_id:
-            await self._validate_class_teacher_binding(class_data.course_id, class_data.teacher_id)
+            await self._validate_class_teacher_binding(
+                class_data.course_id, class_data.teacher_id
+            )
 
         # 创建班级
         class_obj = Class(
@@ -74,7 +72,9 @@ class ClassService:
         status: str | None = None,
     ) -> list[Class]:
         """获取班级列表."""
-        stmt = select(Class).options(selectinload(Class.course), selectinload(Class.teacher))
+        stmt = select(Class).options(
+            selectinload(Class.course), selectinload(Class.teacher)
+        )
 
         # 添加筛选条件
         conditions = []
@@ -94,7 +94,9 @@ class ClassService:
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 
-    async def update_class(self, class_id: int, class_data: ClassUpdate) -> Class | None:
+    async def update_class(
+        self, class_id: int, class_data: ClassUpdate
+    ) -> Class | None:
         """更新班级."""
         class_obj = await self.get_class_by_id(class_id)
         if not class_obj:
@@ -102,7 +104,9 @@ class ClassService:
 
         # 验证教师分配
         if class_data.teacher_id and class_data.teacher_id != class_obj.teacher_id:
-            await self._validate_class_teacher_binding(class_obj.course_id, class_data.teacher_id)
+            await self._validate_class_teacher_binding(
+                class_obj.course_id, class_data.teacher_id
+            )
 
         # 更新班级信息
         update_data = class_data.model_dump(exclude_unset=True)
@@ -145,7 +149,9 @@ class ClassService:
 
         # 验证教师分配（如果指定）
         if batch_data.teacher_id:
-            await self._validate_class_teacher_binding(batch_data.course_id, batch_data.teacher_id)
+            await self._validate_class_teacher_binding(
+                batch_data.course_id, batch_data.teacher_id
+            )
 
         created_classes = []
 
@@ -201,7 +207,9 @@ class ClassService:
 
         return await self.get_class_by_id(class_id)
 
-    async def enroll_student(self, enrollment_data: StudentEnrollmentRequest) -> dict[str, Any]:
+    async def enroll_student(
+        self, enrollment_data: StudentEnrollmentRequest
+    ) -> dict[str, Any]:
         """学生选课."""
         # 检查班级容量
         class_obj = await self.get_class_by_id(enrollment_data.class_id)
@@ -371,10 +379,14 @@ class ClassService:
 
         return statistics
 
-    async def _validate_class_teacher_binding(self, course_id: int, teacher_id: int) -> None:
+    async def _validate_class_teacher_binding(
+        self, course_id: int, teacher_id: int
+    ) -> None:
         """验证班级-教师绑定规则."""
         # 检查教师是否已分配此课程的其他班级（如果需要严格1对1）
-        existing_assignments = await self._get_teacher_course_assignments(teacher_id, course_id)
+        existing_assignments = await self._get_teacher_course_assignments(
+            teacher_id, course_id
+        )
 
         # 这里可以配置规则的严格程度
         max_classes_per_course = 3  # 允许一个教师教同一课程的多个班级
@@ -395,7 +407,9 @@ class ClassService:
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 
-    async def _get_teacher_course_assignments(self, teacher_id: int, course_id: int) -> list[Class]:
+    async def _get_teacher_course_assignments(
+        self, teacher_id: int, course_id: int
+    ) -> list[Class]:
         """获取教师在特定课程的班级分配."""
         stmt = select(Class).where(
             and_(
@@ -410,6 +424,7 @@ class ClassService:
     async def _check_student_enrollment(self, student_id: int, class_id: int) -> bool:
         """检查学生是否已选择指定班级."""
         from sqlalchemy import select
+
         stmt = select(ClassStudent).where(
             and_(
                 ClassStudent.student_id == student_id,
@@ -443,7 +458,9 @@ class ClassResourceService:
         stmt = (
             update(Class)
             .where(Class.id == class_id)
-            .values(resource_allocation=validated_allocation, updated_at=datetime.utcnow())
+            .values(
+                resource_allocation=validated_allocation, updated_at=datetime.utcnow()
+            )
         )
         await self.db.execute(stmt)
         await self.db.commit()
@@ -489,7 +506,9 @@ class ClassResourceService:
             "updated_at": datetime.utcnow(),
         }
 
-    def _validate_resource_allocation(self, allocation: dict[str, Any]) -> dict[str, Any]:
+    def _validate_resource_allocation(
+        self, allocation: dict[str, Any]
+    ) -> dict[str, Any]:
         """验证资源分配配置."""
         validated = {}
 
@@ -532,7 +551,9 @@ class ClassResourceService:
                 "learning_platform": online_config.get("learning_platform"),
                 "video_resources": online_config.get("video_resources", []),
                 "interactive_tools": online_config.get("interactive_tools", []),
-                "bandwidth_requirement": max(1, online_config.get("bandwidth_requirement", 10)),
+                "bandwidth_requirement": max(
+                    1, online_config.get("bandwidth_requirement", 10)
+                ),
             }
 
         return validated

@@ -154,11 +154,15 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
                 self.request_stats["cache_misses"] += 1
 
             # 记录性能指标
-            await self._record_request_metrics(path, method, response.status_code, response_time)
+            await self._record_request_metrics(
+                path, method, response.status_code, response_time
+            )
 
             # 添加性能头
             response.headers["X-Response-Time"] = f"{response_time:.3f}s"
-            response.headers["X-Cache"] = "HIT" if cache_key in self.response_cache else "MISS"
+            response.headers["X-Cache"] = (
+                "HIT" if cache_key in self.response_cache else "MISS"
+            )
 
             return response
 
@@ -167,7 +171,9 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
             self.logger.error(f"请求处理错误: {path} - {e}")
 
             # 记录错误指标
-            await self._record_request_metrics(path, method, 500, response_time, error=True)
+            await self._record_request_metrics(
+                path, method, 500, response_time, error=True
+            )
 
             return JSONResponse(
                 status_code=500,
@@ -186,7 +192,11 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
             return str(real_ip)
 
         # 回退到直接连接IP
-        return str(request.client.host) if request.client and request.client.host else "unknown"
+        return (
+            str(request.client.host)
+            if request.client and request.client.host
+            else "unknown"
+        )
 
     async def _is_rate_limited(self, client_ip: str) -> bool:
         """检查是否触发速率限制"""
@@ -319,9 +329,15 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
                 path_stat["error_count"] += 1
 
             # 更新响应时间统计
-            path_stat["avg_response_time"] = path_stat["total_time"] / path_stat["count"]
-            path_stat["min_response_time"] = min(path_stat["min_response_time"], response_time)
-            path_stat["max_response_time"] = max(path_stat["max_response_time"], response_time)
+            path_stat["avg_response_time"] = (
+                path_stat["total_time"] / path_stat["count"]
+            )
+            path_stat["min_response_time"] = min(
+                path_stat["min_response_time"], response_time
+            )
+            path_stat["max_response_time"] = max(
+                path_stat["max_response_time"], response_time
+            )
 
             # 收集指标到指标收集器
             tags = {
@@ -344,7 +360,8 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
             # 计算错误率
             if self.request_stats["total_requests"] > 0:
                 error_rate = (
-                    self.request_stats["error_count"] / self.request_stats["total_requests"]
+                    self.request_stats["error_count"]
+                    / self.request_stats["total_requests"]
                 )
                 await collect_metric("http.error_rate", error_rate)
 
@@ -360,7 +377,9 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
             "total_requests": total_requests,
             "error_count": self.request_stats["error_count"],
             "error_rate": (
-                self.request_stats["error_count"] / total_requests if total_requests > 0 else 0.0
+                self.request_stats["error_count"] / total_requests
+                if total_requests > 0
+                else 0.0
             ),
             "average_response_time": (
                 self.request_stats["total_response_time"] / total_requests
@@ -369,8 +388,15 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
             ),
             "cache_hit_rate": (
                 self.request_stats["cache_hits"]
-                / (self.request_stats["cache_hits"] + self.request_stats["cache_misses"])
-                if (self.request_stats["cache_hits"] + self.request_stats["cache_misses"]) > 0
+                / (
+                    self.request_stats["cache_hits"]
+                    + self.request_stats["cache_misses"]
+                )
+                if (
+                    self.request_stats["cache_hits"]
+                    + self.request_stats["cache_misses"]
+                )
+                > 0
                 else 0.0
             ),
             "compression_rate": (

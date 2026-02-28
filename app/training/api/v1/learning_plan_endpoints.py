@@ -8,22 +8,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.security import get_current_user
-from app.training.schemas.learning_plan_schemas import (
-    DifficultyAdjustmentResponse,
-    GoalAchievementResponse,
-    GoalCreateRequest,
-    GoalProgressTrackingResponse,
-    GoalProgressUpdateRequest,
-    GoalResponse,
-    GoalSuggestionResponse,
-    LearningPlanConfigRequest,
-    LearningPlanResponse,
-    LearningStatisticsResponse,
-    ProgressAlertResponse,
-    ProgressMonitoringResponse,
-    ProgressSummaryResponse,
-    RealTimeProgressResponse,
-)
+from app.training.schemas.learning_plan_schemas import (DifficultyAdjustmentResponse,
+                                                        GoalAchievementResponse,
+                                                        GoalCreateRequest,
+                                                        GoalProgressTrackingResponse,
+                                                        GoalProgressUpdateRequest,
+                                                        GoalResponse,
+                                                        GoalSuggestionResponse,
+                                                        LearningPlanConfigRequest,
+                                                        LearningPlanResponse,
+                                                        LearningStatisticsResponse,
+                                                        ProgressAlertResponse,
+                                                        ProgressMonitoringResponse,
+                                                        ProgressSummaryResponse,
+                                                        RealTimeProgressResponse)
 from app.training.services.goal_setting_service import GoalSettingService
 from app.training.services.learning_plan_service import LearningPlanService
 from app.training.services.progress_monitoring_service import ProgressMonitoringService
@@ -116,7 +114,9 @@ async def update_learning_plan(
         ) from e
 
 
-@router.post("/{plan_id}/adjust-difficulty", response_model=DifficultyAdjustmentResponse)
+@router.post(
+    "/{plan_id}/adjust-difficulty", response_model=DifficultyAdjustmentResponse
+)
 async def adjust_plan_difficulty(
     plan_id: int,
     performance_data: dict[str, Any],
@@ -153,7 +153,9 @@ async def get_plan_statistics(
     try:
         service = LearningPlanService(db)
 
-        stats_result = await service.get_plan_statistics(student_id=current_user.id, days=days)
+        stats_result = await service.get_plan_statistics(
+            student_id=current_user.id, days=days
+        )
 
         return LearningStatisticsResponse(**stats_result)
 
@@ -202,7 +204,9 @@ async def get_student_goals(
     try:
         service = GoalSettingService(db)
 
-        goals = await service.get_student_goals(student_id=current_user.id, status=goal_status)
+        goals = await service.get_student_goals(
+            student_id=current_user.id, status=goal_status
+        )
 
         return [GoalResponse(**goal) for goal in goals]
 
@@ -294,7 +298,9 @@ async def monitor_student_progress(
     try:
         service = ProgressMonitoringService(db)
 
-        monitoring_result = await service.monitor_student_progress(student_id=current_user.id)
+        monitoring_result = await service.monitor_student_progress(
+            student_id=current_user.id
+        )
 
         return ProgressMonitoringResponse(**monitoring_result)
 
@@ -315,7 +321,9 @@ async def get_realtime_progress(
     try:
         service = ProgressMonitoringService(db)
 
-        realtime_result = await service.get_real_time_progress(student_id=current_user.id)
+        realtime_result = await service.get_real_time_progress(
+            student_id=current_user.id
+        )
 
         return RealTimeProgressResponse(**realtime_result)
 

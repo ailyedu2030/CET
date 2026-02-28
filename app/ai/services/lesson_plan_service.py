@@ -9,15 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.ai.models.ai_models import AISyllabus, CollaborativeSession, LessonPlan
-from app.ai.schemas.ai_schemas import (
-    CollaborationJoinRequest,
-    CollaborationSessionResponse,
-    CollaborationUpdateRequest,
-    LessonPlanCreate,
-    LessonPlanGenerationRequest,
-    LessonPlanResponse,
-    LessonPlanUpdate,
-)
+from app.ai.schemas.ai_schemas import (CollaborationJoinRequest,
+                                       CollaborationSessionResponse,
+                                       CollaborationUpdateRequest, LessonPlanCreate,
+                                       LessonPlanGenerationRequest, LessonPlanResponse,
+                                       LessonPlanUpdate)
 from app.ai.services.deepseek_service import get_deepseek_service
 from app.ai.utils.content_generator import LessonPlanGenerator
 from app.users.models.user_models import User
@@ -58,7 +54,9 @@ class LessonPlanService:
                 raise ValueError(f"课时{request.lesson_number}已存在教案")
 
             # 准备大纲上下文信息
-            syllabus_context = self._prepare_syllabus_context(syllabus, request.lesson_number)
+            syllabus_context = self._prepare_syllabus_context(
+                syllabus, request.lesson_number
+            )
 
             # 准备AI生成提示
             prompt = self.content_generator.prepare_prompt(
@@ -88,9 +86,11 @@ class LessonPlanService:
                 raise ValueError(f"AI生成失败: {error_msg}")
 
             # 验证和解析生成的内容
-            is_valid, parsed_content, validation_error = (
-                self.content_generator.validate_generated_content(generated_content)
-            )
+            (
+                is_valid,
+                parsed_content,
+                validation_error,
+            ) = self.content_generator.validate_generated_content(generated_content)
 
             if not is_valid or not parsed_content:
                 raise ValueError(f"生成内容验证失败: {validation_error}")
@@ -184,7 +184,9 @@ class LessonPlanService:
     ) -> LessonPlanResponse | None:
         """更新教案."""
         try:
-            result = await db.execute(select(LessonPlan).where(LessonPlan.id == lesson_plan_id))
+            result = await db.execute(
+                select(LessonPlan).where(LessonPlan.id == lesson_plan_id)
+            )
 
             lesson_plan = result.scalar_one_or_none()
             if not lesson_plan:
@@ -263,7 +265,9 @@ class LessonPlanService:
     ) -> bool:
         """删除教案."""
         try:
-            result = await db.execute(select(LessonPlan).where(LessonPlan.id == lesson_plan_id))
+            result = await db.execute(
+                select(LessonPlan).where(LessonPlan.id == lesson_plan_id)
+            )
 
             lesson_plan = result.scalar_one_or_none()
             if not lesson_plan:
@@ -273,7 +277,9 @@ class LessonPlanService:
             from app.ai.models.ai_models import LessonSchedule
 
             schedules_result = await db.execute(
-                select(LessonSchedule.id).where(LessonSchedule.lesson_plan_id == lesson_plan_id)
+                select(LessonSchedule.id).where(
+                    LessonSchedule.lesson_plan_id == lesson_plan_id
+                )
             )
 
             if schedules_result.fetchone():
@@ -413,9 +419,13 @@ class LessonPlanService:
             logger.error(f"更新协作会话失败: {str(e)}")
             raise
 
-    async def _get_syllabus(self, db: AsyncSession, syllabus_id: int) -> AISyllabus | None:
+    async def _get_syllabus(
+        self, db: AsyncSession, syllabus_id: int
+    ) -> AISyllabus | None:
         """获取大纲信息."""
-        result = await db.execute(select(AISyllabus).where(AISyllabus.id == syllabus_id))
+        result = await db.execute(
+            select(AISyllabus).where(AISyllabus.id == syllabus_id)
+        )
         return result.scalar_one_or_none()  # type: ignore[no-any-return]
 
     async def _get_teacher(self, db: AsyncSession, teacher_id: int) -> User | None:
@@ -440,7 +450,9 @@ class LessonPlanService:
         )
         return result.scalar_one_or_none()  # type: ignore[no-any-return]
 
-    def _prepare_syllabus_context(self, syllabus: AISyllabus, lesson_number: int) -> str:
+    def _prepare_syllabus_context(
+        self, syllabus: AISyllabus, lesson_number: int
+    ) -> str:
         """准备大纲上下文信息."""
         context_parts = [
             f"课程大纲：{syllabus.title}",

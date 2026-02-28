@@ -148,8 +148,12 @@ class NotificationPreferenceBase(BaseModel):
     enable_push: bool = Field(default=True, description="启用推送通知")
     quiet_hours_start: time | None = Field(default=None, description="免打扰开始时间")
     quiet_hours_end: time | None = Field(default=None, description="免打扰结束时间")
-    notification_types: dict[str, bool] = Field(default_factory=dict, description="各类型通知开关")
-    max_daily_notifications: int = Field(default=50, ge=1, le=200, description="每日最大通知数量")
+    notification_types: dict[str, bool] = Field(
+        default_factory=dict, description="各类型通知开关"
+    )
+    max_daily_notifications: int = Field(
+        default=50, ge=1, le=200, description="每日最大通知数量"
+    )
     batch_similar_notifications: bool = Field(default=True, description="是否合并相似通知")
 
 

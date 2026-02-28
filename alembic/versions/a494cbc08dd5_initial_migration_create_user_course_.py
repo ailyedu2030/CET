@@ -85,9 +85,7 @@ def upgrade() -> None:
             comment="难度等级",
         ),
         sa.Column("version", sa.String(length=20), nullable=False, comment="课程版本"),
-        sa.Column(
-            "parent_course_id", sa.Integer(), nullable=True, comment="模板课程ID"
-        ),
+        sa.Column("parent_course_id", sa.Integer(), nullable=True, comment="模板课程ID"),
         sa.Column("created_by", sa.Integer(), nullable=True, comment="创建者ID"),
         sa.Column("approved_by", sa.Integer(), nullable=True, comment="审核者ID"),
         sa.Column(
@@ -154,12 +152,8 @@ def upgrade() -> None:
             comment="难度等级",
         ),
         sa.Column("question_count", sa.Integer(), nullable=False, comment="题目数量"),
-        sa.Column(
-            "time_limit", sa.Integer(), nullable=True, comment="时间限制（分钟）"
-        ),
-        sa.Column(
-            "knowledge_points", sa.JSON(), nullable=False, comment="涵盖的知识点"
-        ),
+        sa.Column("time_limit", sa.Integer(), nullable=True, comment="时间限制（分钟）"),
+        sa.Column("knowledge_points", sa.JSON(), nullable=False, comment="涵盖的知识点"),
         sa.Column("tags", sa.JSON(), nullable=False, comment="批次标签"),
         sa.Column("is_active", sa.Boolean(), nullable=False, comment="是否启用"),
         sa.Column("created_by", sa.Integer(), nullable=True, comment="创建者ID"),
@@ -283,9 +277,7 @@ def upgrade() -> None:
             comment="申请类型",
         ),
         sa.Column("application_data", sa.JSON(), nullable=False, comment="申请数据"),
-        sa.Column(
-            "submitted_documents", sa.JSON(), nullable=False, comment="提交的文件列表"
-        ),
+        sa.Column("submitted_documents", sa.JSON(), nullable=False, comment="提交的文件列表"),
         sa.Column("status", sa.String(length=20), nullable=False, comment="申请状态"),
         sa.Column("review_notes", sa.Text(), nullable=True, comment="审核备注"),
         sa.Column(
@@ -316,9 +308,7 @@ def upgrade() -> None:
     op.create_table(
         "student_profiles",
         sa.Column("user_id", sa.Integer(), nullable=False, comment="用户ID"),
-        sa.Column(
-            "real_name", sa.String(length=50), nullable=False, comment="真实姓名"
-        ),
+        sa.Column("real_name", sa.String(length=50), nullable=False, comment="真实姓名"),
         sa.Column("age", sa.Integer(), nullable=True, comment="年龄"),
         sa.Column("gender", sa.String(length=10), nullable=True, comment="性别"),
         sa.Column("id_number", sa.String(length=18), nullable=True, comment="身份证号"),
@@ -340,9 +330,7 @@ def upgrade() -> None:
         sa.Column("major", sa.String(length=100), nullable=True, comment="专业"),
         sa.Column("grade", sa.String(length=20), nullable=True, comment="年级"),
         sa.Column("class_name", sa.String(length=50), nullable=True, comment="班级"),
-        sa.Column(
-            "current_level", sa.Integer(), nullable=False, comment="当前能力等级"
-        ),
+        sa.Column("current_level", sa.Integer(), nullable=False, comment="当前能力等级"),
         sa.Column(
             "total_study_time",
             sa.Integer(),
@@ -367,9 +355,7 @@ def upgrade() -> None:
     op.create_table(
         "teacher_profiles",
         sa.Column("user_id", sa.Integer(), nullable=False, comment="用户ID"),
-        sa.Column(
-            "real_name", sa.String(length=50), nullable=False, comment="真实姓名"
-        ),
+        sa.Column("real_name", sa.String(length=50), nullable=False, comment="真实姓名"),
         sa.Column("age", sa.Integer(), nullable=True, comment="年龄"),
         sa.Column("gender", sa.String(length=10), nullable=True, comment="性别"),
         sa.Column("title", sa.String(length=50), nullable=True, comment="职称"),
@@ -388,9 +374,7 @@ def upgrade() -> None:
             nullable=False,
             comment="职业资格证书列表",
         ),
-        sa.Column(
-            "honor_certificates", sa.JSON(), nullable=False, comment="荣誉证书列表"
-        ),
+        sa.Column("honor_certificates", sa.JSON(), nullable=False, comment="荣誉证书列表"),
         sa.Column(
             "total_teaching_hours", sa.Integer(), nullable=False, comment="总教学时长"
         ),
@@ -445,9 +429,7 @@ def upgrade() -> None:
             comment="难度等级",
         ),
         sa.Column("question_count", sa.Integer(), nullable=False, comment="题目数量"),
-        sa.Column(
-            "time_limit", sa.Integer(), nullable=True, comment="时间限制（分钟）"
-        ),
+        sa.Column("time_limit", sa.Integer(), nullable=True, comment="时间限制（分钟）"),
         sa.Column("status", sa.String(length=20), nullable=False, comment="会话状态"),
         sa.Column(
             "started_at", sa.DateTime(timezone=True), nullable=False, comment="开始时间"
@@ -459,18 +441,12 @@ def upgrade() -> None:
             comment="完成时间",
         ),
         sa.Column("total_questions", sa.Integer(), nullable=False, comment="总题目数"),
-        sa.Column(
-            "correct_answers", sa.Integer(), nullable=False, comment="正确答案数"
-        ),
+        sa.Column("correct_answers", sa.Integer(), nullable=False, comment="正确答案数"),
         sa.Column("total_score", sa.Float(), nullable=False, comment="总分数"),
         sa.Column("time_spent", sa.Integer(), nullable=False, comment="实际用时（秒）"),
-        sa.Column(
-            "initial_level", sa.Integer(), nullable=False, comment="初始难度等级"
-        ),
+        sa.Column("initial_level", sa.Integer(), nullable=False, comment="初始难度等级"),
         sa.Column("final_level", sa.Integer(), nullable=False, comment="最终难度等级"),
-        sa.Column(
-            "adaptation_data", sa.JSON(), nullable=False, comment="自适应调整数据"
-        ),
+        sa.Column("adaptation_data", sa.JSON(), nullable=False, comment="自适应调整数据"),
         sa.Column(
             "id", sa.Integer(), autoincrement=True, nullable=False, comment="主键ID"
         ),
@@ -520,9 +496,7 @@ def upgrade() -> None:
         sa.Column("schedule", sa.JSON(), nullable=False, comment="课程表"),
         sa.Column("is_active", sa.Boolean(), nullable=False, comment="是否激活"),
         sa.Column("status", sa.String(length=20), nullable=False, comment="班级状态"),
-        sa.Column(
-            "current_students", sa.Integer(), nullable=False, comment="当前学生数"
-        ),
+        sa.Column("current_students", sa.Integer(), nullable=False, comment="当前学生数"),
         sa.Column("completion_rate", sa.Float(), nullable=False, comment="完成率"),
         sa.Column(
             "id", sa.Integer(), autoincrement=True, nullable=False, comment="主键ID"
@@ -550,13 +524,9 @@ def upgrade() -> None:
         sa.Column(
             "resource_type", sa.String(length=50), nullable=False, comment="资源类型"
         ),
-        sa.Column(
-            "file_path", sa.String(length=500), nullable=True, comment="文件路径"
-        ),
+        sa.Column("file_path", sa.String(length=500), nullable=True, comment="文件路径"),
         sa.Column("file_size", sa.Integer(), nullable=True, comment="文件大小"),
-        sa.Column(
-            "mime_type", sa.String(length=100), nullable=True, comment="文件类型"
-        ),
+        sa.Column("mime_type", sa.String(length=100), nullable=True, comment="文件类型"),
         sa.Column("url", sa.String(length=500), nullable=True, comment="资源URL"),
         sa.Column("resource_metadata", sa.JSON(), nullable=False, comment="资源元数据"),
         sa.Column("tags", sa.JSON(), nullable=False, comment="资源标签"),
@@ -659,9 +629,7 @@ def upgrade() -> None:
             nullable=False,
             comment="掌握的知识点",
         ),
-        sa.Column(
-            "knowledge_points_weak", sa.JSON(), nullable=False, comment="薄弱的知识点"
-        ),
+        sa.Column("knowledge_points_weak", sa.JSON(), nullable=False, comment="薄弱的知识点"),
         sa.Column(
             "id", sa.Integer(), autoincrement=True, nullable=False, comment="主键ID"
         ),

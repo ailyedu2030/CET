@@ -25,7 +25,9 @@ class EmailService:
         """发送邮件."""
         try:
             # 使用Celery任务发送邮件
-            result = send_email.apply_async(args=[to_email, subject, html_content, text_content])
+            result = send_email.apply_async(
+                args=[to_email, subject, html_content, text_content]
+            )
 
             # 在开发环境中等待结果，生产环境中应该异步处理
             try:

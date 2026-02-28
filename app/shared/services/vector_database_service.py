@@ -33,10 +33,8 @@ except ImportError:
 
 from app.shared.utils.embedding_utils import embedding_utils
 from app.shared.utils.milvus_manager import milvus_manager
-from app.shared.utils.similarity_calculator import (
-    SimilarityResult,
-    similarity_calculator,
-)
+from app.shared.utils.similarity_calculator import (SimilarityResult,
+                                                    similarity_calculator)
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +82,9 @@ class VectorSearchQuery(BaseModel):
 class VectorDatabaseService:
     """向量数据库服务"""
 
-    def __init__(self, db: AsyncSession, cache_service: CacheService | None = None) -> None:
+    def __init__(
+        self, db: AsyncSession, cache_service: CacheService | None = None
+    ) -> None:
         """初始化向量数据库服务"""
         self.db = db
         self.cache_service = cache_service
@@ -161,22 +161,26 @@ class VectorDatabaseService:
 
             # 清除相关缓存
             if self.cache_service and hasattr(self.cache_service, "delete_pattern"):
-                await self.cache_service.delete_pattern(f"vector_search:{collection_type}:*")
+                await self.cache_service.delete_pattern(
+                    f"vector_search:{collection_type}:*"
+                )
 
-            logger.info(f"Successfully added {len(texts)} documents to {collection_type}")
+            logger.info(
+                f"Successfully added {len(texts)} documents to {collection_type}"
+            )
             return document_ids
 
         except Exception as e:
             logger.error(f"Failed to add documents: {str(e)}")
             raise
 
-    async def search_similar_documents(self, query: VectorSearchQuery) -> list[SearchResult]:
+    async def search_similar_documents(
+        self, query: VectorSearchQuery
+    ) -> list[SearchResult]:
         """搜索相似文档"""
         try:
             # 检查缓存
-            cache_key = (
-                f"vector_search:{query.collection_type}:{hash(query.query_text)}:{query.top_k}"
-            )
+            cache_key = f"vector_search:{query.collection_type}:{hash(query.query_text)}:{query.top_k}"
             if self.cache_service:
                 cached_results = await self.cache_service.get(cache_key)
                 if cached_results:
@@ -243,7 +247,9 @@ class VectorDatabaseService:
 
             # 清除缓存
             if self.cache_service and hasattr(self.cache_service, "delete_pattern"):
-                await self.cache_service.delete_pattern(f"vector_search:{collection_type}:*")
+                await self.cache_service.delete_pattern(
+                    f"vector_search:{collection_type}:*"
+                )
 
             delete_count: int = result.get("delete_count", 0)
             logger.info(f"Deleted {delete_count} documents from {collection_type}")
@@ -261,7 +267,9 @@ class VectorDatabaseService:
             # 添加额外统计信息
             stats.update(
                 {
-                    "collection_config": vector_config.get_collection_config(collection_type),
+                    "collection_config": vector_config.get_collection_config(
+                        collection_type
+                    ),
                     "supported_models": self.embedding_utils.get_supported_models(),
                 }
             )
@@ -322,8 +330,10 @@ class VectorDatabaseService:
                     doc1, doc2 = all_docs[i], all_docs[j]
 
                     # 计算相似度
-                    similarity = await self.similarity_calculator.compute_vector_similarity(
-                        doc1["vector"], doc2["vector"], "cosine"
+                    similarity = (
+                        await self.similarity_calculator.compute_vector_similarity(
+                            doc1["vector"], doc2["vector"], "cosine"
+                        )
                     )
 
                     if similarity.score >= similarity_threshold:
@@ -382,7 +392,9 @@ class VectorDatabaseService:
                     )
                     results.append(result)
 
-            logger.info(f"Generated {len(results)} recommendations for document {document_id}")
+            logger.info(
+                f"Generated {len(results)} recommendations for document {document_id}"
+            )
             return results
 
         except Exception as e:
@@ -399,7 +411,9 @@ class VectorDatabaseService:
         """批量搜索"""
         try:
             # 生成查询向量
-            query_vectors = await self.embedding_utils.get_embeddings(queries, embedding_model)
+            query_vectors = await self.embedding_utils.get_embeddings(
+                queries, embedding_model
+            )
 
             # 执行批量搜索
             search_results = await self.milvus_manager.search_vectors(
@@ -440,13 +454,17 @@ class VectorDatabaseService:
             # 获取向量多样性分数
             sample_vectors = await self._sample_vectors(collection_type, 100)
             if sample_vectors:
-                diversity_score = await self.similarity_calculator.compute_diversity_score(
-                    sample_vectors, "cosine"
+                diversity_score = (
+                    await self.similarity_calculator.compute_diversity_score(
+                        sample_vectors, "cosine"
+                    )
                 )
                 stats["diversity_score"] = diversity_score
 
             # 获取嵌入模型分布
-            model_distribution = await self._get_embedding_model_distribution(collection_type)
+            model_distribution = await self._get_embedding_model_distribution(
+                collection_type
+            )
             stats["embedding_model_distribution"] = model_distribution
 
             return stats
@@ -470,12 +488,16 @@ class VectorDatabaseService:
         # TODO: 实现从Milvus获取特定文档向量的逻辑
         return None
 
-    async def _sample_vectors(self, collection_type: str, sample_size: int) -> list[list[float]]:
+    async def _sample_vectors(
+        self, collection_type: str, sample_size: int
+    ) -> list[list[float]]:
         """采样向量"""
         # TODO: 实现向量采样逻辑
         return []
 
-    async def _get_embedding_model_distribution(self, collection_type: str) -> dict[str, int]:
+    async def _get_embedding_model_distribution(
+        self, collection_type: str
+    ) -> dict[str, int]:
         """获取嵌入模型分布"""
         # TODO: 实现模型分布统计逻辑
         return {}

@@ -239,7 +239,9 @@ class TeachingEffectivenessService:
         score_improvements = [
             s.score_improvement for s in completed_sessions if s.score_improvement != 0
         ]
-        avg_score_improvement = statistics.mean(score_improvements) if score_improvements else 0
+        avg_score_improvement = (
+            statistics.mean(score_improvements) if score_improvements else 0
+        )
 
         # 计算参与度
         engagement_scores = []
@@ -247,14 +249,20 @@ class TeachingEffectivenessService:
             if session.engagement_metrics:
                 avg_engagement = statistics.mean(session.engagement_metrics.values())
                 engagement_scores.append(avg_engagement)
-        avg_engagement_level = statistics.mean(engagement_scores) if engagement_scores else 0
+        avg_engagement_level = (
+            statistics.mean(engagement_scores) if engagement_scores else 0
+        )
 
         # 计算平均会话时长
-        durations = [s.duration_minutes for s in completed_sessions if s.duration_minutes > 0]
+        durations = [
+            s.duration_minutes for s in completed_sessions if s.duration_minutes > 0
+        ]
         avg_session_duration = statistics.mean(durations) if durations else 0
 
         # 计算知识保持率（简化计算）
-        retention_rate = self._calculate_retention_rate(content_type, completed_sessions)
+        retention_rate = self._calculate_retention_rate(
+            content_type, completed_sessions
+        )
 
         # 计算综合效果评分
         effectiveness_score = self._calculate_effectiveness_score(
@@ -344,7 +352,10 @@ class TeachingEffectivenessService:
                 first_session = min(user_session_list, key=lambda s: s.start_time)
                 last_session = max(user_session_list, key=lambda s: s.start_time)
 
-                if first_session.final_score is not None and last_session.final_score is not None:
+                if (
+                    first_session.final_score is not None
+                    and last_session.final_score is not None
+                ):
                     # 如果最后一次表现不低于第一次，认为知识得到保持
                     retention = min(
                         last_session.final_score / max(first_session.final_score, 0.1),
@@ -372,7 +383,9 @@ class TeachingEffectivenessService:
         improvement_score = min(
             score_improvement / benchmark.get("target_improvement", 0.2) * 25, 25
         )
-        engagement_score = min(engagement_level / benchmark.get("target_engagement", 0.75) * 25, 25)
+        engagement_score = min(
+            engagement_level / benchmark.get("target_engagement", 0.75) * 25, 25
+        )
 
         # 时长得分（适中最好）
         target_duration = benchmark.get("target_duration", 30.0)
@@ -384,7 +397,9 @@ class TeachingEffectivenessService:
         else:
             duration_score = max(25 - (duration_ratio - 1.2) * 20, 0)
 
-        total_score = completion_score + improvement_score + engagement_score + duration_score
+        total_score = (
+            completion_score + improvement_score + engagement_score + duration_score
+        )
         return min(total_score, 100.0)
 
     def _analyze_strengths_weaknesses(
@@ -557,7 +572,8 @@ class TeachingEffectivenessService:
                     key=lambda x: x[1]["effectiveness_score"],
                 )[0],
                 "total_sessions": sum(
-                    analysis["total_sessions"] for analysis in report["content_analysis"].values()
+                    analysis["total_sessions"]
+                    for analysis in report["content_analysis"].values()
                 ),
             }
 
@@ -575,14 +591,18 @@ class TeachingEffectivenessService:
         recommendations = []
 
         # 找出表现最差的内容类型
-        worst_content = min(content_analysis.items(), key=lambda x: x[1]["effectiveness_score"])
+        worst_content = min(
+            content_analysis.items(), key=lambda x: x[1]["effectiveness_score"]
+        )
 
         if worst_content[1]["effectiveness_score"] < 60:
             recommendations.append(f"重点优化 {worst_content[0]} 的教学效果")
 
         # 分析整体趋势
         declining_contents = [
-            name for name, data in content_analysis.items() if data["trend"] == "declining"
+            name
+            for name, data in content_analysis.items()
+            if data["trend"] == "declining"
         ]
 
         if declining_contents:
@@ -590,7 +610,9 @@ class TeachingEffectivenessService:
 
         # 参与度建议
         low_engagement_contents = [
-            name for name, data in content_analysis.items() if data["engagement_level"] < 0.7
+            name
+            for name, data in content_analysis.items()
+            if data["engagement_level"] < 0.7
         ]
 
         if low_engagement_contents:
@@ -601,7 +623,11 @@ class TeachingEffectivenessService:
     async def get_service_stats(self) -> dict[str, Any]:
         """获取服务统计"""
         active_content_types = len(
-            [ct for ct in TeachingContentType if len(self.content_sessions.get(ct, [])) > 0]
+            [
+                ct
+                for ct in TeachingContentType
+                if len(self.content_sessions.get(ct, [])) > 0
+            ]
         )
 
         return {

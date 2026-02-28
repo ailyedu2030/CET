@@ -118,7 +118,9 @@ class AuthService:
             },
         }
 
-    async def refresh_token(self, refresh_token: str, session_token: str) -> dict[str, str] | None:
+    async def refresh_token(
+        self, refresh_token: str, session_token: str
+    ) -> dict[str, str] | None:
         """刷新访问令牌."""
         # 验证会话
         session = await self._get_active_session(session_token)
@@ -242,7 +244,11 @@ class AuthService:
 
         for role in user_roles:
             # 获取角色的权限
-            stmt = select(Role).where(Role.id == role.id).options(selectinload(Role.permissions))
+            stmt = (
+                select(Role)
+                .where(Role.id == role.id)
+                .options(selectinload(Role.permissions))
+            )
             result = await self.db.execute(stmt)
             role_with_perms = result.scalar_one_or_none()
             if role_with_perms:
@@ -281,7 +287,9 @@ class AuthService:
     async def _is_account_locked(self, username: str, ip_address: str) -> bool:
         """检查账户是否被锁定."""
         # 检查最近的失败尝试次数
-        lockout_start = datetime.utcnow() - timedelta(minutes=settings.LOCKOUT_DURATION_MINUTES)
+        lockout_start = datetime.utcnow() - timedelta(
+            minutes=settings.LOCKOUT_DURATION_MINUTES
+        )
 
         stmt = select(LoginAttempt).where(
             LoginAttempt.username == username,
@@ -304,7 +312,9 @@ class AuthService:
         user_agent: str | None = None,
     ) -> LoginSession:
         """创建登录会话."""
-        expires_at = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+        expires_at = datetime.utcnow() + timedelta(
+            days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+        )
 
         session = LoginSession(
             user_id=user_id,
@@ -357,7 +367,9 @@ class AuthService:
         """获取用户档案信息."""
         stmt = (
             select(User)
-            .options(selectinload(User.student_profile), selectinload(User.teacher_profile))
+            .options(
+                selectinload(User.student_profile), selectinload(User.teacher_profile)
+            )
             .where(User.id == user_id)
         )
 
@@ -395,7 +407,9 @@ class AuthService:
                 "total_teaching_hours": user.teacher_profile.total_teaching_hours,
                 "student_count": user.teacher_profile.student_count,
                 "average_rating": user.teacher_profile.average_rating,
-                "qualification_status": self._get_qualification_status(user.teacher_profile),
+                "qualification_status": self._get_qualification_status(
+                    user.teacher_profile
+                ),
             }
 
         return {
@@ -418,7 +432,9 @@ class AuthService:
         """更新用户档案信息."""
         stmt = (
             select(User)
-            .options(selectinload(User.student_profile), selectinload(User.teacher_profile))
+            .options(
+                selectinload(User.student_profile), selectinload(User.teacher_profile)
+            )
             .where(User.id == user_id)
         )
 
@@ -439,7 +455,9 @@ class AuthService:
             for field, value in profile_data.items():
                 if hasattr(teacher_profile, field):
                     setattr(teacher_profile, field, value)
-        elif profile_data and user.user_type.value == "student" and user.student_profile:
+        elif (
+            profile_data and user.user_type.value == "student" and user.student_profile
+        ):
             student_profile = user.student_profile
             for field, value in profile_data.items():
                 if hasattr(student_profile, field):
@@ -468,7 +486,10 @@ class AuthService:
         # 获取最近的登录尝试
         stmt = (
             select(LoginAttempt)
-            .where(LoginAttempt.username == (select(User.username).where(User.id == user_id)))
+            .where(
+                LoginAttempt.username
+                == (select(User.username).where(User.id == user_id))
+            )
             .order_by(LoginAttempt.attempted_at.desc())
             .limit(10)
         )

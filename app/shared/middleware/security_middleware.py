@@ -13,15 +13,11 @@ from fastapi import HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from app.shared.security.csrf_protection import (
-    CSRFValidationResult,
-    get_csrf_protection,
-)
+from app.shared.security.csrf_protection import (CSRFValidationResult,
+                                                 get_csrf_protection)
 from app.shared.security.rate_limiter import RateLimitResult, rate_limiter
-from app.shared.security.sql_injection_guard import (
-    SQLInjectionRiskLevel,
-    sql_injection_guard,
-)
+from app.shared.security.sql_injection_guard import (SQLInjectionRiskLevel,
+                                                     sql_injection_guard)
 from app.shared.security.xss_protection import XSSContext, XSSRiskLevel, xss_protection
 from app.shared.utils.audit_logger import audit_logger
 
@@ -78,7 +74,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             "/api/v1/ai": "api_ai",
         }
 
-    async def dispatch(self, request: Request, call_next: Callable[[Request], Any]) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Any]
+    ) -> Response:
         """处理请求"""
         start_time = time.time()
 
@@ -105,29 +103,42 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         SQLInjectionRiskLevel.HIGH,
                         SQLInjectionRiskLevel.CRITICAL,
                     ]:
-                        raise HTTPException(status_code=400, detail="Invalid request parameters")
+                        raise HTTPException(
+                            status_code=400, detail="Invalid request parameters"
+                        )
 
             # 3. XSS防护
             if self.enable_xss_protection:
                 xss_result = await self._check_xss(request)
                 if xss_result and xss_result.is_malicious:
-                    await self._log_security_event(request, "xss_attack", xss_result.details)
+                    await self._log_security_event(
+                        request, "xss_attack", xss_result.details
+                    )
                     if xss_result.risk_level in [
                         XSSRiskLevel.HIGH,
                         XSSRiskLevel.CRITICAL,
                     ]:
-                        raise HTTPException(status_code=400, detail="Invalid request content")
+                        raise HTTPException(
+                            status_code=400, detail="Invalid request content"
+                        )
 
             # 4. CSRF防护
-            if self.enable_csrf_protection and request.method in self.csrf_protected_methods:
+            if (
+                self.enable_csrf_protection
+                and request.method in self.csrf_protected_methods
+            ):
                 csrf_result = await self._check_csrf(request)
                 if csrf_result and not csrf_result.is_valid:
-                    await self._log_security_event(request, "csrf_attack", csrf_result.details)
+                    await self._log_security_event(
+                        request, "csrf_attack", csrf_result.details
+                    )
                     if csrf_result.result in [
                         CSRFValidationResult.INVALID_TOKEN,
                         CSRFValidationResult.ORIGIN_MISMATCH,
                     ]:
-                        raise HTTPException(status_code=403, detail="CSRF token validation failed")
+                        raise HTTPException(
+                            status_code=403, detail="CSRF token validation failed"
+                        )
 
             # 处理请求
             response = await call_next(request)
@@ -146,7 +157,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             raise
         except Exception as e:
             logger.error(f"Security middleware error: {str(e)}")
-            await self._log_security_event(request, "middleware_error", {"error": str(e)})
+            await self._log_security_event(
+                request, "middleware_error", {"error": str(e)}
+            )
             raise HTTPException(status_code=500, detail="Internal server error") from e
 
     def _is_excluded_path(self, path: str) -> bool:
@@ -165,7 +178,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             rule_name = self._get_rate_limit_rule(request.url.path)
 
             # 检查限流
-            return await rate_limiter.check_rate_limit(client_id, rule_name, request.url.path)
+            return await rate_limiter.check_rate_limit(
+                client_id, rule_name, request.url.path
+            )
 
         except Exception as e:
             logger.error(f"Rate limit check error: {str(e)}")
@@ -195,7 +210,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         body = await request.body()
                         if body:
                             body_str = body.decode("utf-8")
-                            detection = sql_injection_guard.detect_sql_injection(body_str)
+                            detection = sql_injection_guard.detect_sql_injection(
+                                body_str
+                            )
                             if detection.is_malicious:
                                 return detection
                 except Exception:
@@ -213,7 +230,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             # 检查查询参数
             for _key, value in request.query_params.items():
                 if isinstance(value, str):
-                    detection = xss_protection.detect_xss(value, XSSContext.HTML_CONTENT)
+                    detection = xss_protection.detect_xss(
+                        value, XSSContext.HTML_CONTENT
+                    )
                     if detection.is_malicious:
                         return detection
 
@@ -224,7 +243,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         body = await request.body()
                         if body:
                             body_str = body.decode("utf-8")
-                            detection = xss_protection.detect_xss(body_str, XSSContext.JSON)
+                            detection = xss_protection.detect_xss(
+                                body_str, XSSContext.JSON
+                            )
                             if detection.is_malicious:
                                 return detection
                 except Exception:
@@ -242,7 +263,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             csrf_protection = get_csrf_protection()
 
             # 获取CSRF令牌
-            csrf_token = request.headers.get("X-CSRF-Token") or request.cookies.get("csrf_token")
+            csrf_token = request.headers.get("X-CSRF-Token") or request.cookies.get(
+                "csrf_token"
+            )
 
             # 获取用户信息
             user_id = getattr(request.state, "user_id", None)

@@ -47,7 +47,9 @@ class IntelligentGradingService:
 
         try:
             # 执行批改
-            result: GradingResult = await grading_strategy(question, user_answer, context or {})
+            result: GradingResult = await grading_strategy(
+                question, user_answer, context or {}
+            )
 
             # 质量控制检查
             result = await self._apply_quality_control(result, question)
@@ -120,7 +122,9 @@ class IntelligentGradingService:
             return ai_grading_result
 
         # 备用规则批改
-        return await self._rule_based_fill_blank_grading(question, user_words, correct_words)
+        return await self._rule_based_fill_blank_grading(
+            question, user_words, correct_words
+        )
 
     async def _grade_essay_question(
         self, question: Question, user_answer: dict[str, Any], context: dict[str, Any]
@@ -135,14 +139,20 @@ class IntelligentGradingService:
         grading_prompt = await self._build_essay_grading_prompt(question, essay_text)
 
         try:
-            success, ai_response, error_msg = await self.deepseek_service.generate_completion(
+            (
+                success,
+                ai_response,
+                error_msg,
+            ) = await self.deepseek_service.generate_completion(
                 prompt=grading_prompt,
                 temperature=0.2,  # 较低温度确保批改一致性
                 max_tokens=1500,
             )
 
             if success and ai_response:
-                return await self._parse_essay_grading_result(ai_response, question, essay_text)
+                return await self._parse_essay_grading_result(
+                    ai_response, question, essay_text
+                )
             else:
                 raise ValueError(f"AI批改失败: {error_msg}")
 
@@ -159,10 +169,16 @@ class IntelligentGradingService:
             return self._create_empty_translation_result(question)
 
         # 构建翻译专业批改prompt
-        grading_prompt = await self._build_translation_grading_prompt(question, user_translation)
+        grading_prompt = await self._build_translation_grading_prompt(
+            question, user_translation
+        )
 
         try:
-            success, ai_response, error_msg = await self.deepseek_service.generate_completion(
+            (
+                success,
+                ai_response,
+                error_msg,
+            ) = await self.deepseek_service.generate_completion(
                 prompt=grading_prompt,
                 temperature=0.1,  # 更低温度确保翻译评估准确性
                 max_tokens=1200,
@@ -176,7 +192,9 @@ class IntelligentGradingService:
                 raise ValueError(f"AI翻译批改失败: {error_msg}")
 
         except Exception as e:
-            return await self._fallback_translation_grading(question, user_translation, str(e))
+            return await self._fallback_translation_grading(
+                question, user_translation, str(e)
+            )
 
     async def _grade_reading_comprehension(
         self, question: Question, user_answer: dict[str, Any], context: dict[str, Any]
@@ -236,7 +254,11 @@ class IntelligentGradingService:
             )
 
             if success and ai_response:
-                content = ai_response.get("choices", [{}])[0].get("message", {}).get("content", "")
+                content = (
+                    ai_response.get("choices", [{}])[0]
+                    .get("message", {})
+                    .get("content", "")
+                )
                 result_data = json.loads(content)
 
                 total_score = float(result_data.get("total_score", 0))
@@ -255,8 +277,12 @@ class IntelligentGradingService:
                     grading_status=GradingStatus.COMPLETED,
                     ai_feedback=result_data,
                     ai_confidence=confidence,
-                    knowledge_points_mastered=(question.knowledge_points if is_correct else []),
-                    knowledge_points_weak=([] if is_correct else question.knowledge_points),
+                    knowledge_points_mastered=(
+                        question.knowledge_points if is_correct else []
+                    ),
+                    knowledge_points_weak=(
+                        [] if is_correct else question.knowledge_points
+                    ),
                     detailed_feedback=result_data.get("feedback", ""),
                     improvement_suggestions=result_data.get("suggestions", []),
                 )
@@ -266,7 +292,9 @@ class IntelligentGradingService:
 
         return None
 
-    async def _build_essay_grading_prompt(self, question: Question, essay_text: str) -> str:
+    async def _build_essay_grading_prompt(
+        self, question: Question, essay_text: str
+    ) -> str:
         """构建专业的作文批改prompt."""
         word_count = len(essay_text.split())
 
@@ -326,7 +354,9 @@ class IntelligentGradingService:
         reference_translation = question.correct_answer.get("target_text", "")
 
         # 判断翻译方向
-        direction = "中译英" if question.question_type.value == "translation_cn_to_en" else "英译中"
+        direction = (
+            "中译英" if question.question_type.value == "translation_cn_to_en" else "英译中"
+        )
 
         return f"""
 请按照专业翻译评分标准批改以下{direction}翻译：
@@ -385,10 +415,16 @@ class IntelligentGradingService:
     ) -> GradingResult:
         """解析作文批改结果."""
         try:
-            content = ai_response.get("choices", [{}])[0].get("message", {}).get("content", "")
+            content = (
+                ai_response.get("choices", [{}])[0]
+                .get("message", {})
+                .get("content", "")
+            )
             result_data = json.loads(content)
 
-            total_score = min(float(result_data.get("total_score", 0)), question.max_score)
+            total_score = min(
+                float(result_data.get("total_score", 0)), question.max_score
+            )
             confidence = float(result_data.get("confidence", 0.8))
             is_correct = total_score >= question.max_score * 0.6
 
@@ -399,7 +435,9 @@ class IntelligentGradingService:
                 grading_status=GradingStatus.COMPLETED,
                 ai_feedback=result_data,
                 ai_confidence=confidence,
-                knowledge_points_mastered=(question.knowledge_points if is_correct else []),
+                knowledge_points_mastered=(
+                    question.knowledge_points if is_correct else []
+                ),
                 knowledge_points_weak=[] if is_correct else question.knowledge_points,
                 detailed_feedback=result_data.get("detailed_feedback", ""),
                 improvement_suggestions=result_data.get("improvement_suggestions", []),
@@ -413,10 +451,16 @@ class IntelligentGradingService:
     ) -> GradingResult:
         """解析翻译批改结果."""
         try:
-            content = ai_response.get("choices", [{}])[0].get("message", {}).get("content", "")
+            content = (
+                ai_response.get("choices", [{}])[0]
+                .get("message", {})
+                .get("content", "")
+            )
             result_data = json.loads(content)
 
-            total_score = min(float(result_data.get("total_score", 0)), question.max_score)
+            total_score = min(
+                float(result_data.get("total_score", 0)), question.max_score
+            )
             confidence = float(result_data.get("confidence", 0.8))
             is_correct = total_score >= question.max_score * 0.6
 
@@ -427,14 +471,18 @@ class IntelligentGradingService:
                 grading_status=GradingStatus.COMPLETED,
                 ai_feedback=result_data,
                 ai_confidence=confidence,
-                knowledge_points_mastered=(question.knowledge_points if is_correct else []),
+                knowledge_points_mastered=(
+                    question.knowledge_points if is_correct else []
+                ),
                 knowledge_points_weak=[] if is_correct else question.knowledge_points,
                 detailed_feedback=result_data.get("detailed_feedback", ""),
                 improvement_suggestions=result_data.get("improvement_suggestions", []),
             )
 
         except Exception as e:
-            return await self._fallback_translation_grading(question, user_translation, str(e))
+            return await self._fallback_translation_grading(
+                question, user_translation, str(e)
+            )
 
     # ==================== 备用批改方法 ====================
 
@@ -453,7 +501,9 @@ class IntelligentGradingService:
         correct_count = 0
         detailed_analysis: list[str] = []
 
-        for i, (user_word, correct_word) in enumerate(zip(user_words, correct_words, strict=False)):
+        for i, (user_word, correct_word) in enumerate(
+            zip(user_words, correct_words, strict=False)
+        ):
             user_clean = user_word.strip().lower()
             correct_clean = correct_word.strip().lower()
 
@@ -466,7 +516,9 @@ class IntelligentGradingService:
                     correct_count += 1
                     detailed_analysis.append(f"第{i + 1}空: '{user_word}' ✓ 可接受的变形")
                 else:
-                    detailed_analysis.append(f"第{i + 1}空: '{user_word}' ✗ 应为'{correct_word}'")
+                    detailed_analysis.append(
+                        f"第{i + 1}空: '{user_word}' ✗ 应为'{correct_word}'"
+                    )
 
         accuracy = correct_count / len(correct_words) if correct_words else 0
         score = question.max_score * accuracy
@@ -505,7 +557,9 @@ class IntelligentGradingService:
         word_count = len(essay_text.split())
 
         # 基础评分：主要基于字数和基本结构
-        base_score = min(question.max_score * 0.6, question.max_score * word_count / 150)
+        base_score = min(
+            question.max_score * 0.6, question.max_score * word_count / 150
+        )
 
         # 简单的结构分析
         paragraphs = [p.strip() for p in essay_text.split("\n") if p.strip()]

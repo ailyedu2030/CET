@@ -199,7 +199,9 @@ class EnhancedCollaborationManager:
 
             # 更新会话状态
             session_state["last_activity"] = datetime.now()
-            await self._broadcast_edit_to_participants(session_state, user_id, edit_result)
+            await self._broadcast_edit_to_participants(
+                session_state, user_id, edit_result
+            )
 
             return {
                 "success": True,
@@ -257,7 +259,9 @@ class EnhancedCollaborationManager:
                 "reviewer": ["read", "comment"],
                 "viewer": ["read"],
             },
-            "default_permission_level": settings.get("default_permission_level", "editor"),
+            "default_permission_level": settings.get(
+                "default_permission_level", "editor"
+            ),
         }
 
         # 根据资源类型设置特定权限
@@ -291,7 +295,10 @@ class EnhancedCollaborationManager:
                 }
 
             # 检查是否是资源所有者
-            if user_id == session_state["permission_matrix"]["resource_owner"]["user_id"]:
+            if (
+                user_id
+                == session_state["permission_matrix"]["resource_owner"]["user_id"]
+            ):
                 return {
                     "allowed": True,
                     "reason": "资源所有者",
@@ -299,10 +306,15 @@ class EnhancedCollaborationManager:
                 }
 
             # 检查协作规则
-            collaboration_rules = session_state["permission_matrix"]["collaboration_rules"]
+            collaboration_rules = session_state["permission_matrix"][
+                "collaboration_rules"
+            ]
 
             # 检查参与者数量限制
-            if len(session_state["participants"]) >= collaboration_rules["max_participants"]:
+            if (
+                len(session_state["participants"])
+                >= collaboration_rules["max_participants"]
+            ):
                 return {
                     "allowed": False,
                     "reason": "协作会话参与者已满",
@@ -315,7 +327,9 @@ class EnhancedCollaborationManager:
                 pass
 
             # 检查权限级别
-            default_level = collaboration_rules.get("default_permission_level", "viewer")
+            default_level = collaboration_rules.get(
+                "default_permission_level", "viewer"
+            )
             permission_levels = session_state["permission_matrix"]["permission_levels"]
             available_permissions = permission_levels.get(default_level, ["read"])
 
@@ -365,7 +379,9 @@ class EnhancedCollaborationManager:
         # 根据操作类型和目标路径检查权限
         if operation_type in ["create", "update", "delete"]:
             # 检查是否有写权限
-            user_permissions = session_state.get("user_permissions", {}).get(str(user_id), [])
+            user_permissions = session_state.get("user_permissions", {}).get(
+                str(user_id), []
+            )
             if "write" not in user_permissions:
                 return {
                     "allowed": False,
@@ -373,8 +389,13 @@ class EnhancedCollaborationManager:
                 }
 
         # 检查资源特定权限
-        resource_specific = session_state["permission_matrix"].get("resource_specific", {})
-        if target_path.startswith("objectives") and "can_modify_objectives" in resource_specific:
+        resource_specific = session_state["permission_matrix"].get(
+            "resource_specific", {}
+        )
+        if (
+            target_path.startswith("objectives")
+            and "can_modify_objectives" in resource_specific
+        ):
             # 检查是否有修改目标的权限
             pass
 
@@ -396,7 +417,9 @@ class EnhancedCollaborationManager:
             if target_path.startswith(lock_path) or lock_path.startswith(target_path):
                 # 检查锁是否过期
                 lock_time = datetime.fromisoformat(lock_info["locked_at"])
-                timeout = session_state["permission_matrix"]["collaboration_rules"]["edit_timeout"]
+                timeout = session_state["permission_matrix"]["collaboration_rules"][
+                    "edit_timeout"
+                ]
 
                 if (datetime.now() - lock_time).total_seconds() > timeout:
                     # 锁已过期，移除锁
@@ -489,7 +512,9 @@ class EnhancedCollaborationManager:
     ) -> dict[str, Any]:
         """解决编辑冲突."""
         strategy = session_state.get("conflict_resolution_strategy", "auto_merge")
-        resolver = self.conflict_resolution_strategies.get(strategy, self._auto_merge_strategy)
+        resolver = self.conflict_resolution_strategies.get(
+            strategy, self._auto_merge_strategy
+        )
 
         return await resolver(session_state, conflicts)
 
@@ -611,7 +636,9 @@ class EnhancedCollaborationManager:
         """从数据库加载会话."""
         try:
             result = await db.execute(
-                select(CollaborativeSession).where(CollaborativeSession.session_id == session_id)
+                select(CollaborativeSession).where(
+                    CollaborativeSession.session_id == session_id
+                )
             )
             session = result.scalar_one_or_none()
 
@@ -645,7 +672,9 @@ class EnhancedCollaborationManager:
         """更新会话参与者."""
         try:
             result = await db.execute(
-                select(CollaborativeSession).where(CollaborativeSession.session_id == session_id)
+                select(CollaborativeSession).where(
+                    CollaborativeSession.session_id == session_id
+                )
             )
             session = result.scalar_one_or_none()
 

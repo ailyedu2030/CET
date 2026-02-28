@@ -19,10 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.shared.models.enums import TrainingType
-from app.training.models.training_models import (
-    TrainingRecord,
-    TrainingSession,
-)
+from app.training.models.training_models import TrainingRecord, TrainingSession
 
 logger = logging.getLogger(__name__)
 
@@ -150,7 +147,9 @@ class AIAnalysisService:
             knowledge_mastery = await self._analyze_knowledge_mastery(learning_data)
 
             # 4. 学习效率评估
-            efficiency_assessment = await self._assess_learning_efficiency(learning_data)
+            efficiency_assessment = await self._assess_learning_efficiency(
+                learning_data
+            )
 
             # 5. AI深度分析（调用DeepSeek API）
             ai_insights = await self._generate_ai_insights(
@@ -169,7 +168,8 @@ class AIAnalysisService:
                 "training_type": training_type.name if training_type else "ALL",
                 "analysis_timestamp": datetime.now(),
                 "analysis_duration": analysis_time,
-                "meets_time_requirement": analysis_time < self.analysis_config["analysis_timeout"],
+                "meets_time_requirement": analysis_time
+                < self.analysis_config["analysis_timeout"],
                 # 核心分析结果
                 "learning_patterns": learning_patterns,
                 "knowledge_mastery": knowledge_mastery,
@@ -177,7 +177,9 @@ class AIAnalysisService:
                 "ai_insights": ai_insights,
                 # 数据统计
                 "data_summary": {
-                    "analysis_period_days": self.analysis_config["analysis_window_days"],
+                    "analysis_period_days": self.analysis_config[
+                        "analysis_window_days"
+                    ],
                     "total_sessions": learning_data["session_count"],
                     "total_records": learning_data["record_count"],
                     "data_quality_score": learning_data["data_quality_score"],
@@ -241,17 +243,23 @@ class AIAnalysisService:
             # 分离记录和会话
             records = [item[0] for item in data]
             sessions = [item[1] for item in data]
-            unique_sessions = list({session.id: session for session in sessions}.values())
+            unique_sessions = list(
+                {session.id: session for session in sessions}.values()
+            )
 
             # 检查数据充分性
             has_sufficient_data = (
                 len(unique_sessions)
-                >= self.analysis_config["pattern_recognition"]["min_sessions_for_pattern"]
+                >= self.analysis_config["pattern_recognition"][
+                    "min_sessions_for_pattern"
+                ]
                 and len(records) >= 20
             )
 
             # 计算数据质量分数
-            data_quality_score = self._calculate_data_quality_score(records, unique_sessions)
+            data_quality_score = self._calculate_data_quality_score(
+                records, unique_sessions
+            )
 
             return {
                 "has_sufficient_data": has_sufficient_data,
@@ -271,7 +279,9 @@ class AIAnalysisService:
             logger.error(f"收集学习数据失败: {str(e)}")
             return {"has_sufficient_data": False, "error": str(e)}
 
-    async def _analyze_learning_patterns(self, learning_data: dict[str, Any]) -> dict[str, Any]:
+    async def _analyze_learning_patterns(
+        self, learning_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """分析学习模式."""
         try:
             records = learning_data["records"]
@@ -284,7 +294,9 @@ class AIAnalysisService:
             behavior_patterns = self._analyze_behavior_patterns(records)
 
             # 3. 难度适应模式分析
-            difficulty_patterns = self._analyze_difficulty_adaptation_patterns(sessions, records)
+            difficulty_patterns = self._analyze_difficulty_adaptation_patterns(
+                sessions, records
+            )
 
             # 4. 学习风格识别
             learning_style = self._identify_learning_style(records, sessions)
@@ -312,7 +324,9 @@ class AIAnalysisService:
             logger.error(f"学习模式分析失败: {str(e)}")
             return {"error": str(e), "confidence": 0}
 
-    async def _analyze_knowledge_mastery(self, learning_data: dict[str, Any]) -> dict[str, Any]:
+    async def _analyze_knowledge_mastery(
+        self, learning_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """分析知识掌握度."""
         try:
             records = learning_data["records"]
@@ -344,14 +358,18 @@ class AIAnalysisService:
                 "progress_assessment": progress_assessment,
                 "weak_areas": weak_areas,
                 "confidence": mastery_confidence,
-                "overall_mastery_score": self._calculate_overall_mastery_score(mastery_levels),
+                "overall_mastery_score": self._calculate_overall_mastery_score(
+                    mastery_levels
+                ),
             }
 
         except Exception as e:
             logger.error(f"知识掌握度分析失败: {str(e)}")
             return {"error": str(e), "confidence": 0}
 
-    async def _assess_learning_efficiency(self, learning_data: dict[str, Any]) -> dict[str, Any]:
+    async def _assess_learning_efficiency(
+        self, learning_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """评估学习效率."""
         try:
             records = learning_data["records"]
@@ -370,11 +388,14 @@ class AIAnalysisService:
             progress_rate = self._analyze_progress_rate(records, sessions)
 
             # 5. 综合效率评分
-            efficiency_factors = self.analysis_config["efficiency_assessment"]["efficiency_factors"]
+            efficiency_factors = self.analysis_config["efficiency_assessment"][
+                "efficiency_factors"
+            ]
             overall_efficiency = (
                 accuracy_efficiency["score"] * efficiency_factors["accuracy_weight"]
                 + speed_efficiency["score"] * efficiency_factors["speed_weight"]
-                + consistency_analysis["score"] * efficiency_factors["consistency_weight"]
+                + consistency_analysis["score"]
+                * efficiency_factors["consistency_weight"]
                 + progress_rate["score"] * efficiency_factors["progress_weight"]
             )
 
@@ -457,7 +478,9 @@ class AIAnalysisService:
                 learning_data, patterns, mastery, efficiency
             )
 
-    async def _call_deepseek_analysis_api(self, data_summary: dict[str, Any]) -> dict[str, Any]:
+    async def _call_deepseek_analysis_api(
+        self, data_summary: dict[str, Any]
+    ) -> dict[str, Any]:
         """调用DeepSeek AI分析API."""
         try:
             start_time = datetime.now()
@@ -636,13 +659,17 @@ class AIAnalysisService:
             "api_response_time": 0,
         }
 
-    def _calculate_data_quality_score(self, records: list[Any], sessions: list[Any]) -> float:
+    def _calculate_data_quality_score(
+        self, records: list[Any], sessions: list[Any]
+    ) -> float:
         """计算数据质量分数."""
         try:
             quality_factors = []
 
             # 数据完整性
-            complete_records = sum(1 for r in records if r.time_spent and r.time_spent > 0)
+            complete_records = sum(
+                1 for r in records if r.time_spent and r.time_spent > 0
+            )
             completeness = complete_records / len(records) if records else 0
             quality_factors.append(completeness)
 
@@ -678,7 +705,9 @@ class AIAnalysisService:
 
         return sum(confidences) / len(confidences) if confidences else 0
 
-    def _analyze_time_patterns(self, records: list[Any], sessions: list[Any]) -> dict[str, Any]:
+    def _analyze_time_patterns(
+        self, records: list[Any], sessions: list[Any]
+    ) -> dict[str, Any]:
         """分析学习时间模式."""
         try:
             if not sessions:
@@ -711,7 +740,9 @@ class AIAnalysisService:
             durations: list[float] = []
             for session in sessions:
                 if session.end_time and session.start_time:
-                    duration = (session.end_time - session.start_time).total_seconds() / 60
+                    duration = (
+                        session.end_time - session.start_time
+                    ).total_seconds() / 60
                     durations.append(duration)
 
             if durations:
@@ -728,7 +759,9 @@ class AIAnalysisService:
             return {
                 "optimal_learning_time": optimal_time,
                 "session_duration_pattern": duration_pattern,
-                "average_session_duration": (sum(durations) / len(durations) if durations else 0),
+                "average_session_duration": (
+                    sum(durations) / len(durations) if durations else 0
+                ),
                 "peak_hour": hour_counts,
             }
 
@@ -868,25 +901,33 @@ class AIAnalysisService:
             logger.error(f"分析难度适应模式失败: {str(e)}")
             return {"adaptation_ability": "unknown", "preferred_difficulty": "unknown"}
 
-    def _identify_learning_style(self, records: list[Any], sessions: list[Any]) -> dict[str, Any]:
+    def _identify_learning_style(
+        self, records: list[Any], sessions: list[Any]
+    ) -> dict[str, Any]:
         """识别学习风格."""
         try:
             if not records or not sessions:
                 return {"primary_style": "unknown", "confidence": 0}
 
             # 分析答题速度特征
-            answer_times = [r.time_spent for r in records if r.time_spent and r.time_spent > 0]
+            answer_times = [
+                r.time_spent for r in records if r.time_spent and r.time_spent > 0
+            ]
             avg_time = sum(answer_times) / len(answer_times) if answer_times else 60
 
             # 分析会话时长特征
             session_durations: list[float] = []
             for session in sessions:
                 if session.end_time and session.start_time:
-                    duration = (session.end_time - session.start_time).total_seconds() / 60
+                    duration = (
+                        session.end_time - session.start_time
+                    ).total_seconds() / 60
                     session_durations.append(duration)
 
             avg_session_duration = (
-                sum(session_durations) / len(session_durations) if session_durations else 30
+                sum(session_durations) / len(session_durations)
+                if session_durations
+                else 30
             )
 
             # 分析正确率变化特征
@@ -1020,7 +1061,9 @@ class AIAnalysisService:
                     "evening": "晚上",
                     "night": "深夜",
                 }
-                summary_parts.append(f"最佳学习时间：{time_names.get(optimal_time, optimal_time)}")
+                summary_parts.append(
+                    f"最佳学习时间：{time_names.get(optimal_time, optimal_time)}"
+                )
 
             # 答题特征总结
             speed_pattern = behavior_patterns.get("answer_speed_pattern", "unknown")
@@ -1030,7 +1073,9 @@ class AIAnalysisService:
                     "moderate_answerer": "稳健答题型",
                     "careful_answerer": "谨慎答题型",
                 }
-                summary_parts.append(f"答题特征：{speed_names.get(speed_pattern, speed_pattern)}")
+                summary_parts.append(
+                    f"答题特征：{speed_names.get(speed_pattern, speed_pattern)}"
+                )
 
             # 难度适应总结
             adaptation = difficulty_patterns.get("adaptation_ability", "unknown")
@@ -1094,7 +1139,9 @@ class AIAnalysisService:
                     else 0
                 )
                 data["average_time"] = (
-                    data["total_time"] / data["total_attempts"] if data["total_attempts"] > 0 else 0
+                    data["total_time"] / data["total_attempts"]
+                    if data["total_attempts"] > 0
+                    else 0
                 )
 
                 # 计算掌握度
@@ -1113,7 +1160,9 @@ class AIAnalysisService:
             logger.error(f"按知识点分析失败: {str(e)}")
             return {}
 
-    def _classify_mastery_levels(self, knowledge_point_analysis: dict[str, Any]) -> dict[str, Any]:
+    def _classify_mastery_levels(
+        self, knowledge_point_analysis: dict[str, Any]
+    ) -> dict[str, Any]:
         """分类掌握度等级."""
         try:
             mastery_classification: dict[str, list[dict[str, Any]]] = {
@@ -1167,7 +1216,9 @@ class AIAnalysisService:
 
             # 分析知识遗忘曲线
             retention_data: dict[str, list[dict[str, Any]]] = {}
-            decay_days = self.analysis_config["knowledge_mastery"]["knowledge_decay_days"]
+            decay_days = self.analysis_config["knowledge_mastery"][
+                "knowledge_decay_days"
+            ]
 
             # 按知识点分析保持情况
             for record in sorted_records:
@@ -1192,18 +1243,26 @@ class AIAnalysisService:
 
                 # 计算最近表现与早期表现的对比
                 recent_data = [
-                    d for d in data if (datetime.now().date() - d["date"]).days <= decay_days
+                    d
+                    for d in data
+                    if (datetime.now().date() - d["date"]).days <= decay_days
                 ]
                 early_data = [
-                    d for d in data if (datetime.now().date() - d["date"]).days > decay_days
+                    d
+                    for d in data
+                    if (datetime.now().date() - d["date"]).days > decay_days
                 ]
 
                 if not recent_data or not early_data:
                     retention_scores[point] = 0.5
                     continue
 
-                recent_accuracy = sum(1 for d in recent_data if d["is_correct"]) / len(recent_data)
-                early_accuracy = sum(1 for d in early_data if d["is_correct"]) / len(early_data)
+                recent_accuracy = sum(1 for d in recent_data if d["is_correct"]) / len(
+                    recent_data
+                )
+                early_accuracy = sum(1 for d in early_data if d["is_correct"]) / len(
+                    early_data
+                )
 
                 # 保持分数 = 最近正确率 / 早期正确率
                 retention_scores[point] = (
@@ -1212,7 +1271,9 @@ class AIAnalysisService:
 
             # 计算整体保持分数
             overall_retention = (
-                sum(retention_scores.values()) / len(retention_scores) if retention_scores else 0
+                sum(retention_scores.values()) / len(retention_scores)
+                if retention_scores
+                else 0
             )
 
             return {
@@ -1220,8 +1281,12 @@ class AIAnalysisService:
                 "knowledge_point_retention": retention_scores,
                 "decay_analysis": {
                     "decay_period_days": decay_days,
-                    "points_with_decay": [k for k, v in retention_scores.items() if v < 0.8],
-                    "points_well_retained": [k for k, v in retention_scores.items() if v >= 0.8],
+                    "points_with_decay": [
+                        k for k, v in retention_scores.items() if v < 0.8
+                    ],
+                    "points_well_retained": [
+                        k for k, v in retention_scores.items() if v >= 0.8
+                    ],
                 },
             }
 
@@ -1239,7 +1304,9 @@ class AIAnalysisService:
             sorted_records = sorted(records, key=lambda x: x.created_at)
 
             # 分时间段分析进步情况
-            total_days = (sorted_records[-1].created_at - sorted_records[0].created_at).days
+            total_days = (
+                sorted_records[-1].created_at - sorted_records[0].created_at
+            ).days
             if total_days < 1:
                 return {"progress_rate": 0, "trend": "insufficient_data"}
 
@@ -1276,7 +1343,9 @@ class AIAnalysisService:
             # 计算进步率
             accuracy_improvement = recent_accuracy - early_accuracy
             speed_improvement = (
-                (early_avg_time - recent_avg_time) / early_avg_time if early_avg_time > 0 else 0
+                (early_avg_time - recent_avg_time) / early_avg_time
+                if early_avg_time > 0
+                else 0
             )
 
             # 综合进步评分
@@ -1309,7 +1378,9 @@ class AIAnalysisService:
             logger.error(f"评估学习进度失败: {str(e)}")
             return {"progress_rate": 0, "trend": "unknown"}
 
-    def _identify_weak_areas(self, knowledge_point_analysis: dict[str, Any]) -> list[str]:
+    def _identify_weak_areas(
+        self, knowledge_point_analysis: dict[str, Any]
+    ) -> list[str]:
         """识别薄弱环节."""
         try:
             weak_areas = []
@@ -1344,7 +1415,8 @@ class AIAnalysisService:
             # 知识点分析置信度
             if knowledge_point_analysis:
                 total_attempts = sum(
-                    data.get("total_attempts", 0) for data in knowledge_point_analysis.values()
+                    data.get("total_attempts", 0)
+                    for data in knowledge_point_analysis.values()
                 )
                 if total_attempts >= 20:
                     confidence_factors.append(0.9)
@@ -1369,7 +1441,11 @@ class AIAnalysisService:
             else:
                 confidence_factors.append(0.4)
 
-            return sum(confidence_factors) / len(confidence_factors) if confidence_factors else 0
+            return (
+                sum(confidence_factors) / len(confidence_factors)
+                if confidence_factors
+                else 0
+            )
 
         except Exception as e:
             logger.error(f"计算掌握度置信度失败: {str(e)}")
@@ -1419,7 +1495,9 @@ class AIAnalysisService:
                 recent_10 = records[:10]
                 earlier_10 = records[10:20] if len(records) >= 20 else records[10:]
 
-                recent_accuracy = sum(1 for r in recent_10 if r.is_correct) / len(recent_10)
+                recent_accuracy = sum(1 for r in recent_10 if r.is_correct) / len(
+                    recent_10
+                )
                 earlier_accuracy = (
                     sum(1 for r in earlier_10 if r.is_correct) / len(earlier_10)
                     if earlier_10
@@ -1441,9 +1519,9 @@ class AIAnalysisService:
                 # 计算最近5次的准确率方差
                 recent_results = [1 if r.is_correct else 0 for r in records[:5]]
                 mean_recent = sum(recent_results) / len(recent_results)
-                accuracy_variance = sum((x - mean_recent) ** 2 for x in recent_results) / len(
-                    recent_results
-                )
+                accuracy_variance = sum(
+                    (x - mean_recent) ** 2 for x in recent_results
+                ) / len(recent_results)
 
             consistency_factor = max(0.5, 1 - accuracy_variance)
             efficiency_score = overall_accuracy * consistency_factor
@@ -1472,7 +1550,9 @@ class AIAnalysisService:
                 return {"efficiency_score": 0, "speed_trend": "unknown"}
 
             # 获取有效的答题时间
-            valid_times = [r.time_spent for r in records if r.time_spent and r.time_spent > 0]
+            valid_times = [
+                r.time_spent for r in records if r.time_spent and r.time_spent > 0
+            ]
             if not valid_times:
                 return {"efficiency_score": 0, "speed_trend": "unknown"}
 
@@ -1482,11 +1562,15 @@ class AIAnalysisService:
             # 分析速度趋势
             if len(valid_times) >= 10:
                 recent_times = valid_times[:10]
-                earlier_times = valid_times[10:20] if len(valid_times) >= 20 else valid_times[10:]
+                earlier_times = (
+                    valid_times[10:20] if len(valid_times) >= 20 else valid_times[10:]
+                )
 
                 recent_avg = sum(recent_times) / len(recent_times)
                 earlier_avg = (
-                    sum(earlier_times) / len(earlier_times) if earlier_times else recent_avg
+                    sum(earlier_times) / len(earlier_times)
+                    if earlier_times
+                    else recent_avg
                 )
 
                 if recent_avg < earlier_avg * 0.9:
@@ -1540,14 +1624,18 @@ class AIAnalysisService:
                 return {"consistency_score": 0, "pattern": "unknown"}
 
             # 分析答题时间一致性
-            valid_times = [r.time_spent for r in records if r.time_spent and r.time_spent > 0]
+            valid_times = [
+                r.time_spent for r in records if r.time_spent and r.time_spent > 0
+            ]
             time_consistency = 0
             if len(valid_times) >= 3:
                 import statistics
 
                 avg_time = sum(valid_times) / len(valid_times)
                 time_std = statistics.stdev(valid_times)
-                time_consistency = max(0, 1 - min(1.0, time_std / avg_time)) if avg_time > 0 else 0
+                time_consistency = (
+                    max(0, 1 - min(1.0, time_std / avg_time)) if avg_time > 0 else 0
+                )
 
             # 分析正确率一致性
             accuracy_consistency = 0
@@ -1560,7 +1648,9 @@ class AIAnalysisService:
                     end_idx = start_idx + chunk_size if i < 4 else len(records)
                     chunk = records[start_idx:end_idx]
                     chunk_accuracy = (
-                        sum(1 for r in chunk if r.is_correct) / len(chunk) if chunk else 0
+                        sum(1 for r in chunk if r.is_correct) / len(chunk)
+                        if chunk
+                        else 0
                     )
                     chunk_accuracies.append(chunk_accuracy)
 
@@ -1568,7 +1658,9 @@ class AIAnalysisService:
                     import statistics
 
                     accuracy_std = statistics.stdev(chunk_accuracies)
-                    accuracy_consistency = max(0, 1 - min(1.0, accuracy_std / 0.5))  # 标准化到0.5
+                    accuracy_consistency = max(
+                        0, 1 - min(1.0, accuracy_std / 0.5)
+                    )  # 标准化到0.5
 
             # 综合一致性分数
             consistency_score = time_consistency * 0.4 + accuracy_consistency * 0.6
@@ -1595,7 +1687,9 @@ class AIAnalysisService:
             logger.error(f"分析学习一致性失败: {str(e)}")
             return {"consistency_score": 0, "pattern": "unknown"}
 
-    def _analyze_progress_rate(self, records: list[Any], sessions: list[Any]) -> dict[str, Any]:
+    def _analyze_progress_rate(
+        self, records: list[Any], sessions: list[Any]
+    ) -> dict[str, Any]:
         """分析进步速度."""
         try:
             if not records or not sessions:
@@ -1621,26 +1715,38 @@ class AIAnalysisService:
                 recent_records = sorted_records[mid_point:]
 
                 # 计算各阶段表现
-                early_accuracy = sum(1 for r in early_records if r.is_correct) / len(early_records)
+                early_accuracy = sum(1 for r in early_records if r.is_correct) / len(
+                    early_records
+                )
                 recent_accuracy = sum(1 for r in recent_records if r.is_correct) / len(
                     recent_records
                 )
 
                 # 计算平均答题时间变化
                 early_times = [
-                    r.time_spent for r in early_records if r.time_spent and r.time_spent > 0
+                    r.time_spent
+                    for r in early_records
+                    if r.time_spent and r.time_spent > 0
                 ]
                 recent_times = [
-                    r.time_spent for r in recent_records if r.time_spent and r.time_spent > 0
+                    r.time_spent
+                    for r in recent_records
+                    if r.time_spent and r.time_spent > 0
                 ]
 
-                early_avg_time = sum(early_times) / len(early_times) if early_times else 0
-                recent_avg_time = sum(recent_times) / len(recent_times) if recent_times else 0
+                early_avg_time = (
+                    sum(early_times) / len(early_times) if early_times else 0
+                )
+                recent_avg_time = (
+                    sum(recent_times) / len(recent_times) if recent_times else 0
+                )
 
                 # 计算进步率
                 accuracy_improvement = recent_accuracy - early_accuracy
                 speed_improvement = (
-                    (early_avg_time - recent_avg_time) / early_avg_time if early_avg_time > 0 else 0
+                    (early_avg_time - recent_avg_time) / early_avg_time
+                    if early_avg_time > 0
+                    else 0
                 )
 
                 # 综合进步率 (准确率权重0.7，速度权重0.3)
@@ -1659,7 +1765,9 @@ class AIAnalysisService:
                     trend = "significant_decline"
 
                 # 计算日均进步率
-                daily_progress_rate = progress_rate / max(1, time_span) if time_span > 0 else 0
+                daily_progress_rate = (
+                    progress_rate / max(1, time_span) if time_span > 0 else 0
+                )
 
                 return {
                     "progress_rate": progress_rate,
@@ -1805,7 +1913,9 @@ class AIAnalysisService:
                     {
                         "type": "progress_enhancement",
                         "priority": (
-                            "high" if progress_trend == "significant_decline" else "medium"
+                            "high"
+                            if progress_trend == "significant_decline"
+                            else "medium"
                         ),
                         "suggestion": "学习进步缓慢，建议调整学习策略和方法",
                         "reason": f"进步趋势: {progress_trend}，进步率: {progress_value:.3f}",

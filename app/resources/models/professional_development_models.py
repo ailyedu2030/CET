@@ -4,16 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import (
-    Boolean,
-    DateTime,
-    Enum,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-)
+from sqlalchemy import Boolean, DateTime, Enum, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -57,7 +48,9 @@ class TrainingResource(BaseModel):
     instructor: Mapped[str] = mapped_column(String(100), nullable=False, comment="讲师姓名")
 
     # 内容信息
-    content_url: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="内容链接")
+    content_url: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="内容链接"
+    )
     materials: Mapped[list[dict[str, Any]]] = mapped_column(
         JSON, default=list, nullable=False, comment="培训材料"
     )
@@ -72,7 +65,9 @@ class TrainingResource(BaseModel):
     enrolled_count: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="报名人数"
     )
-    rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=False, comment="评分")
+    rating: Mapped[float] = mapped_column(
+        Float, default=0.0, nullable=False, comment="评分"
+    )
     rating_count: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="评分人数"
     )
@@ -86,7 +81,9 @@ class TrainingResource(BaseModel):
     )
 
     # 标签
-    tags: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False, comment="标签")
+    tags: Mapped[list[str]] = mapped_column(
+        JSON, default=list, nullable=False, comment="标签"
+    )
 
     # 关系
     enrollments: Mapped[list[TrainingEnrollment]] = relationship(
@@ -120,7 +117,9 @@ class TrainingEnrollment(BaseModel):
     )
 
     # 学习进度
-    progress: Mapped[float] = mapped_column(Float, default=0.0, nullable=False, comment="学习进度")
+    progress: Mapped[float] = mapped_column(
+        Float, default=0.0, nullable=False, comment="学习进度"
+    )
     completed_lessons: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="完成课程数"
     )
@@ -129,7 +128,9 @@ class TrainingEnrollment(BaseModel):
     )
 
     # 时间信息
-    enrolled_at: Mapped[DateTime] = mapped_column(DateTime, nullable=False, comment="报名时间")
+    enrolled_at: Mapped[DateTime] = mapped_column(
+        DateTime, nullable=False, comment="报名时间"
+    )
     last_accessed_at: Mapped[DateTime | None] = mapped_column(
         DateTime, nullable=True, comment="最后访问时间"
     )
@@ -156,15 +157,23 @@ class CertificationMaterial(BaseModel):
     category: Mapped[str] = mapped_column(String(100), nullable=False, comment="认证分类")
 
     # 文件信息
-    file_url: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="文件链接")
-    file_size: Mapped[int | None] = mapped_column(Integer, nullable=True, comment="文件大小")
-    file_format: Mapped[str | None] = mapped_column(String(20), nullable=True, comment="文件格式")
+    file_url: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="文件链接"
+    )
+    file_size: Mapped[int | None] = mapped_column(
+        Integer, nullable=True, comment="文件大小"
+    )
+    file_format: Mapped[str | None] = mapped_column(
+        String(20), nullable=True, comment="文件格式"
+    )
 
     # 统计信息
     download_count: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="下载次数"
     )
-    rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=False, comment="评分")
+    rating: Mapped[float] = mapped_column(
+        Float, default=0.0, nullable=False, comment="评分"
+    )
     rating_count: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="评分人数"
     )
@@ -173,10 +182,14 @@ class CertificationMaterial(BaseModel):
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=True, nullable=False, comment="是否激活"
     )
-    is_free: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False, comment="是否免费")
+    is_free: Mapped[bool] = mapped_column(
+        Boolean, default=True, nullable=False, comment="是否免费"
+    )
 
     # 标签
-    tags: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False, comment="标签")
+    tags: Mapped[list[str]] = mapped_column(
+        JSON, default=list, nullable=False, comment="标签"
+    )
 
 
 class CommunityPost(BaseModel):
@@ -198,9 +211,15 @@ class CommunityPost(BaseModel):
     category: Mapped[str] = mapped_column(String(100), nullable=False, comment="帖子分类")
 
     # 互动统计
-    likes: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="点赞数")
-    replies: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="回复数")
-    views: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="浏览数")
+    likes: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="点赞数"
+    )
+    replies: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="回复数"
+    )
+    views: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="浏览数"
+    )
 
     # 状态信息
     is_pinned: Mapped[bool] = mapped_column(
@@ -214,7 +233,9 @@ class CommunityPost(BaseModel):
     )
 
     # 标签
-    tags: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False, comment="标签")
+    tags: Mapped[list[str]] = mapped_column(
+        JSON, default=list, nullable=False, comment="标签"
+    )
 
     # 关系
     author: Mapped[User] = relationship("User")
@@ -246,7 +267,9 @@ class CommunityReply(BaseModel):
     content: Mapped[str] = mapped_column(Text, nullable=False, comment="回复内容")
 
     # 互动统计
-    likes: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="点赞数")
+    likes: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="点赞数"
+    )
 
     # 回复关系
     reply_to_id: Mapped[int | None] = mapped_column(
@@ -257,7 +280,9 @@ class CommunityReply(BaseModel):
     )
 
     # 关系
-    post: Mapped[CommunityPost] = relationship("CommunityPost", back_populates="replies_list")
+    post: Mapped[CommunityPost] = relationship(
+        "CommunityPost", back_populates="replies_list"
+    )
     author: Mapped[User] = relationship("User")
 
 
@@ -269,7 +294,9 @@ class ResearchUpdate(BaseModel):
     # 基本信息
     title: Mapped[str] = mapped_column(String(300), nullable=False, comment="标题")
     summary: Mapped[str] = mapped_column(Text, nullable=False, comment="摘要")
-    full_content: Mapped[str | None] = mapped_column(Text, nullable=True, comment="全文内容")
+    full_content: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="全文内容"
+    )
     source: Mapped[str] = mapped_column(String(200), nullable=False, comment="来源")
 
     # 分类信息
@@ -279,11 +306,17 @@ class ResearchUpdate(BaseModel):
     )
 
     # 发布信息
-    published_at: Mapped[DateTime] = mapped_column(DateTime, nullable=False, comment="发布时间")
-    source_url: Mapped[str | None] = mapped_column(String(500), nullable=True, comment="原文链接")
+    published_at: Mapped[DateTime] = mapped_column(
+        DateTime, nullable=False, comment="发布时间"
+    )
+    source_url: Mapped[str | None] = mapped_column(
+        String(500), nullable=True, comment="原文链接"
+    )
 
     # 统计信息
-    read_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="阅读次数")
+    read_count: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False, comment="阅读次数"
+    )
     bookmark_count: Mapped[int] = mapped_column(
         Integer, default=0, nullable=False, comment="收藏次数"
     )
@@ -294,7 +327,9 @@ class ResearchUpdate(BaseModel):
     )
 
     # 标签
-    tags: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False, comment="标签")
+    tags: Mapped[list[str]] = mapped_column(
+        JSON, default=list, nullable=False, comment="标签"
+    )
 
 
 class NotificationSettings(BaseModel):

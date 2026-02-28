@@ -8,28 +8,21 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.training.models.social_models import (
-    DiscussionForumModel,
-    ForumPostModel,
-    MessageModel,
-    PostLikeModel,
-    PostReportModel,
-    StudyGroupMembershipModel,
-    StudyGroupModel,
-    StudyPartnerMatchModel,
-    StudyPartnerRequestModel,
-)
-from app.training.schemas.social_interaction_schemas import (
-    DiscussionForumCreate,
-    DiscussionForumUpdate,
-    ForumPostCreate,
-    ForumPostUpdate,
-    MessageCreate,
-    PostLikeCreate,
-    PostReportCreate,
-    StudyGroupCreate,
-    StudyPartnerRequestCreate,
-)
+from app.training.models.social_models import (DiscussionForumModel, ForumPostModel,
+                                               MessageModel, PostLikeModel,
+                                               PostReportModel,
+                                               StudyGroupMembershipModel,
+                                               StudyGroupModel, StudyPartnerMatchModel,
+                                               StudyPartnerRequestModel)
+from app.training.schemas.social_interaction_schemas import (DiscussionForumCreate,
+                                                             DiscussionForumUpdate,
+                                                             ForumPostCreate,
+                                                             ForumPostUpdate,
+                                                             MessageCreate,
+                                                             PostLikeCreate,
+                                                             PostReportCreate,
+                                                             StudyGroupCreate,
+                                                             StudyPartnerRequestCreate)
 
 logger = logging.getLogger(__name__)
 
@@ -249,7 +242,9 @@ class SocialService:
         logger.info(f"帖子更新成功: ID={post.id}")  # type: ignore
         return post
 
-    async def get_post_by_id(self: "SocialService", post_id: int) -> ForumPostModel | None:
+    async def get_post_by_id(
+        self: "SocialService", post_id: int
+    ) -> ForumPostModel | None:
         """根据ID获取帖子详情"""
         logger.info(f"查询帖子详情: {post_id}")
 
@@ -280,7 +275,9 @@ class SocialService:
 
     # ==================== 帖子互动 ====================
 
-    async def like_post(self: "SocialService", user_id: int, data: PostLikeCreate) -> PostLikeModel:
+    async def like_post(
+        self: "SocialService", user_id: int, data: PostLikeCreate
+    ) -> PostLikeModel:
         """点赞帖子"""
         logger.info(f"用户 {user_id} 点赞帖子: {data.post_id}")
 
@@ -417,7 +414,11 @@ class SocialService:
         return list(requests), total
 
     async def respond_to_partner_request(
-        self: "SocialService", request_id: int, user_id: int, action: str, message: str = ""
+        self: "SocialService",
+        request_id: int,
+        user_id: int,
+        action: str,
+        message: str = "",
     ) -> None:
         """响应学习伙伴匹配"""
         logger.info(f"用户 {user_id} 响应学习伙伴匹配: {request_id}, 操作: {action}")
@@ -538,7 +539,9 @@ class SocialService:
 
         return list(groups), total
 
-    async def get_study_group_by_id(self: "SocialService", group_id: int) -> StudyGroupModel | None:
+    async def get_study_group_by_id(
+        self: "SocialService", group_id: int
+    ) -> StudyGroupModel | None:
         """根据ID获取学习小组详情"""
         logger.info(f"查询学习小组详情: {group_id}")
 
@@ -565,7 +568,9 @@ class SocialService:
 
         return group
 
-    async def join_study_group(self: "SocialService", group_id: int, user_id: int) -> None:
+    async def join_study_group(
+        self: "SocialService", group_id: int, user_id: int
+    ) -> None:
         """用户加入学习小组"""
         logger.info(f"用户 {user_id} 申请加入学习小组: {group_id}")
 
@@ -627,7 +632,9 @@ class SocialService:
         status_msg = "加入成功" if not group.require_approval else "申请已提交，等待审核"  # type: ignore[has-type]
         logger.info(f"用户 {user_id} {status_msg}: 学习小组 {group_id}")
 
-    async def leave_study_group(self: "SocialService", group_id: int, user_id: int) -> None:
+    async def leave_study_group(
+        self: "SocialService", group_id: int, user_id: int
+    ) -> None:
         """用户退出学习小组"""
         logger.info(f"用户 {user_id} 申请退出学习小组: {group_id}")
 
@@ -734,7 +741,8 @@ class SocialService:
         else:
             # 用户所有消息
             conditions.append(
-                (MessageModel.sender_id == user_id) | (MessageModel.receiver_id == user_id)
+                (MessageModel.sender_id == user_id)
+                | (MessageModel.receiver_id == user_id)
             )
 
         # 查询总数

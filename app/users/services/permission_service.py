@@ -135,14 +135,22 @@ class PermissionService:
 
     async def get_role_by_id(self, role_id: int) -> Role | None:
         """根据ID获取角色."""
-        stmt = select(Role).where(Role.id == role_id).options(selectinload(Role.permissions))
+        stmt = (
+            select(Role)
+            .where(Role.id == role_id)
+            .options(selectinload(Role.permissions))
+        )
         result = await self.db.execute(stmt)
         role: Role | None = result.scalar_one_or_none()
         return role
 
     async def get_role_by_code(self, code: str) -> Role | None:
         """根据代码获取角色."""
-        stmt = select(Role).where(Role.code == code).options(selectinload(Role.permissions))
+        stmt = (
+            select(Role)
+            .where(Role.code == code)
+            .options(selectinload(Role.permissions))
+        )
         result = await self.db.execute(stmt)
         role: Role | None = result.scalar_one_or_none()
         return role

@@ -144,7 +144,9 @@ class MinIOClient:
             await self._initialize_buckets()
 
             self._connected = True
-            logger.info(f"Successfully connected to MinIO at {connection_config.endpoint}")
+            logger.info(
+                f"Successfully connected to MinIO at {connection_config.endpoint}"
+            )
             return True
 
         except Exception as e:
@@ -180,14 +182,18 @@ class MinIOClient:
 
                 if not bucket_exists:
                     # 创建存储桶
-                    await loop.run_in_executor(None, self.client.make_bucket, bucket_config.name)
+                    await loop.run_in_executor(
+                        None, self.client.make_bucket, bucket_config.name
+                    )
                     logger.info(f"Created bucket: {bucket_config.name}")
 
                 # 配置存储桶
                 await self._configure_bucket(bucket_config)
 
             except Exception as e:
-                logger.error(f"Failed to initialize bucket {bucket_config.name}: {str(e)}")
+                logger.error(
+                    f"Failed to initialize bucket {bucket_config.name}: {str(e)}"
+                )
                 raise MinIOClientError(f"Bucket initialization failed: {str(e)}") from e
 
     async def _configure_bucket(self, bucket_config: BucketConfig) -> None:
@@ -293,7 +299,9 @@ class MinIOClient:
                 metadata,
             )
 
-            logger.info(f"Successfully uploaded {file_path} to {bucket_config.name}/{object_name}")
+            logger.info(
+                f"Successfully uploaded {file_path} to {bucket_config.name}/{object_name}"
+            )
             return object_name
 
         except Exception as e:
@@ -350,7 +358,9 @@ class MinIOClient:
                 metadata,
             )
 
-            logger.info(f"Successfully uploaded data to {bucket_config.name}/{object_name}")
+            logger.info(
+                f"Successfully uploaded data to {bucket_config.name}/{object_name}"
+            )
             return object_name
 
         except Exception as e:
@@ -410,7 +420,9 @@ class MinIOClient:
             response.close()
             response.release_conn()
 
-            logger.info(f"Successfully downloaded data from {bucket_config.name}/{object_name}")
+            logger.info(
+                f"Successfully downloaded data from {bucket_config.name}/{object_name}"
+            )
             return data
 
         except Exception as e:
@@ -461,7 +473,9 @@ class MinIOClient:
             objects = await loop.run_in_executor(
                 None,
                 lambda: list(
-                    client.list_objects(bucket_config.name, prefix=prefix, recursive=recursive)
+                    client.list_objects(
+                        bucket_config.name, prefix=prefix, recursive=recursive
+                    )
                 ),
             )
 
@@ -514,7 +528,9 @@ class MinIOClient:
             return url
 
         except Exception as e:
-            logger.error(f"Failed to generate presigned URL for {object_name}: {str(e)}")
+            logger.error(
+                f"Failed to generate presigned URL for {object_name}: {str(e)}"
+            )
             raise MinIOClientError(f"Presigned URL generation failed: {str(e)}") from e
 
     async def _validate_file(self, file_path: Path) -> None:

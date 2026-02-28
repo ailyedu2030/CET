@@ -13,14 +13,8 @@ from app.shared.config.vector_config import CollectionConfig, vector_config
 logger = logging.getLogger(__name__)
 
 try:
-    from pymilvus import (
-        Collection,
-        CollectionSchema,
-        DataType,
-        FieldSchema,
-        connections,
-        utility,
-    )
+    from pymilvus import (Collection, CollectionSchema, DataType, FieldSchema,
+                          connections, utility)
 
     MILVUS_AVAILABLE = True
 except ImportError:
@@ -180,8 +174,12 @@ class MilvusManager:
                 self._collections[collection_type] = collection
 
             except Exception as e:
-                logger.error(f"Failed to initialize collection {collection_config.name}: {str(e)}")
-                raise MilvusManagerError(f"Collection initialization failed: {str(e)}") from e
+                logger.error(
+                    f"Failed to initialize collection {collection_config.name}: {str(e)}"
+                )
+                raise MilvusManagerError(
+                    f"Collection initialization failed: {str(e)}"
+                ) from e
 
     async def _create_collection(self, config: CollectionConfig) -> None:
         """创建向量集合"""
@@ -195,7 +193,9 @@ class MilvusManager:
                     auto_id=config.auto_id,
                 ),
                 FieldSchema(name="text", dtype=DataType.VARCHAR, max_length=65535),
-                FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=config.dimension),
+                FieldSchema(
+                    name="vector", dtype=DataType.FLOAT_VECTOR, dim=config.dimension
+                ),
                 FieldSchema(name="metadata", dtype=DataType.VARCHAR, max_length=65535),
                 FieldSchema(name="timestamp", dtype=DataType.INT64),
             ]
@@ -207,7 +207,9 @@ class MilvusManager:
             loop = asyncio.get_event_loop()
             await loop.run_in_executor(
                 None,
-                lambda: Collection(name=config.name, schema=schema, using=self.connection_alias),
+                lambda: Collection(
+                    name=config.name, schema=schema, using=self.connection_alias
+                ),
             )
 
             # 创建索引
@@ -223,7 +225,9 @@ class MilvusManager:
             collection = Collection(collection_name)
 
             # 获取默认索引配置
-            index_config = self.config.get_index_config(self.config.get_default_index_type())
+            index_config = self.config.get_index_config(
+                self.config.get_default_index_type()
+            )
             if not index_config:
                 raise MilvusManagerError("Default index config not found")
 
@@ -235,7 +239,9 @@ class MilvusManager:
             }
 
             loop = asyncio.get_event_loop()
-            await loop.run_in_executor(None, collection.create_index, "vector", index_params)
+            await loop.run_in_executor(
+                None, collection.create_index, "vector", index_params
+            )
 
             logger.info(f"Created index for collection {collection_name}")
 
@@ -269,7 +275,8 @@ class MilvusManager:
                 "text": texts,
                 "vector": vectors,
                 "metadata": [
-                    str(meta) if meta else "{}" for meta in (metadata or [{}] * len(texts))
+                    str(meta) if meta else "{}"
+                    for meta in (metadata or [{}] * len(texts))
                 ],
                 "timestamp": [current_time] * len(texts),
             }
@@ -281,9 +288,13 @@ class MilvusManager:
             logger.info(f"Inserted {len(texts)} vectors into {collection_type}")
             return {
                 "insert_count": (
-                    result.insert_count if hasattr(result, "insert_count") else len(texts)
+                    result.insert_count
+                    if hasattr(result, "insert_count")
+                    else len(texts)
                 ),
-                "primary_keys": (result.primary_keys if hasattr(result, "primary_keys") else []),
+                "primary_keys": (
+                    result.primary_keys if hasattr(result, "primary_keys") else []
+                ),
             }
 
         except Exception as e:
@@ -366,7 +377,11 @@ class MilvusManager:
             result = await loop.run_in_executor(None, collection.delete, expr)
 
             logger.info(f"Deleted vectors from {collection_type} with expr: {expr}")
-            return {"delete_count": (result.delete_count if hasattr(result, "delete_count") else 0)}
+            return {
+                "delete_count": (
+                    result.delete_count if hasattr(result, "delete_count") else 0
+                )
+            }
 
         except Exception as e:
             logger.error(f"Failed to delete vectors: {str(e)}")
@@ -385,7 +400,9 @@ class MilvusManager:
 
             # 获取统计信息
             loop = asyncio.get_event_loop()
-            num_entities = await loop.run_in_executor(None, lambda: collection.num_entities)
+            num_entities = await loop.run_in_executor(
+                None, lambda: collection.num_entities
+            )
 
             return {
                 "name": collection.name,
@@ -407,7 +424,9 @@ class MilvusManager:
 
             # 断开连接
             loop = asyncio.get_event_loop()
-            await loop.run_in_executor(None, connections.disconnect, self.connection_alias)
+            await loop.run_in_executor(
+                None, connections.disconnect, self.connection_alias
+            )
 
             self._connected = False
             self._collections.clear()

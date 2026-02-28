@@ -78,7 +78,9 @@ class QualityMonitoringService:
             )
 
             # 2. 相关性评估
-            metrics[QualityMetric.RELEVANCE] = await self._evaluate_relevance(content, context)
+            metrics[QualityMetric.RELEVANCE] = await self._evaluate_relevance(
+                content, context
+            )
 
             # 3. 清晰度评估
             metrics[QualityMetric.CLARITY] = await self._evaluate_clarity(content)
@@ -155,7 +157,9 @@ class QualityMonitoringService:
 
         # 关键词相关性
         if keywords:
-            keyword_matches = sum(1 for keyword in keywords if keyword.lower() in content.lower())
+            keyword_matches = sum(
+                1 for keyword in keywords if keyword.lower() in content.lower()
+            )
             keyword_score = (keyword_matches / len(keywords)) * 60.0
             relevance_score += keyword_score
 
@@ -217,7 +221,9 @@ class QualityMonitoringService:
         # 结构完整性检查
         required_elements = context.get("required_elements", [])
         if required_elements:
-            present_elements = sum(1 for element in required_elements if element in content)
+            present_elements = sum(
+                1 for element in required_elements if element in content
+            )
             structure_score = (present_elements / len(required_elements)) * 30.0
             completeness_score += structure_score - 15.0  # 调整基础分数
 

@@ -111,10 +111,12 @@ async def generate_intelligent_teaching_content(
 
         dual_core_service = DualCoreArchitectureService(db, cache_service, ai_service)
 
-        teaching_content = await dual_core_service.generate_intelligent_teaching_content(
-            syllabus_data=syllabus_data,
-            resource_base=resource_base,
-            user_id=current_user.id,
+        teaching_content = (
+            await dual_core_service.generate_intelligent_teaching_content(
+                syllabus_data=syllabus_data,
+                resource_base=resource_base,
+                user_id=current_user.id,
+            )
         )
 
         return {
@@ -249,7 +251,9 @@ async def check_teacher_lesson_plan_permission(
         cache_service = await get_cache_service()
         permission_service = PermissionService(db)
 
-        isolation_service = PermissionIsolationService(db, cache_service, permission_service)
+        isolation_service = PermissionIsolationService(
+            db, cache_service, permission_service
+        )
 
         has_permission = await isolation_service.check_teacher_lesson_plan_permission(
             user_id=current_user.id,
@@ -285,7 +289,9 @@ async def request_temporary_permission(
         cache_service = await get_cache_service()
         permission_service = PermissionService(db)
 
-        isolation_service = PermissionIsolationService(db, cache_service, permission_service)
+        isolation_service = PermissionIsolationService(
+            db, cache_service, permission_service
+        )
 
         request_result = await isolation_service.request_temporary_permission(
             user_id=current_user.id,
@@ -359,7 +365,9 @@ async def validate_textbook_isbn(
 
         standardization_service = StandardizationService(db, cache_service)
 
-        validation_result = await standardization_service.validate_textbook_isbn(isbn=isbn)
+        validation_result = await standardization_service.validate_textbook_isbn(
+            isbn=isbn
+        )
 
         return {
             "success": True,

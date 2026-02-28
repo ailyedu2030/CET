@@ -27,16 +27,9 @@ from app.shared.models.enums import AlertLevel, MetricType
 
 # Prometheus客户端支持
 try:
-    from prometheus_client import (
-        CONTENT_TYPE_LATEST,
-        CollectorRegistry,
-        Counter,
-        Gauge,
-        Histogram,
-        Info,
-        generate_latest,
-    )
+    from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, Counter
     from prometheus_client import Enum as PrometheusEnum
+    from prometheus_client import Gauge, Histogram, Info, generate_latest
 
     PROMETHEUS_AVAILABLE = True
 except ImportError:
@@ -147,7 +140,9 @@ class MetricDefinition:
     unit: MetricUnit
     description: str
     tags: dict[str, str] = field(default_factory=dict)
-    aggregations: list[AggregationType] = field(default_factory=lambda: [AggregationType.AVERAGE])
+    aggregations: list[AggregationType] = field(
+        default_factory=lambda: [AggregationType.AVERAGE]
+    )
     retention_period: timedelta = field(default_factory=lambda: timedelta(days=7))
 
 
@@ -206,9 +201,9 @@ class MetricsCollector:
         )
 
         # 聚合指标缓存
-        self.aggregated_metrics: dict[str, dict[AggregationType, AggregatedMetric]] = defaultdict(
-            dict
-        )
+        self.aggregated_metrics: dict[
+            str, dict[AggregationType, AggregatedMetric]
+        ] = defaultdict(dict)
 
         # 告警规则
         self.alert_rules: dict[str, dict[str, Any]] = {}
@@ -292,7 +287,9 @@ class MetricsCollector:
 
         try:
             for point in points:
-                await self.collect_metric(point.name, point.value, point.tags, point.timestamp)
+                await self.collect_metric(
+                    point.name, point.value, point.tags, point.timestamp
+                )
 
         except Exception as e:
             self.logger.error(f"批量收集指标失败: {e}")
@@ -352,7 +349,9 @@ class MetricsCollector:
 
             # CPU使用率
             cpu_percent = psutil.cpu_percent()
-            await self.collect_metric("system.cpu.usage", float(cpu_percent), {"unit": "percent"})
+            await self.collect_metric(
+                "system.cpu.usage", float(cpu_percent), {"unit": "percent"}
+            )
 
             # 内存使用率
             memory = psutil.virtual_memory()
@@ -366,7 +365,9 @@ class MetricsCollector:
             # 磁盘使用率
             disk = psutil.disk_usage("/")
             disk_percent = (float(disk.used) / float(disk.total)) * 100
-            await self.collect_metric("system.disk.usage", disk_percent, {"unit": "percent"})
+            await self.collect_metric(
+                "system.disk.usage", disk_percent, {"unit": "percent"}
+            )
 
             # 网络IO
             network = psutil.net_io_counters()
@@ -425,7 +426,9 @@ class MetricsCollector:
         except Exception as e:
             self.logger.error(f"更新聚合指标失败: {e}")
 
-    def _calculate_aggregation(self, values: list[float], agg_type: AggregationType) -> float:
+    def _calculate_aggregation(
+        self, values: list[float], agg_type: AggregationType
+    ) -> float:
         """计算聚合值"""
         if not values:
             return 0.0
@@ -614,8 +617,12 @@ class MetricsCollector:
         summary: dict[str, Any] = {
             "timestamp": datetime.utcnow().isoformat(),
             "total_metrics": len(self.metric_definitions),
-            "total_data_points": sum(len(points) for points in self.raw_metrics.values()),
-            "active_alerts": len([a for a in self.active_alerts.values() if not a.resolved]),
+            "total_data_points": sum(
+                len(points) for points in self.raw_metrics.values()
+            ),
+            "active_alerts": len(
+                [a for a in self.active_alerts.values() if not a.resolved]
+            ),
             "collection_stats": self.collection_stats,
             "metrics": {},
         }
@@ -638,7 +645,9 @@ class MetricsCollector:
         """添加告警回调"""
         self.alert_callbacks.append(callback)
 
-    def export_metrics(self, format_type: str = "json", include_raw_data: bool = False) -> str:
+    def export_metrics(
+        self, format_type: str = "json", include_raw_data: bool = False
+    ) -> str:
         """导出指标数据"""
         export_data: dict[str, Any] = {
             "timestamp": datetime.utcnow().isoformat(),
@@ -853,7 +862,9 @@ class PrometheusMetricsCollector:
             return
 
         self._running = True
-        self._collection_thread = threading.Thread(target=self._collect_system_metrics, daemon=True)
+        self._collection_thread = threading.Thread(
+            target=self._collect_system_metrics, daemon=True
+        )
         self._collection_thread.start()
         logger.info("Prometheus metrics collection started")
 
@@ -891,9 +902,13 @@ class PrometheusMetricsCollector:
     ) -> None:
         """记录HTTP请求指标"""
         status = str(status_code)
-        self.http_requests_total.labels(method=method, endpoint=endpoint, status=status).inc()
+        self.http_requests_total.labels(
+            method=method, endpoint=endpoint, status=status
+        ).inc()
 
-        self.http_request_duration.labels(method=method, endpoint=endpoint).observe(duration)
+        self.http_request_duration.labels(method=method, endpoint=endpoint).observe(
+            duration
+        )
 
     def set_active_users(self, total: int, students: int, teachers: int) -> None:
         """设置活跃用户数"""
@@ -914,7 +929,9 @@ class PrometheusMetricsCollector:
         self.ai_service_request_duration.labels(service=service).observe(duration)
 
         if cost is not None:
-            current_cost = getattr(self.ai_service_daily_cost.labels(service=service), "_value", 0)
+            current_cost = getattr(
+                self.ai_service_daily_cost.labels(service=service), "_value", 0
+            )
             self.ai_service_daily_cost.labels(service=service).set(current_cost + cost)
 
     def set_ai_service_quota_usage(self, service: str, usage_percent: float) -> None:

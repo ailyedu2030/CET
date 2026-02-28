@@ -67,8 +67,10 @@ class PersonalizedRecommendationService:
             logger.info(f"开始生成个性化学习建议: 学生{student_id}, 训练类型{training_type}")
 
             # 1. 获取AI深度分析结果
-            ai_analysis = await self.ai_analysis_service.generate_comprehensive_analysis_report(
-                student_id, training_type
+            ai_analysis = (
+                await self.ai_analysis_service.generate_comprehensive_analysis_report(
+                    student_id, training_type
+                )
             )
 
             if not ai_analysis.get("analysis_available"):
@@ -81,8 +83,10 @@ class PersonalizedRecommendationService:
             # 2. 获取精确自适应算法结果
             adaptive_results = {}
             if training_type:
-                adaptive_results = await self.precise_adaptive_service.execute_precise_adjustment(
-                    student_id, training_type
+                adaptive_results = (
+                    await self.precise_adaptive_service.execute_precise_adjustment(
+                        student_id, training_type
+                    )
                 )
 
             # 3. 生成多维度个性化建议
@@ -116,11 +120,15 @@ class PersonalizedRecommendationService:
                 "meets_personalization_target": personalization_score >= 0.80,
                 # 基础数据
                 "ai_analysis_summary": self._extract_analysis_summary(ai_analysis),
-                "adaptive_algorithm_summary": self._extract_adaptive_summary(adaptive_results),
+                "adaptive_algorithm_summary": self._extract_adaptive_summary(
+                    adaptive_results
+                ),
                 # 元数据
                 "recommendation_metadata": {
                     "total_recommendations": len(prioritized_recommendations),
-                    "categories_covered": len({r["category"] for r in prioritized_recommendations}),
+                    "categories_covered": len(
+                        {r["category"] for r in prioritized_recommendations}
+                    ),
                     "average_confidence": (
                         sum(r["confidence"] for r in prioritized_recommendations)
                         / len(prioritized_recommendations)
@@ -161,16 +169,20 @@ class PersonalizedRecommendationService:
             recommendations.extend(adaptive_recommendations)
 
             # 3. 基于学习模式的建议
-            pattern_recommendations = self._generate_pattern_based_recommendations(ai_analysis)
+            pattern_recommendations = self._generate_pattern_based_recommendations(
+                ai_analysis
+            )
             recommendations.extend(pattern_recommendations)
 
             # 4. 基于知识掌握度的建议
-            mastery_recommendations = self._generate_mastery_based_recommendations(ai_analysis)
+            mastery_recommendations = self._generate_mastery_based_recommendations(
+                ai_analysis
+            )
             recommendations.extend(mastery_recommendations)
 
             # 5. 基于学习效率的建议
-            efficiency_recommendations = self._generate_efficiency_based_recommendations(
-                ai_analysis
+            efficiency_recommendations = (
+                self._generate_efficiency_based_recommendations(ai_analysis)
             )
             recommendations.extend(efficiency_recommendations)
 
@@ -387,7 +399,9 @@ class PersonalizedRecommendationService:
                         "source": "knowledge_mastery_analysis",
                         "actionable": True,
                         "estimated_impact": "high",
-                        "specific_actions": [f"针对{area}进行专项练习" for area in weak_areas[:3]]
+                        "specific_actions": [
+                            f"针对{area}进行专项练习" for area in weak_areas[:3]
+                        ]
                         + ["寻找相关学习资源", "制定专项学习计划"],
                     }
                 )
@@ -423,7 +437,9 @@ class PersonalizedRecommendationService:
         try:
             efficiency_assessment = ai_analysis.get("efficiency_assessment", {})
             overall_efficiency = efficiency_assessment.get("overall_efficiency", 0)
-            improvement_suggestions = efficiency_assessment.get("improvement_suggestions", [])
+            improvement_suggestions = efficiency_assessment.get(
+                "improvement_suggestions", []
+            )
 
             # 效率提升建议
             if overall_efficiency < 0.7:
@@ -465,11 +481,15 @@ class PersonalizedRecommendationService:
             limits: dict[str, Any] = self.recommendation_config["recommendation_limits"]
             min_confidence = limits["min_confidence_threshold"]
             filtered_recommendations = [
-                rec for rec in recommendations if rec.get("confidence", 0) >= min_confidence
+                rec
+                for rec in recommendations
+                if rec.get("confidence", 0) >= min_confidence
             ]
 
             # 按优先级和置信度排序
-            priority_order: dict[str, int] = self.recommendation_config["priority_levels"]
+            priority_order: dict[str, int] = self.recommendation_config[
+                "priority_levels"
+            ]
 
             def sort_key(rec: dict[str, Any]) -> tuple[int, float]:
                 priority_score = priority_order.get(rec.get("priority", "optional"), 5)
@@ -482,7 +502,9 @@ class PersonalizedRecommendationService:
             sorted_recommendations = sorted(filtered_recommendations, key=sort_key)
 
             # 限制每个类别的建议数量
-            limits_2: dict[str, Any] = self.recommendation_config["recommendation_limits"]
+            limits_2: dict[str, Any] = self.recommendation_config[
+                "recommendation_limits"
+            ]
             max_per_category = limits_2["max_recommendations_per_category"]
             category_counts: dict[str, int] = {}
             final_recommendations = []
@@ -494,7 +516,9 @@ class PersonalizedRecommendationService:
                     category_counts[category] = category_counts.get(category, 0) + 1
 
             # 限制总建议数量
-            limits_3: dict[str, Any] = self.recommendation_config["recommendation_limits"]
+            limits_3: dict[str, Any] = self.recommendation_config[
+                "recommendation_limits"
+            ]
             max_total = limits_3["max_total_recommendations"]
             return final_recommendations[:max_total]
 
@@ -502,18 +526,24 @@ class PersonalizedRecommendationService:
             logger.error(f"优先级排序失败: {str(e)}")
             return recommendations
 
-    def _generate_execution_plan(self, recommendations: list[dict[str, Any]]) -> dict[str, Any]:
+    def _generate_execution_plan(
+        self, recommendations: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """生成执行计划."""
         try:
             if not recommendations:
                 return {"plan_available": False}
 
             # 按优先级分组
-            critical_actions = [rec for rec in recommendations if rec.get("priority") == "critical"]
+            critical_actions = [
+                rec for rec in recommendations if rec.get("priority") == "critical"
+            ]
             important_actions = [
                 rec for rec in recommendations if rec.get("priority") == "important"
             ]
-            helpful_actions = [rec for rec in recommendations if rec.get("priority") == "helpful"]
+            helpful_actions = [
+                rec for rec in recommendations if rec.get("priority") == "helpful"
+            ]
 
             # 生成时间线
             timeline = []
@@ -603,7 +633,9 @@ class PersonalizedRecommendationService:
             learning_patterns = ai_analysis.get("learning_patterns", {})
             style_confidence = learning_patterns.get("confidence", 0)
             style_based_recs = sum(
-                1 for rec in recommendations if "learning_strategy" in rec.get("category", "")
+                1
+                for rec in recommendations
+                if "learning_strategy" in rec.get("category", "")
             )
             style_factor = min(
                 1.0,
@@ -618,7 +650,9 @@ class PersonalizedRecommendationService:
             personalization_factors.append(performance_factor)
 
             # 3. 自适应算法个性化程度
-            adaptive_personalization = adaptive_results.get("personalization_score", 0.5)
+            adaptive_personalization = adaptive_results.get(
+                "personalization_score", 0.5
+            )
             personalization_factors.append(adaptive_personalization)
 
             # 4. 建议多样性
@@ -628,19 +662,25 @@ class PersonalizedRecommendationService:
 
             # 5. 置信度加权
             if recommendations:
-                avg_confidence = sum(rec.get("confidence", 0) for rec in recommendations) / len(
-                    recommendations
-                )
+                avg_confidence = sum(
+                    rec.get("confidence", 0) for rec in recommendations
+                ) / len(recommendations)
                 personalization_factors.append(avg_confidence)
 
             # 加权计算
-            weights: dict[str, float] = self.recommendation_config["personalization_factors"]
+            weights: dict[str, float] = self.recommendation_config[
+                "personalization_factors"
+            ]
             weighted_score = (
                 personalization_factors[0] * weights["learning_style_weight"]
                 + personalization_factors[1] * weights["performance_level_weight"]
                 + personalization_factors[2] * weights["progress_rate_weight"]
                 + personalization_factors[3] * weights["engagement_level_weight"]
-                + (personalization_factors[4] if len(personalization_factors) > 4 else 0.5)
+                + (
+                    personalization_factors[4]
+                    if len(personalization_factors) > 4
+                    else 0.5
+                )
                 * weights["difficulty_preference_weight"]
             )
 
@@ -658,11 +698,15 @@ class PersonalizedRecommendationService:
             "overall_confidence": ai_analysis.get("confidence_metrics", {}).get(
                 "overall_confidence", 0
             ),
-            "key_insights": ai_analysis.get("ai_insights", {}).get("ai_generated_insights", [])[:3],
+            "key_insights": ai_analysis.get("ai_insights", {}).get(
+                "ai_generated_insights", []
+            )[:3],
             "analysis_duration": ai_analysis.get("analysis_duration", 0),
         }
 
-    def _extract_adaptive_summary(self, adaptive_results: dict[str, Any]) -> dict[str, Any]:
+    def _extract_adaptive_summary(
+        self, adaptive_results: dict[str, Any]
+    ) -> dict[str, Any]:
         """提取自适应算法摘要."""
         return {
             "adjustment_made": adaptive_results.get("adjustment_made", False),
@@ -671,7 +715,9 @@ class PersonalizedRecommendationService:
             "personalization_score": adaptive_results.get("personalization_score", 0),
             "meets_targets": {
                 "precision": adaptive_results.get("meets_precision_target", False),
-                "personalization": adaptive_results.get("meets_personalization_target", False),
+                "personalization": adaptive_results.get(
+                    "meets_personalization_target", False
+                ),
             },
         }
 

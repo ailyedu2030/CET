@@ -9,20 +9,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.users.models import User
-from app.users.schemas.admin_schemas import (
-    AdminDashboardResponse,
-    BackupRestoreRequest,
-    BackupRestoreResponse,
-    ClassManagementRequest,
-    ClassManagementResponse,
-    CourseAssignmentRequest,
-    CourseAssignmentResponse,
-    CourseManagementStatsResponse,
-    SystemMonitoringResponse,
-    SystemRulesConfigRequest,
-    SystemRulesConfigResponse,
-    UserManagementStatsResponse,
-)
+from app.users.schemas.admin_schemas import (AdminDashboardResponse,
+                                             BackupRestoreRequest,
+                                             BackupRestoreResponse,
+                                             ClassManagementRequest,
+                                             ClassManagementResponse,
+                                             CourseAssignmentRequest,
+                                             CourseAssignmentResponse,
+                                             CourseManagementStatsResponse,
+                                             SystemMonitoringResponse,
+                                             SystemRulesConfigRequest,
+                                             SystemRulesConfigResponse,
+                                             UserManagementStatsResponse)
 from app.users.services.admin_service import AdminService
 from app.users.utils.auth_decorators import get_current_active_user, require_admin
 
@@ -127,7 +125,9 @@ async def deactivate_user_account(
     """停用用户账号 - 需求1验收标准5."""
     try:
         service = AdminService(db)
-        success = await service.deactivate_user_account(user_id, current_user.id, reason)
+        success = await service.deactivate_user_account(
+            user_id, current_user.id, reason
+        )
 
         if not success:
             raise HTTPException(
@@ -165,7 +165,9 @@ async def notify_resubmit_materials(
     """通知用户补充材料 - 需求1验收标准6."""
     try:
         service = AdminService(db)
-        success = await service.notify_resubmit_materials(application_id, message, current_user.id)
+        success = await service.notify_resubmit_materials(
+            application_id, message, current_user.id
+        )
 
         if not success:
             raise HTTPException(
@@ -403,7 +405,9 @@ async def check_course_assignment_conflicts(
     """检查课程分配冲突 - 需求5验收标准1."""
     try:
         service = AdminService(db)
-        conflicts = await service.check_course_assignment_conflicts(course_id, teacher_id)
+        conflicts = await service.check_course_assignment_conflicts(
+            course_id, teacher_id
+        )
 
         logger.info(f"管理员 {current_user.id} 检查课程分配冲突")
 

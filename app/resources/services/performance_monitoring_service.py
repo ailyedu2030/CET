@@ -144,7 +144,9 @@ class ResourcePerformanceMonitor:
         except Exception as e:
             logger.error(f"Failed to record performance metric: {str(e)}")
 
-    async def get_performance_stats(self, service_name: str, hours: int = 24) -> PerformanceStats:
+    async def get_performance_stats(
+        self, service_name: str, hours: int = 24
+    ) -> PerformanceStats:
         """
         获取性能统计
 
@@ -176,14 +178,20 @@ class ResourcePerformanceMonitor:
             total_requests = len(metrics)
             success_requests = sum(1 for m in metrics if m.success)
             error_requests = total_requests - success_requests
-            success_rate = success_requests / total_requests if total_requests > 0 else 0.0
+            success_rate = (
+                success_requests / total_requests if total_requests > 0 else 0.0
+            )
 
             durations = [m.duration_ms for m in metrics]
             durations.sort()
 
             avg_duration_ms = sum(durations) / len(durations) if durations else 0.0
-            p95_duration_ms = durations[int(len(durations) * 0.95)] if durations else 0.0
-            p99_duration_ms = durations[int(len(durations) * 0.99)] if durations else 0.0
+            p95_duration_ms = (
+                durations[int(len(durations) * 0.95)] if durations else 0.0
+            )
+            p99_duration_ms = (
+                durations[int(len(durations) * 0.99)] if durations else 0.0
+            )
 
             return PerformanceStats(
                 service_name=service_name,

@@ -7,12 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.enhanced_collaboration_manager import EnhancedCollaborationManager
 from app.ai.services.enhanced_learning_analytics import EnhancedLearningAnalytics
-from app.ai.services.intelligent_teaching_adjustment import (
-    IntelligentTeachingAdjustment,
-)
-from app.ai.services.optimized_recommendation_engine import (
-    OptimizedRecommendationEngine,
-)
+from app.ai.services.intelligent_teaching_adjustment import \
+    IntelligentTeachingAdjustment
+from app.ai.services.optimized_recommendation_engine import \
+    OptimizedRecommendationEngine
 from app.core.database import get_db
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_user
@@ -79,8 +77,10 @@ async def comprehensive_teaching_adjustment(
 
     try:
         adjustment_service = IntelligentTeachingAdjustment()
-        adjustment_result = await adjustment_service.generate_comprehensive_teaching_adjustments(
-            db, class_id, course_id, lesson_plan_id, current_user.id
+        adjustment_result = (
+            await adjustment_service.generate_comprehensive_teaching_adjustments(
+                db, class_id, course_id, lesson_plan_id, current_user.id
+            )
         )
 
         return {
@@ -117,8 +117,10 @@ async def create_enhanced_collaboration_session(
 
     try:
         collaboration_manager = EnhancedCollaborationManager()
-        session_result = await collaboration_manager.create_enhanced_collaboration_session(
-            db, resource_type, resource_id, current_user.id, collaboration_settings
+        session_result = (
+            await collaboration_manager.create_enhanced_collaboration_session(
+                db, resource_type, resource_id, current_user.id, collaboration_settings
+            )
         )
 
         return {
@@ -204,8 +206,10 @@ async def generate_intelligent_recommendations(
         cache_service = None  # 在实际使用中应该注入真实的缓存服务
 
         recommendation_engine = OptimizedRecommendationEngine(cache_service)
-        recommendation_result = await recommendation_engine.generate_intelligent_recommendations(
-            db, current_user.id, context, recommendation_type
+        recommendation_result = (
+            await recommendation_engine.generate_intelligent_recommendations(
+                db, current_user.id, context, recommendation_type
+            )
         )
 
         return {
@@ -234,8 +238,10 @@ async def generate_fast_recommendations(
         cache_service = None  # 在实际使用中应该注入真实的缓存服务
 
         recommendation_engine = OptimizedRecommendationEngine(cache_service)
-        recommendation_result = await recommendation_engine.generate_fast_recommendations(
-            db, current_user.id, context, max_items
+        recommendation_result = (
+            await recommendation_engine.generate_fast_recommendations(
+                db, current_user.id, context, max_items
+            )
         )
 
         return {

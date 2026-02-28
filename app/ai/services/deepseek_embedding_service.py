@@ -130,9 +130,13 @@ class DeepSeekEmbeddingService:
                 # 处理异常
                 for j, result in enumerate(batch_embeddings):
                     if isinstance(result, Exception):
-                        logger.error(f"Batch vectorization failed for text {i + j}: {str(result)}")
+                        logger.error(
+                            f"Batch vectorization failed for text {i + j}: {str(result)}"
+                        )
                         # 使用零向量作为fallback
-                        all_embeddings.append([0.0] * 1536)  # DeepSeek embedding dimension
+                        all_embeddings.append(
+                            [0.0] * 1536
+                        )  # DeepSeek embedding dimension
                     elif isinstance(result, list):
                         all_embeddings.append(result)
                     else:
@@ -211,7 +215,10 @@ class DeepSeekEmbeddingService:
                             # 尝试解析embedding向量
                             try:
                                 embedding = json.loads(content)
-                                if isinstance(embedding, list) and len(embedding) == 1536:
+                                if (
+                                    isinstance(embedding, list)
+                                    and len(embedding) == 1536
+                                ):
                                     return embedding
                                 else:
                                     # 如果不是标准格式，生成伪向量
@@ -233,11 +240,17 @@ class DeepSeekEmbeddingService:
 
                         else:
                             error_text = await response.text()
-                            logger.error(f"DeepSeek API error: {response.status} - {error_text}")
-                            raise BusinessLogicError(f"API request failed: {response.status}")
+                            logger.error(
+                                f"DeepSeek API error: {response.status} - {error_text}"
+                            )
+                            raise BusinessLogicError(
+                                f"API request failed: {response.status}"
+                            )
 
             except TimeoutError:
-                logger.warning(f"DeepSeek API timeout, attempt {attempt + 1}/{self.max_retries}")
+                logger.warning(
+                    f"DeepSeek API timeout, attempt {attempt + 1}/{self.max_retries}"
+                )
                 if attempt < self.max_retries - 1:
                     await asyncio.sleep(self.retry_delay * (attempt + 1))
                     continue

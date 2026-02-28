@@ -64,7 +64,9 @@ async def list_restore_operations(
     """获取恢复操作列表 - 需求9验收标准2."""
     try:
         service = RestoreService(db)
-        restore_operations = await service.list_restore_operations(limit=limit, status=status)
+        restore_operations = await service.list_restore_operations(
+            limit=limit, status=status
+        )
 
         logger.info(f"超级管理员 {current_user.id} 查看恢复操作列表")
 
@@ -138,8 +140,7 @@ async def restore_to_point_in_time(
         restore_info = await service.restore_from_backup(restore_request)
 
         logger.info(
-            f"超级管理员 {current_user.id} 执行时间点恢复: "
-            f"备份ID {backup_id}, 目标时间 {target_time}"
+            f"超级管理员 {current_user.id} 执行时间点恢复: " f"备份ID {backup_id}, 目标时间 {target_time}"
         )
 
         return restore_info
@@ -161,7 +162,9 @@ async def restore_to_point_in_time(
 # ===== 选择性恢复 - 需求9.2 =====
 
 
-@router.post("/partial", response_model=RestoreInfo, status_code=http_status.HTTP_201_CREATED)
+@router.post(
+    "/partial", response_model=RestoreInfo, status_code=http_status.HTTP_201_CREATED
+)
 async def restore_partial_data(
     backup_id: str = Query(..., description="备份ID"),
     tables: list[str] = Query(..., description="要恢复的表列表"),
@@ -226,7 +229,9 @@ async def validate_restore_prerequisites(
             target_time=None,
         )
 
-        validation_result = await service.validate_restore_prerequisites(restore_request)
+        validation_result = await service.validate_restore_prerequisites(
+            restore_request
+        )
 
         logger.info(f"超级管理员 {current_user.id} 验证恢复前提条件: {backup_id}")
 

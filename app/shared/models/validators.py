@@ -41,7 +41,9 @@ class TrainingValidator(BaseModel):
     difficulty_level: int = Field(ge=1, le=5)
     question_count: int = Field(ge=1, le=100)
     time_limit: int | None = Field(default=None, ge=60, le=7200)  # 1分钟到2小时
-    content_filter: str = Field(default="standard", pattern=r"^(strict|standard|relaxed)$")
+    content_filter: str = Field(
+        default="standard", pattern=r"^(strict|standard|relaxed)$"
+    )
 
     @validator("question_count")
     def validate_question_count(cls, v: int, values: dict[str, Any]) -> int:
@@ -195,7 +197,9 @@ class ResourceValidator(BaseModel):
     resource_type: str = Field(pattern=r"^(document|audio|video|image|exercise)$")
     file_size: int = Field(ge=1, le=100 * 1024 * 1024)  # 最大100MB
     file_format: str
-    content_level: str = Field(default="standard", pattern=r"^(beginner|intermediate|advanced)$")
+    content_level: str = Field(
+        default="standard", pattern=r"^(beginner|intermediate|advanced)$"
+    )
 
     @validator("resource_type")
     def validate_resource_type(cls, v: str) -> str:
@@ -241,7 +245,9 @@ class AnalyticsValidator(BaseModel):
     recommended_difficulty: float = Field(ge=0.0, le=1.0)
 
     @validator("performance_history")
-    def validate_performance_history(cls, v: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    def validate_performance_history(
+        cls, v: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """验证性能历史数据."""
         if len(v) > 1000:  # 限制历史记录数量
             return v[-1000:]  # 只保留最近1000条

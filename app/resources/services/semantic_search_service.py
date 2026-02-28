@@ -72,10 +72,14 @@ class SemanticSearchService:
             )
 
             # 4. 语义重排序
-            reranked_results = await self._semantic_rerank(query, search_results, query_analysis)
+            reranked_results = await self._semantic_rerank(
+                query, search_results, query_analysis
+            )
 
             # 5. 结果后处理
-            final_results = await self._post_process_results(reranked_results, query_analysis)
+            final_results = await self._post_process_results(
+                reranked_results, query_analysis
+            )
 
             # 6. 生成搜索摘要
             search_summary = await self._generate_search_summary(
@@ -143,7 +147,9 @@ class SemanticSearchService:
                     import json
 
                     content = (
-                        response.get("choices", [{}])[0].get("message", {}).get("content", "{}")
+                        response.get("choices", [{}])[0]
+                        .get("message", {})
+                        .get("content", "{}")
                     )
                     analysis = json.loads(content)
 
@@ -188,7 +194,9 @@ class SemanticSearchService:
             "confidence": 0.6,
         }
 
-    async def _expand_query(self, original_query: str, query_analysis: dict[str, Any]) -> list[str]:
+    async def _expand_query(
+        self, original_query: str, query_analysis: dict[str, Any]
+    ) -> list[str]:
         """扩展查询以提高召回率."""
         try:
             expanded_queries = [original_query]
@@ -246,7 +254,11 @@ class SemanticSearchService:
             )
 
             if success and response:
-                content = response.get("choices", [{}])[0].get("message", {}).get("content", "")
+                content = (
+                    response.get("choices", [{}])[0]
+                    .get("message", {})
+                    .get("content", "")
+                )
                 lines = [line.strip() for line in content.split("\n") if line.strip()]
 
                 # 提取变体查询
@@ -309,7 +321,9 @@ class SemanticSearchService:
             logger.error(f"Multi-strategy search failed: {str(e)}")
             return []
 
-    def _deduplicate_results(self, results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    def _deduplicate_results(
+        self, results: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """去重搜索结果."""
         seen_ids = set()
         unique_results = []
@@ -346,7 +360,9 @@ class SemanticSearchService:
                 vector_score = result.get("similarity_score", 0.0)
                 strategy_weight = result.get("strategy_weight", 1.0)
 
-                final_score = vector_score * 0.4 + semantic_score * 0.5 + strategy_weight * 0.1
+                final_score = (
+                    vector_score * 0.4 + semantic_score * 0.5 + strategy_weight * 0.1
+                )
 
                 result["semantic_score"] = semantic_score
                 result["final_score"] = final_score
@@ -354,7 +370,9 @@ class SemanticSearchService:
             # 按最终分数排序
             rerank_candidates.sort(key=lambda x: x.get("final_score", 0), reverse=True)
 
-            logger.info(f"Semantic reranking completed: {len(rerank_candidates)} results")
+            logger.info(
+                f"Semantic reranking completed: {len(rerank_candidates)} results"
+            )
             return rerank_candidates
 
         except Exception as e:
@@ -389,7 +407,9 @@ class SemanticSearchService:
                 length_penalty = 0.9
 
             # 综合分数
-            semantic_score = (keyword_score * 0.4 + query_match_score * 0.6) * length_penalty
+            semantic_score = (
+                keyword_score * 0.4 + query_match_score * 0.6
+            ) * length_penalty
 
             return min(semantic_score, 1.0)
 
@@ -414,7 +434,9 @@ class SemanticSearchService:
                 processed_result.update(
                     {
                         "summary": summary,
-                        "relevance_explanation": self._explain_relevance(result, query_analysis),
+                        "relevance_explanation": self._explain_relevance(
+                            result, query_analysis
+                        ),
                         "processed_at": datetime.now(),
                     }
                 )
@@ -427,7 +449,9 @@ class SemanticSearchService:
             logger.error(f"Result post-processing failed: {str(e)}")
             return results
 
-    async def _generate_result_summary(self, content: str, query_analysis: dict[str, Any]) -> str:
+    async def _generate_result_summary(
+        self, content: str, query_analysis: dict[str, Any]
+    ) -> str:
         """生成结果摘要."""
         try:
             # 简化的摘要生成
@@ -456,7 +480,9 @@ class SemanticSearchService:
             logger.error(f"Summary generation failed: {str(e)}")
             return content[:200] + "..."
 
-    def _explain_relevance(self, result: dict[str, Any], query_analysis: dict[str, Any]) -> str:
+    def _explain_relevance(
+        self, result: dict[str, Any], query_analysis: dict[str, Any]
+    ) -> str:
         """解释相关性."""
         try:
             semantic_score = result.get("semantic_score", 0.0)
@@ -483,8 +509,12 @@ class SemanticSearchService:
                 "query_type": query_analysis.get("query_type", "unknown"),
                 "avg_relevance": sum(r.get("semantic_score", 0) for r in results)
                 / max(len(results), 1),
-                "search_strategies": list({r.get("search_strategy", "unknown") for r in results}),
-                "has_high_quality_results": any(r.get("semantic_score", 0) > 0.8 for r in results),
+                "search_strategies": list(
+                    {r.get("search_strategy", "unknown") for r in results}
+                ),
+                "has_high_quality_results": any(
+                    r.get("semantic_score", 0) > 0.8 for r in results
+                ),
             }
 
         except Exception as e:

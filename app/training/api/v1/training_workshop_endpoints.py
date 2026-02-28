@@ -9,15 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.shared.models.enums import UserType
 from app.training.schemas.training_workshop_schemas import (
-    TrainingParameterTemplateListResponse,
-    TrainingParameterTemplateRequest,
-    TrainingParameterTemplateResponse,
-    TrainingTaskListResponse,
-    TrainingTaskRequest,
-    TrainingTaskResponse,
-    TrainingWorkshopResponse,
-    WeeklyTrainingRequest,
-)
+    TrainingParameterTemplateListResponse, TrainingParameterTemplateRequest,
+    TrainingParameterTemplateResponse, TrainingTaskListResponse, TrainingTaskRequest,
+    TrainingTaskResponse, TrainingWorkshopResponse, WeeklyTrainingRequest)
 from app.training.services.analytics_service import AnalyticsService
 from app.training.services.training_workshop_service import TrainingWorkshopService
 from app.users.models.user_models import User
@@ -133,7 +127,9 @@ async def update_parameter_template(
 
     try:
         service = TrainingWorkshopService(db)
-        return await service.update_parameter_template(template_id, current_user.id, template_data)
+        return await service.update_parameter_template(
+            template_id, current_user.id, template_data
+        )
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -242,7 +238,9 @@ async def get_training_tasks(
 
     try:
         service = TrainingWorkshopService(db)
-        result = await service.get_training_tasks(current_user.id, class_id, page, page_size)
+        result = await service.get_training_tasks(
+            current_user.id, class_id, page, page_size
+        )
         return TrainingTaskListResponse(**result)
     except Exception as e:
         raise HTTPException(

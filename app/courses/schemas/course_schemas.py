@@ -16,7 +16,9 @@ class CourseBase(BaseModel):
     code: str | None = Field(None, max_length=50, description="课程编码")
     total_hours: int | None = Field(None, ge=1, description="总学时")
     target_audience: str | None = Field(None, max_length=200, description="适用对象")
-    difficulty_level: DifficultyLevel = Field(DifficultyLevel.ELEMENTARY, description="难度等级")
+    difficulty_level: DifficultyLevel = Field(
+        DifficultyLevel.ELEMENTARY, description="难度等级"
+    )
     share_level: CourseShareLevel = Field(CourseShareLevel.PRIVATE, description="共享级别")
     syllabus: dict[str, Any] = Field(default_factory=dict, description="教学大纲")
     teaching_plan: dict[str, Any] = Field(default_factory=dict, description="教学计划")
@@ -178,7 +180,9 @@ class ClassBase(BaseModel):
     description: str | None = Field(None, description="班级描述")
     code: str | None = Field(None, max_length=50, description="班级编码")
     max_students: int = Field(50, ge=1, description="最大学生数")
-    resource_allocation: dict[str, Any] = Field(default_factory=dict, description="资源分配")
+    resource_allocation: dict[str, Any] = Field(
+        default_factory=dict, description="资源分配"
+    )
     class_rules: dict[str, Any] = Field(default_factory=dict, description="班级规则")
     start_date: datetime | None = Field(None, description="开始日期")
     end_date: datetime | None = Field(None, description="结束日期")

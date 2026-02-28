@@ -9,11 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.shared.models.enums import DifficultyLevel
-from app.training.schemas.listening_schemas import (
-    ListeningExercise,
-    ListeningExerciseListResponse,
-    SubmitAnswersRequest,
-)
+from app.training.schemas.listening_schemas import (ListeningExercise,
+                                                    ListeningExerciseListResponse,
+                                                    SubmitAnswersRequest)
 from app.training.services.listening_service import ListeningService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -37,7 +35,12 @@ async def create_listening_exercise(
         service = ListeningService(db)
 
         # 验证题型分类 - 需求22验收标准1
-        valid_types = ["short_conversation", "long_conversation", "short_passage", "lecture"]
+        valid_types = [
+            "short_conversation",
+            "long_conversation",
+            "short_passage",
+            "lecture",
+        ]
         exercise_type = exercise_data.get("exercise_type")
         if exercise_type not in valid_types:
             raise HTTPException(
@@ -57,8 +60,12 @@ async def create_listening_exercise(
         service = ListeningService(db)
 
         # 验证题型分类 - 需求22验收标准1
-        valid_types = ["short_conversation", "long_conversation", "short_passage", "lecture"]
-
+        valid_types = [
+            "short_conversation",
+            "long_conversation",
+            "short_passage",
+            "lecture",
+        ]
 
         # 根据题型设置题目数量 - 需求22验收标准1
         type_question_mapping = {
@@ -130,7 +137,9 @@ async def get_exercises(
         )
 
         # 转换为Pydantic模型
-        exercise_schemas = [ListeningExercise.model_validate(exercise) for exercise in exercises]
+        exercise_schemas = [
+            ListeningExercise.model_validate(exercise) for exercise in exercises
+        ]
 
         return ListeningExerciseListResponse(
             success=True,
@@ -202,7 +211,9 @@ async def start_session(
         }
 
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"开始听力训练会话失败: {e}")
         raise HTTPException(
@@ -242,7 +253,9 @@ async def submit_answers(
         }
 
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"提交听力答案失败: {e}")
         raise HTTPException(
@@ -370,7 +383,9 @@ async def get_result(
 # ============ 训练特性端点 - 需求22验收标准2 ============
 
 
-@router.post("/exercises/{exercise_id}/playback-settings", response_model=dict[str, Any])
+@router.post(
+    "/exercises/{exercise_id}/playback-settings", response_model=dict[str, Any]
+)
 async def update_playback_settings(
     exercise_id: int,
     settings: dict[str, Any],
@@ -534,7 +549,9 @@ async def start_pronunciation_practice(
 # ============ 智能辅助端点 - 需求22验收标准3 ============
 
 
-@router.post("/exercises/{exercise_id}/phonetic-practice", response_model=dict[str, Any])
+@router.post(
+    "/exercises/{exercise_id}/phonetic-practice", response_model=dict[str, Any]
+)
 async def create_phonetic_practice(
     exercise_id: int,
     phonetic_data: dict[str, Any],
@@ -553,7 +570,9 @@ async def create_phonetic_practice(
         # 创建音标练习
         target_phonetics = phonetic_data.get("target_phonetics", [])
         if not target_phonetics:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="目标音标不能为空")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="目标音标不能为空"
+            )
 
         # 常见难点音标
         difficult_phonetics = [
@@ -575,7 +594,9 @@ async def create_phonetic_practice(
         phonetic_practice = {
             "exercise_id": exercise_id,
             "target_phonetics": target_phonetics,
-            "difficult_phonetics": [p for p in target_phonetics if p in difficult_phonetics],
+            "difficult_phonetics": [
+                p for p in target_phonetics if p in difficult_phonetics
+            ],
             "user_id": current_user.id,
             "practice_type": phonetic_data.get(
                 "practice_type", "recognition"
@@ -598,7 +619,9 @@ async def create_phonetic_practice(
         ) from e
 
 
-@router.post("/exercises/{exercise_id}/difficulty-analysis", response_model=dict[str, Any])
+@router.post(
+    "/exercises/{exercise_id}/difficulty-analysis", response_model=dict[str, Any]
+)
 async def analyze_listening_difficulties(
     exercise_id: int,
     analysis_data: dict[str, Any],
@@ -654,13 +677,9 @@ async def analyze_listening_difficulties(
 
         # 生成改进建议
         if accuracy < 0.6:
-            improvement_suggestions.extend(
-                ["建议加强基础听力训练", "重点练习单词发音和语调", "增加听力材料的接触量"]
-            )
+            improvement_suggestions.extend(["建议加强基础听力训练", "重点练习单词发音和语调", "增加听力材料的接触量"])
         elif accuracy < 0.8:
-            improvement_suggestions.extend(
-                ["注意听力技巧的运用", "加强对话语境的理解", "练习预测和推理能力"]
-            )
+            improvement_suggestions.extend(["注意听力技巧的运用", "加强对话语境的理解", "练习预测和推理能力"])
 
         # 标注个人难点
         if exercise.exercise_type == "short_conversation":
@@ -797,46 +816,52 @@ async def upload_audio_file(
     current_user: User = Depends(get_current_active_user),
 ) -> JSONResponse:
     """上传听力音频文件"""
-    import os
     import uuid
     from pathlib import Path
-    
+
     # Validate file type
-    allowed_types = {"audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/ogg", "audio/webm"}
+    allowed_types = {
+        "audio/mpeg",
+        "audio/mp3",
+        "audio/wav",
+        "audio/x-wav",
+        "audio/ogg",
+        "audio/webm",
+    }
     content_type = file.content_type or ""
-    
+
     # Check file extension as fallback
     file_ext = Path(file.filename).suffix.lower() if file.filename else ""
     allowed_exts = {".mp3", ".wav", ".ogg", ".webm", ".m4a"}
-    
+
     if content_type not in allowed_types and file_ext not in allowed_exts:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"不支持的音频格式。支持: {', '.join(allowed_exts)}"
+            detail=f"不支持的音频格式。支持: {', '.join(allowed_exts)}",
         )
-    
+
     # Create upload directory
     upload_dir = Path("uploads/listening/audio")
     upload_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Generate unique filename
     unique_filename = f"{uuid.uuid4()}{file_ext}"
     file_path = upload_dir / unique_filename
-    
+
     # Save file
     content = await file.read()
     await file.seek(0)
-    
+
     # Write file
     with open(file_path, "wb") as f:
         f.write(content)
-    
+
     # Get duration (simplified - in production use audio library)
     duration = 0.0
-    
+
     # Create database record
     from app.training.models import ListeningAudioFile
-    
+
     audio_file = ListeningAudioFile(
         filename=unique_filename,
         original_filename=file.filename or "unknown.mp3",
@@ -851,23 +876,25 @@ async def upload_audio_file(
         is_processed=False,
         upload_user_id=current_user.id,
     )
-    
+
     db.add(audio_file)
     await db.commit()
     await db.refresh(audio_file)
-    
-    return JSONResponse({
-        "success": True,
-        "message": "音频文件上传成功",
-        "data": {
-            "audio_id": audio_file.id,
-            "filename": audio_file.filename,
-            "original_filename": audio_file.original_filename,
-            "file_url": audio_file.file_url,
-            "file_size": audio_file.file_size,
-            "format": audio_file.format,
+
+    return JSONResponse(
+        {
+            "success": True,
+            "message": "音频文件上传成功",
+            "data": {
+                "audio_id": audio_file.id,
+                "filename": audio_file.filename,
+                "original_filename": audio_file.original_filename,
+                "file_url": audio_file.file_url,
+                "file_size": audio_file.file_size,
+                "format": audio_file.format,
+            },
         }
-    })
+    )
 
 
 @router.get("/audio/{audio_id}")

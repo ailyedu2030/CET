@@ -9,26 +9,23 @@ from fastapi import APIRouter, Depends, HTTPException
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.users.dependencies import get_current_user
 from app.core.database import get_db
-from app.core.exceptions import (
-    PermissionDeniedError,
-    ResourceNotFoundError,
-    ValidationError,
-)
-from app.resources.schemas.version_schemas import (
-    ResourceVersionResponse,
-    RollbackRequest,
-    RollbackResponse,
-    VersionComparisonResponse,
-)
+from app.core.exceptions import (PermissionDeniedError, ResourceNotFoundError,
+                                 ValidationError)
+from app.resources.schemas.version_schemas import (ResourceVersionResponse,
+                                                   RollbackRequest, RollbackResponse,
+                                                   VersionComparisonResponse)
 from app.resources.services.version_service import VersionService
+from app.users.dependencies import get_current_user
 from app.users.models import User
 
 router = APIRouter(prefix="/api/v1/resource-versions", tags=["资源版本控制"])
 
 
-@router.get("/{resource_type}/{resource_id}/versions", response_model=list[ResourceVersionResponse])
+@router.get(
+    "/{resource_type}/{resource_id}/versions",
+    response_model=list[ResourceVersionResponse],
+)
 async def get_resource_versions(
     resource_type: str,
     resource_id: int,
@@ -60,7 +57,9 @@ async def get_resource_versions(
         )
 
         service = VersionService(db)
-        versions = await service.get_resource_versions(resource_type, resource_id, current_user.id)
+        versions = await service.get_resource_versions(
+            resource_type, resource_id, current_user.id
+        )
 
         logger.info(
             f"成功获取{len(versions)}个版本记录",
@@ -274,7 +273,8 @@ async def compare_versions(
 
 
 @router.get(
-    "/{resource_type}/{resource_id}/versions/{version_id}", response_model=ResourceVersionResponse
+    "/{resource_type}/{resource_id}/versions/{version_id}",
+    response_model=ResourceVersionResponse,
 )
 async def get_version_detail(
     resource_type: str,
@@ -376,7 +376,9 @@ async def delete_version(
         )
 
         service = VersionService(db)
-        await service.delete_version(resource_type, resource_id, version_id, current_user.id)
+        await service.delete_version(
+            resource_type, resource_id, version_id, current_user.id
+        )
 
         logger.info(
             "版本删除成功",

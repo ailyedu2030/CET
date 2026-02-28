@@ -1,8 +1,8 @@
 """英语四级写作标准库 - 服务层"""
 
+import hashlib
 import logging
 import re
-import hashlib
 from datetime import datetime, timedelta
 from typing import Any
 
@@ -11,27 +11,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.shared.services.cache_service import get_cache_service, CacheType
-from app.training.models.writing_models import (
-    WritingDifficulty,
-    WritingGrammarRuleModel,
-    WritingScoreLevel,
-    WritingSubmissionModel,
-    WritingTaskModel,
-    WritingTemplateModel,
-    WritingType,
-    WritingVocabularyModel,
-)
-from app.training.schemas.writing_schemas import (
-    GrammarCheckResult,
-    WritingRecommendation,
-    WritingStatistics,
-    WritingSubmissionCreate,
-    WritingTaskCreate,
-    WritingTemplateCreate,
-    WritingTemplateUpdate,
-    WritingVocabularyCreate,
-)
+from app.shared.services.cache_service import CacheType, get_cache_service
+from app.training.models.writing_models import (WritingDifficulty,
+                                                WritingGrammarRuleModel,
+                                                WritingScoreLevel,
+                                                WritingSubmissionModel,
+                                                WritingTaskModel, WritingTemplateModel,
+                                                WritingType, WritingVocabularyModel)
+from app.training.schemas.writing_schemas import (GrammarCheckResult,
+                                                  WritingRecommendation,
+                                                  WritingStatistics,
+                                                  WritingSubmissionCreate,
+                                                  WritingTaskCreate,
+                                                  WritingTemplateCreate,
+                                                  WritingTemplateUpdate,
+                                                  WritingVocabularyCreate)
 
 logger = logging.getLogger(__name__)
 
@@ -106,7 +100,8 @@ class WritingService:
             select(WritingTemplateModel)
             .where(and_(*conditions))
             .order_by(
-                desc(WritingTemplateModel.is_recommended), desc(WritingTemplateModel.average_score)
+                desc(WritingTemplateModel.is_recommended),
+                desc(WritingTemplateModel.average_score),
             )
             .offset(skip)
             .limit(limit)
@@ -117,7 +112,9 @@ class WritingService:
 
         return list(templates), total
 
-    async def get_template(self: "WritingService", template_id: int) -> WritingTemplateModel | None:
+    async def get_template(
+        self: "WritingService", template_id: int
+    ) -> WritingTemplateModel | None:
         """获取写作模板详情"""
         logger.info(f"查询写作模板详情: {template_id}")
 
@@ -149,7 +146,9 @@ class WritingService:
 
     # ==================== 写作任务管理 ====================
 
-    async def create_task(self: "WritingService", data: WritingTaskCreate) -> WritingTaskModel:
+    async def create_task(
+        self: "WritingService", data: WritingTaskCreate
+    ) -> WritingTaskModel:
         """创建写作任务"""
         logger.info(f"创建写作任务: {data.task_title}")
 
@@ -256,7 +255,9 @@ class WritingService:
         logger.info(f"作文提交成功: ID={submission.id}")  # type: ignore[has-type]
         return submission
 
-    async def _grade_essay(self: "WritingService", submission: WritingSubmissionModel) -> None:
+    async def _grade_essay(
+        self: "WritingService", submission: WritingSubmissionModel
+    ) -> None:
         """AI评分作文"""
         logger.info(f"开始评分作文: {submission.id}")  # type: ignore[has-type]
 
@@ -294,17 +295,27 @@ class WritingService:
                 submission.weaknesses = cached_result["weaknesses"]
                 submission.improvement_suggestions = cached_result["suggestions"]
                 submission.grammar_errors = cached_result.get("grammar_errors", [])
-                submission.vocabulary_suggestions = cached_result.get("vocabulary_suggestions", [])
-                submission.structure_analysis = cached_result.get("structure_analysis", "")
+                submission.vocabulary_suggestions = cached_result.get(
+                    "vocabulary_suggestions", []
+                )
+                submission.structure_analysis = cached_result.get(
+                    "structure_analysis", ""
+                )
                 submission.is_graded = True
                 await self.db.commit()
                 return
 
             # 构建评分prompt
-            grading_prompt = self._build_grading_prompt(str(submission.essay_content), task)
+            grading_prompt = self._build_grading_prompt(
+                str(submission.essay_content), task
+            )
 
             # 调用AI评分
-            success, ai_response, error_msg = await self.deepseek_service.generate_completion(
+            (
+                success,
+                ai_response,
+                error_msg,
+            ) = await self.deepseek_service.generate_completion(
                 prompt=grading_prompt,
                 temperature=0.3,
                 max_tokens=1000,
@@ -342,15 +353,21 @@ class WritingService:
                 submission.improvement_suggestions = grading_result["suggestions"]
                 # AI反馈字段
                 submission.grammar_errors = grading_result.get("grammar_errors", [])
-                submission.vocabulary_suggestions = grading_result.get("vocabulary_suggestions", [])
-                submission.structure_analysis = grading_result.get("structure_analysis", "")
+                submission.vocabulary_suggestions = grading_result.get(
+                    "vocabulary_suggestions", []
+                )
+                submission.structure_analysis = grading_result.get(
+                    "structure_analysis", ""
+                )
                 submission.is_graded = True
 
                 await self.db.commit()
 
                 # 缓存评分结果
                 await self._set_cached_grade(
-                    str(submission.essay_content), int(submission.task_id), grading_result
+                    str(submission.essay_content),
+                    int(submission.task_id),
+                    grading_result,
                 )
 
                 logger.info(f"作文评分完成: {submission.id}, 得分: {submission.total_score}")
@@ -373,7 +390,9 @@ class WritingService:
 
             logger.info(f"Checking grading cache for key: {cache_key[:8]}...")
 
-            cached_result = await self.cache_service.get(cache_key, cache_type=CacheType.AI_RESULT)
+            cached_result = await self.cache_service.get(
+                cache_key, cache_type=CacheType.AI_RESULT
+            )
 
             if cached_result:
                 logger.info(f"Cache hit for grading result: {cache_key[:8]}")
@@ -398,13 +417,18 @@ class WritingService:
 
             # 缓存24小时
             await self.cache_service.set(
-                cache_key, grade_result, cache_type=CacheType.AI_RESULT, ttl=60 * 60 * 24
+                cache_key,
+                grade_result,
+                cache_type=CacheType.AI_RESULT,
+                ttl=60 * 60 * 24,
             )
 
         except Exception as e:
             logger.warning(f"Failed to set cached grade: {e}")
 
-    def _build_grading_prompt(self: "WritingService", essay: str, task: WritingTaskModel) -> str:
+    def _build_grading_prompt(
+        self: "WritingService", essay: str, task: WritingTaskModel
+    ) -> str:
         """构建评分prompt"""
         return f"""
 请对以下英语四级作文进行评分，满分15分，按照以下标准：
@@ -525,9 +549,13 @@ class WritingService:
                 grammar_score=3.0,
             )
 
-    async def _get_grammar_rules(self: "WritingService") -> list[WritingGrammarRuleModel]:
+    async def _get_grammar_rules(
+        self: "WritingService",
+    ) -> list[WritingGrammarRuleModel]:
         """获取语法规则"""
-        query = select(WritingGrammarRuleModel).where(WritingGrammarRuleModel.is_active.is_(True))
+        query = select(WritingGrammarRuleModel).where(
+            WritingGrammarRuleModel.is_active.is_(True)
+        )
         result = await self.db.execute(query)
         return list(result.scalars().all())
 
@@ -577,7 +605,9 @@ class WritingService:
         if writing_type:
             conditions.append(WritingVocabularyModel.writing_type == writing_type)
         if difficulty_level:
-            conditions.append(WritingVocabularyModel.difficulty_level == difficulty_level)
+            conditions.append(
+                WritingVocabularyModel.difficulty_level == difficulty_level
+            )
 
         # 查询总数
         count_query = select(func.count(WritingVocabularyModel.id)).where(and_(*conditions))  # type: ignore[has-type]
@@ -666,7 +696,9 @@ class WritingService:
 
     # ==================== 统计和推荐 ====================
 
-    async def get_user_statistics(self: "WritingService", user_id: int) -> WritingStatistics:
+    async def get_user_statistics(
+        self: "WritingService", user_id: int
+    ) -> WritingStatistics:
         """获取用户写作统计数据"""
         logger.info(f"查询用户 {user_id} 的写作统计")
 
@@ -722,13 +754,17 @@ class WritingService:
         # 提升趋势分析
         improvement_trend = []
         sorted_submissions = sorted(submissions, key=lambda s: s.created_at)
-        for i in range(0, len(sorted_submissions), max(1, len(sorted_submissions) // 5)):
+        for i in range(
+            0, len(sorted_submissions), max(1, len(sorted_submissions) // 5)
+        ):
             batch = sorted_submissions[i : i + 5]
             if batch:
                 improvement_trend.append(
                     {
                         "period": i // 5 + 1,
-                        "avg_score": round(sum(s.total_score for s in batch) / len(batch), 1),
+                        "avg_score": round(
+                            sum(s.total_score for s in batch) / len(batch), 1
+                        ),
                     }
                 )
 
@@ -805,14 +841,14 @@ class WritingService:
             difficulty_level=recommended_difficulty,
         )
 
-        from app.training.schemas.writing_schemas import (
-            WritingTaskResponse,
-            WritingTemplateResponse,
-            WritingVocabularyResponse,
-        )
+        from app.training.schemas.writing_schemas import (WritingTaskResponse,
+                                                          WritingTemplateResponse,
+                                                          WritingVocabularyResponse)
 
         return WritingRecommendation(
-            recommended_templates=[WritingTemplateResponse.model_validate(t) for t in templates],
+            recommended_templates=[
+                WritingTemplateResponse.model_validate(t) for t in templates
+            ],
             recommended_tasks=[WritingTaskResponse.model_validate(t) for t in tasks],
             focus_areas=["提高语法准确性", "丰富词汇表达"],
             vocabulary_suggestions=[

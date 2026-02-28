@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 class SyllabusAnalysisService:
     """考纲变更影响分析服务 - 分析考纲变更对课程和题库的影响."""
 
-    def __init__(self, db: AsyncSession, cache_service: CacheService | None = None) -> None:
+    def __init__(
+        self, db: AsyncSession, cache_service: CacheService | None = None
+    ) -> None:
         """初始化考纲分析服务."""
         self.db = db
         self.cache_service = cache_service
@@ -48,7 +50,9 @@ class SyllabusAnalysisService:
                 raise ValueError("考纲不存在")
 
             # 执行变更分析
-            change_analysis = await self._perform_change_analysis(old_syllabus, new_syllabus)
+            change_analysis = await self._perform_change_analysis(
+                old_syllabus, new_syllabus
+            )
 
             # 分析对现有课程的影响
             course_impact = await self._analyze_course_impact(
@@ -94,7 +98,9 @@ class SyllabusAnalysisService:
             logger.error(f"考纲变更分析失败: {str(e)}")
             raise BusinessLogicError(f"考纲变更分析失败: {str(e)}") from e
 
-    async def calculate_knowledge_point_weights(self, syllabus_id: int) -> dict[str, Any]:
+    async def calculate_knowledge_point_weights(
+        self, syllabus_id: int
+    ) -> dict[str, Any]:
         """计算知识点权重 - 需求33权重计算."""
         try:
             # 获取考纲
@@ -103,16 +109,22 @@ class SyllabusAnalysisService:
                 raise ValueError(f"考纲不存在: {syllabus_id}")
 
             # 获取相关知识点
-            knowledge_points = await self._get_knowledge_points_by_library(syllabus.library_id)
+            knowledge_points = await self._get_knowledge_points_by_library(
+                syllabus.library_id
+            )
 
             # 计算基础权重
-            base_weights = await self._calculate_base_weights(knowledge_points, syllabus)
+            base_weights = await self._calculate_base_weights(
+                knowledge_points, syllabus
+            )
 
             # 基于历年真题统计调整权重
             exam_weights = await self._calculate_exam_based_weights(knowledge_points)
 
             # 基于难度调整权重
-            difficulty_weights = await self._calculate_difficulty_weights(knowledge_points)
+            difficulty_weights = await self._calculate_difficulty_weights(
+                knowledge_points
+            )
 
             # 综合权重计算
             final_weights = await self._calculate_final_weights(
@@ -146,7 +158,9 @@ class SyllabusAnalysisService:
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def _get_knowledge_points_by_library(self, library_id: int) -> list[KnowledgePoint]:
+    async def _get_knowledge_points_by_library(
+        self, library_id: int
+    ) -> list[KnowledgePoint]:
         """获取资源库的知识点."""
         stmt = select(KnowledgePoint).where(KnowledgePoint.library_id == library_id)
         result = await self.db.execute(stmt)
@@ -162,10 +176,14 @@ class SyllabusAnalysisService:
             new_structure = new_syllabus.exam_structure or {}
 
             # 分析结构变更
-            structure_changes = await self._analyze_structure_changes(old_structure, new_structure)
+            structure_changes = await self._analyze_structure_changes(
+                old_structure, new_structure
+            )
 
             # 分析内容变更
-            content_changes = await self._analyze_content_changes(old_syllabus, new_syllabus)
+            content_changes = await self._analyze_content_changes(
+                old_syllabus, new_syllabus
+            )
 
             # 分析要求变更
             requirement_changes = await self._analyze_requirement_changes(
@@ -458,7 +476,9 @@ class SyllabusAnalysisService:
     ) -> dict[str, Any]:
         """生成影响报告."""
         return {
-            "executive_summary": await self._generate_executive_summary(change_analysis),
+            "executive_summary": await self._generate_executive_summary(
+                change_analysis
+            ),
             "detailed_analysis": {
                 "change_analysis": change_analysis,
                 "course_impact": course_impact,
@@ -478,7 +498,9 @@ class SyllabusAnalysisService:
         recommendations = []
 
         # 基于影响级别生成建议
-        impact_level = impact_report["detailed_analysis"]["change_analysis"]["overall_impact_level"]
+        impact_level = impact_report["detailed_analysis"]["change_analysis"][
+            "overall_impact_level"
+        ]
 
         if impact_level in ["high", "critical"]:
             recommendations.extend(
@@ -539,7 +561,9 @@ class SyllabusAnalysisService:
                 "ADVANCED": 1.2,
                 "EXPERT": 1.3,
             }
-            base_weight *= difficulty_multiplier.get(str(kp.difficulty_level.value), 1.0)
+            base_weight *= difficulty_multiplier.get(
+                str(kp.difficulty_level.value), 1.0
+            )
 
             weights[kp.id] = base_weight
 
@@ -583,7 +607,9 @@ class SyllabusAnalysisService:
         config = self.analysis_config["weight_calculation"]
 
         all_kp_ids = (
-            set(base_weights.keys()) | set(exam_weights.keys()) | set(difficulty_weights.keys())
+            set(base_weights.keys())
+            | set(exam_weights.keys())
+            | set(difficulty_weights.keys())
         )
 
         for kp_id in all_kp_ids:
@@ -602,7 +628,9 @@ class SyllabusAnalysisService:
                 difficulty_weight = 0.3
 
             final_weight = (
-                base_w * content_weight + exam_w * scope_weight + diff_w * difficulty_weight
+                base_w * content_weight
+                + exam_w * scope_weight
+                + diff_w * difficulty_weight
             )
 
             final_weights[kp_id] = round(final_weight, 3)
@@ -627,7 +655,9 @@ class SyllabusAnalysisService:
             ),
         }
 
-    async def _analyze_weight_distribution(self, weights: dict[int, float]) -> dict[str, Any]:
+    async def _analyze_weight_distribution(
+        self, weights: dict[int, float]
+    ) -> dict[str, Any]:
         """分析权重分布."""
         weight_values = list(weights.values())
 
@@ -692,7 +722,9 @@ class SyllabusAnalysisService:
             summary_parts.append("考试类型发生变更")
 
         if requirement_changes["new_requirements"]:
-            summary_parts.append(f"新增{len(requirement_changes['new_requirements'])}项能力要求")
+            summary_parts.append(
+                f"新增{len(requirement_changes['new_requirements'])}项能力要求"
+            )
 
         return "；".join(summary_parts) if summary_parts else "无重大变更"
 

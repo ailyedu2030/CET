@@ -103,7 +103,9 @@ class FallbackService:
                 "is_fallback": True,
             }
 
-    def _determine_fallback_level(self, error: Exception, reason: FallbackReason) -> FallbackLevel:
+    def _determine_fallback_level(
+        self, error: Exception, reason: FallbackReason
+    ) -> FallbackLevel:
         """确定降级级别"""
         if reason == FallbackReason.RATE_LIMIT:
             return FallbackLevel.LEVEL_1  # 使用缓存
@@ -149,7 +151,9 @@ class FallbackService:
                 return cached_response
             else:
                 # 缓存数据格式错误，返回简化响应
-                return self._get_simplified_response(request.get("task_type", "unknown"))
+                return self._get_simplified_response(
+                    request.get("task_type", "unknown")
+                )
         else:
             # 缓存未命中，返回简化响应
             return self._get_simplified_response(request.get("task_type", "unknown"))
@@ -236,7 +240,9 @@ class FallbackService:
         return {
             "current_level": self.current_level.value,
             "cache_size": len(self.fallback_cache),
-            "status": ("degraded" if self.current_level != FallbackLevel.LEVEL_0 else "normal"),
+            "status": (
+                "degraded" if self.current_level != FallbackLevel.LEVEL_0 else "normal"
+            ),
         }
 
 

@@ -7,11 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.courses.models import Course, CourseVersion
-from app.courses.schemas.course_schemas import (
-    CourseCreate,
-    CourseStatusUpdate,
-    CourseUpdate,
-)
+from app.courses.schemas.course_schemas import (CourseCreate, CourseStatusUpdate,
+                                                CourseUpdate)
 from app.shared.models.enums import CourseShareLevel, CourseStatus
 
 
@@ -212,8 +209,12 @@ class CourseService:
                 "name": snapshot_data.get("name", course.name),
                 "description": snapshot_data.get("description", course.description),
                 "syllabus": snapshot_data.get("syllabus", course.syllabus),
-                "teaching_plan": snapshot_data.get("teaching_plan", course.teaching_plan),
-                "resource_config": snapshot_data.get("resource_config", course.resource_config),
+                "teaching_plan": snapshot_data.get(
+                    "teaching_plan", course.teaching_plan
+                ),
+                "resource_config": snapshot_data.get(
+                    "resource_config", course.resource_config
+                ),
                 "updated_at": datetime.utcnow(),
             }
 
@@ -388,7 +389,9 @@ class CoursePermissionService:
         """初始化权限服务."""
         self.db = db
 
-    async def check_course_access(self, course_id: int, user_id: int, action: str) -> bool:
+    async def check_course_access(
+        self, course_id: int, user_id: int, action: str
+    ) -> bool:
         """检查课程访问权限."""
         course = await self.db.get(Course, course_id)
         if not course:
@@ -410,7 +413,9 @@ class CoursePermissionService:
         # 其他操作需要是创建者或有特殊权限
         return False
 
-    async def get_accessible_courses(self, user_id: int, user_role: str) -> list[Course]:
+    async def get_accessible_courses(
+        self, user_id: int, user_role: str
+    ) -> list[Course]:
         """获取用户可访问的课程列表."""
         # 管理员可以访问所有课程
         if user_role == "admin":

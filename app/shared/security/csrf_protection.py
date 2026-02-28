@@ -75,7 +75,9 @@ class CSRFProtection:
 
         # 创建签名数据
         sign_data = f"{timestamp}:{user_id or ''}:{session_id or ''}".encode()
-        signature = hmac.new(self.secret_key, random_bytes + sign_data, hashlib.sha256).hexdigest()
+        signature = hmac.new(
+            self.secret_key, random_bytes + sign_data, hashlib.sha256
+        ).hexdigest()
 
         # 组合令牌
         token = f"{random_bytes.hex()}:{timestamp}:{signature}"

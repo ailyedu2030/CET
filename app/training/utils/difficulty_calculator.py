@@ -245,7 +245,9 @@ class DifficultyCalculator:
         student_factor = 2.0 - student_level
 
         # 计算最终时间
-        estimated_time = base_time * difficulty_multiplier * length_factor * student_factor
+        estimated_time = (
+            base_time * difficulty_multiplier * length_factor * student_factor
+        )
 
         return int(max(10, min(1800, estimated_time)))  # 限制在10秒到30分钟之间
 
@@ -284,7 +286,9 @@ class DifficultyCalculator:
             historical_data = question.get("historical_data")
 
             # 计算内容复杂度
-            content_complexity = self.calculate_content_complexity(content, question_type)
+            content_complexity = self.calculate_content_complexity(
+                content, question_type
+            )
 
             # 计算难度分数
             difficulty_score = self.calculate_question_difficulty(

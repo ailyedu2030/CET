@@ -43,7 +43,9 @@ class ConnectionManager:
             "push_interval": 1,  # 1秒推送间隔
         }
 
-    async def connect(self, websocket: WebSocket, student_id: int, session_id: int) -> bool:
+    async def connect(
+        self, websocket: WebSocket, student_id: int, session_id: int
+    ) -> bool:
         """建立WebSocket连接."""
         try:
             await websocket.accept()
@@ -134,10 +136,14 @@ class ConnectionManager:
         except Exception as e:
             logger.error(f"WebSocket连接断开处理失败: {str(e)}")
 
-    async def send_personal_message(self, websocket: WebSocket, message: dict[str, Any]) -> None:
+    async def send_personal_message(
+        self, websocket: WebSocket, message: dict[str, Any]
+    ) -> None:
         """发送个人消息."""
         try:
-            await websocket.send_text(json.dumps(message, default=str, ensure_ascii=False))
+            await websocket.send_text(
+                json.dumps(message, default=str, ensure_ascii=False)
+            )
         except Exception as e:
             logger.error(f"发送个人消息失败: {str(e)}")
             await self.disconnect(websocket)
@@ -156,12 +162,16 @@ class ConnectionManager:
 
         for websocket in connections:
             try:
-                await websocket.send_text(json.dumps(message, default=str, ensure_ascii=False))
+                await websocket.send_text(
+                    json.dumps(message, default=str, ensure_ascii=False)
+                )
             except Exception as e:
                 logger.error(f"广播消息失败: {str(e)}")
                 await self.disconnect(websocket)
 
-    async def broadcast_to_student(self, student_id: int, message: dict[str, Any]) -> None:
+    async def broadcast_to_student(
+        self, student_id: int, message: dict[str, Any]
+    ) -> None:
         """向学生的所有连接广播消息."""
         if student_id not in self.active_connections:
             return
@@ -169,7 +179,9 @@ class ConnectionManager:
         for _session_id, connections in self.active_connections[student_id].items():
             for websocket in connections.copy():
                 try:
-                    await websocket.send_text(json.dumps(message, default=str, ensure_ascii=False))
+                    await websocket.send_text(
+                        json.dumps(message, default=str, ensure_ascii=False)
+                    )
                 except Exception as e:
                     logger.error(f"广播消息失败: {str(e)}")
                     await self.disconnect(websocket)
@@ -180,7 +192,8 @@ class ConnectionManager:
             return True
 
         total_connections = sum(
-            len(connections) for connections in self.active_connections[student_id].values()
+            len(connections)
+            for connections in self.active_connections[student_id].values()
         )
 
         return total_connections < self.push_config["max_connections_per_student"]
@@ -193,12 +206,16 @@ class ConnectionManager:
 
                 # 发送心跳
                 await websocket.send_text(
-                    json.dumps({"type": "heartbeat", "timestamp": datetime.now().isoformat()})
+                    json.dumps(
+                        {"type": "heartbeat", "timestamp": datetime.now().isoformat()}
+                    )
                 )
 
                 # 更新心跳时间
                 if websocket in self.connection_metadata:
-                    self.connection_metadata[websocket]["last_heartbeat"] = datetime.now()
+                    self.connection_metadata[websocket][
+                        "last_heartbeat"
+                    ] = datetime.now()
 
         except asyncio.CancelledError:
             pass
@@ -221,7 +238,9 @@ class ConnectionManager:
             "total_connections": total_connections,
             "active_students": active_students,
             "active_sessions": active_sessions,
-            "connection_limit_per_student": self.push_config["max_connections_per_student"],
+            "connection_limit_per_student": self.push_config[
+                "max_connections_per_student"
+            ],
             "heartbeat_interval": self.push_config["heartbeat_interval"],
         }
 
@@ -252,8 +271,10 @@ class RealTimePushService:
             await self.monitoring_service.initialize_redis()
 
             # 启动监控
-            monitoring_result = await self.monitoring_service.start_real_time_monitoring(
-                student_id, session_id
+            monitoring_result = (
+                await self.monitoring_service.start_real_time_monitoring(
+                    student_id, session_id
+                )
             )
 
             if not monitoring_result.get("monitoring_started"):
@@ -282,7 +303,9 @@ class RealTimePushService:
                 del self.push_tasks[task_key]
 
             # 停止监控
-            await self.monitoring_service.stop_real_time_monitoring(student_id, session_id)
+            await self.monitoring_service.stop_real_time_monitoring(
+                student_id, session_id
+            )
 
             # 发送停止通知
             await self.connection_manager.broadcast_to_session(
@@ -325,7 +348,9 @@ class RealTimePushService:
 
                     # 检查并推送预警
                     if "alerts" in metrics and metrics["alerts"]:
-                        await self._push_alerts(student_id, session_id, metrics["alerts"])
+                        await self._push_alerts(
+                            student_id, session_id, metrics["alerts"]
+                        )
 
                 # 等待下次推送
                 await asyncio.sleep(self.push_config["metrics_push_interval"])
@@ -362,7 +387,9 @@ class RealTimePushService:
     ) -> None:
         """处理WebSocket连接."""
         # 建立连接
-        connected = await self.connection_manager.connect(websocket, student_id, session_id)
+        connected = await self.connection_manager.connect(
+            websocket, student_id, session_id
+        )
         if not connected:
             return
 
@@ -376,7 +403,9 @@ class RealTimePushService:
                 message = json.loads(data)
 
                 # 处理客户端消息
-                await self._handle_client_message(websocket, student_id, session_id, message)
+                await self._handle_client_message(
+                    websocket, student_id, session_id, message
+                )
 
         except WebSocketDisconnect:
             logger.info(f"WebSocket客户端断开: 学生{student_id}, 会话{session_id}")

@@ -135,12 +135,20 @@ class OptimizedRecommendationEngine:
             "current_level": user_profile.get("profile_info", {}).get(
                 "current_level", "intermediate"
             ),
-            "target_score": user_profile.get("profile_info", {}).get("target_score", 425),
-            "accuracy_rate": user_profile.get("ability_assessment", {}).get("accuracy_rate", 0.0),
-            "weak_areas": user_profile.get("ability_assessment", {}).get("weak_areas", []),
+            "target_score": user_profile.get("profile_info", {}).get(
+                "target_score", 425
+            ),
+            "accuracy_rate": user_profile.get("ability_assessment", {}).get(
+                "accuracy_rate", 0.0
+            ),
+            "weak_areas": user_profile.get("ability_assessment", {}).get(
+                "weak_areas", []
+            ),
         }
 
-    async def _get_fast_cached_recommendation(self, cache_key: str) -> dict[str, Any] | None:
+    async def _get_fast_cached_recommendation(
+        self, cache_key: str
+    ) -> dict[str, Any] | None:
         """获取快速缓存的推荐."""
         try:
             # 检查内存缓存
@@ -211,7 +219,9 @@ class OptimizedRecommendationEngine:
 
         return recommendations
 
-    async def _cache_fast_recommendation(self, cache_key: str, result: dict[str, Any]) -> None:
+    async def _cache_fast_recommendation(
+        self, cache_key: str, result: dict[str, Any]
+    ) -> None:
         """缓存快速推荐结果."""
         try:
             # 内存缓存
@@ -240,9 +250,13 @@ class OptimizedRecommendationEngine:
         self, user_profile: dict[str, Any], context: dict[str, Any]
     ) -> list[dict[str, Any]]:
         """推荐综合资源."""
-        learning_resources = await self._recommend_learning_resources(user_profile, context)
+        learning_resources = await self._recommend_learning_resources(
+            user_profile, context
+        )
         study_plan = await self._recommend_study_plan(user_profile, context)
-        practice_materials = await self._recommend_practice_materials(user_profile, context)
+        practice_materials = await self._recommend_practice_materials(
+            user_profile, context
+        )
 
         return learning_resources + study_plan + practice_materials
 
@@ -278,7 +292,9 @@ class OptimizedRecommendationEngine:
             learning_history = await self._get_learning_history(db, user_id)
 
             # 分析学习偏好
-            learning_preferences = await self._analyze_learning_preferences(learning_history)
+            learning_preferences = await self._analyze_learning_preferences(
+                learning_history
+            )
 
             # 计算能力评估
             ability_assessment = await self._assess_user_abilities(learning_history)
@@ -301,8 +317,12 @@ class OptimizedRecommendationEngine:
                             if profile and hasattr(profile.current_level, "value")
                             else "intermediate"
                         ),
-                        "target_score": (getattr(profile, "target_score", 425) if profile else 425),
-                        "study_plan": (getattr(profile, "study_plan", {}) if profile else {}),
+                        "target_score": (
+                            getattr(profile, "target_score", 425) if profile else 425
+                        ),
+                        "study_plan": (
+                            getattr(profile, "study_plan", {}) if profile else {}
+                        ),
                     }
                     if profile
                     else {}
@@ -344,7 +364,9 @@ class OptimizedRecommendationEngine:
             ability_level = user_profile.get("ability_assessment", {}).get(
                 "overall_level", "intermediate"
             )
-            weak_areas = user_profile.get("ability_assessment", {}).get("weak_areas", [])
+            weak_areas = user_profile.get("ability_assessment", {}).get(
+                "weak_areas", []
+            )
 
             recommendations = []
 
@@ -405,7 +427,9 @@ class OptimizedRecommendationEngine:
                     "duration_weeks": study_duration,
                     "daily_time_minutes": 60,
                     "weekly_schedule": self._generate_weekly_schedule(current_level),
-                    "milestones": self._generate_milestones(study_duration, target_score),
+                    "milestones": self._generate_milestones(
+                        study_duration, target_score
+                    ),
                     "priority": "high",
                 }
             ]
@@ -466,7 +490,9 @@ class OptimizedRecommendationEngine:
                 "practice_materials": 0.90,
             }.get(rec.get("type", ""), 0.75)
 
-            final_confidence = min(base_confidence + confidence_adjustment, type_confidence)
+            final_confidence = min(
+                base_confidence + confidence_adjustment, type_confidence
+            )
             confidence_scores[f"recommendation_{i}"] = round(final_confidence, 2)
 
         return confidence_scores
@@ -490,7 +516,9 @@ class OptimizedRecommendationEngine:
             # 检查内存缓存
             if cache_key in self.recommendation_cache:
                 cached_item = self.recommendation_cache[cache_key]
-                if (datetime.now() - cached_item["timestamp"]).total_seconds() < self.cache_ttl:
+                if (
+                    datetime.now() - cached_item["timestamp"]
+                ).total_seconds() < self.cache_ttl:
                     data = cached_item["data"]
                     return data if isinstance(data, dict) else None
                 else:
@@ -502,12 +530,16 @@ class OptimizedRecommendationEngine:
             logger.error(f"获取缓存推荐失败: {str(e)}")
             return None
 
-    async def _cache_recommendation(self, cache_key: str, result: dict[str, Any]) -> None:
+    async def _cache_recommendation(
+        self, cache_key: str, result: dict[str, Any]
+    ) -> None:
         """缓存推荐结果."""
         try:
             # Redis缓存
             if self.cache_service:
-                await self.cache_service.set(cache_key, json.dumps(result), ttl=self.cache_ttl)
+                await self.cache_service.set(
+                    cache_key, json.dumps(result), ttl=self.cache_ttl
+                )
 
             # 内存缓存
             self.recommendation_cache[cache_key] = {
@@ -518,7 +550,9 @@ class OptimizedRecommendationEngine:
         except Exception as e:
             logger.error(f"缓存推荐结果失败: {str(e)}")
 
-    async def _get_learning_history(self, db: AsyncSession, user_id: int) -> dict[str, Any]:
+    async def _get_learning_history(
+        self, db: AsyncSession, user_id: int
+    ) -> dict[str, Any]:
         """获取学习历史."""
         try:
             from sqlalchemy import desc, select
@@ -542,7 +576,9 @@ class OptimizedRecommendationEngine:
             # 统计学习历史
             total_attempts = len(records)
             correct_attempts = len([r for r in records if r.is_correct])
-            accuracy_rate = correct_attempts / total_attempts if total_attempts > 0 else 0
+            accuracy_rate = (
+                correct_attempts / total_attempts if total_attempts > 0 else 0
+            )
 
             return {
                 "total_attempts": total_attempts,
@@ -567,7 +603,9 @@ class OptimizedRecommendationEngine:
             "learning_style": "visual",
         }
 
-    async def _assess_user_abilities(self, learning_history: dict[str, Any]) -> dict[str, Any]:
+    async def _assess_user_abilities(
+        self, learning_history: dict[str, Any]
+    ) -> dict[str, Any]:
         """评估用户能力."""
         accuracy_rate = learning_history.get("accuracy_rate", 0.0)
 
@@ -634,7 +672,9 @@ class OptimizedRecommendationEngine:
             "weekend": ["自由练习", "休息调整"],
         }
 
-    def _generate_milestones(self, duration_weeks: int, target_score: int) -> list[dict[str, Any]]:
+    def _generate_milestones(
+        self, duration_weeks: int, target_score: int
+    ) -> list[dict[str, Any]]:
         """生成学习里程碑."""
         milestones = []
         for i in range(1, duration_weeks // 4 + 1):
@@ -651,7 +691,9 @@ class OptimizedRecommendationEngine:
         return milestones
 
     # 默认和回退方法
-    def _get_default_user_profile(self, user_id: int, context: dict[str, Any]) -> dict[str, Any]:
+    def _get_default_user_profile(
+        self, user_id: int, context: dict[str, Any]
+    ) -> dict[str, Any]:
         """获取默认用户画像."""
         return {
             "user_id": user_id,

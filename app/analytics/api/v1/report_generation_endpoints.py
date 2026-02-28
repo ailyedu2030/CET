@@ -117,7 +117,9 @@ async def schedule_automated_report(
 
     try:
         service = ReportService(db)
-        schedule_result = await service.schedule_automated_report(report_type, schedule, recipients)
+        schedule_result = await service.schedule_automated_report(
+            report_type, schedule, recipients
+        )
 
         logger.info(f"管理员 {current_user.id} 安排自动化报表: {report_type}")
 
@@ -183,10 +185,8 @@ async def generate_custom_report(
         )
 
     try:
-        from app.analytics.services.custom_report_service import (
-            OutputFormat,
-            ReportFilter,
-        )
+        from app.analytics.services.custom_report_service import (OutputFormat,
+                                                                  ReportFilter)
 
         service = CustomReportService()
 
@@ -202,7 +202,9 @@ async def generate_custom_report(
         report_filter = None
         if filters:
             report_filter = ReportFilter(
-                start_date=datetime.fromisoformat(filters.get("start_date", "2024-01-01")),
+                start_date=datetime.fromisoformat(
+                    filters.get("start_date", "2024-01-01")
+                ),
                 end_date=datetime.fromisoformat(
                     filters.get("end_date", datetime.now().isoformat())
                 ),
@@ -297,8 +299,12 @@ async def get_report_schedules(
                     "recipients": schedule.recipients,
                     "output_formats": [fmt.value for fmt in schedule.output_formats],
                     "is_active": schedule.is_active,
-                    "last_run": (schedule.last_run.isoformat() if schedule.last_run else None),
-                    "next_run": (schedule.next_run.isoformat() if schedule.next_run else None),
+                    "last_run": (
+                        schedule.last_run.isoformat() if schedule.last_run else None
+                    ),
+                    "next_run": (
+                        schedule.next_run.isoformat() if schedule.next_run else None
+                    ),
                 }
                 for schedule in schedules
             ],

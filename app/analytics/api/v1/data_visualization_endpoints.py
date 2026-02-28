@@ -52,7 +52,9 @@ async def get_real_time_monitoring_dashboard(
             "last_updated": system_monitoring.get("last_updated"),
             "system_overview": {
                 "cpu_usage": system_metrics.get("cpu", {}).get("usage_percent", 0),
-                "memory_usage": system_metrics.get("memory", {}).get("usage_percent", 0),
+                "memory_usage": system_metrics.get("memory", {}).get(
+                    "usage_percent", 0
+                ),
                 "disk_usage": system_metrics.get("disk", {}).get("usage_percent", 0),
                 "network_io": system_metrics.get("network", {}),
             },
@@ -281,7 +283,9 @@ async def get_mobile_dashboard_data(
                 alert
                 for alert in system_monitoring.get("alerts", [])
                 if alert.get("severity") == "critical"
-            ][:5],  # 最多5个关键告警
+            ][
+                :5
+            ],  # 最多5个关键告警
             "quick_stats": {
                 "cpu_usage": system_monitoring.get("system_resources", {})
                 .get("cpu", {})
@@ -297,9 +301,9 @@ async def get_mobile_dashboard_data(
                 "completion_rate": teaching_dashboard.get("completion_stats", {}).get(
                     "overall_completion_rate", 0
                 ),
-                "student_participation": teaching_dashboard.get("student_progress", {}).get(
-                    "participation_rate_percent", 0
-                ),
+                "student_participation": teaching_dashboard.get(
+                    "student_progress", {}
+                ).get("participation_rate_percent", 0),
             },
         }
 

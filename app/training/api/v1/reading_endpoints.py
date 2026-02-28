@@ -7,24 +7,22 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.training.schemas.reading_schemas import (
-    ReadingAnswerRecordCreate,
-    ReadingPassageCreate,
-    ReadingPassageListResponse,
-    ReadingPassageResponse,
-    ReadingPassageUpdate,
-    ReadingQuestionCreate,
-    ReadingQuestionResponse,
-    ReadingQuestionUpdate,
-    ReadingRecommendation,
-    ReadingStatistics,
-    ReadingTrainingPlanCreate,
-    ReadingTrainingPlanListResponse,
-    ReadingTrainingPlanResponse,
-    ReadingTrainingRecordCreate,
-    ReadingTrainingRecordResponse,
-    ReadingTrainingSession,
-)
+from app.training.schemas.reading_schemas import (ReadingAnswerRecordCreate,
+                                                  ReadingPassageCreate,
+                                                  ReadingPassageListResponse,
+                                                  ReadingPassageResponse,
+                                                  ReadingPassageUpdate,
+                                                  ReadingQuestionCreate,
+                                                  ReadingQuestionResponse,
+                                                  ReadingQuestionUpdate,
+                                                  ReadingRecommendation,
+                                                  ReadingStatistics,
+                                                  ReadingTrainingPlanCreate,
+                                                  ReadingTrainingPlanListResponse,
+                                                  ReadingTrainingPlanResponse,
+                                                  ReadingTrainingRecordCreate,
+                                                  ReadingTrainingRecordResponse,
+                                                  ReadingTrainingSession)
 from app.training.services.reading_service import ReadingService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
@@ -83,7 +81,9 @@ async def get_reading_passages(
         )
     except Exception as e:
         logger.error(f"查询阅读文章列表失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
 @router.post("/passages", summary="创建阅读文章", response_model=ReadingPassageResponse)
@@ -102,10 +102,14 @@ async def create_reading_passage(
         return ReadingPassageResponse.model_validate(passage)
     except Exception as e:
         logger.error(f"创建阅读文章失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败"
+        ) from e
 
 
-@router.get("/passages/{passage_id}", summary="获取阅读文章详情", response_model=ReadingPassageResponse)
+@router.get(
+    "/passages/{passage_id}", summary="获取阅读文章详情", response_model=ReadingPassageResponse
+)
 async def get_reading_passage_detail(
     passage_id: int,
     current_user: User = Depends(get_current_active_user),
@@ -126,10 +130,14 @@ async def get_reading_passage_detail(
         raise
     except Exception as e:
         logger.error(f"查询阅读文章详情失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
-@router.put("/passages/{passage_id}", summary="更新阅读文章", response_model=ReadingPassageResponse)
+@router.put(
+    "/passages/{passage_id}", summary="更新阅读文章", response_model=ReadingPassageResponse
+)
 async def update_reading_passage(
     passage_id: int,
     data: ReadingPassageUpdate,
@@ -151,7 +159,9 @@ async def update_reading_passage(
         raise
     except Exception as e:
         logger.error(f"更新阅读文章失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="更新失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="更新失败"
+        ) from e
 
 
 # ==================== 阅读题目管理 ====================
@@ -181,7 +191,9 @@ async def create_reading_question(
         return ReadingQuestionResponse.model_validate(question)
     except Exception as e:
         logger.error(f"创建阅读题目失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败"
+        ) from e
 
 
 @router.get("/passages/{passage_id}/questions", summary="获取文章题目列表")
@@ -197,13 +209,19 @@ async def get_passage_questions(
 
         logger.info(f"用户 {current_user.id} 查询文章 {passage_id} 的题目，共 {len(questions)} 道")
 
-        return {"questions": [ReadingQuestionResponse.model_validate(q) for q in questions]}
+        return {
+            "questions": [ReadingQuestionResponse.model_validate(q) for q in questions]
+        }
     except Exception as e:
         logger.error(f"查询文章题目失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
-@router.put("/questions/{question_id}", summary="更新阅读题目", response_model=ReadingQuestionResponse)
+@router.put(
+    "/questions/{question_id}", summary="更新阅读题目", response_model=ReadingQuestionResponse
+)
 async def update_reading_question(
     question_id: int,
     data: ReadingQuestionUpdate,
@@ -225,13 +243,17 @@ async def update_reading_question(
         raise
     except Exception as e:
         logger.error(f"更新阅读题目失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="更新失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="更新失败"
+        ) from e
 
 
 # ==================== 训练计划管理 ====================
 
 
-@router.get("/plans", summary="获取训练计划列表", response_model=ReadingTrainingPlanListResponse)
+@router.get(
+    "/plans", summary="获取训练计划列表", response_model=ReadingTrainingPlanListResponse
+)
 async def get_training_plans(
     skip: int = 0,
     limit: int = 10,
@@ -241,7 +263,9 @@ async def get_training_plans(
     """获取用户的阅读训练计划列表"""
     try:
         service = ReadingService(db)
-        plans, total = await service.get_user_training_plans(current_user.id, skip, limit)
+        plans, total = await service.get_user_training_plans(
+            current_user.id, skip, limit
+        )
 
         logger.info(f"用户 {current_user.id} 查询训练计划列表，共 {total} 个")
 
@@ -254,7 +278,9 @@ async def get_training_plans(
         )
     except Exception as e:
         logger.error(f"查询训练计划列表失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
 @router.post("/plans", summary="创建训练计划", response_model=ReadingTrainingPlanResponse)
@@ -273,7 +299,9 @@ async def create_training_plan(
         return ReadingTrainingPlanResponse.model_validate(plan)
     except Exception as e:
         logger.error(f"创建训练计划失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="创建失败"
+        ) from e
 
 
 # ==================== 训练会话管理 ====================
@@ -294,7 +322,9 @@ async def start_reading_training(
 
         return session
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
     except Exception as e:
         logger.error(f"开始阅读训练失败: {e}")
         raise HTTPException(
@@ -312,7 +342,9 @@ async def submit_reading_answers(
     """提交阅读训练答案"""
     try:
         service = ReadingService(db)
-        training_record = await service.submit_answers(current_user.id, training_record_id, answers)
+        training_record = await service.submit_answers(
+            current_user.id, training_record_id, answers
+        )
 
         if not training_record:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="训练记录不存在")
@@ -327,7 +359,9 @@ async def submit_reading_answers(
         raise
     except Exception as e:
         logger.error(f"提交阅读答案失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="提交失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="提交失败"
+        ) from e
 
 
 # ==================== 统计和推荐 ====================
@@ -348,7 +382,9 @@ async def get_reading_statistics(
         return statistics
     except Exception as e:
         logger.error(f"查询阅读统计失败: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="查询失败"
+        ) from e
 
 
 @router.get("/recommendations", summary="获取阅读推荐", response_model=ReadingRecommendation)

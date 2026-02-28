@@ -103,9 +103,13 @@ class LessonSchedule(BaseModel):
     scheduled_date: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, comment="计划上课日期"
     )
-    start_time: Mapped[datetime] = mapped_column(DateTime, nullable=False, comment="开始时间")
+    start_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, comment="开始时间"
+    )
     end_time: Mapped[datetime] = mapped_column(DateTime, nullable=False, comment="结束时间")
-    classroom: Mapped[str | None] = mapped_column(String(100), nullable=True, comment="教室位置")
+    classroom: Mapped[str | None] = mapped_column(
+        String(100), nullable=True, comment="教室位置"
+    )
     status: Mapped[str] = mapped_column(
         String(20),
         nullable=False,
@@ -136,7 +140,9 @@ class AITaskLog(BaseModel):
     task_type: Mapped[str] = mapped_column(
         String(50), nullable=False, comment="任务类型: syllabus/lesson_plan/schedule"
     )
-    request_data: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, comment="请求参数")
+    request_data: Mapped[dict[str, Any]] = mapped_column(
+        JSON, nullable=False, comment="请求参数"
+    )
     response_data: Mapped[dict[str, Any] | None] = mapped_column(
         JSON, nullable=True, comment="响应数据"
     )
@@ -144,14 +150,18 @@ class AITaskLog(BaseModel):
         String(50), nullable=False, default="deepseek", comment="API提供商"
     )
     api_model: Mapped[str] = mapped_column(String(100), nullable=False, comment="使用的模型")
-    tokens_used: Mapped[int | None] = mapped_column(Integer, nullable=True, comment="消耗的token数")
+    tokens_used: Mapped[int | None] = mapped_column(
+        Integer, nullable=True, comment="消耗的token数"
+    )
     execution_time_ms: Mapped[int | None] = mapped_column(
         Integer, nullable=True, comment="执行时间(毫秒)"
     )
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, comment="状态: pending/success/failed"
     )
-    error_message: Mapped[str | None] = mapped_column(Text, nullable=True, comment="错误信息")
+    error_message: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="错误信息"
+    )
     user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), nullable=False, comment="请求用户ID"
     )
@@ -175,7 +185,9 @@ class CollaborativeSession(BaseModel):
     participants: Mapped[list[int]] = mapped_column(
         JSON, nullable=False, comment="参与者用户ID列表"
     )
-    session_data: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, comment="会话数据")
+    session_data: Mapped[dict[str, Any]] = mapped_column(
+        JSON, nullable=False, comment="会话数据"
+    )
     last_activity: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.utcnow, comment="最后活动时间"
     )
@@ -209,7 +221,9 @@ class LearningAnalysis(BaseModel):
     )
 
     # 分析数据
-    student_count: Mapped[int] = mapped_column(Integer, nullable=False, comment="分析学生数量")
+    student_count: Mapped[int] = mapped_column(
+        Integer, nullable=False, comment="分析学生数量"
+    )
     analysis_data: Mapped[dict[str, Any]] = mapped_column(
         JSON, nullable=False, comment="详细分析数据"
     )
@@ -321,7 +335,9 @@ class APIKeyPool(BaseModel):
     rate_limit_per_minute: Mapped[int] = mapped_column(
         Integer, nullable=False, default=60, comment="每分钟速率限制"
     )
-    priority: Mapped[int] = mapped_column(Integer, nullable=False, default=1, comment="优先级")
+    priority: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=1, comment="优先级"
+    )
     cost_per_token: Mapped[float] = mapped_column(
         Float, nullable=False, default=0.0014, comment="每token成本"
     )
@@ -344,11 +360,17 @@ class APIKeyUsage(BaseModel):
 
     key_id: Mapped[str] = mapped_column(String(100), nullable=False, comment="密钥标识符")
     model_type: Mapped[str] = mapped_column(String(50), nullable=False, comment="模型类型")
-    tokens_used: Mapped[int] = mapped_column(Integer, nullable=False, comment="使用的token数")
+    tokens_used: Mapped[int] = mapped_column(
+        Integer, nullable=False, comment="使用的token数"
+    )
     cost: Mapped[float] = mapped_column(Float, nullable=False, comment="成本")
-    response_time: Mapped[float] = mapped_column(Float, nullable=False, comment="响应时间(秒)")
+    response_time: Mapped[float] = mapped_column(
+        Float, nullable=False, comment="响应时间(秒)"
+    )
     success: Mapped[bool] = mapped_column(Boolean, nullable=False, comment="是否成功")
-    error_message: Mapped[str | None] = mapped_column(Text, nullable=True, comment="错误消息")
+    error_message: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="错误消息"
+    )
 
 
 class CostOptimizationLog(BaseModel):
@@ -358,9 +380,13 @@ class CostOptimizationLog(BaseModel):
 
     strategy: Mapped[str] = mapped_column(String(50), nullable=False, comment="优化策略")
     original_cost: Mapped[float] = mapped_column(Float, nullable=False, comment="原始成本")
-    optimized_cost: Mapped[float] = mapped_column(Float, nullable=False, comment="优化后成本")
+    optimized_cost: Mapped[float] = mapped_column(
+        Float, nullable=False, comment="优化后成本"
+    )
     savings_amount: Mapped[float] = mapped_column(Float, nullable=False, comment="节省金额")
-    savings_percentage: Mapped[float] = mapped_column(Float, nullable=False, comment="节省百分比")
+    savings_percentage: Mapped[float] = mapped_column(
+        Float, nullable=False, comment="节省百分比"
+    )
     optimization_metadata: Mapped[dict[str, Any]] = mapped_column(
         JSON, nullable=False, default=dict, comment="优化元数据"
     )
@@ -371,7 +397,9 @@ class ServiceHealthLog(BaseModel):
 
     __tablename__ = "service_health_logs"
 
-    service_name: Mapped[str] = mapped_column(String(100), nullable=False, comment="服务名称")
+    service_name: Mapped[str] = mapped_column(
+        String(100), nullable=False, comment="服务名称"
+    )
     status: Mapped[str] = mapped_column(String(20), nullable=False, comment="服务状态")
     success_rate: Mapped[float] = mapped_column(Float, nullable=False, comment="成功率")
     average_response_time: Mapped[float] = mapped_column(
@@ -389,5 +417,9 @@ class FallbackLog(BaseModel):
 
     fallback_level: Mapped[int] = mapped_column(Integer, nullable=False, comment="降级级别")
     trigger_reason: Mapped[str] = mapped_column(Text, nullable=False, comment="触发原因")
-    request_data: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, comment="请求数据")
-    response_data: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, comment="响应数据")
+    request_data: Mapped[dict[str, Any]] = mapped_column(
+        JSON, nullable=False, comment="请求数据"
+    )
+    response_data: Mapped[dict[str, Any]] = mapped_column(
+        JSON, nullable=False, comment="响应数据"
+    )

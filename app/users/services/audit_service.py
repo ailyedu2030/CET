@@ -70,9 +70,13 @@ class AuditService:
             # 应用筛选条件
             filtered_logs = mock_logs
             if user_id:
-                filtered_logs = [log for log in filtered_logs if log["user_id"] == user_id]
+                filtered_logs = [
+                    log for log in filtered_logs if log["user_id"] == user_id
+                ]
             if action_type:
-                filtered_logs = [log for log in filtered_logs if log["action_type"] == action_type]
+                filtered_logs = [
+                    log for log in filtered_logs if log["action_type"] == action_type
+                ]
 
             # 应用分页
             paginated_logs = filtered_logs[offset : offset + limit]
@@ -137,13 +141,19 @@ class AuditService:
             # 应用筛选条件
             filtered_logs = mock_logs
             if user_id:
-                filtered_logs = [log for log in filtered_logs if log["user_id"] == user_id]
+                filtered_logs = [
+                    log for log in filtered_logs if log["user_id"] == user_id
+                ]
             if permission_code:
                 filtered_logs = [
-                    log for log in filtered_logs if log["permission_code"] == permission_code
+                    log
+                    for log in filtered_logs
+                    if log["permission_code"] == permission_code
                 ]
             if change_type:
-                filtered_logs = [log for log in filtered_logs if log["change_type"] == change_type]
+                filtered_logs = [
+                    log for log in filtered_logs if log["change_type"] == change_type
+                ]
 
             # 应用分页
             paginated_logs = filtered_logs[offset : offset + limit]
@@ -216,7 +226,9 @@ class AuditService:
             filtered_events = mock_events
             if event_type:
                 filtered_events = [
-                    event for event in filtered_events if event["event_type"] == event_type
+                    event
+                    for event in filtered_events
+                    if event["event_type"] == event_type
                 ]
             if severity:
                 filtered_events = [
@@ -337,7 +349,9 @@ class AuditService:
 
             logger.info(f"获取用户活动记录: 用户 {user_id}, {len(paginated_activities)} 条记录")
 
-            return [type("UserActivity", (), activity) for activity in paginated_activities]
+            return [
+                type("UserActivity", (), activity) for activity in paginated_activities
+            ]
 
         except Exception as e:
             logger.error(f"获取用户活动记录失败: {str(e)}")

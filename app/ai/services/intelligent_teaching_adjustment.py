@@ -44,13 +44,17 @@ class IntelligentTeachingAdjustment:
             cache_key = f"teaching_adjustments_{class_id}_{course_id}_{lesson_plan_id}"
             if cache_key in self.adjustment_cache:
                 cached_data = self.adjustment_cache[cache_key]
-                if (datetime.now() - cached_data["timestamp"]).total_seconds() < self.cache_ttl:
+                if (
+                    datetime.now() - cached_data["timestamp"]
+                ).total_seconds() < self.cache_ttl:
                     data = cached_data["data"]
                     return data if isinstance(data, dict) else {}
 
             # 1. 执行增强学情分析
-            learning_analysis = await self.learning_analytics.comprehensive_learning_analysis(
-                db, class_id, course_id
+            learning_analysis = (
+                await self.learning_analytics.comprehensive_learning_analysis(
+                    db, class_id, course_id
+                )
             )
 
             # 2. 获取当前教学内容
@@ -86,11 +90,13 @@ class IntelligentTeachingAdjustment:
                     "lesson_plan_id": lesson_plan_id,
                     "teacher_id": teacher_id,
                     "generation_timestamp": datetime.now().isoformat(),
-                    "analysis_confidence": learning_analysis.get("analysis_metadata", {}).get(
-                        "data_quality_score", 0.8
-                    ),
+                    "analysis_confidence": learning_analysis.get(
+                        "analysis_metadata", {}
+                    ).get("data_quality_score", 0.8),
                 },
-                "learning_analysis_summary": self._extract_analysis_summary(learning_analysis),
+                "learning_analysis_summary": self._extract_analysis_summary(
+                    learning_analysis
+                ),
                 "adjustment_suggestions": adjustment_suggestions,
                 "resource_recommendations": resource_recommendations,
                 "implementation_plan": implementation_plan,
@@ -198,7 +204,11 @@ class IntelligentTeachingAdjustment:
             }}
             """
 
-            success, adjustment_response, error = await self.deepseek_service.generate_completion(
+            (
+                success,
+                adjustment_response,
+                error,
+            ) = await self.deepseek_service.generate_completion(
                 prompt=adjustment_prompt,
                 model=None,
                 temperature=0.3,
@@ -274,7 +284,11 @@ class IntelligentTeachingAdjustment:
             }}
             """
 
-            success, resource_response, error = await self.deepseek_service.generate_completion(
+            (
+                success,
+                resource_response,
+                error,
+            ) = await self.deepseek_service.generate_completion(
                 prompt=resource_prompt,
                 model=None,
                 temperature=0.4,
@@ -384,7 +398,9 @@ class IntelligentTeachingAdjustment:
                         "title": getattr(lesson_plan, "title", ""),
                         "objectives": getattr(lesson_plan, "objectives", []),
                         "content_outline": getattr(lesson_plan, "content_outline", ""),
-                        "teaching_methods": getattr(lesson_plan, "teaching_methods", []),
+                        "teaching_methods": getattr(
+                            lesson_plan, "teaching_methods", []
+                        ),
                     }
 
             return {
@@ -397,7 +413,9 @@ class IntelligentTeachingAdjustment:
             logger.error(f"获取教学内容失败: {str(e)}")
             return {"error": f"获取教学内容失败: {str(e)}"}
 
-    def _extract_analysis_summary(self, learning_analysis: dict[str, Any]) -> dict[str, Any]:
+    def _extract_analysis_summary(
+        self, learning_analysis: dict[str, Any]
+    ) -> dict[str, Any]:
         """提取分析摘要."""
         return {
             "class_level": learning_analysis.get("ai_analysis", {})
@@ -420,12 +438,16 @@ class IntelligentTeachingAdjustment:
             .get("overall_trend", "未知"),
         }
 
-    def _prioritize_actions(self, adjustment_suggestions: dict[str, Any]) -> list[dict[str, Any]]:
+    def _prioritize_actions(
+        self, adjustment_suggestions: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """优先级排序行动项."""
         priority_actions = []
 
         # 从调整建议中提取优先级行动
-        implementation_priority = adjustment_suggestions.get("implementation_priority", [])
+        implementation_priority = adjustment_suggestions.get(
+            "implementation_priority", []
+        )
 
         for action in implementation_priority:
             if action.get("priority") == "高":
@@ -450,7 +472,9 @@ class IntelligentTeachingAdjustment:
 
         return priority_actions
 
-    def _generate_fallback_adjustments(self, learning_analysis: dict[str, Any]) -> dict[str, Any]:
+    def _generate_fallback_adjustments(
+        self, learning_analysis: dict[str, Any]
+    ) -> dict[str, Any]:
         """生成默认调整建议."""
         return {
             "content_adjustments": {

@@ -16,7 +16,9 @@ logger = logging.getLogger(__name__)
 class MFAService:
     """多因素认证服务类 - 需求7验收标准5."""
 
-    def __init__(self, db_session: AsyncSession, cache_service: Any | None = None) -> None:
+    def __init__(
+        self, db_session: AsyncSession, cache_service: Any | None = None
+    ) -> None:
         """初始化MFA服务."""
         self.db = db_session
         self.cache_service = cache_service

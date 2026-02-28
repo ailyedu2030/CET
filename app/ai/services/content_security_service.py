@@ -74,7 +74,9 @@ class ContentSecurityService:
             suggestions.extend(quality_result["suggestions"])
 
             # 3. 教育适宜性检查
-            educational_result = self._check_educational_appropriateness(content, content_type)
+            educational_result = self._check_educational_appropriateness(
+                content, content_type
+            )
             if educational_result["violations"]:
                 violations.extend(educational_result["violations"])
             risk_score += educational_result["risk_score"]
@@ -131,7 +133,9 @@ class ContentSecurityService:
             "details": {"matched_words": matched_words},
         }
 
-    def _check_content_quality(self, content: str, content_type: ContentType) -> dict[str, Any]:
+    def _check_content_quality(
+        self, content: str, content_type: ContentType
+    ) -> dict[str, Any]:
         """检查内容质量"""
         risk_score = 0.0
         suggestions = []
@@ -175,7 +179,9 @@ class ContentSecurityService:
                 "语法",
                 "词汇",
             ]
-            keyword_matches = sum(1 for keyword in educational_keywords if keyword in content)
+            keyword_matches = sum(
+                1 for keyword in educational_keywords if keyword in content
+            )
             if keyword_matches == 0:
                 risk_score += 10.0
                 suggestions.append("内容与教育主题相关性较低")
@@ -238,7 +244,9 @@ class ContentSecurityService:
 
         return round(final_confidence, 2)
 
-    def _determine_security_level(self, risk_score: float, violations: list[str]) -> SecurityLevel:
+    def _determine_security_level(
+        self, risk_score: float, violations: list[str]
+    ) -> SecurityLevel:
         """确定安全级别"""
         if risk_score >= 70.0 or any("sensitive_word" in v for v in violations):
             return SecurityLevel.BLOCKED

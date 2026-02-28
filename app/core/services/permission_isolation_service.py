@@ -68,12 +68,16 @@ class PermissionIsolationService:
         try:
             # 缓存权限检查结果
             cache_key = f"teacher_permission:{user_id}:{lesson_plan_id}:{action}"
-            cached_result = await self.cache_service.get(cache_key, CacheType.PERMISSION)
+            cached_result = await self.cache_service.get(
+                cache_key, CacheType.PERMISSION
+            )
             if cached_result is not None:
                 return bool(cached_result)
 
             # 获取用户角色和权限
-            user_permissions = await self.permission_service.get_user_permissions(user_id)
+            user_permissions = await self.permission_service.get_user_permissions(
+                user_id
+            )
 
             # 检查基础教师权限
             has_teacher_role = await self._has_role(user_id, "teacher")
@@ -100,7 +104,9 @@ class PermissionIsolationService:
 
             # 检查资源所有权（教师只能编辑自己的教案）
             if permission_granted and action in ["edit", "delete"]:
-                is_owner = await self._check_lesson_plan_ownership(user_id, lesson_plan_id)
+                is_owner = await self._check_lesson_plan_ownership(
+                    user_id, lesson_plan_id
+                )
                 permission_granted = permission_granted and is_owner
 
             # 缓存结果
@@ -133,10 +139,14 @@ class PermissionIsolationService:
                 return False
 
             # 检查是否是该教师的学生
-            is_teacher_student = await self._check_teacher_student_relationship(user_id, student_id)
+            is_teacher_student = await self._check_teacher_student_relationship(
+                user_id, student_id
+            )
 
             # 检查数据类型权限
-            user_permissions = await self.permission_service.get_user_permissions(user_id)
+            user_permissions = await self.permission_service.get_user_permissions(
+                user_id
+            )
             has_data_permission = await self._check_permission_code(
                 user_permissions, f"student_data:{data_type}:view"
             )
@@ -174,7 +184,9 @@ class PermissionIsolationService:
                 return False
 
             # 检查课程分配权限
-            user_permissions = await self.permission_service.get_user_permissions(user_id)
+            user_permissions = await self.permission_service.get_user_permissions(
+                user_id
+            )
             permission_granted = await self._check_permission_code(
                 user_permissions, f"course:assign:{action}"
             )
@@ -204,7 +216,9 @@ class PermissionIsolationService:
                 return False
 
             # 检查大纲审批权限
-            user_permissions = await self.permission_service.get_user_permissions(user_id)
+            user_permissions = await self.permission_service.get_user_permissions(
+                user_id
+            )
             permission_granted = await self._check_permission_code(
                 user_permissions, f"syllabus:approve:{action}"
             )
@@ -233,8 +247,12 @@ class PermissionIsolationService:
         """申请临时特殊权限."""
         try:
             # 检查是否已有该权限
-            user_permissions = await self.permission_service.get_user_permissions(user_id)
-            has_permission = await self._check_permission_code(user_permissions, permission_code)
+            user_permissions = await self.permission_service.get_user_permissions(
+                user_id
+            )
+            has_permission = await self._check_permission_code(
+                user_permissions, permission_code
+            )
 
             if has_permission:
                 raise BusinessLogicError("用户已拥有该权限，无需申请")
@@ -249,7 +267,9 @@ class PermissionIsolationService:
                 "duration_hours": duration_hours,
                 "status": "pending",
                 "requested_at": datetime.utcnow().isoformat(),
-                "expires_at": (datetime.utcnow() + timedelta(hours=duration_hours)).isoformat(),
+                "expires_at": (
+                    datetime.utcnow() + timedelta(hours=duration_hours)
+                ).isoformat(),
             }
 
             # 保存申请记录（这里需要创建相应的模型）
@@ -295,7 +315,9 @@ class PermissionIsolationService:
 
             # 获取申请记录
             cache_key = f"permission_request:{request_id}"
-            request_record = await self.cache_service.get(cache_key, CacheType.SYSTEM_DATA)
+            request_record = await self.cache_service.get(
+                cache_key, CacheType.SYSTEM_DATA
+            )
 
             if not request_record:
                 raise BusinessLogicError(f"权限申请 {request_id} 不存在")
@@ -311,7 +333,9 @@ class PermissionIsolationService:
 
             # 如果批准，创建临时权限
             if approved:
-                temp_permission = await self._create_temporary_permission(request_record)
+                temp_permission = await self._create_temporary_permission(
+                    request_record
+                )
                 request_record["temp_permission_id"] = temp_permission["id"]
 
             # 更新缓存
@@ -438,12 +462,16 @@ class PermissionIsolationService:
         """检查权限代码."""
         return any(perm.code == permission_code for perm in permissions)
 
-    async def _check_lesson_plan_ownership(self, user_id: int, lesson_plan_id: int) -> bool:
+    async def _check_lesson_plan_ownership(
+        self, user_id: int, lesson_plan_id: int
+    ) -> bool:
         """检查教案所有权."""
         # 这里应该查询实际的教案所有权
         return True  # 暂时返回True
 
-    async def _check_teacher_student_relationship(self, teacher_id: int, student_id: int) -> bool:
+    async def _check_teacher_student_relationship(
+        self, teacher_id: int, student_id: int
+    ) -> bool:
         """检查师生关系."""
         # 这里应该查询实际的师生关系
         return True  # 暂时返回True
@@ -453,7 +481,9 @@ class PermissionIsolationService:
         # 这里应该发送通知给管理员
         self.logger.info(f"通知管理员审批权限申请: {request_record['id']}")
 
-    async def _create_temporary_permission(self, request_record: dict[str, Any]) -> dict[str, Any]:
+    async def _create_temporary_permission(
+        self, request_record: dict[str, Any]
+    ) -> dict[str, Any]:
         """创建临时权限."""
         temp_permission = {
             "id": f"temp_perm_{datetime.utcnow().timestamp()}",

@@ -137,7 +137,9 @@ class StreamingGradingUtils:
             }
 
             # 2. 构建辅助提示词
-            assistance_prompt = await self._build_writing_assistance_prompt(text, assistance_type)
+            assistance_prompt = await self._build_writing_assistance_prompt(
+                text, assistance_type
+            )
 
             # 3. 流式处理
             accumulated_suggestions = ""
@@ -246,7 +248,9 @@ class StreamingGradingUtils:
 
         return base_prompt
 
-    async def _build_writing_assistance_prompt(self, text: str, assistance_type: str) -> str:
+    async def _build_writing_assistance_prompt(
+        self, text: str, assistance_type: str
+    ) -> str:
         """构建写作辅助提示词."""
         prompts = {
             "grammar": f"""
@@ -341,7 +345,9 @@ class StreamingGradingUtils:
 
         except json.JSONDecodeError:
             logger.warning("AI响应JSON解析失败，使用备用解析")
-            fallback_result = await self._fallback_parse_grading_result(ai_response, max_score)
+            fallback_result = await self._fallback_parse_grading_result(
+                ai_response, max_score
+            )
             return dict(fallback_result)
 
     async def _parse_writing_suggestions(self, ai_response: str) -> dict[str, Any]:

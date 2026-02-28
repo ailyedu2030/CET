@@ -48,7 +48,9 @@ class TimeSeriesPredictor:
 
         return smoothed
 
-    def linear_regression_predict(self, data: list[float], periods_ahead: int = 1) -> list[float]:
+    def linear_regression_predict(
+        self, data: list[float], periods_ahead: int = 1
+    ) -> list[float]:
         """线性回归预测."""
         if len(data) < 2:
             return [data[0] if data else 0.0] * periods_ahead
@@ -113,7 +115,9 @@ class AnomalyDetector:
         """初始化异常检测器."""
         self.isolation_forest = IsolationForest(contamination=0.1, random_state=42)
 
-    def detect_outliers_iqr(self, data: list[float], multiplier: float = 1.5) -> dict[str, Any]:
+    def detect_outliers_iqr(
+        self, data: list[float], multiplier: float = 1.5
+    ) -> dict[str, Any]:
         """使用IQR方法检测异常值."""
         if len(data) < 4:
             return {"outliers": [], "bounds": {"lower": 0, "upper": 0}}
@@ -155,7 +159,9 @@ class AnomalyDetector:
 
         anomalies = [
             {"index": i, "value": data[i], "score": float(scores)}
-            for i, (label, scores) in enumerate(zip(anomaly_labels, anomaly_scores, strict=False))
+            for i, (label, scores) in enumerate(
+                zip(anomaly_labels, anomaly_scores, strict=False)
+            )
             if label == -1
         ]
 
@@ -193,7 +199,9 @@ class FailurePredictionEngine:
 
             # 异常检测
             anomaly_result = self.detector.detect_outliers_iqr(historical_data)
-            isolation_result = self.detector.detect_anomalies_isolation_forest(historical_data)
+            isolation_result = self.detector.detect_anomalies_isolation_forest(
+                historical_data
+            )
 
             # 趋势预测
             future_values = self.predictor.linear_regression_predict(
@@ -217,7 +225,9 @@ class FailurePredictionEngine:
 
             # 2. 趋势因子
             if len(future_values) > 0:
-                trend_slope = (future_values[-1] - historical_data[-1]) / prediction_days
+                trend_slope = (
+                    future_values[-1] - historical_data[-1]
+                ) / prediction_days
                 if abs(trend_slope) > np.std(historical_data):
                     risk_factors.append("趋势变化剧烈")
                     risk_score += 25
@@ -255,7 +265,9 @@ class FailurePredictionEngine:
                     current_value, future_values, thresholds["upper"]
                 )
                 if days_to_failure:
-                    failure_prediction = datetime.utcnow() + timedelta(days=days_to_failure)
+                    failure_prediction = datetime.utcnow() + timedelta(
+                        days=days_to_failure
+                    )
 
             return {
                 "metric_name": metric_name,
@@ -329,7 +341,9 @@ class FailurePredictionEngine:
 
                 predictions[period] = {
                     "predicted_usage": predicted_usage,
-                    "capacity_utilization": min(float(predicted_usage / 100 * 100), 100.0),
+                    "capacity_utilization": min(
+                        float(predicted_usage / 100 * 100), 100.0
+                    ),
                     "additional_capacity_needed": max(
                         0.0, float(predicted_usage - 80)
                     ),  # 假设80%为容量警戒线
@@ -362,7 +376,9 @@ class FailurePredictionEngine:
         else:
             return "low"
 
-    def _generate_capacity_recommendations(self, predictions: dict[str, Any]) -> list[str]:
+    def _generate_capacity_recommendations(
+        self, predictions: dict[str, Any]
+    ) -> list[str]:
         """生成容量建议."""
         recommendations = []
 
@@ -423,11 +439,15 @@ class PredictionService:
                             strict=False,
                         )
                     ],
-                    model_accuracy=self._calculate_model_accuracy(historical_data["values"]),
+                    model_accuracy=self._calculate_model_accuracy(
+                        historical_data["values"]
+                    ),
                 )
 
             elif request.prediction_type == "capacity":
-                result = await self.failure_engine.predict_capacity_needs(historical_data["values"])
+                result = await self.failure_engine.predict_capacity_needs(
+                    historical_data["values"]
+                )
 
                 return PredictionResult(
                     metric_name=request.metric_name,

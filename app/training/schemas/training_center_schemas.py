@@ -5,11 +5,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.training.models.training_center_models import (
-    DifficultyLevel,
-    TrainingMode,
-    TrainingType,
-)
+from app.training.models.training_center_models import (DifficultyLevel, TrainingMode,
+                                                        TrainingType)
 
 
 # 基础模式
@@ -21,7 +18,9 @@ class TrainingCenterBase(BaseModel):
     preferred_difficulty: DifficultyLevel = Field(
         default=DifficultyLevel.INTERMEDIATE, description="偏好难度"
     )
-    daily_target_minutes: int = Field(default=60, description="每日目标训练时长(分钟)", ge=10, le=300)
+    daily_target_minutes: int = Field(
+        default=60, description="每日目标训练时长(分钟)", ge=10, le=300
+    )
     weekly_target_sessions: int = Field(default=5, description="每周目标训练次数", ge=1, le=14)
 
 
@@ -35,8 +34,12 @@ class TrainingCenterUpdate(BaseModel):
     name: str | None = Field(None, description="训练中心名称", max_length=255)
     description: str | None = Field(None, description="描述")
     preferred_difficulty: DifficultyLevel | None = Field(None, description="偏好难度")
-    daily_target_minutes: int | None = Field(None, description="每日目标训练时长(分钟)", ge=10, le=300)
-    weekly_target_sessions: int | None = Field(None, description="每周目标训练次数", ge=1, le=14)
+    daily_target_minutes: int | None = Field(
+        None, description="每日目标训练时长(分钟)", ge=10, le=300
+    )
+    weekly_target_sessions: int | None = Field(
+        None, description="每周目标训练次数", ge=1, le=14
+    )
     is_active: bool | None = Field(None, description="是否激活")
 
 
@@ -326,7 +329,9 @@ class TrainingCenterDashboard(BaseModel):
     training_center: TrainingCenterResponse = Field(..., description="训练中心信息")
     recent_sessions: list[TrainingSessionResponse] = Field(..., description="最近训练会话")
     active_goals: list[TrainingGoalResponse] = Field(..., description="活跃目标")
-    recent_achievements: list[TrainingAchievementResponse] = Field(..., description="最近成就")
+    recent_achievements: list[TrainingAchievementResponse] = Field(
+        ..., description="最近成就"
+    )
     statistics: TrainingStatistics = Field(..., description="统计数据")
     recommendations: dict[str, Any] = Field(..., description="个性化推荐")
 

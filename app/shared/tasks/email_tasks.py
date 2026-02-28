@@ -110,7 +110,9 @@ def send_bulk_email(
 
         except Exception as e:
             failed_count += 1
-            failed_emails.append({"email": email_data.get("email", "unknown"), "error": str(e)})
+            failed_emails.append(
+                {"email": email_data.get("email", "unknown"), "error": str(e)}
+            )
 
     bulk_result: dict[str, Any] = {
         "status": "completed",

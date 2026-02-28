@@ -8,23 +8,13 @@ from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_user, get_db
-from app.notifications.models.notification_models import (
-    Notification,
-    NotificationPreference,
-)
+from app.notifications.models.notification_models import (Notification,
+                                                          NotificationPreference)
 from app.notifications.schemas.notification_schemas import (
-    NotificationBatchCreate,
-    NotificationCreate,
-    NotificationListResponse,
-    NotificationPreferenceResponse,
-    NotificationPreferenceUpdate,
-    NotificationResponse,
-    NotificationStats,
-    NotificationUpdate,
-    ResourceAuditNotification,
-    TeachingPlanChangeNotification,
-    TrainingAnomalyAlert,
-)
+    NotificationBatchCreate, NotificationCreate, NotificationListResponse,
+    NotificationPreferenceResponse, NotificationPreferenceUpdate, NotificationResponse,
+    NotificationStats, NotificationUpdate, ResourceAuditNotification,
+    TeachingPlanChangeNotification, TrainingAnomalyAlert)
 from app.notifications.services.notification_service import UnifiedNotificationService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import AuthRequired, create_permission_dependency
@@ -156,7 +146,8 @@ async def get_notification_list(
 
         # 转换为响应模式
         notification_responses = [
-            NotificationResponse.model_validate(notification) for notification in notifications
+            NotificationResponse.model_validate(notification)
+            for notification in notifications
         ]
 
         return NotificationListResponse(
@@ -190,7 +181,9 @@ async def update_notification(
     """更新通知状态（如标记为已读）."""
     try:
         # 查询通知
-        result = await db.execute(select(Notification).where(Notification.id == notification_id))
+        result = await db.execute(
+            select(Notification).where(Notification.id == notification_id)
+        )
         notification = result.scalar_one_or_none()
 
         if not notification:
@@ -200,7 +193,10 @@ async def update_notification(
             )
 
         # 权限检查：只能更新自己的通知或管理员权限
-        if notification.user_id != current_user.id and current_user.user_type.value != "admin":
+        if (
+            notification.user_id != current_user.id
+            and current_user.user_type.value != "admin"
+        ):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="无权限更新此通知",
@@ -241,13 +237,18 @@ async def delete_notifications_batch(
     """批量删除通知."""
     try:
         # 查询要删除的通知
-        result = await db.execute(select(Notification).where(Notification.id.in_(notification_ids)))
+        result = await db.execute(
+            select(Notification).where(Notification.id.in_(notification_ids))
+        )
         notifications = result.scalars().all()
 
         # 权限检查
         deleted_count = 0
         for notification in notifications:
-            if notification.user_id == current_user.id or current_user.user_type.value == "admin":
+            if (
+                notification.user_id == current_user.id
+                or current_user.user_type.value == "admin"
+            ):
                 await db.delete(notification)
                 deleted_count += 1
 
@@ -380,7 +381,9 @@ async def get_notification_preferences(
     """获取用户通知偏好设置."""
     try:
         result = await db.execute(
-            select(NotificationPreference).where(NotificationPreference.user_id == current_user.id)
+            select(NotificationPreference).where(
+                NotificationPreference.user_id == current_user.id
+            )
         )
         preference = result.scalar_one_or_none()
 
@@ -415,7 +418,9 @@ async def update_notification_preferences(
     """更新用户通知偏好设置."""
     try:
         result = await db.execute(
-            select(NotificationPreference).where(NotificationPreference.user_id == current_user.id)
+            select(NotificationPreference).where(
+                NotificationPreference.user_id == current_user.id
+            )
         )
         preference = result.scalar_one_or_none()
 
@@ -481,7 +486,9 @@ async def get_notification_stats(
         # 按优先级统计
         by_priority: dict[str, int] = {}
         for notification in notifications:
-            by_priority[notification.priority] = by_priority.get(notification.priority, 0) + 1
+            by_priority[notification.priority] = (
+                by_priority.get(notification.priority, 0) + 1
+            )
 
         # 按渠道统计
         by_channel: dict[str, int] = {}
@@ -490,7 +497,9 @@ async def get_notification_stats(
                 by_channel[channel] = by_channel.get(channel, 0) + 1
 
         # 最近活动（最近10条）
-        recent_notifications = sorted(notifications, key=lambda x: x.created_at, reverse=True)[:10]
+        recent_notifications = sorted(
+            notifications, key=lambda x: x.created_at, reverse=True
+        )[:10]
         recent_activity = [
             {
                 "id": n.id,
@@ -531,11 +540,15 @@ async def send_collaboration_notification(
     participants: str = Query(..., description="参与者ID列表，逗号分隔"),
     details: dict[str, Any] | None = None,
     current_user: dict[str, Any] = Depends(get_current_user),
-    notification_service: UnifiedNotificationService = Depends(get_notification_service),
+    notification_service: UnifiedNotificationService = Depends(
+        get_notification_service
+    ),
 ) -> dict[str, Any]:
     """发送协作活动通知 - 需求16验收标准2."""
     try:
-        participant_ids = [int(id.strip()) for id in participants.split(",") if id.strip()]
+        participant_ids = [
+            int(id.strip()) for id in participants.split(",") if id.strip()
+        ]
 
         result = await notification_service.send_collaboration_notification(
             collaboration_type=collaboration_type,
@@ -562,7 +575,9 @@ async def send_lesson_plan_share_notification(
     share_level: str = Query(..., description="分享级别"),
     target_users: str = Query(..., description="目标用户ID列表，逗号分隔"),
     current_user: dict[str, Any] = Depends(get_current_user),
-    notification_service: UnifiedNotificationService = Depends(get_notification_service),
+    notification_service: UnifiedNotificationService = Depends(
+        get_notification_service
+    ),
 ) -> dict[str, Any]:
     """发送教案分享通知 - 需求16验收标准2."""
     try:
@@ -591,11 +606,15 @@ async def send_discussion_reply_notification(
     topic_title: str = Query(..., description="讨论话题标题"),
     participants: str = Query(..., description="话题参与者ID列表，逗号分隔"),
     current_user: dict[str, Any] = Depends(get_current_user),
-    notification_service: UnifiedNotificationService = Depends(get_notification_service),
+    notification_service: UnifiedNotificationService = Depends(
+        get_notification_service
+    ),
 ) -> dict[str, Any]:
     """发送讨论回复通知 - 需求16验收标准2."""
     try:
-        participant_ids = [int(id.strip()) for id in participants.split(",") if id.strip()]
+        participant_ids = [
+            int(id.strip()) for id in participants.split(",") if id.strip()
+        ]
 
         result = await notification_service.send_discussion_reply_notification(
             topic_id=topic_id,
