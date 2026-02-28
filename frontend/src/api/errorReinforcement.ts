@@ -35,6 +35,23 @@ export interface ErrorQuestionsResponse {
   pageSize: number
 }
 
+// Placeholder types for missing imports
+export interface AutoCollectErrorRequest {
+  question_id: number
+  user_answer: string
+}
+
+export interface AutoCollectErrorResponse {
+  collected: boolean
+  reason?: string
+  similar_errors_found?: number
+  recommended_practice?: string
+}
+
+export interface AnswerData {
+  text: string
+}
+
 export const errorReinforcementApi = {
   // 获取错题统计
   getErrorStats: async (): Promise<ErrorStats> => {
