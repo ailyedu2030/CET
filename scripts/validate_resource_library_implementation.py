@@ -133,7 +133,9 @@ class ResourceLibraryValidator:
 
         # 验证文档处理服务
         try:
-            from app.resources.services.document_processing_service import DocumentProcessingService
+            from app.resources.services.document_processing_service import (
+                DocumentProcessingService,
+            )
 
             required_methods = [
                 "process_large_document",
@@ -165,7 +167,9 @@ class ResourceLibraryValidator:
         # 验证DeepSeek服务
         try:
             from app.ai.services.deepseek_content_service import DeepSeekContentService
-            from app.ai.services.deepseek_embedding_service import DeepSeekEmbeddingService
+            from app.ai.services.deepseek_embedding_service import (
+                DeepSeekEmbeddingService,
+            )
 
             # 检查API密钥配置
             embedding_service = DeepSeekEmbeddingService()
@@ -239,7 +243,9 @@ class ResourceLibraryValidator:
 
         # 测试基本功能
         try:
-            from app.ai.services.deepseek_embedding_service import DeepSeekEmbeddingService
+            from app.ai.services.deepseek_embedding_service import (
+                DeepSeekEmbeddingService,
+            )
 
             embedding_service = DeepSeekEmbeddingService()
 
