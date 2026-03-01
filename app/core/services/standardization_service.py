@@ -44,9 +44,7 @@ class StandardizationService:
             validation_result = self._validate_isbn_format(cleaned_isbn)
 
             if not validation_result["is_valid"]:
-                raise ValidationError(
-                    f"ISBN格式不符合规范: {validation_result['error']}"
-                )
+                raise ValidationError(f"ISBN格式不符合规范: {validation_result['error']}")
 
             # 获取ISBN详细信息
             isbn_info = await self._get_isbn_details(cleaned_isbn)

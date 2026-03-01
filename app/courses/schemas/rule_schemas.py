@@ -22,9 +22,7 @@ class RuleConfigurationBase(BaseModel):
         description="规则分类",
         pattern="^(class_binding|classroom_scheduling|teacher_workload)$",
     )
-    rule_config: dict[str, Any] = Field(
-        default_factory=dict, description="规则配置参数"
-    )
+    rule_config: dict[str, Any] = Field(default_factory=dict, description="规则配置参数")
     is_enabled: bool = Field(True, description="是否启用")
     is_strict: bool = Field(True, description="是否严格执行")
     allow_exceptions: bool = Field(False, description="是否允许例外")
@@ -33,9 +31,7 @@ class RuleConfigurationBase(BaseModel):
         description="适用范围类型",
         pattern="^(global|campus|building|classroom_type)$",
     )
-    scope_config: dict[str, Any] = Field(
-        default_factory=dict, description="适用范围配置"
-    )
+    scope_config: dict[str, Any] = Field(default_factory=dict, description="适用范围配置")
     description: str | None = Field(None, description="规则描述")
 
 
@@ -103,9 +99,7 @@ class RuleValidationResponse(BaseModel):
 
     is_compliant: bool = Field(..., description="是否合规")
     rule_name: str | None = Field(None, description="规则名称")
-    violations: list[RuleViolation] = Field(
-        default_factory=list, description="违规列表"
-    )
+    violations: list[RuleViolation] = Field(default_factory=list, description="违规列表")
     rule_count: int = Field(0, description="违规数量")
     severity: str = Field(
         "none",
@@ -168,9 +162,7 @@ class RuleMonitoringResponse(BaseModel):
     exception_count: int = Field(..., description="例外次数")
     effectiveness_score: float | None = Field(None, description="效果评分")
     compliance_rate: float = Field(..., description="合规率")
-    optimization_suggestions: dict[str, Any] | None = Field(
-        None, description="优化建议"
-    )
+    optimization_suggestions: dict[str, Any] | None = Field(None, description="优化建议")
     created_by: int = Field(..., description="创建人ID")
     created_at: datetime = Field(..., description="创建时间")
     updated_at: datetime | None = Field(None, description="更新时间")
@@ -221,9 +213,7 @@ class RuleOptimizationResponse(BaseModel):
     rule_id: int = Field(..., description="规则ID")
     rule_name: str = Field(..., description="规则名称")
     current_score: float = Field(..., description="当前评分")
-    suggestions: list[RuleOptimizationSuggestion] = Field(
-        ..., description="优化建议列表"
-    )
+    suggestions: list[RuleOptimizationSuggestion] = Field(..., description="优化建议列表")
     generated_at: datetime = Field(..., description="生成时间")
     total_suggestions: int = Field(..., description="建议总数")
 

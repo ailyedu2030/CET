@@ -278,7 +278,9 @@ class AgentSystemIntegrationTest:
             "overall_status": (
                 "success"
                 if passed_tests == total_tests
-                else "partial" if passed_tests > 0 else "failed"
+                else "partial"
+                if passed_tests > 0
+                else "failed"
             ),
         }
 

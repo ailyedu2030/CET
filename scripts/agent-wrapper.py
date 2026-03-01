@@ -31,9 +31,7 @@ class AgentContext:
         self.current_requirement_id = requirement_id
         self.current_phase = phase
         self.current_agent_role = agent_role
-        print(
-            f"🎯 设置智能体上下文: 需求{requirement_id} - {phase.value} - {agent_role.value}"
-        )
+        print(f"🎯 设置智能体上下文: 需求{requirement_id} - {phase.value} - {agent_role.value}")
 
     def get_current_template(self) -> Any:
         """获取当前阶段的模板"""

@@ -125,9 +125,7 @@ class DifficultyCalculator:
         """
         # 获取表现指标
         accuracy_rate = student_performance.get("accuracy_rate", 0.0)
-        avg_time_ratio = student_performance.get(
-            "avg_time_ratio", 1.0
-        )  # 相对于标准时间的比例
+        avg_time_ratio = student_performance.get("avg_time_ratio", 1.0)  # 相对于标准时间的比例
         consecutive_correct = student_performance.get("consecutive_correct", 0)
         consecutive_wrong = student_performance.get("consecutive_wrong", 0)
 

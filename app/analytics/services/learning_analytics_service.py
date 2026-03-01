@@ -749,9 +749,7 @@ class LearningAnalyticsService:
                 :3
             ]
             peak_hour_str = "、".join([f"{hour}点" for hour, _ in peak_hours])
-            recommendations.append(
-                f"您在{peak_hour_str}学习效果较好，建议在这些时间段安排重要学习内容"
-            )
+            recommendations.append(f"您在{peak_hour_str}学习效果较好，建议在这些时间段安排重要学习内容")
 
         if daily_dist:
             weekday_sessions = sum(daily_dist.get(i, 0) for i in range(5))  # 周一到周五

@@ -274,9 +274,7 @@ class AnalyticsService:
                 "total_questions": total_questions,
             },
             chart_data=chart_data,
-            detailed_recommendations=[
-                {"category": "学习建议", "items": recommendations}
-            ],
+            detailed_recommendations=[{"category": "学习建议", "items": recommendations}],
             next_steps=learning_goals,
         )
 
@@ -857,9 +855,7 @@ class AnalyticsService:
             insights.append("准确率低于平均水平，有提升空间")
 
         # 活跃度对比
-        avg_daily = (
-            student_progress.overall_metrics.total_questions / 30
-        )  # 假设30天分析周期
+        avg_daily = student_progress.overall_metrics.total_questions / 30  # 假设30天分析周期
         if avg_daily > comparison_data["average_questions_per_day"]:
             insights.append("学习活跃度很高，保持这个势头")
         else:

@@ -48,9 +48,7 @@ async def stream_grading(
         # 获取题目信息
         question = await db.get(Question, request.question_id)
         if not question:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="题目不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="题目不存在")
 
         # 验证题目类型是否支持流式批改
         supported_types = [
@@ -190,9 +188,7 @@ async def grade_answer(
         # 获取题目信息
         question = await db.get(Question, request.question_id)
         if not question:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="题目不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="题目不存在")
 
         # 初始化批改服务
         grading_service = IntelligentGradingService(db)
@@ -335,17 +331,11 @@ def _get_writing_recommendations(evaluation: dict[str, Any]) -> list[str]:
         recommendations.append("加强语法和拼写练习，降低错误率")
 
     if level in ["poor", "very_poor"]:
-        recommendations.extend(
-            ["加强基础语法学习", "扩大词汇量", "多练习写作结构", "注意文章逻辑性"]
-        )
+        recommendations.extend(["加强基础语法学习", "扩大词汇量", "多练习写作结构", "注意文章逻辑性"])
     elif level == "fair":
-        recommendations.extend(
-            ["提高词汇使用准确性", "加强句式多样性", "注意文章连贯性"]
-        )
+        recommendations.extend(["提高词汇使用准确性", "加强句式多样性", "注意文章连贯性"])
     elif level == "good":
-        recommendations.extend(
-            ["追求更高级的词汇表达", "完善文章结构", "提高语言流畅性"]
-        )
+        recommendations.extend(["追求更高级的词汇表达", "完善文章结构", "提高语言流畅性"])
 
     return recommendations
 
@@ -367,9 +357,7 @@ def _get_translation_recommendations(evaluation: dict[str, Any]) -> list[str]:
         recommendations.append("确保翻译完整性，避免遗漏信息")
 
     if level in ["poor", "very_poor"]:
-        recommendations.extend(
-            ["加强双语基础能力", "多练习翻译技巧", "注意文化背景差异"]
-        )
+        recommendations.extend(["加强双语基础能力", "多练习翻译技巧", "注意文化背景差异"])
     elif level == "fair":
         recommendations.extend(["提高专业术语翻译", "加强语言转换能力"])
     elif level == "good":

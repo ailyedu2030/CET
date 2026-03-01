@@ -180,9 +180,7 @@ async def get_student_detail(
     student = await service.get_student_detail(student_id)
 
     if not student:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="学生不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="学生不存在")
 
     return {
         "id": student.id,
@@ -215,9 +213,7 @@ async def update_student_info(
 
     student = await service.update_student_info(student_id, student_data)
     if not student:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="学生不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="学生不存在")
 
     return {
         "message": "学生信息更新成功",
@@ -250,9 +246,7 @@ async def update_student_status(
     )
 
     if not success:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="学生不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="学生不存在")
 
     return {
         "message": f"学生状态已更新为：{request.learning_status}",
@@ -306,9 +300,7 @@ async def get_teacher_detail(
     teacher = await service.get_teacher_detail(teacher_id)
 
     if not teacher:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="教师不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="教师不存在")
 
     return {
         "id": teacher.id,
@@ -341,9 +333,7 @@ async def update_teacher_info(
 
     teacher = await service.update_teacher_info(teacher_id, teacher_data)
     if not teacher:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="教师不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="教师不存在")
 
     return {
         "message": "教师信息更新成功",
@@ -376,9 +366,7 @@ async def update_teacher_salary(
     )
 
     if not success:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="教师不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="教师不存在")
 
     return {
         "message": "教师薪酬更新成功",
@@ -408,9 +396,7 @@ async def review_teacher_qualification(
     )
 
     if not success:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="教师不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="教师不存在")
 
     return {
         "message": f"教师资质状态已更新为：{request.qualification_status}",
@@ -577,9 +563,7 @@ async def get_equipment_detail(
     equipment = await service.get_equipment_detail(equipment_id)
 
     if not equipment:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="设备不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="设备不存在")
 
     return {
         "id": equipment.id,
@@ -626,9 +610,7 @@ async def update_equipment(
 
     equipment = await service.update_equipment(equipment_id, equipment_data)
     if not equipment:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="设备不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="设备不存在")
 
     return {
         "message": "设备信息更新成功",
@@ -658,9 +640,7 @@ async def delete_equipment(
     success = await service.delete_equipment(equipment_id)
 
     if not success:
-        raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND, detail="设备不存在"
-        )
+        raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="设备不存在")
 
     return {
         "message": "设备删除成功",

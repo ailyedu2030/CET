@@ -257,9 +257,7 @@ class CourseLifecycleService:
             # 创建新课程
             new_course = await self.create_course(course_data, creator_id)
 
-            logger.info(
-                f"基于模板创建课程成功: {course_name} (模板: {template_course.name})"
-            )
+            logger.info(f"基于模板创建课程成功: {course_name} (模板: {template_course.name})")
 
             return new_course
 
@@ -340,9 +338,7 @@ class CourseLifecycleService:
             result = await self.db.execute(query)
             courses = list(result.scalars().all())
 
-            logger.info(
-                f"获取课程列表成功: 用户{user_id}, 角色{user_role}, 数量{len(courses)}"
-            )
+            logger.info(f"获取课程列表成功: 用户{user_id}, 角色{user_role}, 数量{len(courses)}")
             return courses
 
         except Exception as e:

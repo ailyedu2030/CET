@@ -511,9 +511,7 @@ class AssistantService:
 
         # 添加知识库内容
         for knowledge in knowledge_list:
-            context_parts.append(
-                f"知识点: {knowledge.title}\n内容: {knowledge.content}"
-            )
+            context_parts.append(f"知识点: {knowledge.title}\n内容: {knowledge.content}")
 
         # 添加用户上下文
         if user_context:
@@ -708,9 +706,9 @@ class AssistantService:
                     existing[
                         "recommendation_reason"
                     ] += f", {rec.get('recommendation_reason', '')}"
-                    existing["recommendation_source"] = (
-                        f"{existing['recommendation_source']}, {rec['recommendation_source']}"
-                    )
+                    existing[
+                        "recommendation_source"
+                    ] = f"{existing['recommendation_source']}, {rec['recommendation_source']}"
                 else:
                     resource_map[resource_id] = rec
 
@@ -991,9 +989,7 @@ class AssistantService:
                 if "punctuation" in error_types:
                     suggestions.append("注意标点符号的使用，特别是撇号和逗号")
 
-                suggestions.append(
-                    f"发现 {len(grammar_errors)} 个语法问题，建议复习相关语法规则"
-                )
+                suggestions.append(f"发现 {len(grammar_errors)} 个语法问题，建议复习相关语法规则")
 
             # 通用建议
             if len(text.split()) < 5:

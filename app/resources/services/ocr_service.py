@@ -626,7 +626,9 @@ class OCRService:
                 "text_clarity": (
                     "high"
                     if quality_score >= 80
-                    else "medium" if quality_score >= 60 else "low"
+                    else "medium"
+                    if quality_score >= 60
+                    else "low"
                 ),
                 "checks": quality_checks,
                 "recommendations": recommendations,
@@ -787,9 +789,7 @@ class OCRService:
                 elif self._is_supported_format(file_path, "pdf"):
                     task = self.extract_text_from_pdf(file_path)
                 else:
-                    failed_files.append(
-                        {"file": str(file_path), "error": "不支持的文件格式"}
-                    )
+                    failed_files.append({"file": str(file_path), "error": "不支持的文件格式"})
                     continue
 
                 tasks.append((str(file_path), task))

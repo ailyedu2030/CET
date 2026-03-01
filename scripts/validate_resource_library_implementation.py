@@ -428,9 +428,7 @@ class ResourceLibraryValidator:
             print(
                 f"  Embedding服务: {deepseek_status.get('embedding_keys_count', 0)} 个密钥"
             )
-            print(
-                f"  内容生成服务: {deepseek_status.get('content_keys_count', 0)} 个密钥"
-            )
+            print(f"  内容生成服务: {deepseek_status.get('content_keys_count', 0)} 个密钥")
 
         print("\n" + "=" * 60)
 

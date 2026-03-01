@@ -353,18 +353,10 @@ class BusinessLogicValidator:
                     return action in student_permissions
 
             # 测试权限检查
-            assert check_permission(
-                UserType.ADMIN, "system_config"
-            ), "管理员权限检查失败"
-            assert check_permission(
-                UserType.TEACHER, "training_grade"
-            ), "教师权限检查失败"
-            assert check_permission(
-                UserType.STUDENT, "training_read"
-            ), "学生权限检查失败"
-            assert not check_permission(
-                UserType.STUDENT, "user_delete"
-            ), "学生不应有删除用户权限"
+            assert check_permission(UserType.ADMIN, "system_config"), "管理员权限检查失败"
+            assert check_permission(UserType.TEACHER, "training_grade"), "教师权限检查失败"
+            assert check_permission(UserType.STUDENT, "training_read"), "学生权限检查失败"
+            assert not check_permission(UserType.STUDENT, "user_delete"), "学生不应有删除用户权限"
 
             self.validation_results.append(
                 {

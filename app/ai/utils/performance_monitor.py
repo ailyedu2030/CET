@@ -377,9 +377,7 @@ class PerformanceMonitor:
                         normal_threshold: float = threshold_dict_success.get(
                             "warning", 0.0
                         )
-                        should_resolve = (
-                            current_value > normal_threshold * 1.1
-                        )  # 10%缓冲
+                        should_resolve = current_value > normal_threshold * 1.1  # 10%缓冲
                     else:
                         # 这些指标需要降低到正常水平
                         threshold_dict_other: dict[str, float] = self.thresholds[
@@ -388,9 +386,7 @@ class PerformanceMonitor:
                         normal_threshold = threshold_dict_other.get(
                             "warning", float("inf")
                         )
-                        should_resolve = (
-                            current_value < normal_threshold * 0.9
-                        )  # 10%缓冲
+                        should_resolve = current_value < normal_threshold * 0.9  # 10%缓冲
 
                     if should_resolve:
                         alerts_to_resolve.append(alert)

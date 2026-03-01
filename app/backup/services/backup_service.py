@@ -202,9 +202,7 @@ class BackupService:
             # 保存备份元数据
             await self._save_backup_metadata(backup_info, request.description)
 
-            logger.info(
-                f"备份创建成功: {backup_id} (文件大小: {file_size / 1024 / 1024:.2f} MB)"
-            )
+            logger.info(f"备份创建成功: {backup_id} (文件大小: {file_size / 1024 / 1024:.2f} MB)")
             return backup_info
 
         except Exception as e:

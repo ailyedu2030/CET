@@ -171,9 +171,7 @@ async def get_exercise_by_id(
         exercise = await service.get_exercise_by_id(exercise_id)
 
         if not exercise:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
 
         return ListeningExercise.model_validate(exercise)
 
@@ -282,15 +280,11 @@ async def get_session(
         session = await service.get_session_by_id(session_id)
 
         if not session:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="听力会话不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力会话不存在")
 
         # 验证权限
         if session.student_id != current_user.id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="无权访问此会话"
-            )
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="无权访问此会话")
 
         return {
             "success": True,
@@ -352,15 +346,11 @@ async def get_result(
         result = await service.get_result_by_id(result_id)
 
         if not result:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="听力结果不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力结果不存在")
 
         # 验证权限
         if result.student_id != current_user.id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="无权访问此结果"
-            )
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="无权访问此结果")
 
         return {
             "success": True,
@@ -417,9 +407,7 @@ async def update_playback_settings(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
 
         # 验证设置参数
         playback_speed = settings.get("playback_speed", 1.0)
@@ -484,9 +472,7 @@ async def create_dictation_exercise(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
 
         # 创建听写练习
         dictation_type = dictation_data.get("type", "word")  # word, phrase, sentence
@@ -534,9 +520,7 @@ async def start_pronunciation_practice(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
 
         # 创建跟读练习
         target_text = practice_data.get("target_text", "")
@@ -591,9 +575,7 @@ async def create_phonetic_practice(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
 
         # 创建音标练习
         target_phonetics = phonetic_data.get("target_phonetics", [])
@@ -664,9 +646,7 @@ async def analyze_listening_difficulties(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
 
         # 分析用户答题情况
         user_answers = analysis_data.get("user_answers", [])
@@ -717,9 +697,7 @@ async def analyze_listening_difficulties(
                 ]
             )
         elif accuracy < 0.8:
-            improvement_suggestions.extend(
-                ["注意听力技巧的运用", "加强对话语境的理解", "练习预测和推理能力"]
-            )
+            improvement_suggestions.extend(["注意听力技巧的运用", "加强对话语境的理解", "练习预测和推理能力"])
 
         # 标注个人难点
         if exercise.exercise_type == "short_conversation":
@@ -759,9 +737,7 @@ async def get_listening_techniques(
         # 验证练习是否存在
         exercise = await service.get_exercise_by_id(exercise_id)
         if not exercise:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="听力练习不存在")
 
         # 根据题型提供相应技巧
         techniques = {
@@ -968,9 +944,7 @@ async def get_audio_file(
         audio_file = await service.get_audio_file_by_id(audio_id)
 
         if not audio_file:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="音频文件不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="音频文件不存在")
 
         return {
             "success": True,

@@ -410,9 +410,7 @@ class AIConfig:
                 issues.append(f"模型 {model_type.value} 的最大token数必须大于0")
 
             if config.context_window < config.max_tokens:
-                issues.append(
-                    f"模型 {model_type.value} 的上下文窗口应大于等于最大token数"
-                )
+                issues.append(f"模型 {model_type.value} 的上下文窗口应大于等于最大token数")
 
         return issues
 

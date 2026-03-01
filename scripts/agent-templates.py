@@ -835,9 +835,7 @@ def main() -> None:
     manager = AgentTemplateManager()
 
     # 生成需求26的详细任务模板
-    task_template = manager.generate_requirement_specific_template(
-        "26", "英语四级写作标准库"
-    )
+    task_template = manager.generate_requirement_specific_template("26", "英语四级写作标准库")
     print("生成的详细任务模板：")
     print(task_template)
 

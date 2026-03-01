@@ -10,9 +10,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from app.training.services.training_workshop_service import (
-    TrainingWorkshopService,
-)  # noqa: E402
+from app.training.services.training_workshop_service import TrainingWorkshopService
 
 
 def test_prompt_generation() -> bool:
@@ -30,9 +28,7 @@ def test_prompt_generation() -> bool:
 
     # 测试写作提示词生成
     print("\n✍️ 测试写作提示词生成:")
-    writing_prompt = service._build_writing_prompt(
-        "议论文", ["时事热点", "校园生活"], True
-    )
+    writing_prompt = service._build_writing_prompt("议论文", ["时事热点", "校园生活"], True)
     print("✅ 写作提示词生成成功")
     print(f"提示词长度: {len(writing_prompt)} 字符")
 

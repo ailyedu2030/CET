@@ -233,9 +233,7 @@ class VoiceRecognitionResponse(BaseModel):
     pronunciation_score: float | None = Field(None, description="发音评分")
     fluency_score: float | None = Field(None, description="流利度评分")
     accuracy_score: float | None = Field(None, description="准确性评分")
-    pronunciation_errors: list[dict[str, Any]] | None = Field(
-        None, description="发音错误"
-    )
+    pronunciation_errors: list[dict[str, Any]] | None = Field(None, description="发音错误")
     grammar_errors: list[dict[str, Any]] | None = Field(None, description="语法错误")
     vocabulary_suggestions: list[dict[str, Any]] | None = Field(
         None, description="词汇建议"
@@ -261,9 +259,7 @@ class VoiceRecognitionRecordResponse(BaseModel):
     pronunciation_score: float | None = Field(None, description="发音评分")
     fluency_score: float | None = Field(None, description="流利度评分")
     accuracy_score: float | None = Field(None, description="准确性评分")
-    pronunciation_errors: list[dict[str, Any]] | None = Field(
-        None, description="发音错误"
-    )
+    pronunciation_errors: list[dict[str, Any]] | None = Field(None, description="发音错误")
     grammar_errors: list[dict[str, Any]] | None = Field(None, description="语法错误")
     vocabulary_suggestions: list[dict[str, Any]] | None = Field(
         None, description="词汇建议"
@@ -290,9 +286,7 @@ class UserResourceInteractionCreate(BaseModel):
     interaction_duration: int | None = Field(None, description="交互时长(秒)", ge=0)
     completion_rate: float | None = Field(None, description="完成率", ge=0.0, le=1.0)
     difficulty_rating: int | None = Field(None, description="难度评分(1-5)", ge=1, le=5)
-    usefulness_rating: int | None = Field(
-        None, description="有用性评分(1-5)", ge=1, le=5
-    )
+    usefulness_rating: int | None = Field(None, description="有用性评分(1-5)", ge=1, le=5)
 
 
 # 列表响应模式

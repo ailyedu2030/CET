@@ -93,7 +93,8 @@ class AuditDatabase:
             cursor = conn.cursor()
 
             # API端点表
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS api_endpoints (
                     id TEXT PRIMARY KEY,
                     path TEXT NOT NULL,
@@ -106,10 +107,12 @@ class AuditDatabase:
                     check_count INTEGER DEFAULT 1,
                     UNIQUE(path, method)
                 )
-            """)
+            """
+            )
 
             # 需求表
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS requirements (
                     id TEXT PRIMARY KEY,
                     requirement_id TEXT UNIQUE NOT NULL,
@@ -121,10 +124,12 @@ class AuditDatabase:
                     created_at TEXT,
                     updated_at TEXT
                 )
-            """)
+            """
+            )
 
             # 问题表
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS issues (
                     id TEXT PRIMARY KEY,
                     issue_type TEXT NOT NULL,
@@ -139,10 +144,12 @@ class AuditDatabase:
                     created_at TEXT,
                     resolved_at TEXT
                 )
-            """)
+            """
+            )
 
             # 修复任务表
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS fix_tasks (
                     id TEXT PRIMARY KEY,
                     task_id TEXT UNIQUE NOT NULL,
@@ -157,10 +164,12 @@ class AuditDatabase:
                     started_at TEXT,
                     completed_at TEXT
                 )
-            """)
+            """
+            )
 
             # 任务-问题关联表
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS task_issues (
                     task_id TEXT,
                     issue_id TEXT,
@@ -168,10 +177,12 @@ class AuditDatabase:
                     FOREIGN KEY (task_id) REFERENCES fix_tasks (id),
                     FOREIGN KEY (issue_id) REFERENCES issues (id)
                 )
-            """)
+            """
+            )
 
             # 需求-API关联表
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS requirement_apis (
                     requirement_id TEXT,
                     api_id TEXT,
@@ -179,10 +190,12 @@ class AuditDatabase:
                     FOREIGN KEY (requirement_id) REFERENCES requirements (id),
                     FOREIGN KEY (api_id) REFERENCES api_endpoints (id)
                 )
-            """)
+            """
+            )
 
             # 审计日志表
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS audit_logs (
                     id TEXT PRIMARY KEY,
                     action TEXT NOT NULL,
@@ -192,7 +205,8 @@ class AuditDatabase:
                     timestamp TEXT,
                     user_id TEXT
                 )
-            """)
+            """
+            )
 
             conn.commit()
 
@@ -419,9 +433,11 @@ class AuditDatabase:
                     (status_filter,),
                 )
             else:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT * FROM api_endpoints ORDER BY last_checked DESC
-                """)
+                """
+                )
 
             rows = cursor.fetchall()
 
@@ -456,9 +472,11 @@ class AuditDatabase:
                     (status_filter,),
                 )
             else:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT * FROM requirements ORDER BY priority DESC, updated_at DESC
-                """)
+                """
+                )
 
             rows = cursor.fetchall()
 
@@ -491,9 +509,11 @@ class AuditDatabase:
                     (status_filter,),
                 )
             else:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT * FROM issues ORDER BY severity DESC, created_at DESC
-                """)
+                """
+                )
 
             rows = cursor.fetchall()
 
@@ -529,9 +549,11 @@ class AuditDatabase:
                     (status_filter,),
                 )
             else:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT * FROM fix_tasks ORDER BY priority_score DESC, created_at ASC
-                """)
+                """
+                )
 
             rows = cursor.fetchall()
 

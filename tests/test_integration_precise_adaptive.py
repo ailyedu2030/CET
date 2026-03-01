@@ -58,9 +58,7 @@ class IntegrationTestPreciseAdaptive:
             assert result is not None, "调整结果不应为空"
             assert "adjustment_made" in result, "结果应包含adjustment_made字段"
             assert "algorithm_precision" in result, "结果应包含algorithm_precision字段"
-            assert (
-                "personalization_score" in result
-            ), "结果应包含personalization_score字段"
+            assert "personalization_score" in result, "结果应包含personalization_score字段"
 
             print(f"✅ 调整执行成功: {result.get('adjustment_made')}")
             print(f"✅ 算法精度: {result.get('algorithm_precision', 0):.2%}")

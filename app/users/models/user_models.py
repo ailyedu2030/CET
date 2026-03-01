@@ -119,13 +119,13 @@ class User(BaseModel):
     )
 
     # 训练工坊关系 (需求15)
-    training_parameter_templates: Mapped[list["TrainingParameterTemplate"]] = (
-        relationship(
-            "TrainingParameterTemplate",
-            foreign_keys="TrainingParameterTemplate.created_by",
-            back_populates="creator",
-            cascade="all, delete-orphan",
-        )
+    training_parameter_templates: Mapped[
+        list["TrainingParameterTemplate"]
+    ] = relationship(
+        "TrainingParameterTemplate",
+        foreign_keys="TrainingParameterTemplate.created_by",
+        back_populates="creator",
+        cascade="all, delete-orphan",
     )
     training_tasks: Mapped[list["TrainingTask"]] = relationship(
         "TrainingTask",

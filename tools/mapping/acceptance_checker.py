@@ -253,9 +253,7 @@ class AcceptanceChecker:
         )
         checks.append(check)
 
-        return self._create_requirement_acceptance(
-            "需求23", "智能批改与反馈系统", checks
-        )
+        return self._create_requirement_acceptance("需求23", "智能批改与反馈系统", checks)
 
     async def check_requirement_35(self) -> RequirementAcceptance:
         """检查需求35：高并发架构与AI服务优化"""
@@ -272,9 +270,7 @@ class AcceptanceChecker:
         checks.append(check)
 
         # 检查AI服务健康监控
-        check = await self._check_api_endpoint(
-            "GET", "/api/v1/ai/health", "AI服务健康监控"
-        )
+        check = await self._check_api_endpoint("GET", "/api/v1/ai/health", "AI服务健康监控")
         checks.append(check)
 
         # 检查请求队列管理
@@ -289,9 +285,7 @@ class AcceptanceChecker:
         )
         checks.append(check)
 
-        return self._create_requirement_acceptance(
-            "需求35", "高并发架构与AI服务优化", checks
-        )
+        return self._create_requirement_acceptance("需求35", "高并发架构与AI服务优化", checks)
 
     async def _check_api_endpoint(
         self,
@@ -577,9 +571,7 @@ class AcceptanceChecker:
             try:
                 result = await check_method()
                 results.append(result)
-                print(
-                    f"✅ {result.requirement_id} 检查完成: {result.pass_rate:.1f}% 通过"
-                )
+                print(f"✅ {result.requirement_id} 检查完成: {result.pass_rate:.1f}% 通过")
             except Exception as e:
                 print(f"❌ {check_method.__name__} 检查失败: {e}")
 

@@ -106,9 +106,7 @@ def test_beat_schedule() -> None:
 
     print(f"✅ 定时任务数量: {len(schedule)}")
     for task_name, config in schedule.items():
-        print(
-            f"  - {task_name}: {config.get('task')} (间隔: {config.get('schedule')}秒)"
-        )
+        print(f"  - {task_name}: {config.get('task')} (间隔: {config.get('schedule')}秒)")
     print()
 
 

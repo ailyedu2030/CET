@@ -153,16 +153,10 @@ class KnowledgePointBase(BaseModel):
     prerequisite_points: list[int] = Field(
         default_factory=list, description="前置知识点ID列表"
     )
-    related_points: list[int] = Field(
-        default_factory=list, description="相关知识点ID列表"
-    )
+    related_points: list[int] = Field(default_factory=list, description="相关知识点ID列表")
     examples: list[dict[str, Any]] = Field(default_factory=list, description="示例列表")
-    exercises: list[dict[str, Any]] = Field(
-        default_factory=list, description="练习题列表"
-    )
-    resources: list[dict[str, Any]] = Field(
-        default_factory=list, description="相关资源"
-    )
+    exercises: list[dict[str, Any]] = Field(default_factory=list, description="练习题列表")
+    resources: list[dict[str, Any]] = Field(default_factory=list, description="相关资源")
     tags: list[str] = Field(default_factory=list, description="标签")
     estimated_time: int = Field(default=30, description="预估学习时间(分钟)")
     is_core: bool = Field(default=False, description="是否核心知识点")
@@ -315,30 +309,22 @@ class ExamSyllabusBase(BaseModel):
     issuing_authority: str | None = Field(None, description="颁布机构")
     description: str | None = Field(None, description="考纲描述")
     exam_structure: dict[str, Any] = Field(default_factory=dict, description="考试结构")
-    skill_requirements: dict[str, Any] = Field(
-        default_factory=dict, description="技能要求"
-    )
+    skill_requirements: dict[str, Any] = Field(default_factory=dict, description="技能要求")
     vocabulary_requirements: dict[str, Any] = Field(
         default_factory=dict, description="词汇要求"
     )
     grammar_requirements: list[dict[str, Any]] = Field(
         default_factory=list, description="语法要求"
     )
-    topic_areas: list[dict[str, Any]] = Field(
-        default_factory=list, description="话题领域"
-    )
+    topic_areas: list[dict[str, Any]] = Field(default_factory=list, description="话题领域")
     question_types: list[dict[str, Any]] = Field(
         default_factory=list, description="题型说明"
     )
-    scoring_criteria: dict[str, Any] = Field(
-        default_factory=dict, description="评分标准"
-    )
+    scoring_criteria: dict[str, Any] = Field(default_factory=dict, description="评分标准")
     sample_papers: list[dict[str, Any]] = Field(
         default_factory=list, description="样卷信息"
     )
-    preparation_suggestions: list[str] = Field(
-        default_factory=list, description="备考建议"
-    )
+    preparation_suggestions: list[str] = Field(default_factory=list, description="备考建议")
     tags: list[str] = Field(default_factory=list, description="标签")
     is_current: bool = Field(default=True, description="是否为当前版本")
     is_official: bool = Field(default=True, description="是否官方版本")
@@ -511,9 +497,7 @@ class ResourceUsageCreate(BaseModel):
     action: str = Field(..., description="操作类型")
     session_id: str | None = Field(None, description="会话ID")
     duration: int = Field(default=0, description="使用时长(秒)")
-    interaction_data: dict[str, Any] = Field(
-        default_factory=dict, description="交互数据"
-    )
+    interaction_data: dict[str, Any] = Field(default_factory=dict, description="交互数据")
     learning_progress: float = Field(default=0.0, description="学习进度", ge=0, le=1)
     comprehension_score: float = Field(default=0.0, description="理解分数", ge=0, le=1)
     feedback: str | None = Field(None, description="用户反馈")

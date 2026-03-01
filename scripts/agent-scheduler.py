@@ -347,9 +347,7 @@ class AgentScheduler:
 
             self.task_queue.append(task)
             scheduled_tasks.append(task_id)
-            print(
-                f"✅ 已添加任务: {template.name} (预估{template.estimated_hours}小时)"
-            )
+            print(f"✅ 已添加任务: {template.name} (预估{template.estimated_hours}小时)")
 
         print(f"\n📋 第{priority_level}优先级任务调度完成:")
         print(f"  添加任务数: {len(scheduled_tasks)}")
@@ -394,9 +392,7 @@ class AgentScheduler:
             priority_hours = sum(t.estimated_hours for t in priority_templates)
             total_results["total_hours"] += priority_hours
 
-            print(
-                f"✅ 第{priority}优先级完成 - 成功率: {result.get('success_rate', 0):.1f}%"
-            )
+            print(f"✅ 第{priority}优先级完成 - 成功率: {result.get('success_rate', 0):.1f}%")
 
         # 计算总体成功率
         total_results["overall_success_rate"] = (
@@ -426,7 +422,9 @@ class AgentScheduler:
             status_icon = (
                 "🟢"
                 if agent.status == "idle"
-                else "🔄" if agent.status == "working" else "🔴"
+                else "🔄"
+                if agent.status == "working"
+                else "🔴"
             )
 
             print(f"{status_icon} {agent.name}")
@@ -481,9 +479,7 @@ def main() -> None:
         scheduler.show_agent_status()
         result = scheduler.schedule_by_priority(priority_level)
         scheduler.show_agent_status()
-        print(
-            f"\n🎉 第{priority_level}优先级任务完成！成功率: {result.get('success_rate', 0):.1f}%"
-        )
+        print(f"\n🎉 第{priority_level}优先级任务完成！成功率: {result.get('success_rate', 0):.1f}%")
 
     elif mode == "all":
         # 全部优先级模式
@@ -491,9 +487,7 @@ def main() -> None:
         scheduler.show_agent_status()
         result = scheduler.schedule_all_priorities()
         scheduler.show_agent_status()
-        print(
-            f"\n🎉 所有任务完成！总体成功率: {result.get('overall_success_rate', 0):.1f}%"
-        )
+        print(f"\n🎉 所有任务完成！总体成功率: {result.get('overall_success_rate', 0):.1f}%")
 
     elif mode == "requirements":
         # 传统需求ID模式

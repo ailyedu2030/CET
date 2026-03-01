@@ -25,9 +25,7 @@ class TrainingResourceResponse(TrainingResourceBase):
 
     id: int = Field(..., description="培训ID")
     content_url: str | None = Field(None, description="内容链接")
-    materials: list[dict[str, Any]] = Field(
-        default_factory=list, description="培训材料"
-    )
+    materials: list[dict[str, Any]] = Field(default_factory=list, description="培训材料")
     objectives: list[str] = Field(default_factory=list, description="学习目标")
     prerequisites: list[str] = Field(default_factory=list, description="前置要求")
     enrolled_count: int = Field(0, description="报名人数")
@@ -293,9 +291,7 @@ class PaginatedTrainingResourceResponse(BaseModel):
 class PaginatedCertificationMaterialResponse(BaseModel):
     """分页认证材料响应Schema."""
 
-    materials: list[CertificationMaterialResponse] = Field(
-        ..., description="认证材料列表"
-    )
+    materials: list[CertificationMaterialResponse] = Field(..., description="认证材料列表")
     total: int = Field(..., description="总数")
     page: int = Field(..., description="当前页")
     page_size: int = Field(..., description="每页数量")

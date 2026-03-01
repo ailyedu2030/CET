@@ -58,9 +58,7 @@ def upgrade() -> None:
         sa.Column(
             "data_collection_result", sa.JSON(), nullable=False, comment="数据采集结果"
         ),
-        sa.Column(
-            "ai_analysis_result", sa.JSON(), nullable=False, comment="AI分析结果"
-        ),
+        sa.Column("ai_analysis_result", sa.JSON(), nullable=False, comment="AI分析结果"),
         sa.Column(
             "strategy_adjustment_result",
             sa.JSON(),

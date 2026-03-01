@@ -64,9 +64,7 @@ class PersonalizedRecommendationService:
     ) -> dict[str, Any]:
         """生成个性化学习建议."""
         try:
-            logger.info(
-                f"开始生成个性化学习建议: 学生{student_id}, 训练类型{training_type}"
-            )
+            logger.info(f"开始生成个性化学习建议: 学生{student_id}, 训练类型{training_type}")
 
             # 1. 获取AI深度分析结果
             ai_analysis = (
@@ -730,9 +728,7 @@ class PersonalizedRecommendationService:
         try:
             # 这里可以实现反馈收集和学习机制
             # 暂时记录日志
-            logger.info(
-                f"收到建议反馈: 学生{student_id}, 建议{recommendation_id}, 反馈{feedback}"
-            )
+            logger.info(f"收到建议反馈: 学生{student_id}, 建议{recommendation_id}, 反馈{feedback}")
 
             return {
                 "feedback_recorded": True,

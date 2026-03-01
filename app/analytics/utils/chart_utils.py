@@ -242,9 +242,7 @@ class ChartGenerator:
         charts = {}
 
         # 1. 系统状态仪表盘
-        charts["system_status"] = self._generate_gauge_chart(
-            system_metrics, "系统状态监控"
-        )
+        charts["system_status"] = self._generate_gauge_chart(system_metrics, "系统状态监控")
 
         # 2. 教学趋势图
         if teaching_trends:

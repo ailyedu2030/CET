@@ -36,9 +36,7 @@ router = APIRouter(tags=["阅读理解训练"])
 # ==================== 阅读文章管理 ====================
 
 
-@router.get(
-    "/passages", summary="获取阅读文章列表", response_model=ReadingPassageListResponse
-)
+@router.get("/passages", summary="获取阅读文章列表", response_model=ReadingPassageListResponse)
 async def get_reading_passages(
     skip: int = 0,
     limit: int = 10,
@@ -127,9 +125,7 @@ async def get_reading_passage_detail(
         passage = await service.get_passage(passage_id)
 
         if not passage:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="文章不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="文章不存在")
 
         logger.info(f"用户 {current_user.id} 查询阅读文章详情: {passage_id}")
 
@@ -160,9 +156,7 @@ async def update_reading_passage(
         passage = await service.update_passage(passage_id, data)
 
         if not passage:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="文章不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="文章不存在")
 
         logger.info(f"用户 {current_user.id} 更新阅读文章: {passage_id}")
 
@@ -219,9 +213,7 @@ async def get_passage_questions(
         service = ReadingService(db)
         questions = await service.get_questions_by_passage(passage_id)
 
-        logger.info(
-            f"用户 {current_user.id} 查询文章 {passage_id} 的题目，共 {len(questions)} 道"
-        )
+        logger.info(f"用户 {current_user.id} 查询文章 {passage_id} 的题目，共 {len(questions)} 道")
 
         return {
             "questions": [ReadingQuestionResponse.model_validate(q) for q in questions]
@@ -250,9 +242,7 @@ async def update_reading_question(
         question = await service.update_question(question_id, data)
 
         if not question:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="题目不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="题目不存在")
 
         logger.info(f"用户 {current_user.id} 更新阅读题目: {question_id}")
 
@@ -301,9 +291,7 @@ async def get_training_plans(
         ) from e
 
 
-@router.post(
-    "/plans", summary="创建训练计划", response_model=ReadingTrainingPlanResponse
-)
+@router.post("/plans", summary="创建训练计划", response_model=ReadingTrainingPlanResponse)
 async def create_training_plan(
     data: ReadingTrainingPlanCreate,
     current_user: User = Depends(get_current_active_user),
@@ -327,9 +315,7 @@ async def create_training_plan(
 # ==================== 训练会话管理 ====================
 
 
-@router.post(
-    "/training/start", summary="开始阅读训练", response_model=ReadingTrainingSession
-)
+@router.post("/training/start", summary="开始阅读训练", response_model=ReadingTrainingSession)
 async def start_reading_training(
     data: ReadingTrainingRecordCreate,
     current_user: User = Depends(get_current_active_user),
@@ -369,9 +355,7 @@ async def submit_reading_answers(
         )
 
         if not training_record:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="训练记录不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="训练记录不存在")
 
         logger.info(f"用户 {current_user.id} 提交阅读答案: {training_record_id}")
 
@@ -411,9 +395,7 @@ async def get_reading_statistics(
         ) from e
 
 
-@router.get(
-    "/recommendations", summary="获取阅读推荐", response_model=ReadingRecommendation
-)
+@router.get("/recommendations", summary="获取阅读推荐", response_model=ReadingRecommendation)
 async def get_reading_recommendations(
     current_user: User = Depends(get_current_active_user),
     db: AsyncSession = Depends(get_db),

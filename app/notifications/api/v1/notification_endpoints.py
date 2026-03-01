@@ -3,11 +3,11 @@
 import logging
 from typing import Any
 
-from app.core.deps import get_current_user, get_db
 from fastapi import APIRouter, Depends, HTTPException, Query, WebSocket, status
 from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.deps import get_current_user, get_db
 from app.notifications.models.notification_models import (
     Notification,
     NotificationPreference,
@@ -682,9 +682,7 @@ async def websocket_notification_endpoint(
                 logger.error(f"处理WebSocket消息失败: {str(e)}")
 
     except WebSocketDisconnect:
-        logger.info(
-            f"WebSocket连接断开: user_id={user_id}, connection_id={connection_id}"
-        )
+        logger.info(f"WebSocket连接断开: user_id={user_id}, connection_id={connection_id}")
     except Exception as e:
         logger.error(f"WebSocket连接异常: {str(e)}")
     finally:

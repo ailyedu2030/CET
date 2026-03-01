@@ -262,12 +262,16 @@ class EnhancedPerformanceMonitor:
                         "p95_response_time": (
                             statistics.quantiles(response_times, n=20)[18]
                             if len(response_times) > 20
-                            else max(response_times) if response_times else 0
+                            else max(response_times)
+                            if response_times
+                            else 0
                         ),
                         "p99_response_time": (
                             statistics.quantiles(response_times, n=100)[98]
                             if len(response_times) > 100
-                            else max(response_times) if response_times else 0
+                            else max(response_times)
+                            if response_times
+                            else 0
                         ),
                         "min_response_time": (
                             min(response_times) if response_times else 0
@@ -334,30 +338,35 @@ class EnhancedPerformanceMonitor:
         """收集数据库性能指标."""
         try:
             # 数据库连接统计
-            connection_query = text("""
+            connection_query = text(
+                """
                 SELECT
                     count(*) as total_connections,
                     count(*) FILTER (WHERE state = 'active') as active_connections,
                     count(*) FILTER (WHERE state = 'idle') as idle_connections
                 FROM pg_stat_activity
                 WHERE datname = current_database()
-            """)
+            """
+            )
 
             connection_result = await self.db.execute(connection_query)
             connection_stats = connection_result.fetchone()
 
             # 数据库大小统计
-            size_query = text("""
+            size_query = text(
+                """
                 SELECT
                     pg_size_pretty(pg_database_size(current_database())) as database_size,
                     pg_database_size(current_database()) as database_size_bytes
-            """)
+            """
+            )
 
             size_result = await self.db.execute(size_query)
             size_stats = size_result.fetchone()
 
             # 查询性能统计
-            query_stats_query = text("""
+            query_stats_query = text(
+                """
                 SELECT
                     calls,
                     total_exec_time,
@@ -367,7 +376,8 @@ class EnhancedPerformanceMonitor:
                 FROM pg_stat_statements
                 ORDER BY total_exec_time DESC
                 LIMIT 1
-            """)
+            """
+            )
 
             try:
                 query_stats_result = await self.db.execute(query_stats_query)
@@ -383,7 +393,9 @@ class EnhancedPerformanceMonitor:
                     "idle": connection_stats[2] if connection_stats else 0,
                 },
                 "storage": {
-                    "database_size_gb": size_stats[1] / (1024**3) if size_stats else 0,
+                    "database_size_gb": size_stats[1] / (1024**3)
+                    if size_stats
+                    else 0,
                     "database_size_pretty": size_stats[0] if size_stats else "0 bytes",
                 },
                 "query_performance": (
@@ -630,13 +642,17 @@ class EnhancedPerformanceMonitor:
                     trend_direction = (
                         "improving"
                         if direction == "increasing"
-                        else "degrading" if direction == "decreasing" else "stable"
+                        else "degrading"
+                        if direction == "decreasing"
+                        else "stable"
                     )
                 else:
                     trend_direction = (
                         "degrading"
                         if direction == "increasing"
-                        else "improving" if direction == "decreasing" else "stable"
+                        else "improving"
+                        if direction == "decreasing"
+                        else "stable"
                     )
 
                 return {
@@ -762,7 +778,9 @@ class EnhancedPerformanceMonitor:
                     else (
                         "B"
                         if overall_compliance >= 85
-                        else "C" if overall_compliance >= 75 else "D"
+                        else "C"
+                        if overall_compliance >= 75
+                        else "D"
                     )
                 ),
                 "analysis_timestamp": datetime.now().isoformat(),
@@ -813,7 +831,9 @@ class EnhancedPerformanceMonitor:
                 "overall_trend_direction": (
                     "improving"
                     if overall_trend_score > 0.6
-                    else "stable" if overall_trend_score > 0.4 else "degrading"
+                    else "stable"
+                    if overall_trend_score > 0.4
+                    else "degrading"
                 ),
                 "analysis_period_hours": hours,
                 "analysis_timestamp": datetime.now().isoformat(),
@@ -929,7 +949,9 @@ class EnhancedPerformanceMonitor:
                         a["severity"] == "high"
                         for a in alert_assessment["active_alerts"]
                     )
-                    else "warning" if alert_assessment["active_alerts"] else "healthy"
+                    else "warning"
+                    if alert_assessment["active_alerts"]
+                    else "healthy"
                 ),
                 "analysis_timestamp": datetime.now().isoformat(),
             }

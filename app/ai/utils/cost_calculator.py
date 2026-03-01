@@ -489,9 +489,7 @@ class CostCalculator:
                     cost_per_token
                     > self.optimization_thresholds["efficiency_threshold"]
                 ):
-                    suggestions.append(
-                        "Token使用效率较低，建议压缩输入内容或优化输出长度"
-                    )
+                    suggestions.append("Token使用效率较低，建议压缩输入内容或优化输出长度")
 
             # 通用建议
             if not suggestions:

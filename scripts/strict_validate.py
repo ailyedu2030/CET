@@ -326,10 +326,7 @@ class StrictValidator:
                 if actual_version.startswith(expected_pattern):
                     self.logger.info("✅ %s版本: %s", package, actual_version)
                 else:
-                    msg = (
-                        f"{package}版本不匹配: {actual_version} "
-                        f"(期望{expected_pattern})"
-                    )
+                    msg = f"{package}版本不匹配: {actual_version} " f"(期望{expected_pattern})"
                     self.warnings.append(msg)
             else:
                 self.errors.append(f"缺少关键依赖: {package}")

@@ -376,9 +376,7 @@ class WritingService:
                     grading_result,
                 )
 
-                logger.info(
-                    f"作文评分完成: {submission.id}, 得分: {submission.total_score}"
-                )
+                logger.info(f"作文评分完成: {submission.id}, 得分: {submission.total_score}")
 
         except Exception as e:
             logger.error(f"作文评分失败: {e}")

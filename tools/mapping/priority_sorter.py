@@ -649,7 +649,9 @@ class PrioritySorter:
                 else (
                     "⚡ 高"
                     if task.priority_score >= 60
-                    else "📋 中" if task.priority_score >= 40 else "📝 低"
+                    else "📋 中"
+                    if task.priority_score >= 40
+                    else "📝 低"
                 )
             )
 

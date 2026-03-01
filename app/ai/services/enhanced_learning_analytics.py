@@ -566,9 +566,7 @@ class EnhancedLearningAnalytics:
                         "accuracy_rate": accuracy_rate,
                         "average_time_per_question": avg_time,
                         "consistency": self._calculate_consistency(list(records)),
-                        "engagement_level": min(
-                            total_records / 30, 1.0
-                        ),  # 基于训练频率
+                        "engagement_level": min(total_records / 30, 1.0),  # 基于训练频率
                         "consecutive_missed_days": self._calculate_missed_days(
                             list(records), start_time, end_time
                         ),

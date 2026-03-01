@@ -225,9 +225,7 @@ def create_requirement_executor(requirement_id: str) -> Any:
             """完成当前阶段"""
             if self.current_phase:
                 template_enforcer.finish_requirement_execution()
-                print(
-                    f"✅ 需求{self.requirement_id}的{self.current_phase.value}执行完成"
-                )
+                print(f"✅ 需求{self.requirement_id}的{self.current_phase.value}执行完成")
                 self.current_phase = None
                 self.current_agent = None
 

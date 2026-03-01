@@ -199,7 +199,9 @@ def analyze_code_quality() -> bool:
     overall_grade = (
         "A+"
         if total_score >= max_score * 0.9
-        else "A" if total_score >= max_score * 0.8 else "B"
+        else "A"
+        if total_score >= max_score * 0.8
+        else "B"
     )
     print(f"\n🏆 总体代码质量评分: {overall_grade} ({total_score}/{max_score})")
 
@@ -230,9 +232,7 @@ def analyze_security() -> bool:
             secure_count += 1
 
     security_score = secure_count / len(security_features) * 100
-    print(
-        f"\n📊 安全性评分: {security_score:.1f}% ({secure_count}/{len(security_features)})"
-    )
+    print(f"\n📊 安全性评分: {security_score:.1f}% ({secure_count}/{len(security_features)})")
 
     return security_score >= 90
 

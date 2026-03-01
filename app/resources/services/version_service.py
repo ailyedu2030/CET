@@ -493,17 +493,13 @@ class VersionService:
         self, resource_type: str, resource_id: int, user_id: int
     ) -> None:
         """检查资源访问权限"""
-        logger.info(
-            f"检查资源访问: type={resource_type}, id={resource_id}, user={user_id}"
-        )
+        logger.info(f"检查资源访问: type={resource_type}, id={resource_id}, user={user_id}")
 
     async def _check_resource_modify_permission(
         self, resource_type: str, resource_id: int, user_id: int
     ) -> None:
         """检查资源修改权限"""
-        logger.info(
-            f"检查修改权限: type={resource_type}, id={resource_id}, user={user_id}"
-        )
+        logger.info(f"检查修改权限: type={resource_type}, id={resource_id}, user={user_id}")
 
     async def _get_version_by_id(self, version_id: int) -> ResourceVersion:
         """根据ID获取版本"""
@@ -512,9 +508,7 @@ class VersionService:
         version = result.scalar_one_or_none()
 
         if not version:
-            raise ResourceNotFoundError(
-                message="版本不存在", error_code="VERSION_NOT_FOUND"
-            )
+            raise ResourceNotFoundError(message="版本不存在", error_code="VERSION_NOT_FOUND")
 
         return version
 

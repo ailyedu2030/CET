@@ -252,9 +252,7 @@ class StorageConfig:
                 os.getenv("MINIO_MAX_CONCURRENT_UPLOADS", "10")
             ),
             "upload_timeout": int(os.getenv("MINIO_UPLOAD_TIMEOUT", "300")),  # 5分钟
-            "download_timeout": int(
-                os.getenv("MINIO_DOWNLOAD_TIMEOUT", "300")
-            ),  # 5分钟
+            "download_timeout": int(os.getenv("MINIO_DOWNLOAD_TIMEOUT", "300")),  # 5分钟
             "presigned_url_expiry": int(
                 os.getenv("MINIO_PRESIGNED_URL_EXPIRY", "3600")
             ),  # 1小时

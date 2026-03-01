@@ -17,9 +17,7 @@ class ListeningExercise(BaseModel):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False, comment="练习标题")
-    description: Mapped[str | None] = mapped_column(
-        Text, nullable=True, comment="练习描述"
-    )
+    description: Mapped[str | None] = mapped_column(Text, nullable=True, comment="练习描述")
 
     # 练习分类
     exercise_type: Mapped[str] = mapped_column(
@@ -37,9 +35,7 @@ class ListeningExercise(BaseModel):
         nullable=True,
         comment="音频文件ID（需求22可选）",
     )
-    transcript: Mapped[str | None] = mapped_column(
-        Text, nullable=True, comment="听力原文"
-    )
+    transcript: Mapped[str | None] = mapped_column(Text, nullable=True, comment="听力原文")
 
     # 题目信息
     questions_data: Mapped[dict[str, Any]] = mapped_column(
@@ -90,27 +86,19 @@ class ListeningAudioFile(BaseModel):
     original_filename: Mapped[str] = mapped_column(
         String(255), nullable=False, comment="原始文件名"
     )
-    file_path: Mapped[str] = mapped_column(
-        String(500), nullable=False, comment="文件路径"
-    )
+    file_path: Mapped[str] = mapped_column(String(500), nullable=False, comment="文件路径")
     file_url: Mapped[str | None] = mapped_column(
         String(500), nullable=True, comment="文件URL"
     )
 
     # 文件信息
-    file_size: Mapped[int] = mapped_column(
-        Integer, nullable=False, comment="文件大小（字节）"
-    )
-    duration: Mapped[float] = mapped_column(
-        Float, nullable=False, comment="音频时长（秒）"
-    )
+    file_size: Mapped[int] = mapped_column(Integer, nullable=False, comment="文件大小（字节）")
+    duration: Mapped[float] = mapped_column(Float, nullable=False, comment="音频时长（秒）")
     format: Mapped[str] = mapped_column(String(20), nullable=False, comment="音频格式")
     sample_rate: Mapped[int | None] = mapped_column(
         Integer, nullable=True, comment="采样率"
     )
-    bitrate: Mapped[int | None] = mapped_column(
-        Integer, nullable=True, comment="比特率"
-    )
+    bitrate: Mapped[int | None] = mapped_column(Integer, nullable=True, comment="比特率")
 
     # 元数据
     audio_metadata: Mapped[dict[str, Any]] = mapped_column(
@@ -240,9 +228,7 @@ class ListeningResult(BaseModel):
     )
 
     # 时间统计
-    completion_time: Mapped[datetime] = mapped_column(
-        nullable=False, comment="完成时间"
-    )
+    completion_time: Mapped[datetime] = mapped_column(nullable=False, comment="完成时间")
     total_time_seconds: Mapped[int] = mapped_column(
         Integer, nullable=False, comment="总用时（秒）"
     )

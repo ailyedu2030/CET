@@ -98,9 +98,7 @@ class ListeningAudioFileBase(BaseModel):
     format: str = Field(..., max_length=20, description="音频格式")
     sample_rate: int | None = Field(None, ge=0, description="采样率")
     bitrate: int | None = Field(None, ge=0, description="比特率")
-    audio_metadata: dict[str, Any] = Field(
-        default_factory=dict, description="音频元数据"
-    )
+    audio_metadata: dict[str, Any] = Field(default_factory=dict, description="音频元数据")
     is_processed: bool = Field(default=False, description="是否已处理")
     upload_user_id: int | None = Field(None, description="上传用户ID")
 
@@ -140,9 +138,7 @@ class ListeningSessionBase(BaseModel):
     total_questions: int = Field(..., ge=1, description="总题目数")
     is_completed: bool = Field(default=False, description="是否完成")
     answers: dict[str, Any] = Field(default_factory=dict, description="答题数据")
-    audio_progress: dict[str, Any] = Field(
-        default_factory=dict, description="音频播放进度"
-    )
+    audio_progress: dict[str, Any] = Field(default_factory=dict, description="音频播放进度")
 
 
 class ListeningSessionCreate(ListeningSessionBase):
@@ -192,25 +188,15 @@ class ListeningResultBase(BaseModel):
     unanswered: int = Field(default=0, ge=0, description="未答题数")
     total_questions: int = Field(..., ge=1, description="总题目数")
     question_results: dict[str, Any] = Field(..., description="题目详细结果")
-    answer_analysis: dict[str, Any] = Field(
-        default_factory=dict, description="答案分析"
-    )
+    answer_analysis: dict[str, Any] = Field(default_factory=dict, description="答案分析")
     total_time_seconds: int = Field(..., ge=0, description="总用时（秒）")
-    average_time_per_question: float = Field(
-        ..., ge=0, description="平均每题用时（秒）"
-    )
+    average_time_per_question: float = Field(..., ge=0, description="平均每题用时（秒）")
     listening_ability_score: float | None = Field(
         None, ge=0, le=100, description="听力能力评分"
     )
-    comprehension_score: float | None = Field(
-        None, ge=0, le=100, description="理解能力评分"
-    )
-    vocabulary_score: float | None = Field(
-        None, ge=0, le=100, description="词汇掌握评分"
-    )
-    improvement_suggestions: list[str] = Field(
-        default_factory=list, description="改进建议"
-    )
+    comprehension_score: float | None = Field(None, ge=0, le=100, description="理解能力评分")
+    vocabulary_score: float | None = Field(None, ge=0, le=100, description="词汇掌握评分")
+    improvement_suggestions: list[str] = Field(default_factory=list, description="改进建议")
     weak_areas: list[str] = Field(default_factory=list, description="薄弱环节")
 
 

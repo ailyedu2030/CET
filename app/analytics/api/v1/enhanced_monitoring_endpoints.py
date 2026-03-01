@@ -22,9 +22,7 @@ router = APIRouter(prefix="/enhanced-monitoring", tags=["增强性能监控"])
 
 @router.get("/performance/comprehensive")
 async def comprehensive_performance_analysis(
-    analysis_period_hours: int = Query(
-        24, ge=1, le=168, description="分析周期（小时）"
-    ),
+    analysis_period_hours: int = Query(24, ge=1, le=168, description="分析周期（小时）"),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:

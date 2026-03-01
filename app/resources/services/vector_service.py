@@ -199,8 +199,7 @@ class VectorService:
                             "content": hit.entity.get("content"),
                             "metadata": hit.entity.get("metadata"),
                             "distance": hit.distance,
-                            "similarity_score": 1.0
-                            / (1.0 + hit.distance),  # 转换为相似度分数
+                            "similarity_score": 1.0 / (1.0 + hit.distance),  # 转换为相似度分数
                         }
                     )
 

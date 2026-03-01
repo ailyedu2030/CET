@@ -133,9 +133,7 @@ class KnowledgeGraphService:
             }
 
         except Exception as e:
-            logger.error(
-                f"前置知识推荐失败 knowledge_point_id={knowledge_point_id}: {str(e)}"
-            )
+            logger.error(f"前置知识推荐失败 knowledge_point_id={knowledge_point_id}: {str(e)}")
             raise BusinessLogicError(f"前置知识推荐失败: {str(e)}") from e
 
     async def analyze_difficulty_gradient(self, library_id: int) -> dict[str, Any]:
@@ -260,9 +258,7 @@ class KnowledgeGraphService:
                 self._difficulty_to_numeric(kp1.difficulty_level)
                 - self._difficulty_to_numeric(kp2.difficulty_level)
             )
-            difficulty_similarity = max(
-                0, 1.0 - difficulty_diff / 4.0
-            )  # 假设最大差异为4
+            difficulty_similarity = max(0, 1.0 - difficulty_diff / 4.0)  # 假设最大差异为4
 
             # 3. 标签相似度
             tags1 = set(kp1.tags or [])

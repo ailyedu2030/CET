@@ -77,9 +77,7 @@ async def get_current_learning_plan(
         plan_result = await service.get_learning_plan(student_id=current_user.id)
 
         if plan_result.get("status") == "no_plan":
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="未找到学习计划"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="未找到学习计划")
 
         return LearningPlanResponse(**plan_result)
 

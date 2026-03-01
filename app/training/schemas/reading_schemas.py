@@ -220,9 +220,7 @@ class ReadingAnswerRecordCreate(BaseModel):
     question_id: int = Field(..., description="题目ID")
     user_answer: str = Field(..., description="学生答案", max_length=10)
     answer_time_seconds: int = Field(default=0, description="答题时间(秒)", ge=0)
-    confidence_level: float | None = Field(
-        None, description="答题置信度", ge=0.0, le=1.0
-    )
+    confidence_level: float | None = Field(None, description="答题置信度", ge=0.0, le=1.0)
     difficulty_perceived: ReadingDifficulty | None = Field(None, description="感知难度")
 
 
@@ -271,9 +269,7 @@ class ReadingRecommendation(BaseModel):
 
     recommended_theme: ReadingTheme = Field(..., description="推荐主题")
     recommended_difficulty: ReadingDifficulty = Field(..., description="推荐难度")
-    recommended_passages: list[ReadingPassageResponse] = Field(
-        ..., description="推荐文章"
-    )
+    recommended_passages: list[ReadingPassageResponse] = Field(..., description="推荐文章")
     focus_areas: list[str] = Field(..., description="重点关注领域")
     training_suggestions: list[str] = Field(..., description="训练建议")
 

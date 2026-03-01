@@ -24,9 +24,7 @@ class TrainingCenterBase(BaseModel):
     daily_target_minutes: int = Field(
         default=60, description="每日目标训练时长(分钟)", ge=10, le=300
     )
-    weekly_target_sessions: int = Field(
-        default=5, description="每周目标训练次数", ge=1, le=14
-    )
+    weekly_target_sessions: int = Field(default=5, description="每周目标训练次数", ge=1, le=14)
 
 
 class TrainingCenterCreate(TrainingCenterBase):
@@ -298,12 +296,8 @@ class TrainingFeedbackCreate(BaseModel):
     rating: int = Field(..., description="评分(1-5)", ge=1, le=5)
     content: str | None = Field(None, description="反馈内容")
     difficulty_rating: int | None = Field(None, description="难度评分(1-5)", ge=1, le=5)
-    usefulness_rating: int | None = Field(
-        None, description="有用性评分(1-5)", ge=1, le=5
-    )
-    engagement_rating: int | None = Field(
-        None, description="参与度评分(1-5)", ge=1, le=5
-    )
+    usefulness_rating: int | None = Field(None, description="有用性评分(1-5)", ge=1, le=5)
+    engagement_rating: int | None = Field(None, description="参与度评分(1-5)", ge=1, le=5)
     suggestions: str | None = Field(None, description="改进建议")
     tags: list[str] | None = Field(None, description="标签")
     is_anonymous: bool = Field(default=False, description="是否匿名")
@@ -336,9 +330,7 @@ class TrainingCenterDashboard(BaseModel):
     """训练中心仪表板模式"""
 
     training_center: TrainingCenterResponse = Field(..., description="训练中心信息")
-    recent_sessions: list[TrainingSessionResponse] = Field(
-        ..., description="最近训练会话"
-    )
+    recent_sessions: list[TrainingSessionResponse] = Field(..., description="最近训练会话")
     active_goals: list[TrainingGoalResponse] = Field(..., description="活跃目标")
     recent_achievements: list[TrainingAchievementResponse] = Field(
         ..., description="最近成就"
