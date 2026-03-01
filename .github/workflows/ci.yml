@@ -61,7 +61,7 @@ jobs:
     - name: Run isort import sorting check
       run: |
         echo "::group::isort Import Sorting Check"
-        isort --check-only --diff .
+        ruff check . --select=I --output-format=github
         echo "::endgroup::"
         
     - name: Run MyPy type checking
