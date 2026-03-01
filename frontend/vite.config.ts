@@ -102,11 +102,10 @@ export default defineConfig({
       '@/constants': resolve(__dirname, 'src/constants'),
     },
   },
-  WW|  // @ts-ignore - Vitest配置
-NX|  test: {
-NS|    globals: true,
-YV|    environment: 'jsdom',
-RQ|    setupFiles: ['./src/test/setup.ts'],
-QS|    exclude: ['**/e2e/**', '**/node_modules/**', '**/dist/**'],
-JR|}
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    exclude: ['**/e2e/**', '**/node_modules/**', '**/dist/**'],
+  },
 })
