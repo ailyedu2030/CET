@@ -174,7 +174,9 @@ class MockEmailService:
 
     async def send_verification_email(self, email: str, token: str) -> bool:
         """模拟验证邮件发送"""
-        return await self.send_email(to=email, subject="邮箱验证", content=f"验证码: {token}")
+        return await self.send_email(
+            to=email, subject="邮箱验证", content=f"验证码: {token}"
+        )
 
     async def send_password_reset_email(self, email: str, token: str) -> bool:
         """模拟密码重置邮件发送"""

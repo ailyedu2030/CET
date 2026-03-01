@@ -170,7 +170,9 @@ class TestKnowledgeGraphService:
                 difficulties = [point["difficulty"] for point in result["path"]]
                 # 验证难度递增（允许相等）
                 for i in range(1, len(difficulties)):
-                    assert difficulties[i] >= difficulties[i - 1], "学习路径应该按难度递增"
+                    assert (
+                        difficulties[i] >= difficulties[i - 1]
+                    ), "学习路径应该按难度递增"
 
     @pytest.mark.asyncio
     async def test_recommend_knowledge_points(self, knowledge_graph_service):

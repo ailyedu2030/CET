@@ -77,7 +77,9 @@ class TestPreciseAdaptiveAlgorithm:
         # 验证升级逻辑
         assert decision["should_adjust"] is True, "应该执行调整"
         assert decision["adjustment_type"] == "upgrade", "应该是升级调整"
-        assert decision["target_difficulty"] == DifficultyLevel.ADVANCED, "目标难度应该是高级"
+        assert (
+            decision["target_difficulty"] == DifficultyLevel.ADVANCED
+        ), "目标难度应该是高级"
 
     def test_downgrade_decision_logic(self, precise_service):
         """测试<60%降级决策逻辑."""
@@ -107,7 +109,9 @@ class TestPreciseAdaptiveAlgorithm:
         # 验证降级逻辑
         assert decision["should_adjust"] is True, "应该执行调整"
         assert decision["adjustment_type"] == "downgrade", "应该是降级调整"
-        assert decision["target_difficulty"] == DifficultyLevel.ELEMENTARY, "目标难度应该是初级"
+        assert (
+            decision["target_difficulty"] == DifficultyLevel.ELEMENTARY
+        ), "目标难度应该是初级"
 
     def test_no_adjustment_logic(self, precise_service):
         """测试60%-90%之间不调整逻辑."""
@@ -137,7 +141,9 @@ class TestPreciseAdaptiveAlgorithm:
         # 验证不调整逻辑
         assert decision["should_adjust"] is False, "不应该执行调整"
         assert decision["adjustment_type"] is None, "调整类型应该为空"
-        assert decision["target_difficulty"] == current_difficulty, "目标难度应该保持不变"
+        assert (
+            decision["target_difficulty"] == current_difficulty
+        ), "目标难度应该保持不变"
 
     def test_algorithm_precision_target(self, precise_service):
         """测试算法精度>90%目标."""
