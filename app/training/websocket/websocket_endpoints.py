@@ -15,7 +15,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.shared.models.enums import UserType
-from app.training.websocket.websocket_manager import RealTimePushService, connection_manager
+from app.training.websocket.websocket_manager import (
+    RealTimePushService,
+    connection_manager,
+)
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_active_user
 
@@ -57,7 +60,9 @@ async def get_websocket_connection_stats(
 
     except Exception as e:
         logger.error(f"获取WebSocket连接统计失败: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"获取连接统计失败: {str(e)}") from e
+        raise HTTPException(
+            status_code=500, detail=f"获取连接统计失败: {str(e)}"
+        ) from e
 
 
 @router.post(
@@ -138,7 +143,9 @@ async def get_student_active_connections(
                                 "session_id": session_id,
                                 "connect_time": metadata["connect_time"],
                                 "last_heartbeat": metadata["last_heartbeat"],
-                                "connection_id": id(websocket),  # 使用对象ID作为连接标识
+                                "connection_id": id(
+                                    websocket
+                                ),  # 使用对象ID作为连接标识
                             }
                         )
 
@@ -157,7 +164,9 @@ async def get_student_active_connections(
 
     except Exception as e:
         logger.error(f"获取学生活跃连接失败: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"获取活跃连接失败: {str(e)}") from e
+        raise HTTPException(
+            status_code=500, detail=f"获取活跃连接失败: {str(e)}"
+        ) from e
 
 
 @router.delete(
@@ -201,7 +210,9 @@ async def disconnect_student_websockets(
                         await websocket.close(code=1000, reason="管理员强制断开")
                         disconnected_count += 1
 
-        target = f"学生{student_id}" + (f"的会话{session_id}" if session_id else "的所有连接")
+        target = f"学生{student_id}" + (
+            f"的会话{session_id}" if session_id else "的所有连接"
+        )
 
         return {
             "success": True,

@@ -42,7 +42,9 @@ def collect_daily_hotspots() -> dict[str, Any]:
                         logger.error(f"保存热点资源失败: {str(e)}")
                         continue
 
-                logger.info(f"每日热点收集完成: 收集 {len(resources)} 个，保存 {saved_count} 个")
+                logger.info(
+                    f"每日热点收集完成: 收集 {len(resources)} 个，保存 {saved_count} 个"
+                )
 
                 return {
                     "success": True,
@@ -129,7 +131,9 @@ def generate_daily_recommendations() -> dict[str, Any]:
                         # 更新推荐状态
                         for resource in recommended[:5]:  # 每个库推荐前5个
                             resource.is_recommended = True
-                            resource.recommendation_reason = "基于热度和相关性的每日推荐"
+                            resource.recommendation_reason = (
+                                "基于热度和相关性的每日推荐"
+                            )
 
                         recommendation_count += len(recommended[:5])
 
@@ -191,7 +195,9 @@ def cleanup_expired_hotspots() -> dict[str, Any]:
                 await db.execute(delete_stmt)
                 await db.commit()
 
-                logger.info(f"清理过期热点资源完成: 删除 {len(expired_resources)} 个资源")
+                logger.info(
+                    f"清理过期热点资源完成: 删除 {len(expired_resources)} 个资源"
+                )
 
                 return {
                     "success": True,

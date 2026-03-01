@@ -16,7 +16,9 @@ class TeacherWorkloadInfo(BaseModel):
     total_students: int = Field(..., description="学生总数")
     workload_percentage: float = Field(..., description="工作量百分比")
     available_hours: int = Field(..., description="可用时间（小时）")
-    expertise_match: dict[str, float] = Field(default_factory=dict, description="专业匹配度")
+    expertise_match: dict[str, float] = Field(
+        default_factory=dict, description="专业匹配度"
+    )
 
 
 class CourseAssignmentRequest(BaseModel):
@@ -63,7 +65,9 @@ class QualificationCheckResult(BaseModel):
 
     is_qualified: bool = Field(..., description="是否合格")
     qualification_score: float = Field(..., description="资质评分")
-    missing_qualifications: list[str] = Field(default_factory=list, description="缺失的资质")
+    missing_qualifications: list[str] = Field(
+        default_factory=list, description="缺失的资质"
+    )
     recommendations: list[str] = Field(default_factory=list, description="建议")
     risk_level: str = Field(..., description="风险等级")
 
@@ -81,7 +85,9 @@ class WorkloadBalanceRequest(BaseModel):
 class WorkloadBalanceResponse(BaseModel):
     """工作量平衡响应schema."""
 
-    teacher_workloads: list[TeacherWorkloadInfo] = Field(..., description="教师工作量信息")
+    teacher_workloads: list[TeacherWorkloadInfo] = Field(
+        ..., description="教师工作量信息"
+    )
     balance_score: float = Field(..., description="平衡评分")
     recommendations: list[dict[str, Any]] = Field(
         default_factory=list, description="平衡建议"

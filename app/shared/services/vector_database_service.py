@@ -33,7 +33,10 @@ except ImportError:
 
 from app.shared.utils.embedding_utils import embedding_utils
 from app.shared.utils.milvus_manager import milvus_manager
-from app.shared.utils.similarity_calculator import SimilarityResult, similarity_calculator
+from app.shared.utils.similarity_calculator import (
+    SimilarityResult,
+    similarity_calculator,
+)
 
 logger = logging.getLogger(__name__)
 

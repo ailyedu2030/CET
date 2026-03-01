@@ -56,7 +56,9 @@ class VerificationCodeRequest(BaseModel):
     """验证码验证请求模型."""
 
     target: str = Field(..., description="验证目标（手机号或邮箱）")
-    verification_code: str = Field(..., min_length=6, max_length=6, description="验证码")
+    verification_code: str = Field(
+        ..., min_length=6, max_length=6, description="验证码"
+    )
     purpose: str = Field("login", description="验证目的")
 
     @validator("verification_code")
@@ -87,7 +89,9 @@ class MFASessionRequest(BaseModel):
     mfa_method: str = Field(
         ..., description="MFA方法", pattern="^(sms|email|totp|backup_code)$"
     )
-    session_duration_minutes: int = Field(30, ge=5, le=120, description="会话持续时间（分钟）")
+    session_duration_minutes: int = Field(
+        30, ge=5, le=120, description="会话持续时间（分钟）"
+    )
 
 
 class MFASessionResponse(BaseModel):
@@ -222,7 +226,9 @@ class MFALogResponse(BaseModel):
 class SSOLoginRequest(BaseModel):
     """SSO登录请求模型."""
 
-    provider: str = Field(..., description="SSO提供商", pattern="^(wechat|dingtalk|ldap)$")
+    provider: str = Field(
+        ..., description="SSO提供商", pattern="^(wechat|dingtalk|ldap)$"
+    )
     auth_code: str = Field(..., description="授权码")
     redirect_uri: str | None = Field(None, description="重定向URI")
 

@@ -207,7 +207,9 @@ class MonitoringRequest(BaseModel):
 
     start_date: datetime = Field(..., description="开始时间")
     end_date: datetime = Field(..., description="结束时间")
-    report_types: list[str] = Field(default=["system", "teaching"], description="报告类型")
+    report_types: list[str] = Field(
+        default=["system", "teaching"], description="报告类型"
+    )
 
 
 class UserBehaviorReport(BaseModel):
@@ -234,7 +236,9 @@ class BackupRequest(BaseModel):
 
     backup_type: str = Field(..., description="备份类型：full/incremental/differential")
     tables: list[str] = Field(default=[], description="要备份的表名列表")
-    storage_location: str = Field(default="local", description="存储位置：local/cloud/both")
+    storage_location: str = Field(
+        default="local", description="存储位置：local/cloud/both"
+    )
     compression: bool = Field(default=True, description="是否压缩")
     encryption: bool = Field(default=True, description="是否加密")
     description: str | None = Field(None, description="备份描述")
@@ -327,7 +331,9 @@ class PredictionRequest(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
     metric_name: str = Field(..., description="指标名称")
-    prediction_type: str = Field(..., description="预测类型：failure/capacity/performance")
+    prediction_type: str = Field(
+        ..., description="预测类型：failure/capacity/performance"
+    )
     time_range: int = Field(default=7, description="预测时间范围（天）")
     confidence_level: float = Field(default=0.85, description="置信水平")
 
@@ -391,7 +397,9 @@ class StatisticsQuery(BaseModel):
     start_date: datetime = Field(..., description="开始时间")
     end_date: datetime = Field(..., description="结束时间")
     group_by: str | None = Field(None, description="分组字段")
-    aggregation: str = Field(default="avg", description="聚合方式：sum/avg/max/min/count")
+    aggregation: str = Field(
+        default="avg", description="聚合方式：sum/avg/max/min/count"
+    )
 
 
 class StatisticsResult(BaseModel):

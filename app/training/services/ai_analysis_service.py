@@ -122,7 +122,9 @@ class AIAnalysisService:
     ) -> dict[str, Any]:
         """生成综合AI分析报告."""
         try:
-            logger.info(f"开始生成AI深度分析报告: 学生{student_id}, 训练类型{training_type}")
+            logger.info(
+                f"开始生成AI深度分析报告: 学生{student_id}, 训练类型{training_type}"
+            )
             start_time = datetime.now()
 
             # 1. 收集学习数据
@@ -195,7 +197,9 @@ class AIAnalysisService:
                 },
             }
 
-            logger.info(f"AI深度分析报告生成完成: 学生{student_id}, 耗时{analysis_time:.2f}秒")
+            logger.info(
+                f"AI深度分析报告生成完成: 学生{student_id}, 耗时{analysis_time:.2f}秒"
+            )
             return comprehensive_report
 
         except Exception as e:

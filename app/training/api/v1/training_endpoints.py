@@ -27,7 +27,9 @@ from app.training.schemas.training_schemas import (
 )
 from app.training.services.adaptive_service import AdaptiveLearningService
 from app.training.services.analytics_service import AnalyticsService
-from app.training.services.intelligent_training_loop_service import IntelligentTrainingLoopService
+from app.training.services.intelligent_training_loop_service import (
+    IntelligentTrainingLoopService,
+)
 from app.training.services.precise_adaptive_service import PreciseAdaptiveService
 from app.training.services.training_center_service import TrainingCenterService
 from app.users.models.user_models import User
@@ -589,7 +591,9 @@ async def execute_intelligent_training_loop(
 ) -> dict[str, Any]:
     """执行智能训练闭环 - 🔥需求21核心功能."""
     try:
-        logger.info(f"开始执行智能训练闭环: 用户{current_user.id}, 训练类型{training_type}")
+        logger.info(
+            f"开始执行智能训练闭环: 用户{current_user.id}, 训练类型{training_type}"
+        )
 
         # 创建智能训练闭环服务
         loop_service = IntelligentTrainingLoopService(db)
@@ -611,7 +615,9 @@ async def execute_intelligent_training_loop(
 
     except Exception as e:
         logger.error(f"智能训练闭环执行失败: 用户{current_user.id}, 错误: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"智能训练闭环执行失败: {str(e)}") from None
+        raise HTTPException(
+            status_code=500, detail=f"智能训练闭环执行失败: {str(e)}"
+        ) from None
 
 
 @router.get(
@@ -679,7 +685,9 @@ async def get_intelligent_loop_history(
 
     except Exception as e:
         logger.error(f"获取智能训练闭环历史失败: 用户{current_user.id}, 错误: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"获取智能训练闭环历史失败: {str(e)}") from None
+        raise HTTPException(
+            status_code=500, detail=f"获取智能训练闭环历史失败: {str(e)}"
+        ) from None
 
 
 @router.get(
@@ -743,9 +751,7 @@ async def get_intelligent_loop_status(
                 "improvement_trend": (
                     "positive"
                     if avg_improvement > 0.05
-                    else "stable"
-                    if avg_improvement > 0
-                    else "negative"
+                    else "stable" if avg_improvement > 0 else "negative"
                 ),
             },
         }
@@ -757,7 +763,9 @@ async def get_intelligent_loop_status(
 
     except Exception as e:
         logger.error(f"获取智能训练闭环状态失败: 用户{current_user.id}, 错误: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"获取智能训练闭环状态失败: {str(e)}") from None
+        raise HTTPException(
+            status_code=500, detail=f"获取智能训练闭环状态失败: {str(e)}"
+        ) from None
 
 
 # ==================== 精确自适应算法 ====================
@@ -776,7 +784,9 @@ async def execute_precise_adaptive_algorithm(
 ) -> dict[str, Any]:
     """执行精确自适应算法 - 🔥需求21第二阶段核心功能."""
     try:
-        logger.info(f"开始执行精确自适应算法: 用户{current_user.id}, 训练类型{training_type}")
+        logger.info(
+            f"开始执行精确自适应算法: 用户{current_user.id}, 训练类型{training_type}"
+        )
 
         # 创建精确自适应服务
         precise_service = PreciseAdaptiveService(db)
@@ -812,7 +822,9 @@ async def execute_precise_adaptive_algorithm(
 
     except Exception as e:
         logger.error(f"精确自适应算法执行失败: 用户{current_user.id}, 错误: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"精确自适应算法执行失败: {str(e)}") from None
+        raise HTTPException(
+            status_code=500, detail=f"精确自适应算法执行失败: {str(e)}"
+        ) from None
 
 
 @router.get(
@@ -900,9 +912,7 @@ async def get_precise_adaptive_performance(
             "performance_trend": (
                 "improving"
                 if avg_improvement > 0.05
-                else "stable"
-                if avg_improvement > 0
-                else "declining"
+                else "stable" if avg_improvement > 0 else "declining"
             ),
             "recent_performance": [
                 {
@@ -916,5 +926,9 @@ async def get_precise_adaptive_performance(
         }
 
     except Exception as e:
-        logger.error(f"获取精确自适应算法性能指标失败: 用户{current_user.id}, 错误: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"获取算法性能指标失败: {str(e)}") from None
+        logger.error(
+            f"获取精确自适应算法性能指标失败: 用户{current_user.id}, 错误: {str(e)}"
+        )
+        raise HTTPException(
+            status_code=500, detail=f"获取算法性能指标失败: {str(e)}"
+        ) from None

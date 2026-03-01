@@ -371,7 +371,9 @@ async def assign_course_to_teacher(
             course_id, request.teacher_id, current_user.id, request.notes
         )
 
-        logger.info(f"管理员 {current_user.id} 分配课程 {course_id} 给教师 {request.teacher_id}")
+        logger.info(
+            f"管理员 {current_user.id} 分配课程 {course_id} 给教师 {request.teacher_id}"
+        )
 
         return CourseAssignmentResponse(
             id=assignment.id,

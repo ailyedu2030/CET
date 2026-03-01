@@ -418,11 +418,15 @@ class ErrorAnalysisService:
             if len(errors) >= 3:  # 错误次数较多的类别
                 category_info = self.error_categories.get(category, {})
                 category_name = category_info.get("name", category)
-                suggestions.append(f"重点加强{category_name}的练习，已发现{len(errors)}个相关错误")
+                suggestions.append(
+                    f"重点加强{category_name}的练习，已发现{len(errors)}个相关错误"
+                )
 
         # 基于薄弱知识点的建议
         for kp in weak_knowledge_points[:3]:  # 前3个薄弱点
-            suggestions.append(f"加强'{kp['title']}'知识点的学习，错误次数: {kp['error_count']}")
+            suggestions.append(
+                f"加强'{kp['title']}'知识点的学习，错误次数: {kp['error_count']}"
+            )
 
         # 通用建议
         if not suggestions:

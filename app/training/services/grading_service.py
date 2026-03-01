@@ -355,7 +355,9 @@ class IntelligentGradingService:
 
         # 判断翻译方向
         direction = (
-            "中译英" if question.question_type.value == "translation_cn_to_en" else "英译中"
+            "中译英"
+            if question.question_type.value == "translation_cn_to_en"
+            else "英译中"
         )
 
         return f"""
@@ -514,7 +516,9 @@ class IntelligentGradingService:
                 # 检查是否是常见变形
                 if self._is_acceptable_variation(user_clean, correct_clean):
                     correct_count += 1
-                    detailed_analysis.append(f"第{i + 1}空: '{user_word}' ✓ 可接受的变形")
+                    detailed_analysis.append(
+                        f"第{i + 1}空: '{user_word}' ✓ 可接受的变形"
+                    )
                 else:
                     detailed_analysis.append(
                         f"第{i + 1}空: '{user_word}' ✗ 应为'{correct_word}'"
@@ -538,7 +542,8 @@ class IntelligentGradingService:
             ai_confidence=0.85,
             knowledge_points_mastered=question.knowledge_points if is_correct else [],
             knowledge_points_weak=[] if is_correct else question.knowledge_points,
-            detailed_feedback=f"填空准确率: {accuracy:.1%}\n" + "\n".join(detailed_analysis),
+            detailed_feedback=f"填空准确率: {accuracy:.1%}\n"
+            + "\n".join(detailed_analysis),
             improvement_suggestions=(
                 [
                     "注意单词拼写的准确性",
@@ -767,7 +772,9 @@ class IntelligentGradingService:
             knowledge_points_mastered=question.knowledge_points if is_correct else [],
             knowledge_points_weak=[] if is_correct else question.knowledge_points,
             detailed_feedback=f"多选题组正确率: {accuracy:.1%}（{correct_count}/{total_count}）",
-            improvement_suggestions=([] if is_correct else ["加强听力理解能力", "注意题目细节"]),
+            improvement_suggestions=(
+                [] if is_correct else ["加强听力理解能力", "注意题目细节"]
+            ),
         )
 
     # ==================== 质量控制和增强 ====================

@@ -35,17 +35,23 @@ class TrainingResource(BaseModel):
     # 基本信息
     title: Mapped[str] = mapped_column(String(200), nullable=False, comment="培训标题")
     description: Mapped[str] = mapped_column(Text, nullable=False, comment="培训描述")
-    category: Mapped[str] = mapped_column(String(100), nullable=False, comment="培训分类")
+    category: Mapped[str] = mapped_column(
+        String(100), nullable=False, comment="培训分类"
+    )
 
     # 培训配置
-    duration: Mapped[str] = mapped_column(String(50), nullable=False, comment="培训时长")
+    duration: Mapped[str] = mapped_column(
+        String(50), nullable=False, comment="培训时长"
+    )
     difficulty: Mapped[DifficultyLevel] = mapped_column(
         Enum(DifficultyLevel),
         default=DifficultyLevel.INTERMEDIATE,
         nullable=False,
         comment="难度等级",
     )
-    instructor: Mapped[str] = mapped_column(String(100), nullable=False, comment="讲师姓名")
+    instructor: Mapped[str] = mapped_column(
+        String(100), nullable=False, comment="讲师姓名"
+    )
 
     # 内容信息
     content_url: Mapped[str | None] = mapped_column(
@@ -111,7 +117,9 @@ class TrainingEnrollment(BaseModel):
     )
 
     # 报名信息
-    motivation: Mapped[str | None] = mapped_column(Text, nullable=True, comment="报名动机")
+    motivation: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="报名动机"
+    )
     status: Mapped[str] = mapped_column(
         String(20), default="enrolled", nullable=False, comment="状态"
     )
@@ -154,7 +162,9 @@ class CertificationMaterial(BaseModel):
     title: Mapped[str] = mapped_column(String(200), nullable=False, comment="材料标题")
     description: Mapped[str] = mapped_column(Text, nullable=False, comment="材料描述")
     type: Mapped[str] = mapped_column(String(50), nullable=False, comment="材料类型")
-    category: Mapped[str] = mapped_column(String(100), nullable=False, comment="认证分类")
+    category: Mapped[str] = mapped_column(
+        String(100), nullable=False, comment="认证分类"
+    )
 
     # 文件信息
     file_url: Mapped[str | None] = mapped_column(
@@ -208,7 +218,9 @@ class CommunityPost(BaseModel):
     # 基本信息
     title: Mapped[str] = mapped_column(String(200), nullable=False, comment="帖子标题")
     content: Mapped[str] = mapped_column(Text, nullable=False, comment="帖子内容")
-    category: Mapped[str] = mapped_column(String(100), nullable=False, comment="帖子分类")
+    category: Mapped[str] = mapped_column(
+        String(100), nullable=False, comment="帖子分类"
+    )
 
     # 互动统计
     likes: Mapped[int] = mapped_column(

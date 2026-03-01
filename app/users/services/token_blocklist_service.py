@@ -1,7 +1,5 @@
 """Token blocklist service - 用于JWT令牌黑名单管理."""
 
-from typing import Optional
-
 import redis.asyncio as redis
 
 from app.core.config import settings
@@ -12,7 +10,7 @@ class TokenBlocklistService:
 
     def __init__(self) -> None:
         """初始化token blocklist service."""
-        self._redis_client: Optional[redis.Redis] = None
+        self._redis_client: redis.Redis | None = None
 
     @property
     def redis_client(self) -> redis.Redis:

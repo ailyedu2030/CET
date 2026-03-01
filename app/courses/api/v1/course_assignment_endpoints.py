@@ -334,7 +334,9 @@ async def get_rule_exemption_requests(
                 }
             )
 
-        logger.info(f"用户 {current_user.id} 查看规则豁免申请列表: {len(requests_data)} 条记录")
+        logger.info(
+            f"用户 {current_user.id} 查看规则豁免申请列表: {len(requests_data)} 条记录"
+        )
 
         return {
             "exemption_requests": requests_data,

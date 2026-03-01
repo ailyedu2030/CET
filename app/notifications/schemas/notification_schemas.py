@@ -17,7 +17,9 @@ class NotificationBase(BaseModel):
         pattern="^(urgent|high|normal|low)$",
         description="优先级",
     )
-    metadata: dict[str, Any] | None = Field(default_factory=dict, description="扩展元数据")
+    metadata: dict[str, Any] | None = Field(
+        default_factory=dict, description="扩展元数据"
+    )
 
 
 class NotificationCreate(NotificationBase):
@@ -114,8 +116,12 @@ class NotificationTemplateBase(BaseModel):
     content_template: str = Field(..., description="内容模板")
     category: str = Field(..., max_length=50, description="模板分类")
     notification_type: str = Field(..., max_length=50, description="对应通知类型")
-    supported_channels: list[str] = Field(default_factory=list, description="支持的发送渠道")
-    default_channels: list[str] = Field(default_factory=list, description="默认发送渠道")
+    supported_channels: list[str] = Field(
+        default_factory=list, description="支持的发送渠道"
+    )
+    default_channels: list[str] = Field(
+        default_factory=list, description="默认发送渠道"
+    )
     variables: dict[str, Any] = Field(default_factory=dict, description="模板变量定义")
 
 
@@ -154,7 +160,9 @@ class NotificationPreferenceBase(BaseModel):
     max_daily_notifications: int = Field(
         default=50, ge=1, le=200, description="每日最大通知数量"
     )
-    batch_similar_notifications: bool = Field(default=True, description="是否合并相似通知")
+    batch_similar_notifications: bool = Field(
+        default=True, description="是否合并相似通知"
+    )
 
 
 class NotificationPreferenceCreate(NotificationPreferenceBase):
@@ -230,7 +238,9 @@ class TeachingPlanChangeNotification(BaseModel):
     change_type: str = Field(..., description="变更类型")
     affected_classes: list[int] = Field(..., description="受影响的班级")
     change_details: dict[str, Any] = Field(..., description="变更详情")
-    notify_channels: list[str] = Field(default=["in_app", "email"], description="通知渠道")
+    notify_channels: list[str] = Field(
+        default=["in_app", "email"], description="通知渠道"
+    )
 
 
 class TrainingAnomalyAlert(BaseModel):

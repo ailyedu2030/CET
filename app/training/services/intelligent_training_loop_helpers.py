@@ -95,9 +95,7 @@ class IntelligentTrainingLoopHelpers:
                 expected_severity = (
                     "high"
                     if error_count >= 5
-                    else "medium"
-                    if error_count >= 2
-                    else "low"
+                    else "medium" if error_count >= 2 else "low"
                 )
 
                 if severity == expected_severity:

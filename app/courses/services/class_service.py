@@ -160,7 +160,9 @@ class ClassService:
         created_classes = []
 
         for i in range(batch_data.class_count):
-            class_name = f"{batch_data.class_prefix}{i + 1:02d}"  # 例如：英语A01, 英语A02
+            class_name = (
+                f"{batch_data.class_prefix}{i + 1:02d}"  # 例如：英语A01, 英语A02
+            )
             class_code = f"{course.code or 'C'}{i + 1:03d}" if course.code else None
 
             class_obj = Class(

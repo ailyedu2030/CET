@@ -355,7 +355,9 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
 
             # 慢请求告警
             if response_time > self.slow_request_threshold:
-                self.logger.warning(f"慢请求检测: {method} {path} - {response_time:.3f}s")
+                self.logger.warning(
+                    f"慢请求检测: {method} {path} - {response_time:.3f}s"
+                )
 
             # 计算错误率
             if self.request_stats["total_requests"] > 0:

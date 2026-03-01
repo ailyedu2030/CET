@@ -47,8 +47,12 @@ class ResourceLibrary(BaseModel):
     resource_type: Mapped[ResourceType] = mapped_column(
         Enum(ResourceType), nullable=False, comment="资源类型"
     )
-    category: Mapped[str] = mapped_column(String(100), nullable=False, comment="资源分类")
-    description: Mapped[str | None] = mapped_column(Text, nullable=True, comment="资源描述")
+    category: Mapped[str] = mapped_column(
+        String(100), nullable=False, comment="资源分类"
+    )
+    description: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="资源描述"
+    )
     file_path: Mapped[str | None] = mapped_column(
         String(500), nullable=True, comment="文件路径"
     )
@@ -116,7 +120,9 @@ class VocabularyItem(BaseModel):
     part_of_speech: Mapped[str | None] = mapped_column(
         String(50), nullable=True, comment="词性"
     )
-    chinese_meaning: Mapped[str] = mapped_column(Text, nullable=False, comment="中文释义")
+    chinese_meaning: Mapped[str] = mapped_column(
+        Text, nullable=False, comment="中文释义"
+    )
     english_meaning: Mapped[str | None] = mapped_column(
         Text, nullable=True, comment="英文释义"
     )
@@ -183,12 +189,16 @@ class KnowledgePoint(BaseModel):
         nullable=True,
         comment="父知识点ID",
     )
-    title: Mapped[str] = mapped_column(String(200), nullable=False, comment="知识点标题")
+    title: Mapped[str] = mapped_column(
+        String(200), nullable=False, comment="知识点标题"
+    )
     category: Mapped[str | None] = mapped_column(
         String(100), nullable=True, comment="知识点分类"
     )
     content: Mapped[str] = mapped_column(Text, nullable=False, comment="知识点内容")
-    description: Mapped[str | None] = mapped_column(Text, nullable=True, comment="详细描述")
+    description: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="详细描述"
+    )
     difficulty_level: Mapped[DifficultyLevel] = mapped_column(
         Enum(DifficultyLevel),
         default=DifficultyLevel.INTERMEDIATE,
@@ -263,7 +273,9 @@ class TeachingMaterial(BaseModel):
         String(20), nullable=True, comment="出版日期"
     )
     isbn: Mapped[str | None] = mapped_column(String(50), nullable=True, comment="ISBN")
-    edition: Mapped[str | None] = mapped_column(String(50), nullable=True, comment="版本")
+    edition: Mapped[str | None] = mapped_column(
+        String(50), nullable=True, comment="版本"
+    )
     language: Mapped[str] = mapped_column(
         String(20), default="zh-CN", nullable=False, comment="语言"
     )
@@ -340,7 +352,9 @@ class ExamSyllabus(BaseModel):
         comment="资源库ID",
     )
     title: Mapped[str] = mapped_column(String(300), nullable=False, comment="考纲标题")
-    exam_type: Mapped[str] = mapped_column(String(100), nullable=False, comment="考试类型")
+    exam_type: Mapped[str] = mapped_column(
+        String(100), nullable=False, comment="考试类型"
+    )
     exam_level: Mapped[str | None] = mapped_column(
         String(50), nullable=True, comment="考试级别"
     )
@@ -356,7 +370,9 @@ class ExamSyllabus(BaseModel):
     issuing_authority: Mapped[str | None] = mapped_column(
         String(200), nullable=True, comment="颁布机构"
     )
-    description: Mapped[str | None] = mapped_column(Text, nullable=True, comment="考纲描述")
+    description: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="考纲描述"
+    )
     exam_structure: Mapped[dict[str, Any]] = mapped_column(
         JSON, default=dict, nullable=False, comment="考试结构"
     )
@@ -418,7 +434,9 @@ class HotspotResource(BaseModel):
     source_url: Mapped[str | None] = mapped_column(
         String(500), nullable=True, comment="来源URL"
     )
-    author: Mapped[str | None] = mapped_column(String(200), nullable=True, comment="作者")
+    author: Mapped[str | None] = mapped_column(
+        String(200), nullable=True, comment="作者"
+    )
     publish_date: Mapped[str | None] = mapped_column(
         String(20), nullable=True, comment="发布日期"
     )
@@ -588,7 +606,9 @@ class ResourceUsage(BaseModel):
     comprehension_score: Mapped[float] = mapped_column(
         Float, default=0.0, nullable=False, comment="理解分数 (0-1)"
     )
-    feedback: Mapped[str | None] = mapped_column(Text, nullable=True, comment="用户反馈")
+    feedback: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="用户反馈"
+    )
     rating: Mapped[float] = mapped_column(
         Float, default=0.0, nullable=False, comment="用户评分 (0-5)"
     )
@@ -614,7 +634,9 @@ class DocumentChunk(BaseModel):
         nullable=False,
         comment="资源ID",
     )
-    chunk_index: Mapped[int] = mapped_column(Integer, nullable=False, comment="切片序号")
+    chunk_index: Mapped[int] = mapped_column(
+        Integer, nullable=False, comment="切片序号"
+    )
     content: Mapped[str] = mapped_column(Text, nullable=False, comment="切片内容")
     chunk_size: Mapped[int] = mapped_column(Integer, nullable=False, comment="切片大小")
     start_position: Mapped[int] = mapped_column(

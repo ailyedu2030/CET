@@ -11,9 +11,17 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.analytics.schemas.analytics_schemas import BackupInfo, RestoreInfo, RestoreRequest
+from app.analytics.schemas.analytics_schemas import (
+    BackupInfo,
+    RestoreInfo,
+    RestoreRequest,
+)
 from app.backup.services.backup_service import BackupService
-from app.backup.utils.backup_utils import BackupCompression, BackupEncryption, DatabaseDumper
+from app.backup.utils.backup_utils import (
+    BackupCompression,
+    BackupEncryption,
+    DatabaseDumper,
+)
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -69,7 +77,9 @@ class RestoreService:
                     request.backup_id
                 )
                 if not validation_result["valid"]:
-                    raise Exception(f"备份文件验证失败: {validation_result.get('error')}")
+                    raise Exception(
+                        f"备份文件验证失败: {validation_result.get('error')}"
+                    )
 
             # 更新状态为运行中
             restore_info.status = "running"
@@ -556,4 +566,6 @@ class RestoreService:
         elif duration_seconds < 3600:
             return f"{duration_seconds // 60}分钟"
         else:
-            return f"{duration_seconds // 3600}小时{(duration_seconds % 3600) // 60}分钟"
+            return (
+                f"{duration_seconds // 3600}小时{(duration_seconds % 3600) // 60}分钟"
+            )

@@ -222,7 +222,9 @@ async def create_incremental_backup(
         service = BackupService(db)
         backup_info = await service.create_incremental_backup(base_backup_id)
 
-        logger.info(f"超级管理员 {current_user.id} 创建增量备份，基于: {base_backup_id}")
+        logger.info(
+            f"超级管理员 {current_user.id} 创建增量备份，基于: {base_backup_id}"
+        )
 
         return backup_info
 

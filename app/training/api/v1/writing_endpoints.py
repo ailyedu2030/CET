@@ -76,7 +76,9 @@ async def get_writing_templates(
         ) from e
 
 
-@router.post("/templates", summary="创建写作模板", response_model=WritingTemplateResponse)
+@router.post(
+    "/templates", summary="创建写作模板", response_model=WritingTemplateResponse
+)
 async def create_writing_template(
     data: WritingTemplateCreate,
     current_user: User = Depends(get_current_active_user),
@@ -113,7 +115,9 @@ async def get_writing_template_detail(
         template = await service.get_template(template_id)
 
         if not template:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="模板不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="模板不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 查询写作模板详情: {template_id}")
 
@@ -144,7 +148,9 @@ async def update_writing_template(
         template = await service.update_template(template_id, data)
 
         if not template:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="模板不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="模板不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 更新写作模板: {template_id}")
 
@@ -161,7 +167,9 @@ async def update_writing_template(
 # ==================== 写作任务管理 ====================
 
 
-@router.get("/tasks", summary="获取写作任务列表", response_model=WritingTaskListResponse)
+@router.get(
+    "/tasks", summary="获取写作任务列表", response_model=WritingTaskListResponse
+)
 async def get_writing_tasks(
     skip: int = 0,
     limit: int = 10,
@@ -217,7 +225,9 @@ async def create_writing_task(
         ) from e
 
 
-@router.get("/tasks/{task_id}", summary="获取写作任务详情", response_model=WritingTaskResponse)
+@router.get(
+    "/tasks/{task_id}", summary="获取写作任务详情", response_model=WritingTaskResponse
+)
 async def get_writing_task_detail(
     task_id: int,
     current_user: User = Depends(get_current_active_user),
@@ -229,7 +239,9 @@ async def get_writing_task_detail(
         task = await service.get_task(task_id)
 
         if not task:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="任务不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="任务不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 查询写作任务详情: {task_id}")
 
@@ -246,7 +258,9 @@ async def get_writing_task_detail(
 # ==================== 写作提交管理 ====================
 
 
-@router.post("/submissions", summary="提交作文", response_model=WritingSubmissionResponse)
+@router.post(
+    "/submissions", summary="提交作文", response_model=WritingSubmissionResponse
+)
 async def submit_essay(
     data: WritingSubmissionCreate,
     current_user: User = Depends(get_current_active_user),
@@ -317,7 +331,9 @@ async def get_submission_detail(
         submission = await service.get_submission(submission_id, current_user.id)
 
         if not submission:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="提交记录不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="提交记录不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 查询写作提交详情: {submission_id}")
 
@@ -347,7 +363,9 @@ async def regrade_submission(
         submission = await service.regrade_submission(submission_id, current_user.id)
 
         if not submission:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="提交记录不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="提交记录不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 重新评分作文: {submission_id}")
 
@@ -378,7 +396,9 @@ async def check_grammar(
         service = WritingService(db)
         result = await service.check_grammar(text)
 
-        logger.info(f"用户 {current_user.id} 执行语法检查，发现 {result.error_count} 个错误")
+        logger.info(
+            f"用户 {current_user.id} 执行语法检查，发现 {result.error_count} 个错误"
+        )
 
         return result
     except Exception as e:
@@ -434,7 +454,9 @@ async def get_writing_vocabulary(
         ) from e
 
 
-@router.post("/vocabulary", summary="创建写作词汇", response_model=WritingVocabularyResponse)
+@router.post(
+    "/vocabulary", summary="创建写作词汇", response_model=WritingVocabularyResponse
+)
 async def create_writing_vocabulary(
     data: WritingVocabularyCreate,
     current_user: User = Depends(get_current_active_user),
@@ -478,7 +500,9 @@ async def get_writing_statistics(
         ) from e
 
 
-@router.get("/recommendations", summary="获取写作推荐", response_model=WritingRecommendation)
+@router.get(
+    "/recommendations", summary="获取写作推荐", response_model=WritingRecommendation
+)
 async def get_writing_recommendations(
     current_user: User = Depends(get_current_active_user),
     db: AsyncSession = Depends(get_db),
@@ -613,7 +637,9 @@ async def get_writing_draft(
         draft = await service.get_draft(current_user.id, task_id)
 
         if not draft:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="草稿不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="草稿不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 获取草稿成功: task_id={task_id}")
 
@@ -639,7 +665,9 @@ async def delete_writing_draft(
         success = await service.delete_draft(current_user.id, task_id)
 
         if not success:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="草稿不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="草稿不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 删除草稿成功: task_id={task_id}")
 

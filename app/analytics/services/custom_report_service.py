@@ -175,7 +175,9 @@ class CustomReportService:
             columns=[
                 ReportColumn("user_id", "用户ID", "number"),
                 ReportColumn("username", "用户名", "string"),
-                ReportColumn("total_study_time", "总学习时长", "number", "sum", "0.0小时"),
+                ReportColumn(
+                    "total_study_time", "总学习时长", "number", "sum", "0.0小时"
+                ),
                 ReportColumn("sessions_count", "学习次数", "number", "count"),
                 ReportColumn("avg_accuracy", "平均准确率", "number", "avg", "0.0%"),
                 ReportColumn("progress_score", "进度评分", "number", "avg", "0.0"),
@@ -248,7 +250,9 @@ class CustomReportService:
                 ReportColumn("content_type", "内容类型", "string"),
                 ReportColumn("total_sessions", "总会话数", "number", "sum"),
                 ReportColumn("completion_rate", "完成率", "number", "avg", "0.0%"),
-                ReportColumn("avg_score_improvement", "平均提升", "number", "avg", "0.0%"),
+                ReportColumn(
+                    "avg_score_improvement", "平均提升", "number", "avg", "0.0%"
+                ),
                 ReportColumn("engagement_level", "参与度", "number", "avg", "0.0%"),
                 ReportColumn("effectiveness_score", "效果评分", "number", "avg", "0.0"),
             ],
@@ -350,7 +354,9 @@ class CustomReportService:
         # 存储报表
         self.generated_reports[report_id] = report
 
-        self.logger.info(f"生成报表完成: {report.name}, 耗时: {report.generation_time:.2f}秒")
+        self.logger.info(
+            f"生成报表完成: {report.name}, 耗时: {report.generation_time:.2f}秒"
+        )
         return report
 
     async def _generate_report_data(

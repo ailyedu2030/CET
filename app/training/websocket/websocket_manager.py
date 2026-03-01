@@ -377,7 +377,9 @@ class RealTimePushService:
                     },
                 )
 
-            logger.info(f"推送预警: 学生{student_id}, 会话{session_id}, 预警数量{len(alerts)}")
+            logger.info(
+                f"推送预警: 学生{student_id}, 会话{session_id}, 预警数量{len(alerts)}"
+            )
 
         except Exception as e:
             logger.error(f"推送预警失败: {str(e)}")

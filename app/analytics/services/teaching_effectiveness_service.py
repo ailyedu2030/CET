@@ -606,7 +606,9 @@ class TeachingEffectivenessService:
         ]
 
         if declining_contents:
-            recommendations.append(f"关注 {', '.join(declining_contents)} 的效果下降趋势")
+            recommendations.append(
+                f"关注 {', '.join(declining_contents)} 的效果下降趋势"
+            )
 
         # 参与度建议
         low_engagement_contents = [

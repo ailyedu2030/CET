@@ -3,7 +3,17 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import relationship
 
 from app.shared.models.base_model import BaseModel
@@ -65,8 +75,12 @@ class DiscussionForumModel(BaseModel):
     category = Column(String(50), comment="分类")
 
     # 关联信息
-    class_id = Column(Integer, ForeignKey("classes.id"), nullable=True, comment="班级ID")
-    course_id = Column(Integer, ForeignKey("courses.id"), nullable=True, comment="课程ID")
+    class_id = Column(
+        Integer, ForeignKey("classes.id"), nullable=True, comment="班级ID"
+    )
+    course_id = Column(
+        Integer, ForeignKey("courses.id"), nullable=True, comment="课程ID"
+    )
 
     # 权限设置
     is_public = Column(Boolean, default=True, comment="是否公开")
@@ -106,7 +120,9 @@ class ForumPostModel(BaseModel):
 
     id = Column(Integer, primary_key=True, index=True)
     forum_id = Column(Integer, ForeignKey("discussion_forums.id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="发帖用户ID")
+    user_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, comment="发帖用户ID"
+    )
     parent_id = Column(
         Integer, ForeignKey("forum_posts.id"), nullable=True, comment="父帖子ID"
     )
@@ -187,7 +203,9 @@ class PostLikeModel(BaseModel):
 
     id = Column(Integer, primary_key=True, index=True)
     post_id = Column(Integer, ForeignKey("forum_posts.id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="点赞用户ID")
+    user_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, comment="点赞用户ID"
+    )
 
     # 点赞类型
     like_type = Column(
@@ -226,7 +244,9 @@ class PostReportModel(BaseModel):
 
     # 处理信息
     status = Column(String(20), default="pending", comment="处理状态")
-    handled_by = Column(Integer, ForeignKey("users.id"), nullable=True, comment="处理人ID")
+    handled_by = Column(
+        Integer, ForeignKey("users.id"), nullable=True, comment="处理人ID"
+    )
     handled_at = Column(DateTime, comment="处理时间")
     handling_result = Column(Text, comment="处理结果")
 
@@ -397,7 +417,9 @@ class StudyGroupMembershipModel(BaseModel):
 
     id = Column(Integer, primary_key=True, index=True)
     group_id = Column(Integer, ForeignKey("study_groups.id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="成员用户ID")
+    user_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, comment="成员用户ID"
+    )
 
     # 成员角色
     role = Column(
@@ -407,7 +429,9 @@ class StudyGroupMembershipModel(BaseModel):
 
     # 加入信息
     invitation_code = Column(String(50), comment="邀请码")
-    invited_by = Column(Integer, ForeignKey("users.id"), nullable=True, comment="邀请人ID")
+    invited_by = Column(
+        Integer, ForeignKey("users.id"), nullable=True, comment="邀请人ID"
+    )
 
     # 活跃度
     participation_score = Column(Float, default=0.0, comment="参与度评分")
@@ -439,7 +463,9 @@ class MessageModel(BaseModel):
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True, index=True)
-    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="发送者ID")
+    sender_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, comment="发送者ID"
+    )
     receiver_id = Column(
         Integer, ForeignKey("users.id"), nullable=True, comment="接收者ID"
     )

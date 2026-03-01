@@ -537,7 +537,9 @@ class CompetitionService:
             "is_correct": is_correct,
             "score": score,
             "explanation": (
-                "答案正确" if is_correct else f"正确答案是: {question['correct_answer']}"
+                "答案正确"
+                if is_correct
+                else f"正确答案是: {question['correct_answer']}"
             ),
         }
 

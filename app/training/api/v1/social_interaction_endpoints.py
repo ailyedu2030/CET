@@ -62,7 +62,9 @@ async def create_discussion_forum(
         ) from e
 
 
-@router.get("/forums", summary="获取讨论区列表", response_model=DiscussionForumListResponse)
+@router.get(
+    "/forums", summary="获取讨论区列表", response_model=DiscussionForumListResponse
+)
 async def get_discussion_forums(
     skip: int = 0,
     limit: int = 10,
@@ -114,7 +116,9 @@ async def update_discussion_forum(
         forum = await service.update_forum(forum_id, data)
 
         if not forum:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="讨论区不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="讨论区不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 更新讨论区: {forum_id}")
 
@@ -220,7 +224,9 @@ async def update_forum_post(
         ) from e
 
 
-@router.get("/posts/{post_id}", summary="获取帖子详情", response_model=ForumPostResponse)
+@router.get(
+    "/posts/{post_id}", summary="获取帖子详情", response_model=ForumPostResponse
+)
 async def get_post_detail(
     post_id: int,
     current_user: User = Depends(get_current_active_user),
@@ -232,7 +238,9 @@ async def get_post_detail(
         post = await service.get_post_by_id(post_id)
 
         if not post:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="帖子不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="帖子不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 查看帖子详情: {post_id}")
         return ForumPostResponse.model_validate(post)
@@ -406,7 +414,9 @@ async def respond_to_partner_request(
             request_id, current_user.id, action, message
         )
 
-        logger.info(f"用户 {current_user.id} 响应学习伙伴请求: {request_id}, 操作: {action}")
+        logger.info(
+            f"用户 {current_user.id} 响应学习伙伴请求: {request_id}, 操作: {action}"
+        )
         return {"message": f"已{action}学习伙伴请求"}
     except HTTPException:
         raise
@@ -441,7 +451,9 @@ async def create_study_group(
         ) from e
 
 
-@router.get("/study-groups", summary="获取学习小组列表", response_model=StudyGroupListResponse)
+@router.get(
+    "/study-groups", summary="获取学习小组列表", response_model=StudyGroupListResponse
+)
 async def get_study_groups(
     skip: int = 0,
     limit: int = 10,
@@ -494,7 +506,9 @@ async def get_study_group_detail(
         group = await service.get_study_group_by_id(group_id)
 
         if not group:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="学习小组不存在")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="学习小组不存在"
+            )
 
         logger.info(f"用户 {current_user.id} 查看学习小组详情: {group_id}")
         return StudyGroupResponse.model_validate(group)

@@ -12,7 +12,11 @@ from loguru import logger
 from sqlalchemy import and_, desc, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import BusinessLogicError, ResourceNotFoundError, ValidationError
+from app.core.exceptions import (
+    BusinessLogicError,
+    ResourceNotFoundError,
+    ValidationError,
+)
 from app.resources.models.resource_models import ResourceVersion
 from app.resources.schemas.version_schemas import (
     ChangeType,
@@ -489,13 +493,17 @@ class VersionService:
         self, resource_type: str, resource_id: int, user_id: int
     ) -> None:
         """检查资源访问权限"""
-        logger.info(f"检查资源访问: type={resource_type}, id={resource_id}, user={user_id}")
+        logger.info(
+            f"检查资源访问: type={resource_type}, id={resource_id}, user={user_id}"
+        )
 
     async def _check_resource_modify_permission(
         self, resource_type: str, resource_id: int, user_id: int
     ) -> None:
         """检查资源修改权限"""
-        logger.info(f"检查修改权限: type={resource_type}, id={resource_id}, user={user_id}")
+        logger.info(
+            f"检查修改权限: type={resource_type}, id={resource_id}, user={user_id}"
+        )
 
     async def _get_version_by_id(self, version_id: int) -> ResourceVersion:
         """根据ID获取版本"""
@@ -504,7 +512,9 @@ class VersionService:
         version = result.scalar_one_or_none()
 
         if not version:
-            raise ResourceNotFoundError(message="版本不存在", error_code="VERSION_NOT_FOUND")
+            raise ResourceNotFoundError(
+                message="版本不存在", error_code="VERSION_NOT_FOUND"
+            )
 
         return version
 
@@ -556,7 +566,7 @@ class VersionService:
         )
 
         # 获取快照数据
-        snapshot = target_version.snapshot_data
+        snapshot = target_version.content_data
         if not snapshot:
             raise ValueError("目标版本没有快照数据")
 
@@ -591,11 +601,6 @@ class VersionService:
             if resource:
                 resource.content = snapshot.get("content", resource.content)
                 resource.updated_at = datetime.utcnow()
-
-        # 创建新版本记录
-        await self._create_version(
-            resource_type, resource_id, user_id, f"回滚到版本{target_version.version}"
-        )
 
         await self.db.commit()
 

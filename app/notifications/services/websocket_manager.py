@@ -133,7 +133,9 @@ class WebSocketConnectionManager:
                 # 移除失效连接
                 self.active_connections[user_id].discard(websocket)
 
-        logger.info(f"向用户 {user_id} 发送通知: {success_count}/{total_connections} 连接成功")
+        logger.info(
+            f"向用户 {user_id} 发送通知: {success_count}/{total_connections} 连接成功"
+        )
         return success_count > 0
 
     async def send_notification_to_users(

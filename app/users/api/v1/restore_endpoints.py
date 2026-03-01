@@ -140,7 +140,8 @@ async def restore_to_point_in_time(
         restore_info = await service.restore_from_backup(restore_request)
 
         logger.info(
-            f"超级管理员 {current_user.id} 执行时间点恢复: " f"备份ID {backup_id}, 目标时间 {target_time}"
+            f"超级管理员 {current_user.id} 执行时间点恢复: "
+            f"备份ID {backup_id}, 目标时间 {target_time}"
         )
 
         return restore_info
@@ -186,7 +187,9 @@ async def restore_partial_data(
         service = RestoreService(db)
         restore_info = await service.restore_from_backup(restore_request)
 
-        logger.info(f"超级管理员 {current_user.id} 执行选择性恢复: 备份ID {backup_id}, 表 {tables}")
+        logger.info(
+            f"超级管理员 {current_user.id} 执行选择性恢复: 备份ID {backup_id}, 表 {tables}"
+        )
 
         return restore_info
 

@@ -710,13 +710,19 @@ class SyllabusAnalysisService:
         summary_parts = []
 
         if structure_changes["added_sections"]:
-            summary_parts.append(f"新增{len(structure_changes['added_sections'])}个章节")
+            summary_parts.append(
+                f"新增{len(structure_changes['added_sections'])}个章节"
+            )
 
         if structure_changes["removed_sections"]:
-            summary_parts.append(f"删除{len(structure_changes['removed_sections'])}个章节")
+            summary_parts.append(
+                f"删除{len(structure_changes['removed_sections'])}个章节"
+            )
 
         if structure_changes["modified_sections"]:
-            summary_parts.append(f"修改{len(structure_changes['modified_sections'])}个章节")
+            summary_parts.append(
+                f"修改{len(structure_changes['modified_sections'])}个章节"
+            )
 
         if content_changes["exam_type_changed"]:
             summary_parts.append("考试类型发生变更")

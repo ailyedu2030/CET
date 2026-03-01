@@ -27,7 +27,9 @@ from app.ai.schemas.ai_schemas import (
 )
 from app.ai.services.deepseek_service import get_deepseek_service
 from app.ai.services.enhanced_learning_analytics import EnhancedLearningAnalytics
-from app.ai.services.intelligent_teaching_adjustment import IntelligentTeachingAdjustment
+from app.ai.services.intelligent_teaching_adjustment import (
+    IntelligentTeachingAdjustment,
+)
 from app.courses.models.course_models import Class, Course
 from app.training.models.training_models import TrainingRecord, TrainingSession
 from app.users.models.user_models import StudentProfile, User

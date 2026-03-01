@@ -21,7 +21,11 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import BusinessLogicError, ResourceNotFoundError
-from app.resources.models.resource_models import DocumentChunk, ProcessingStatus, ResourceLibrary
+from app.resources.models.resource_models import (
+    DocumentChunk,
+    ProcessingStatus,
+    ResourceLibrary,
+)
 from app.shared.services.cache_service import CacheService
 from app.shared.utils.file_utils import FileUtils
 from app.shared.utils.text_utils import TextUtils
@@ -623,7 +627,9 @@ class DocumentProcessingService:
     async def _vectorize_chunk(self, chunk: DocumentChunkData) -> str | None:
         """向量化单个切片"""
         try:
-            from app.ai.services.deepseek_embedding_service import DeepSeekEmbeddingService
+            from app.ai.services.deepseek_embedding_service import (
+                DeepSeekEmbeddingService,
+            )
 
             # 创建embedding服务
             embedding_service = DeepSeekEmbeddingService(self.cache_service)

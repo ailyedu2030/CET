@@ -85,7 +85,9 @@ class HelpRequestCreateRequest(BaseModel):
     """求助请求创建请求."""
 
     title: str = Field(..., min_length=1, max_length=100, description="求助标题")
-    description: str = Field(..., min_length=10, max_length=1000, description="求助描述")
+    description: str = Field(
+        ..., min_length=10, max_length=1000, description="求助描述"
+    )
     subject: str = Field("英语四级", description="学习科目")
     difficulty_level: str = Field("intermediate", description="难度级别")
     urgency: str = Field("normal", description="紧急程度")
@@ -205,7 +207,9 @@ class CompetitionCreateRequest(BaseModel):
     end_time: str = Field(..., description="结束时间")
     registration_deadline: str = Field(..., description="报名截止时间")
     max_participants: int = Field(100, ge=1, le=1000, description="最大参与人数")
-    entry_requirements: dict[str, Any] = Field(default_factory=dict, description="参赛要求")
+    entry_requirements: dict[str, Any] = Field(
+        default_factory=dict, description="参赛要求"
+    )
     question_pool: list[int] = Field(default_factory=list, description="题库")
     rules: list[str] = Field(default_factory=list, description="竞赛规则")
     prizes: dict[str, Any] = Field(default_factory=dict, description="奖品设置")

@@ -41,7 +41,9 @@ async def get_real_time_monitoring_dashboard(
         system_metrics = await service.performance_monitor._collect_system_metrics()
 
         # 获取教学监控数据
-        teaching_dashboard = await service.get_teaching_monitoring_dashboard(1)  # 最近1天
+        teaching_dashboard = await service.get_teaching_monitoring_dashboard(
+            1
+        )  # 最近1天
 
         # 获取系统运维监控
         system_monitoring = await service.get_system_operations_monitoring()
@@ -78,7 +80,9 @@ async def get_real_time_monitoring_dashboard(
                 "completion_stats": teaching_dashboard.get("completion_stats", {}),
             },
             "alerts_summary": {
-                "active_alerts": system_monitoring.get("alerts", [])[:10],  # 最新10个告警
+                "active_alerts": system_monitoring.get("alerts", [])[
+                    :10
+                ],  # 最新10个告警
                 "alert_trends": {
                     "trend": "stable",
                     "count": len(system_monitoring.get("alerts", [])),
@@ -220,7 +224,9 @@ async def get_alerts_visualization_data(
             # 告警趋势视图（简化实现）
             visualization_data = {"trend": "decreasing", "total_alerts": 5}
 
-        logger.info(f"管理员 {current_user.id} 获取告警可视化数据: {view_type}/{time_range}")
+        logger.info(
+            f"管理员 {current_user.id} 获取告警可视化数据: {view_type}/{time_range}"
+        )
 
         return {
             "view_type": view_type,

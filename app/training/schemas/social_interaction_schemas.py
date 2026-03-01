@@ -5,7 +5,12 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.training.models.social_models import MatchingStatus, PostStatus, PostType, ReportReason
+from app.training.models.social_models import (
+    MatchingStatus,
+    PostStatus,
+    PostType,
+    ReportReason,
+)
 
 
 # 讨论区模式
@@ -190,7 +195,9 @@ class StudyPartnerRequestCreate(BaseModel):
     contact_preferences: dict[str, Any] | None = Field(None, description="联系偏好")
     max_partners: int = Field(default=3, description="最大伙伴数", ge=1, le=10)
     auto_match: bool = Field(default=True, description="是否自动匹配")
-    location_preference: str | None = Field(None, description="地区偏好", max_length=100)
+    location_preference: str | None = Field(
+        None, description="地区偏好", max_length=100
+    )
 
 
 class StudyPartnerRequestUpdate(BaseModel):
@@ -205,7 +212,9 @@ class StudyPartnerRequestUpdate(BaseModel):
     contact_preferences: dict[str, Any] | None = Field(None, description="联系偏好")
     max_partners: int | None = Field(None, description="最大伙伴数", ge=1, le=10)
     auto_match: bool | None = Field(None, description="是否自动匹配")
-    location_preference: str | None = Field(None, description="地区偏好", max_length=100)
+    location_preference: str | None = Field(
+        None, description="地区偏好", max_length=100
+    )
     status: MatchingStatus | None = Field(None, description="匹配状态")
     is_active: bool | None = Field(None, description="是否激活")
 

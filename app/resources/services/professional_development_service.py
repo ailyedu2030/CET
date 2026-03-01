@@ -18,7 +18,9 @@ from app.resources.models.professional_development_models import (
     TrainingEnrollment,
     TrainingResource,
 )
-from app.resources.schemas.professional_development_schemas import NotificationSettingsUpdate
+from app.resources.schemas.professional_development_schemas import (
+    NotificationSettingsUpdate,
+)
 from app.users.models.user_models import User
 
 logger = logging.getLogger(__name__)

@@ -20,10 +20,14 @@ class QuestionBatch(BaseModel):
 
     # 基本信息
     name: Mapped[str] = mapped_column(String(200), nullable=False, comment="批次名称")
-    description: Mapped[str | None] = mapped_column(Text, nullable=True, comment="批次描述")
+    description: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="批次描述"
+    )
 
     # 训练配置
-    training_type: Mapped[TrainingType] = mapped_column(nullable=False, comment="训练类型")
+    training_type: Mapped[TrainingType] = mapped_column(
+        nullable=False, comment="训练类型"
+    )
     difficulty_level: Mapped[DifficultyLevel] = mapped_column(
         default=DifficultyLevel.ELEMENTARY, comment="难度等级"
     )

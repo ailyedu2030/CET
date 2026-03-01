@@ -5,7 +5,9 @@ import json
 from datetime import datetime
 from typing import Any, Protocol, runtime_checkable
 
-from app.analytics.services.enhanced_performance_monitor import EnhancedPerformanceMonitor
+from app.analytics.services.enhanced_performance_monitor import (
+    EnhancedPerformanceMonitor,
+)
 from app.analytics.services.intelligent_alert_manager import IntelligentAlertManager
 
 
@@ -114,7 +116,9 @@ async def demo_enhanced_performance_monitoring() -> None:
             24
         )
 
-        print(f"✅ 分析完成时间: {analysis_result['analysis_metadata']['analysis_timestamp']}")
+        print(
+            f"✅ 分析完成时间: {analysis_result['analysis_metadata']['analysis_timestamp']}"
+        )
         print(f"📈 整体性能评分: {analysis_result['overall_performance_score']:.3f}")
         print(
             f"💾 系统内存使用率: {analysis_result['system_metrics']['memory']['usage_percent']:.1f}%"
@@ -125,7 +129,9 @@ async def demo_enhanced_performance_monitoring() -> None:
         print(
             f"⚡ API平均响应时间: {analysis_result['application_metrics']['api_performance']['avg_response_time']:.0f}ms"
         )
-        print(f"🎯 基准评分等级: {analysis_result['baseline_analysis']['baseline_grade']}")
+        print(
+            f"🎯 基准评分等级: {analysis_result['baseline_analysis']['baseline_grade']}"
+        )
 
     except Exception as e:
         print(f"❌ 性能分析演示失败: {e}")
@@ -161,7 +167,9 @@ async def demo_enhanced_performance_monitoring() -> None:
     try:
         alert_result = await alert_manager.intelligent_alert_processing(raw_alerts)
 
-        print(f"📥 原始告警数量: {alert_result['processing_metadata']['raw_alerts_count']}")
+        print(
+            f"📥 原始告警数量: {alert_result['processing_metadata']['raw_alerts_count']}"
+        )
         print(
             f"📤 处理后告警数量: {alert_result['processing_metadata']['processed_alerts_count']}"
         )

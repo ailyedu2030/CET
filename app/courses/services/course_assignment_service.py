@@ -41,7 +41,9 @@ class CourseAssignmentService:
                 not qualification_result["is_qualified"]
                 and not assignment_request.force_assign
             ):
-                raise ValueError(f"教师资质不符合要求: {qualification_result['message']}")
+                raise ValueError(
+                    f"教师资质不符合要求: {qualification_result['message']}"
+                )
 
             # 2. 检查教师工作量平衡分配
             workload_result = await self._check_teacher_workload_balance(

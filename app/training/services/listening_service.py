@@ -511,10 +511,10 @@ class ListeningService:
             .where(
                 and_(
                     ListeningResult.user_id == user_id,
-                    ListeningResult.completed_at >= start_date,
+                    ListeningResult.completion_time >= start_date,
                 )
             )
-            .order_by(ListeningResult.completed_at)
+            .order_by(ListeningResult.completion_time)
         )
 
         result = await self.db.execute(query)
@@ -526,12 +526,14 @@ class ListeningService:
         # 按天分组统计
         daily_stats = {}
         for r in results:
-            date_key = r.completed_at.date().isoformat() if r.completed_at else None
+            date_key = (
+                r.completion_time.date().isoformat() if r.completion_time else None
+            )
             if date_key not in daily_stats:
                 daily_stats[date_key] = {"total": 0, "correct": 0}
 
             daily_stats[date_key]["total"] += r.total_questions
-            daily_stats[date_key]["correct"] += r.correct_count
+            daily_stats[date_key]["correct"] += r.correct_answers
 
         # 计算每日正确率
         trend = []

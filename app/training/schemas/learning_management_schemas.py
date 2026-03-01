@@ -17,11 +17,15 @@ class LearningPlanBase(BaseModel):
     plan_type: PlanType = Field(..., description="计划类型")
     start_date: datetime = Field(..., description="开始日期")
     end_date: datetime = Field(..., description="结束日期")
-    estimated_hours: int | None = Field(None, description="预估学习时长(小时)", ge=1, le=1000)
+    estimated_hours: int | None = Field(
+        None, description="预估学习时长(小时)", ge=1, le=1000
+    )
     learning_goals: list[str] | None = Field(None, description="学习目标")
     target_score: int | None = Field(None, description="目标分数", ge=0, le=710)
     priority_level: int = Field(default=3, description="优先级(1-5)", ge=1, le=5)
-    daily_study_time: int | None = Field(None, description="每日学习时间(分钟)", ge=10, le=480)
+    daily_study_time: int | None = Field(
+        None, description="每日学习时间(分钟)", ge=10, le=480
+    )
     study_schedule: dict[str, Any] | None = Field(None, description="学习时间表")
     reminder_settings: dict[str, Any] | None = Field(None, description="提醒设置")
 
@@ -72,11 +76,15 @@ class LearningPlanUpdate(BaseModel):
     plan_description: str | None = Field(None, description="计划描述")
     plan_type: PlanType | None = Field(None, description="计划类型")
     end_date: datetime | None = Field(None, description="结束日期")
-    estimated_hours: int | None = Field(None, description="预估学习时长(小时)", ge=1, le=1000)
+    estimated_hours: int | None = Field(
+        None, description="预估学习时长(小时)", ge=1, le=1000
+    )
     learning_goals: list[str] | None = Field(None, description="学习目标")
     target_score: int | None = Field(None, description="目标分数", ge=0, le=710)
     priority_level: int | None = Field(None, description="优先级(1-5)", ge=1, le=5)
-    daily_study_time: int | None = Field(None, description="每日学习时间(分钟)", ge=10, le=480)
+    daily_study_time: int | None = Field(
+        None, description="每日学习时间(分钟)", ge=10, le=480
+    )
     study_schedule: dict[str, Any] | None = Field(None, description="学习时间表")
     reminder_settings: dict[str, Any] | None = Field(None, description="提醒设置")
     status: PlanStatus | None = Field(None, description="计划状态")
@@ -109,7 +117,9 @@ class LearningTaskBase(BaseModel):
     task_type: str | None = Field(None, description="任务类型", max_length=50)
     scheduled_date: datetime = Field(..., description="计划日期")
     due_date: datetime | None = Field(None, description="截止日期")
-    estimated_minutes: int | None = Field(None, description="预估时长(分钟)", ge=1, le=480)
+    estimated_minutes: int | None = Field(
+        None, description="预估时长(分钟)", ge=1, le=480
+    )
     task_content: dict[str, Any] | None = Field(None, description="任务内容配置")
     resources: list[str] | None = Field(None, description="学习资源")
     requirements: list[str] | None = Field(None, description="完成要求")
@@ -130,7 +140,9 @@ class LearningTaskUpdate(BaseModel):
     task_type: str | None = Field(None, description="任务类型", max_length=50)
     scheduled_date: datetime | None = Field(None, description="计划日期")
     due_date: datetime | None = Field(None, description="截止日期")
-    estimated_minutes: int | None = Field(None, description="预估时长(分钟)", ge=1, le=480)
+    estimated_minutes: int | None = Field(
+        None, description="预估时长(分钟)", ge=1, le=480
+    )
     task_content: dict[str, Any] | None = Field(None, description="任务内容配置")
     resources: list[str] | None = Field(None, description="学习资源")
     requirements: list[str] | None = Field(None, description="完成要求")
@@ -182,7 +194,9 @@ class LearningProgressCreate(BaseModel):
     mistake_count: int = Field(default=0, description="错误次数", ge=0)
     focus_level: int | None = Field(None, description="专注度(1-5)", ge=1, le=5)
     satisfaction_level: int | None = Field(None, description="满意度(1-5)", ge=1, le=5)
-    difficulty_perception: int | None = Field(None, description="难度感知(1-5)", ge=1, le=5)
+    difficulty_perception: int | None = Field(
+        None, description="难度感知(1-5)", ge=1, le=5
+    )
     notes: str | None = Field(None, description="学习笔记")
     achievements: list[str] | None = Field(None, description="当日成就")
 
@@ -238,7 +252,9 @@ class LearningDashboard(BaseModel):
     """学习仪表板模式"""
 
     today_tasks: list[LearningTaskResponse] = Field(..., description="今日任务")
-    upcoming_tasks: list[LearningTaskResponse] = Field(..., description="即将到来的任务")
+    upcoming_tasks: list[LearningTaskResponse] = Field(
+        ..., description="即将到来的任务"
+    )
     overdue_tasks: list[LearningTaskResponse] = Field(..., description="逾期任务")
     recent_progress: list[LearningProgressResponse] = Field(..., description="最近进度")
     active_plans: list[LearningPlanResponse] = Field(..., description="进行中的计划")

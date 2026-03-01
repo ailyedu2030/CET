@@ -118,7 +118,9 @@ class ReminderUtils:
             if scheduled_time is None or scheduled_time <= datetime.now():
                 await self._send_reminder(reminder)
 
-            logger.info(f"创建提醒: 学生{student_id}, 类型{reminder_type}, 优先级{priority}")
+            logger.info(
+                f"创建提醒: 学生{student_id}, 类型{reminder_type}, 优先级{priority}"
+            )
             return reminder
 
         except Exception as e:
@@ -159,7 +161,9 @@ class ReminderUtils:
             priority = "low"
 
         # 生成消息
-        message = f"您的目标「{goal_title}」还有{days_remaining}天到期，请抓紧时间完成。"
+        message = (
+            f"您的目标「{goal_title}」还有{days_remaining}天到期，请抓紧时间完成。"
+        )
 
         return await self.create_reminder(
             student_id=student_id,

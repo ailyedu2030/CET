@@ -22,7 +22,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import DifficultyLevel
 from app.shared.utils.metrics_collector import collect_metric
-from app.training.models.training_models import Question, TrainingRecord, TrainingSession
+from app.training.models.training_models import (
+    Question,
+    TrainingRecord,
+    TrainingSession,
+)
 
 
 class AnalysisType(Enum):
@@ -745,7 +749,9 @@ class LearningAnalyticsService:
                 :3
             ]
             peak_hour_str = "、".join([f"{hour}点" for hour, _ in peak_hours])
-            recommendations.append(f"您在{peak_hour_str}学习效果较好，建议在这些时间段安排重要学习内容")
+            recommendations.append(
+                f"您在{peak_hour_str}学习效果较好，建议在这些时间段安排重要学习内容"
+            )
 
         if daily_dist:
             weekday_sessions = sum(daily_dist.get(i, 0) for i in range(5))  # 周一到周五

@@ -67,7 +67,9 @@ async def get_current_active_user(
 ) -> User:
     """获取当前活跃用户的依赖函数."""
     if not current_user.is_active:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="账户已被禁用")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="账户已被禁用"
+        )
     return current_user
 
 
