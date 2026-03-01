@@ -54,12 +54,81 @@ alembic upgrade head
 
 ## Agents 使用
 
-所有 oh-my-opencode 的 specialized agents 都可以通过以下方式使用：
-- `code-reviewer` - 代码审查
-- `security-reviewer` - 安全审查
-- `python-reviewer` - Python 专项审查
-- `tdd-guide` - TDD 指导
-- `e2e-runner` - E2E 测试
-- `refactor-cleaner` - 重构
-- `build-error-resolver` - 构建错误修复
-- `doc-updater` - 文档更新
+### 正确的调用方式
+
+这些是 **Agents（智能体）**，不是 slash 命令。需要通过 `task()` 或 `call_omo_agent()` 调用：
+
+```typescript
+// ✅ 正确的方式 - 使用 task() 调用
+task(
+  subagent_type="code-reviewer", 
+  prompt="请审查这段代码: ...", 
+  load_skills=[]
+)
+
+// ✅ 正确的方式 - 使用 call_omo_agent()
+call_omo_agent(
+  subagent_type="build-error-resolver", 
+  prompt="修复这个构建错误: ..."
+)
+```
+
+### ❌ 错误的调用方式
+
+```typescript
+// ❌ 错误 - 这些是 agents，不是 skills
+skill("code-reviewer")
+load_skills: ["build-error-resolver"]
+
+// ❌ 错误 - 不是 slash 命令
+/code-reviewer
+/build-error-resolver
+```
+
+### 可用的 Specialized Agents
+
+| Agent | 用途 |
+|-------|------|
+| `code-reviewer` | 代码审查 |
+| `security-reviewer` | 安全审查 |
+| `python-reviewer` | Python 专项审查 |
+| `database-reviewer` | 数据库审查 |
+| `go-reviewer` | Go 代码审查 |
+| `tdd-guide` | TDD 指导 |
+| `e2e-runner` | E2E 测试 |
+| `refactor-cleaner` | 重构 |
+| `build-error-resolver` | 构建错误修复 |
+| `doc-updater` | 文档更新 |
+
+### 可用的 Built-in Agents
+
+| Agent | 用途 |
+|-------|------|
+| `sisyphus` | 主编排器 |
+| `hephaestus` | 深度工作 |
+| `oracle` | 顾问（只读）|
+| `atlas` | Todo 编排 |
+| `prometheus` | 规划 |
+| `metis` | 计划咨询 |
+| `momus` | 计划审查 |
+| `librarian` | 文档搜索 |
+| `explore` | 代码搜索 |
+| `multimodal-looker` | 图片/PDF 分析 |
+
+### 可用的 Skills
+
+| Skill | 用途 |
+|-------|------|
+| `git-master` | Git 操作 |
+| `playwright` | 浏览器自动化 |
+| `frontend-ui-ux` | 前端 UI/UX |
+| `dev-browser` | 浏览器交互 |
+
+使用方式：
+```typescript
+task(
+  category="visual-engineering", 
+  load_skills=["frontend-ui-ux"],
+  prompt="..."
+)
+```
