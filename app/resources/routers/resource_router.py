@@ -12,26 +12,13 @@
 import asyncio
 from typing import TYPE_CHECKING, Any
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    File,
-    Form,
-    HTTPException,
-    Query,
-    UploadFile,
-    status,
-)
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
 from fastapi.responses import FileResponse
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.exceptions import (
-    BusinessLogicError,
-    ResourceNotFoundError,
-    ValidationError,
-)
+from app.core.exceptions import BusinessLogicError, ResourceNotFoundError, ValidationError
 from app.resources.services.document_processing_service import DocumentProcessingService
 from app.resources.services.resource_library_service import (
     BatchOperationRequest,
@@ -39,10 +26,7 @@ from app.resources.services.resource_library_service import (
     ResourceSearchRequest,
     ResourceUpdateRequest,
 )
-from app.resources.services.vector_search_service import (
-    SearchQuery,
-    VectorSearchService,
-)
+from app.resources.services.vector_search_service import SearchQuery, VectorSearchService
 from app.shared.dependencies import get_current_user
 from app.shared.models.enums import PermissionLevel, ResourceType
 from app.shared.services.cache_service import CacheService

@@ -14,9 +14,7 @@ from app.users.schemas.mfa_schemas import (
     VerificationCodeRequest,
     VerificationResponse,
 )
-from app.users.services.registration_verification_service import (
-    RegistrationVerificationService,
-)
+from app.users.services.registration_verification_service import RegistrationVerificationService
 
 logger = logging.getLogger(__name__)
 

@@ -1,17 +1,17 @@
 """AI模块 - DeepSeek集成与智能教学功能."""
 
+from .models import CollaborativeSession  # noqa: F401
 from .models import (
     AISyllabus,
     AITaskLog,
-    CollaborativeSession,  # noqa: F401
     LearningAnalysis,
     LessonPlan,
     LessonSchedule,
     TeachingAdjustment,
 )
+from .schemas import AITaskResponse  # noqa: F401
 from .schemas import (
     AITaskRequest,
-    AITaskResponse,  # noqa: F401
     CollaborationJoinRequest,
     CollaborationSessionResponse,
     CollaborationUpdateRequest,
@@ -38,8 +38,8 @@ from .schemas import (
     TeachingAdjustmentResponse,
     TeachingAdjustmentUpdate,
 )
+from .services import DeepSeekService  # noqa: F401
 from .services import (
-    DeepSeekService,  # noqa: F401
     LearningAdjustmentService,
     LessonPlanService,
     SyllabusService,
@@ -48,10 +48,10 @@ from .services import (
     get_lesson_plan_service,
     get_syllabus_service,
 )
+from .utils import APIUsageStats  # noqa: F401
 from .utils import (
     APICallManager,
     APIKeyPool,
-    APIUsageStats,  # noqa: F401
     ContentTemplate,
     DeepSeekAPIKeyPool,
     LessonPlanGenerator,

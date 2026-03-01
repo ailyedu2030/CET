@@ -14,9 +14,7 @@ from app.resources.schemas.professional_development_schemas import (
     NotificationSettingsUpdate,
     TrainingEnrollmentCreate,
 )
-from app.resources.services.professional_development_service import (
-    ProfessionalDevelopmentService,
-)
+from app.resources.services.professional_development_service import ProfessionalDevelopmentService
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_user
 

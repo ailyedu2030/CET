@@ -5,11 +5,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.training.models.reading_models import (
-    ReadingDifficulty,
-    ReadingQuestionType,
-    ReadingTheme,
-)
+from app.training.models.reading_models import ReadingDifficulty, ReadingQuestionType, ReadingTheme
 
 
 # 阅读文章模式

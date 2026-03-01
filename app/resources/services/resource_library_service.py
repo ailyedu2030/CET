@@ -22,11 +22,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import and_, desc, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import (
-    BusinessLogicError,
-    ResourceNotFoundError,
-    ValidationError,
-)
+from app.core.exceptions import BusinessLogicError, ResourceNotFoundError, ValidationError
 from app.resources.models.resource_models import (
     PermissionLevel,
     ProcessingStatus,

@@ -10,11 +10,7 @@ from loguru import logger
 from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import (
-    BusinessLogicError,
-    PermissionDeniedError,
-    ResourceNotFoundError,
-)
+from app.core.exceptions import BusinessLogicError, PermissionDeniedError, ResourceNotFoundError
 from app.resources.models.resource_models import PermissionLevel, ResourceLibrary
 from app.resources.schemas.course_resource_schemas import (
     ImportError,

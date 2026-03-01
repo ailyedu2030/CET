@@ -9,11 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.services.deepseek_service import DeepSeekService
 from app.shared.models.enums import DifficultyLevel, TrainingType
-from app.training.models.training_models import (
-    Question,
-    TrainingRecord,
-    TrainingSession,
-)
+from app.training.models.training_models import Question, TrainingRecord, TrainingSession
 from app.training.schemas.training_schemas import (
     AdaptiveConfigRequest,
     AdaptiveLearningResponse,

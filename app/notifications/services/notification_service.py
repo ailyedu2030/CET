@@ -420,9 +420,7 @@ class UnifiedNotificationService:
             try:
                 if channel == "in_app":
                     # 系统内消息已通过数据库记录实现, 同时发送WebSocket
-                    from app.notifications.schemas.notification_schemas import (
-                        NotificationResponse,
-                    )
+                    from app.notifications.schemas.notification_schemas import NotificationResponse
 
                     notification_response = NotificationResponse(
                         id=notification.id,

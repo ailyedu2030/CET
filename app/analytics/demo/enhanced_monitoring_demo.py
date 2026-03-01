@@ -5,9 +5,7 @@ import json
 from datetime import datetime
 from typing import Any, Protocol, runtime_checkable
 
-from app.analytics.services.enhanced_performance_monitor import (
-    EnhancedPerformanceMonitor,
-)
+from app.analytics.services.enhanced_performance_monitor import EnhancedPerformanceMonitor
 from app.analytics.services.intelligent_alert_manager import IntelligentAlertManager
 
 

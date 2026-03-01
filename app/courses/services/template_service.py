@@ -7,10 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.courses.models import Course, CourseTemplate
-from app.courses.schemas.course_schemas import (
-    CourseTemplateCreate,
-    CourseTemplateUpdate,
-)
+from app.courses.schemas.course_schemas import CourseTemplateCreate, CourseTemplateUpdate
 
 
 class CourseTemplateService:

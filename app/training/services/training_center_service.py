@@ -10,17 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.ai.services.deepseek_service import DeepSeekService
-from app.shared.models.enums import (
-    DifficultyLevel,
-    GradingStatus,
-    QuestionType,
-    TrainingType,
-)
-from app.training.models.training_models import (
-    Question,
-    TrainingRecord,
-    TrainingSession,
-)
+from app.shared.models.enums import DifficultyLevel, GradingStatus, QuestionType, TrainingType
+from app.training.models.training_models import Question, TrainingRecord, TrainingSession
 from app.training.schemas.training_schemas import (
     GradingResult,
     QuestionFilter,

@@ -13,14 +13,7 @@ from app.shared.config.vector_config import CollectionConfig, vector_config
 logger = logging.getLogger(__name__)
 
 try:
-    from pymilvus import (
-        Collection,
-        CollectionSchema,
-        DataType,
-        FieldSchema,
-        connections,
-        utility,
-    )
+    from pymilvus import Collection, CollectionSchema, DataType, FieldSchema, connections, utility
 
     MILVUS_AVAILABLE = True
 except ImportError:

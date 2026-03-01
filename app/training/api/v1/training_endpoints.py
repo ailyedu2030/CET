@@ -27,9 +27,7 @@ from app.training.schemas.training_schemas import (
 )
 from app.training.services.adaptive_service import AdaptiveLearningService
 from app.training.services.analytics_service import AnalyticsService
-from app.training.services.intelligent_training_loop_service import (
-    IntelligentTrainingLoopService,
-)
+from app.training.services.intelligent_training_loop_service import IntelligentTrainingLoopService
 from app.training.services.precise_adaptive_service import PreciseAdaptiveService
 from app.training.services.training_center_service import TrainingCenterService
 from app.users.models.user_models import User

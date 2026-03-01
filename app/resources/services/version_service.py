@@ -12,11 +12,7 @@ from loguru import logger
 from sqlalchemy import and_, desc, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import (
-    BusinessLogicError,
-    ResourceNotFoundError,
-    ValidationError,
-)
+from app.core.exceptions import BusinessLogicError, ResourceNotFoundError, ValidationError
 from app.resources.models.resource_models import ResourceVersion
 from app.resources.schemas.version_schemas import (
     ChangeType,

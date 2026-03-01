@@ -10,11 +10,7 @@ from sqlalchemy import and_, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import PermissionDeniedError, ResourceNotFoundError
-from app.resources.models.resource_models import (
-    PermissionLevel,
-    ResourceLibrary,
-    ResourceShare,
-)
+from app.resources.models.resource_models import PermissionLevel, ResourceLibrary, ResourceShare
 from app.resources.schemas.permission_schemas import (
     PermissionSettingRequest,
     PermissionSettingResponse,
