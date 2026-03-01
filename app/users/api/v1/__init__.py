@@ -11,7 +11,9 @@ from .basic_info_endpoints import router as basic_info_router
 from .mfa_endpoints import router as mfa_router
 from .permission_endpoints import router as permission_router
 from .registration_endpoints import router as registration_router
-from .registration_verification_endpoints import router as registration_verification_router
+from .registration_verification_endpoints import (
+    router as registration_verification_router,
+)
 from .restore_endpoints import router as restore_router
 
 # 创建用户管理模块的主路由器

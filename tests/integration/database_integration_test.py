@@ -14,14 +14,14 @@ from datetime import datetime
 from typing import Any
 
 import pytest
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.core.database import get_session
 from app.models.content import LearningContent
 from app.models.learning import LearningProgress, LearningSession
 from app.models.user import User
 from app.models.vocabulary import UserVocabularyProgress, Vocabulary
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.database import get_session
 from tests.fixtures.test_data import get_test_user, test_data_generator
 
 
