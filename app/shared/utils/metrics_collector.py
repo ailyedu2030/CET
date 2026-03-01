@@ -208,9 +208,9 @@ class MetricsCollector:
         )
 
         # 聚合指标缓存
-        self.aggregated_metrics: dict[str, dict[AggregationType, AggregatedMetric]] = (
-            defaultdict(dict)
-        )
+        self.aggregated_metrics: dict[
+            str, dict[AggregationType, AggregatedMetric]
+        ] = defaultdict(dict)
 
         # 告警规则
         self.alert_rules: dict[str, dict[str, Any]] = {}
@@ -237,9 +237,7 @@ class MetricsCollector:
     def register_metric(self, definition: MetricDefinition) -> None:
         """注册指标定义"""
         self.metric_definitions[definition.name] = definition
-        self.logger.info(
-            f"注册指标: {definition.name} ({definition.metric_type.value})"
-        )
+        self.logger.info(f"注册指标: {definition.name} ({definition.metric_type.value})")
 
     def add_alert_rule(
         self,
@@ -853,9 +851,7 @@ class PrometheusMetricsCollector:
         )
 
         # 系统信息
-        self.system_info = Info(
-            "cet4_system_info", "CET4系统信息", registry=self.registry
-        )
+        self.system_info = Info("cet4_system_info", "CET4系统信息", registry=self.registry)
 
         # 设置系统信息
         self.system_info.info(

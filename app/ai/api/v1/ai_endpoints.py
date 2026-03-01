@@ -105,9 +105,7 @@ async def get_syllabus(
         )
 
         if not result:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="大纲不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="大纲不存在")
 
         return result  # type: ignore[no-any-return]
     except Exception as e:
@@ -286,9 +284,7 @@ async def get_lesson_plan(
         )
 
         if not result:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="教案不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="教案不存在")
 
         return result  # type: ignore[no-any-return]
     except Exception as e:
@@ -324,9 +320,7 @@ async def update_lesson_plan(
         )
 
         if not result:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="教案不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="教案不存在")
 
         return result  # type: ignore[no-any-return]
     except Exception as e:
@@ -392,9 +386,7 @@ async def delete_lesson_plan(
         )
 
         if not success:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="教案不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="教案不存在")
 
         return {"message": "教案删除成功"}
     except Exception as e:
@@ -673,9 +665,7 @@ async def get_learning_analysis(
         )
 
         if not result:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="分析记录不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="分析记录不存在")
 
         return result  # type: ignore[no-any-return]
     except Exception as e:
@@ -773,9 +763,7 @@ async def get_teaching_adjustment(
         )
 
         if not result:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="调整建议不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="调整建议不存在")
 
         return result  # type: ignore[no-any-return]
     except Exception as e:
@@ -809,9 +797,7 @@ async def update_teaching_adjustment(
         )
 
         if not result:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="调整建议不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="调整建议不存在")
 
         return result  # type: ignore[no-any-return]
     except Exception as e:

@@ -289,9 +289,7 @@ class RegistrationService:
         return {
             "application_id": application.id,
             "status": application.status,
-            "status_description": status_descriptions.get(
-                application.status, "未知状态"
-            ),
+            "status_description": status_descriptions.get(application.status, "未知状态"),
             "submitted_at": application.created_at,
             "reviewed_at": application.reviewed_at,
             "estimated_review_time": estimated_review_time,

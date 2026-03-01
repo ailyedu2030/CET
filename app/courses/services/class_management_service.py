@@ -135,9 +135,7 @@ class ClassManagementService:
                 "schedule": kwargs.get("schedule", {}),
                 "start_date": kwargs.get("start_date"),
                 "end_date": kwargs.get("end_date"),
-                "description": kwargs.get(
-                    "description", f"基于课程 {course.name} 创建的班级"
-                ),
+                "description": kwargs.get("description", f"基于课程 {course.name} 创建的班级"),
             }
 
             # 创建班级数据

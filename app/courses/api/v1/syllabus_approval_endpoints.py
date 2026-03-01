@@ -183,9 +183,7 @@ async def reject_syllabus(
                 detail="拒绝大纲失败",
             )
 
-        logger.info(
-            f"管理员 {current_user.id} 拒绝大纲 {syllabus_id}，原因: {rejection_reason}"
-        )
+        logger.info(f"管理员 {current_user.id} 拒绝大纲 {syllabus_id}，原因: {rejection_reason}")
 
         return {
             "message": "大纲审批拒绝成功",
@@ -390,9 +388,7 @@ async def reject_course(
                 detail="课程不存在或无法拒绝",
             )
 
-        logger.info(
-            f"管理员 {current_user.id} 拒绝课程 {course_id}，原因: {rejection_reason}"
-        )
+        logger.info(f"管理员 {current_user.id} 拒绝课程 {course_id}，原因: {rejection_reason}")
 
         return {
             "message": "课程审批拒绝",

@@ -31,16 +31,12 @@ class ErrorAnalysisResponse(BaseModel):
     error_categories: list[ErrorCategoryResponse] = Field(
         default_factory=list, description="错误分类"
     )
-    error_frequency: dict[str, int] = Field(
-        default_factory=dict, description="错误频率"
-    )
+    error_frequency: dict[str, int] = Field(default_factory=dict, description="错误频率")
     error_trend: dict[str, Any] = Field(default_factory=dict, description="错误趋势")
     weak_knowledge_points: list[dict[str, Any]] = Field(
         default_factory=list, description="薄弱知识点"
     )
-    improvement_suggestions: list[str] = Field(
-        default_factory=list, description="改进建议"
-    )
+    improvement_suggestions: list[str] = Field(default_factory=list, description="改进建议")
     analysis_time: datetime = Field(..., description="分析时间")
 
 
@@ -50,16 +46,12 @@ class ErrorPatternResponse(BaseModel):
     student_id: int = Field(..., description="学生ID")
     analysis_period_days: int = Field(..., description="分析周期天数")
     total_errors: int = Field(..., description="总错误数")
-    error_frequency: dict[str, int] = Field(
-        default_factory=dict, description="错误频率"
-    )
+    error_frequency: dict[str, int] = Field(default_factory=dict, description="错误频率")
     error_trend: dict[str, Any] = Field(default_factory=dict, description="错误趋势")
     weak_knowledge_points: list[dict[str, Any]] = Field(
         default_factory=list, description="薄弱知识点"
     )
-    improvement_suggestions: list[str] = Field(
-        default_factory=list, description="改进建议"
-    )
+    improvement_suggestions: list[str] = Field(default_factory=list, description="改进建议")
     analysis_time: datetime = Field(..., description="分析时间")
 
 
@@ -73,9 +65,7 @@ class KnowledgeGapResponse(BaseModel):
     error_count: int = Field(..., description="错误次数")
     error_rate: float = Field(..., description="错误率")
     mastery_level: str = Field(..., description="掌握程度")
-    error_types: dict[str, int] = Field(
-        default_factory=dict, description="错误类型分布"
-    )
+    error_types: dict[str, int] = Field(default_factory=dict, description="错误类型分布")
     last_error_time: datetime | None = Field(None, description="最后错误时间")
     improvement_priority: float = Field(..., description="改进优先级")
 
@@ -90,9 +80,7 @@ class ReinforcementPlanResponse(BaseModel):
         default_factory=list, description="训练模块"
     )
     estimated_completion_days: int = Field(..., description="预计完成天数")
-    priority_focus_areas: list[str] = Field(
-        default_factory=list, description="重点关注领域"
-    )
+    priority_focus_areas: list[str] = Field(default_factory=list, description="重点关注领域")
 
 
 # ==================== 遗忘曲线相关Schema ====================
@@ -105,9 +93,7 @@ class ForgettingCurveResponse(BaseModel):
     question_id: int = Field(..., description="题目ID")
     current_retention: float = Field(..., description="当前记忆保持率")
     learning_sessions: int = Field(..., description="学习次数")
-    curve_data: list[dict[str, Any]] = Field(
-        default_factory=list, description="曲线数据点"
-    )
+    curve_data: list[dict[str, Any]] = Field(default_factory=list, description="曲线数据点")
     next_review_date: datetime = Field(..., description="下次复习时间")
     mastery_status: str = Field(..., description="掌握状态")
     analysis_time: datetime = Field(..., description="分析时间")
@@ -223,9 +209,7 @@ class KnowledgeDependencyResponse(BaseModel):
         default_factory=list, description="后续知识点"
     )
     dependency_depth: int = Field(..., description="依赖深度")
-    critical_paths: list[list[int]] = Field(
-        default_factory=list, description="关键路径"
-    )
+    critical_paths: list[list[int]] = Field(default_factory=list, description="关键路径")
     influence_scope: int = Field(..., description="影响范围")
     centrality_score: float = Field(..., description="中心性分数")
 
@@ -291,18 +275,14 @@ class ErrorAnalysisRequest(BaseModel):
 
     student_id: int = Field(..., description="学生ID")
     analysis_days: int = Field(30, ge=1, le=365, description="分析天数")
-    include_categories: list[str] = Field(
-        default_factory=list, description="包含的错误类别"
-    )
+    include_categories: list[str] = Field(default_factory=list, description="包含的错误类别")
 
 
 class ReinforcementPlanRequest(BaseModel):
     """强化训练计划请求."""
 
     student_id: int = Field(..., description="学生ID")
-    focus_knowledge_points: list[int] = Field(
-        default_factory=list, description="重点知识点"
-    )
+    focus_knowledge_points: list[int] = Field(default_factory=list, description="重点知识点")
     training_intensity: str = Field("moderate", description="训练强度")
     target_completion_days: int = Field(14, ge=1, le=90, description="目标完成天数")
 

@@ -298,12 +298,8 @@ class UserResourceInteractionModel(BaseModel):
     ip_address = Column(String(45), comment="IP地址")
 
     # 时间戳
-    first_interaction_at = Column(
-        DateTime, default=datetime.utcnow, comment="首次交互时间"
-    )
-    last_interaction_at = Column(
-        DateTime, default=datetime.utcnow, comment="最后交互时间"
-    )
+    first_interaction_at = Column(DateTime, default=datetime.utcnow, comment="首次交互时间")
+    last_interaction_at = Column(DateTime, default=datetime.utcnow, comment="最后交互时间")
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
     updated_at = Column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"

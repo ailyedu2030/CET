@@ -367,9 +367,7 @@ class ReadingService:
         answers: list[ReadingAnswerRecordCreate],
     ) -> ReadingTrainingRecordModel | None:
         """提交阅读答案"""
-        logger.info(
-            f"用户 {user_id} 提交阅读答案: training_record={training_record_id}"
-        )
+        logger.info(f"用户 {user_id} 提交阅读答案: training_record={training_record_id}")
 
         # 获取训练记录
         query = select(ReadingTrainingRecordModel).where(

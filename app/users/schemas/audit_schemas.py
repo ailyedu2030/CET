@@ -181,9 +181,7 @@ class AnomalyDetectionRequest(BaseModel):
         pattern="^(login_anomaly|permission_anomaly|access_anomaly)$",
     )
     time_window_hours: int = Field(24, ge=1, le=168, description="时间窗口（小时）")
-    sensitivity: str = Field(
-        "medium", description="敏感度", pattern="^(low|medium|high)$"
-    )
+    sensitivity: str = Field("medium", description="敏感度", pattern="^(low|medium|high)$")
     user_id: int | None = Field(None, description="特定用户ID")
 
 

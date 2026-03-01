@@ -75,9 +75,7 @@ class WritingTaskBase(BaseModel):
     difficulty: WritingDifficulty = Field(..., description="难度等级")
     word_count_min: int = Field(default=120, description="最少字数", ge=50, le=500)
     word_count_max: int = Field(default=180, description="最多字数", ge=100, le=1000)
-    time_limit_minutes: int = Field(
-        default=30, description="时间限制(分钟)", ge=10, le=120
-    )
+    time_limit_minutes: int = Field(default=30, description="时间限制(分钟)", ge=10, le=120)
     scoring_criteria: dict[str, Any] | None = Field(None, description="评分标准")
     sample_answers: list[str] | None = Field(None, description="参考答案")
     keywords: list[str] | None = Field(None, description="关键词")
@@ -126,9 +124,7 @@ class WritingTaskUpdate(BaseModel):
     difficulty: WritingDifficulty | None = Field(None, description="难度等级")
     word_count_min: int | None = Field(None, description="最少字数", ge=50, le=500)
     word_count_max: int | None = Field(None, description="最多字数", ge=100, le=1000)
-    time_limit_minutes: int | None = Field(
-        None, description="时间限制(分钟)", ge=10, le=120
-    )
+    time_limit_minutes: int | None = Field(None, description="时间限制(分钟)", ge=10, le=120)
     scoring_criteria: dict[str, Any] | None = Field(None, description="评分标准")
     sample_answers: list[str] | None = Field(None, description="参考答案")
     keywords: list[str] | None = Field(None, description="关键词")

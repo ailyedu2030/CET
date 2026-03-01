@@ -14,13 +14,9 @@ class LearningPlanConfigRequest(BaseModel):
     """学习计划配置请求."""
 
     duration_weeks: int = Field(12, ge=1, le=52, description="计划周期（周）")
-    daily_study_time_minutes: int = Field(
-        60, ge=15, le=240, description="每日学习时间（分钟）"
-    )
+    daily_study_time_minutes: int = Field(60, ge=15, le=240, description="每日学习时间（分钟）")
     weekly_sessions: int = Field(5, ge=1, le=7, description="每周学习次数")
-    focus_areas: list[TrainingType] = Field(
-        default_factory=list, description="重点关注领域"
-    )
+    focus_areas: list[TrainingType] = Field(default_factory=list, description="重点关注领域")
     difficulty_preference: str = Field("adaptive", description="难度偏好")
     learning_goals: list[str] = Field(default_factory=list, description="学习目标")
 

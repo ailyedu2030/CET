@@ -617,9 +617,7 @@ class AdaptiveLearningService:
         if suggested_level.value > current_level.value:
             return f"当前正确率{accuracy:.1%}表现优秀，建议提高至{suggested_level.name}难度"
         elif suggested_level.value < current_level.value:
-            return (
-                f"当前正确率{accuracy:.1%}需要强化，建议降至{suggested_level.name}难度"
-            )
+            return f"当前正确率{accuracy:.1%}需要强化，建议降至{suggested_level.name}难度"
         else:
             return f"当前{current_level.name}难度适合，建议保持"
 

@@ -383,7 +383,9 @@ class SystemMonitoringService:
                 "status": (
                     "healthy"
                     if health_score >= 80
-                    else "warning" if health_score >= 60 else "critical"
+                    else "warning"
+                    if health_score >= 60
+                    else "critical"
                 ),
                 "server_resources": {
                     "cpu_usage_percent": cpu_usage,

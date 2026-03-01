@@ -507,9 +507,7 @@ class PerformanceService:
             if resource_type not in self.metrics_history:
                 return PerformanceLevel.FAIR
 
-            recent_metrics = list(self.metrics_history[resource_type])[
-                -10:
-            ]  # 最近10个指标
+            recent_metrics = list(self.metrics_history[resource_type])[-10:]  # 最近10个指标
             if not recent_metrics:
                 return PerformanceLevel.FAIR
 

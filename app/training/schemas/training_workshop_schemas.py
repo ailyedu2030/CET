@@ -15,18 +15,14 @@ class TrainingParameterConfig(BaseModel):
 
     knowledge_points: list[str] = Field(..., description="关联知识点列表")
     vocabulary_library_ids: list[int] = Field(..., description="词汇库ID列表")
-    hot_topics_fusion_rate: int = Field(
-        ..., ge=0, le=100, description="热点融合程度(0-100%)"
-    )
+    hot_topics_fusion_rate: int = Field(..., ge=0, le=100, description="热点融合程度(0-100%)")
     lesson_plan_connection_rate: int = Field(
         ..., ge=0, le=100, description="教案衔接度(0-100%)"
     )
     difficulty_distribution: dict[DifficultyLevel, int] = Field(
         ..., description="难度分布配置"
     )
-    question_count_per_type: dict[TrainingType, int] = Field(
-        ..., description="各类型题目数量"
-    )
+    question_count_per_type: dict[TrainingType, int] = Field(..., description="各类型题目数量")
 
     @validator("difficulty_distribution")
     def validate_difficulty_distribution(
@@ -98,9 +94,7 @@ class WeeklyTrainingConfig(BaseModel):
     """周训练配置."""
 
     week_number: int = Field(..., ge=1, le=52, description="周次")
-    reading_config: ReadingTrainingConfig | None = Field(
-        None, description="阅读理解配置"
-    )
+    reading_config: ReadingTrainingConfig | None = Field(None, description="阅读理解配置")
     writing_config: WritingTrainingConfig | None = Field(None, description="写作配置")
     vocabulary_config: dict[str, Any] | None = Field(None, description="词汇训练配置")
     listening_config: dict[str, Any] | None = Field(None, description="听力训练配置")

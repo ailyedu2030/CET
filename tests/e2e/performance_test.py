@@ -196,9 +196,7 @@ class TestPerformance:
             # 记录系统指标
             metrics.record_system_metrics()
 
-            print(
-                f"完成 {user_count} 个并发用户测试，耗时: {end_time - start_time:.2f}秒"
-            )
+            print(f"完成 {user_count} 个并发用户测试，耗时: {end_time - start_time:.2f}秒")
 
         metrics.stop_monitoring()
 
@@ -216,9 +214,7 @@ class TestPerformance:
         assert summary["response_times"]["avg"] < 2.0  # 平均响应时间小于2秒
         assert summary["response_times"]["p95"] < 5.0  # 95%响应时间小于5秒
         assert summary["system_metrics"]["avg_cpu_usage"] < 80  # 平均CPU使用率小于80%
-        assert (
-            summary["system_metrics"]["avg_memory_usage"] < 80
-        )  # 平均内存使用率小于80%
+        assert summary["system_metrics"]["avg_memory_usage"] < 80  # 平均内存使用率小于80%
 
     async def _simulate_user_session(
         self, user: dict[str, Any], metrics: PerformanceMetrics
@@ -322,9 +318,7 @@ class TestPerformance:
                 )
 
                 # 响应时间断言
-                assert (
-                    avg_response_time < expected_time
-                ), f"API {endpoint} 响应时间超出预期"
+                assert avg_response_time < expected_time, f"API {endpoint} 响应时间超出预期"
 
     async def test_database_performance(
         self, authenticated_users: list[dict[str, Any]]
@@ -360,9 +354,7 @@ class TestPerformance:
             complex_query_time = time.time() - start_time
 
             assert complex_query_response.status_code == 200
-            assert (
-                complex_query_time < 1.0
-            ), f"复杂查询时间过长: {complex_query_time:.3f}秒"
+            assert complex_query_time < 1.0, f"复杂查询时间过长: {complex_query_time:.3f}秒"
 
     async def test_memory_leak_detection(
         self, authenticated_users: list[dict[str, Any]]
@@ -392,9 +384,7 @@ class TestPerformance:
             print(f"内存使用率: {current_memory:.2f}% (增长: {memory_increase:.2f}%)")
 
             # 内存增长不应该超过20%
-            assert (
-                memory_increase < 20
-            ), f"检测到可能的内存泄漏，内存增长: {memory_increase:.2f}%"
+            assert memory_increase < 20, f"检测到可能的内存泄漏，内存增长: {memory_increase:.2f}%"
 
     async def _memory_intensive_operations(self, user: dict[str, Any]):
         """内存密集型操作"""

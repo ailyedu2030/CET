@@ -396,9 +396,7 @@ class ConflictDetectionUtils:
         time_conflicts = [c for c in conflicts if c["type"] == "time_conflict"]
 
         if time_conflicts:
-            recommendations.append(
-                f"发现{len(time_conflicts)}个时间冲突，建议调整课程时间"
-            )
+            recommendations.append(f"发现{len(time_conflicts)}个时间冲突，建议调整课程时间")
 
             # 分析高峰时段
             peak_times: dict[str, int] = {}
@@ -409,8 +407,6 @@ class ConflictDetectionUtils:
 
             if peak_times:
                 most_conflicted = max(peak_times, key=lambda x: peak_times[x])
-                recommendations.append(
-                    f"时间段{most_conflicted}冲突最多，建议避开此时段"
-                )
+                recommendations.append(f"时间段{most_conflicted}冲突最多，建议避开此时段")
 
         return recommendations

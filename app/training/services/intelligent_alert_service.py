@@ -550,7 +550,9 @@ class IntelligentAlertService:
                     k: (
                         json.loads(v)
                         if v.startswith("{") or v.startswith("[")
-                        else float(v) if "." in v else v
+                        else float(v)
+                        if "." in v
+                        else v
                     )
                     for k, v in baseline_data.items()
                 }

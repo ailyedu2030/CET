@@ -56,9 +56,7 @@ async def get_learning_dashboard(
         ) from e
 
 
-@router.get(
-    "/statistics", summary="获取学习统计数据", response_model=LearningStatistics
-)
+@router.get("/statistics", summary="获取学习统计数据", response_model=LearningStatistics)
 async def get_learning_statistics(
     current_user: User = Depends(get_current_active_user),
     db: AsyncSession = Depends(get_db),
@@ -81,9 +79,7 @@ async def get_learning_statistics(
 # ==================== 学习计划管理 ====================
 
 
-@router.get(
-    "/plans", summary="获取学习计划列表", response_model=LearningPlanListResponse
-)
+@router.get("/plans", summary="获取学习计划列表", response_model=LearningPlanListResponse)
 async def get_learning_plans(
     skip: int = 0,
     limit: int = 10,
@@ -140,9 +136,7 @@ async def create_learning_plan(
         ) from e
 
 
-@router.get(
-    "/plans/{plan_id}", summary="获取学习计划详情", response_model=LearningPlanResponse
-)
+@router.get("/plans/{plan_id}", summary="获取学习计划详情", response_model=LearningPlanResponse)
 async def get_learning_plan_detail(
     plan_id: int,
     current_user: User = Depends(get_current_active_user),
@@ -154,9 +148,7 @@ async def get_learning_plan_detail(
         plan = await service.get_plan(plan_id, current_user.id)
 
         if not plan:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="计划不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="计划不存在")
 
         logger.info(f"用户 {current_user.id} 查询学习计划详情: {plan_id}")
 
@@ -170,9 +162,7 @@ async def get_learning_plan_detail(
         ) from e
 
 
-@router.put(
-    "/plans/{plan_id}", summary="更新学习计划", response_model=LearningPlanResponse
-)
+@router.put("/plans/{plan_id}", summary="更新学习计划", response_model=LearningPlanResponse)
 async def update_learning_plan(
     plan_id: int,
     data: LearningPlanUpdate,
@@ -185,9 +175,7 @@ async def update_learning_plan(
         plan = await service.update_plan(plan_id, current_user.id, data)
 
         if not plan:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="计划不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="计划不存在")
 
         logger.info(f"用户 {current_user.id} 更新学习计划: {plan_id}")
 
@@ -213,9 +201,7 @@ async def delete_learning_plan(
         success = await service.delete_plan(plan_id, current_user.id)
 
         if not success:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="计划不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="计划不存在")
 
         logger.info(f"用户 {current_user.id} 删除学习计划: {plan_id}")
 
@@ -235,9 +221,7 @@ async def delete_learning_plan(
 # ==================== 学习任务管理 ====================
 
 
-@router.get(
-    "/tasks", summary="获取学习任务列表", response_model=LearningTaskListResponse
-)
+@router.get("/tasks", summary="获取学习任务列表", response_model=LearningTaskListResponse)
 async def get_learning_tasks(
     skip: int = 0,
     limit: int = 10,
@@ -298,9 +282,7 @@ async def create_learning_task(
         ) from e
 
 
-@router.put(
-    "/tasks/{task_id}", summary="更新学习任务", response_model=LearningTaskResponse
-)
+@router.put("/tasks/{task_id}", summary="更新学习任务", response_model=LearningTaskResponse)
 async def update_learning_task(
     task_id: int,
     data: LearningTaskUpdate,
@@ -313,9 +295,7 @@ async def update_learning_task(
         task = await service.update_task(task_id, current_user.id, data)
 
         if not task:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="任务不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="任务不存在")
 
         logger.info(f"用户 {current_user.id} 更新学习任务: {task_id}")
 
@@ -341,9 +321,7 @@ async def delete_learning_task(
         success = await service.delete_task(task_id, current_user.id)
 
         if not success:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="任务不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="任务不存在")
 
         logger.info(f"用户 {current_user.id} 删除学习任务: {task_id}")
 
@@ -363,9 +341,7 @@ async def delete_learning_task(
 # ==================== 学习进度管理 ====================
 
 
-@router.post(
-    "/progress", summary="记录学习进度", response_model=LearningProgressResponse
-)
+@router.post("/progress", summary="记录学习进度", response_model=LearningProgressResponse)
 async def record_learning_progress(
     data: LearningProgressCreate,
     current_user: User = Depends(get_current_active_user),
@@ -559,9 +535,7 @@ async def update_learning_reminder(
         reminder = await service.update_reminder(reminder_id, current_user.id, data)
 
         if not reminder:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="提醒不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="提醒不存在")
 
         logger.info(f"用户 {current_user.id} 更新学习提醒: {reminder_id}")
 
@@ -590,9 +564,7 @@ async def delete_learning_reminder(
         success = await service.delete_reminder(reminder_id, current_user.id)
 
         if not success:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="提醒不存在"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="提醒不存在")
 
         logger.info(f"用户 {current_user.id} 删除学习提醒: {reminder_id}")
 

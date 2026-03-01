@@ -19,14 +19,10 @@ class CourseBase(BaseModel):
     difficulty_level: DifficultyLevel = Field(
         DifficultyLevel.ELEMENTARY, description="难度等级"
     )
-    share_level: CourseShareLevel = Field(
-        CourseShareLevel.PRIVATE, description="共享级别"
-    )
+    share_level: CourseShareLevel = Field(CourseShareLevel.PRIVATE, description="共享级别")
     syllabus: dict[str, Any] = Field(default_factory=dict, description="教学大纲")
     teaching_plan: dict[str, Any] = Field(default_factory=dict, description="教学计划")
-    resource_config: dict[str, Any] = Field(
-        default_factory=dict, description="资源配置"
-    )
+    resource_config: dict[str, Any] = Field(default_factory=dict, description="资源配置")
 
 
 class CourseCreate(CourseBase):
@@ -127,9 +123,7 @@ class CourseTemplateBase(BaseModel):
     description: str | None = Field(None, description="模板描述")
     category: str | None = Field(None, max_length=50, description="模板分类")
     template_data: dict[str, Any] = Field(..., description="模板数据")
-    default_settings: dict[str, Any] = Field(
-        default_factory=dict, description="默认设置"
-    )
+    default_settings: dict[str, Any] = Field(default_factory=dict, description="默认设置")
     is_public: bool = Field(False, description="是否公开")
 
 

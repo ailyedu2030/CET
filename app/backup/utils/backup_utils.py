@@ -275,7 +275,9 @@ class DatabaseDumper:
                 "backup_type": (
                     "data_only"
                     if data_only
-                    else "schema_only" if schema_only else "full"
+                    else "schema_only"
+                    if schema_only
+                    else "full"
                 ),
             }
 

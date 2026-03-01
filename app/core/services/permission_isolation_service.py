@@ -323,9 +323,7 @@ class PermissionIsolationService:
                 raise BusinessLogicError(f"权限申请 {request_id} 不存在")
 
             if request_record["status"] != "pending":
-                raise BusinessLogicError(
-                    f"权限申请已处理，状态：{request_record['status']}"
-                )
+                raise BusinessLogicError(f"权限申请已处理，状态：{request_record['status']}")
 
             # 更新申请状态
             request_record["status"] = "approved" if approved else "rejected"

@@ -211,9 +211,7 @@ class SystemRulesConfigRequest(BaseModel):
     allow_multiple_teachers: bool = Field(default=False, description="允许多教师")
 
     # 教室排课规则
-    classroom_single_occupancy: bool = Field(
-        default=True, description="教室单一占用规则"
-    )
+    classroom_single_occupancy: bool = Field(default=True, description="教室单一占用规则")
     allow_classroom_sharing: bool = Field(default=False, description="允许教室共享")
     conflict_detection_enabled: bool = Field(default=True, description="启用冲突检测")
 
@@ -340,9 +338,7 @@ class AdminOperationLogResponse(BaseModel):
     admin_id: int = Field(..., description="管理员ID")
     operation_type: str = Field(..., description="操作类型")
     operation_target: str = Field(..., description="操作目标")
-    operation_details: dict[str, Any] = Field(
-        default_factory=dict, description="操作详情"
-    )
+    operation_details: dict[str, Any] = Field(default_factory=dict, description="操作详情")
     ip_address: str | None = Field(None, description="IP地址")
     user_agent: str | None = Field(None, description="用户代理")
     result: str = Field(..., description="操作结果")

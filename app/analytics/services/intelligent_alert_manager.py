@@ -396,9 +396,7 @@ class IntelligentAlertManager:
                             metric_type, trend_analysis
                         )
 
-                        if (
-                            predicted_time and predicted_time < 3600
-                        ):  # 1小时内可能超阈值
+                        if predicted_time and predicted_time < 3600:  # 1小时内可能超阈值
                             predictive_alerts.append(
                                 {
                                     "type": f"predictive_{metric_type}",

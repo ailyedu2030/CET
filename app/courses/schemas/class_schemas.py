@@ -84,16 +84,12 @@ class ClassBatchCreate(BaseModel):
 
     course_id: int = Field(..., description="课程ID")
     teacher_id: int | None = Field(None, description="教师ID")
-    class_prefix: str = Field(
-        ..., min_length=1, max_length=50, description="班级名称前缀"
-    )
+    class_prefix: str = Field(..., min_length=1, max_length=50, description="班级名称前缀")
     class_count: int = Field(..., ge=1, le=20, description="创建班级数量")
     max_students_per_class: int = Field(50, ge=1, le=200, description="每班最大学生数")
     start_date: date | None = Field(None, description="开始日期")
     end_date: date | None = Field(None, description="结束日期")
-    schedule_template: dict[str, Any] = Field(
-        default_factory=dict, description="课程表模板"
-    )
+    schedule_template: dict[str, Any] = Field(default_factory=dict, description="课程表模板")
 
 
 class ClassAssignmentRequest(BaseModel):

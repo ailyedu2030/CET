@@ -77,9 +77,7 @@ class RestoreService:
                     request.backup_id
                 )
                 if not validation_result["valid"]:
-                    raise Exception(
-                        f"备份文件验证失败: {validation_result.get('error')}"
-                    )
+                    raise Exception(f"备份文件验证失败: {validation_result.get('error')}")
 
             # 更新状态为运行中
             restore_info.status = "running"
@@ -566,6 +564,4 @@ class RestoreService:
         elif duration_seconds < 3600:
             return f"{duration_seconds // 60}分钟"
         else:
-            return (
-                f"{duration_seconds // 3600}小时{(duration_seconds % 3600) // 60}分钟"
-            )
+            return f"{duration_seconds // 3600}小时{(duration_seconds % 3600) // 60}分钟"

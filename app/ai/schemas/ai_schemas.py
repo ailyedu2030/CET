@@ -16,9 +16,7 @@ class SyllabusGenerationRequest(BaseModel):
     course_id: int = Field(..., description="课程ID")
     title: str = Field(..., max_length=255, description="大纲标题")
     course_objectives: list[str] = Field(..., min_length=1, description="课程目标列表")
-    source_materials: dict[str, Any] = Field(
-        ..., description="源材料信息(教材、考纲等)"
-    )
+    source_materials: dict[str, Any] = Field(..., description="源材料信息(教材、考纲等)")
     target_hours: int = Field(..., gt=0, description="总课时数")
     difficulty_level: str = Field(
         ..., description="难度级别: beginner/intermediate/advanced"
@@ -36,9 +34,7 @@ class SyllabusCreate(BaseModel):
     content: dict[str, Any] = Field(..., description="大纲内容结构化数据")
     version: str = Field(default="1.0.0", description="版本号")
     ai_generated: bool = Field(default=True, description="是否AI生成")
-    source_materials: dict[str, Any] | None = Field(
-        None, description="生成大纲的源材料信息"
-    )
+    source_materials: dict[str, Any] | None = Field(None, description="生成大纲的源材料信息")
 
 
 class SyllabusUpdate(BaseModel):
@@ -95,13 +91,9 @@ class LessonPlanGenerationRequest(BaseModel):
     title: str = Field(..., max_length=255, description="教案标题")
     duration_minutes: int = Field(default=45, gt=0, description="课程时长(分钟)")
     focus_areas: list[str] = Field(..., description="重点关注领域")
-    student_level: str = Field(
-        ..., description="学生水平: beginner/intermediate/advanced"
-    )
+    student_level: str = Field(..., description="学生水平: beginner/intermediate/advanced")
     class_size: int | None = Field(None, gt=0, description="班级规模")
-    available_resources: list[str] = Field(
-        default_factory=list, description="可用资源列表"
-    )
+    available_resources: list[str] = Field(default_factory=list, description="可用资源列表")
 
 
 class LessonPlanCreate(BaseModel):
@@ -182,13 +174,9 @@ class ScheduleGenerationRequest(BaseModel):
     class_id: int = Field(..., description="班级ID")
     start_date: datetime = Field(..., description="开始日期")
     end_date: datetime = Field(..., description="结束日期")
-    preferred_time_slots: list[dict[str, str]] = Field(
-        ..., description="偏好时间段列表"
-    )
+    preferred_time_slots: list[dict[str, str]] = Field(..., description="偏好时间段列表")
     classroom_preferences: list[str] | None = Field(None, description="教室偏好列表")
-    exclude_dates: list[datetime] = Field(
-        default_factory=list, description="排除日期列表"
-    )
+    exclude_dates: list[datetime] = Field(default_factory=list, description="排除日期列表")
     lessons_per_week: int = Field(default=2, gt=0, description="每周课时数")
 
 
@@ -334,9 +322,7 @@ class SmartSuggestionRequest(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    context_type: str = Field(
-        ..., description="上下文类型: syllabus/lesson_plan/schedule"
-    )
+    context_type: str = Field(..., description="上下文类型: syllabus/lesson_plan/schedule")
     context_data: dict[str, Any] = Field(..., description="上下文数据")
     suggestion_type: str = Field(
         ..., description="建议类型: optimization/alternative/troubleshooting"
@@ -373,9 +359,7 @@ class LearningAnalysisRequest(BaseModel):
     analysis_period: str = Field(
         ..., description="分析周期", pattern=r"^(weekly|monthly|semester)$"
     )
-    include_students: list[int] | None = Field(
-        None, description="包含的学生ID列表，为空则分析全班"
-    )
+    include_students: list[int] | None = Field(None, description="包含的学生ID列表，为空则分析全班")
     additional_params: dict[str, Any] | None = Field(None, description="额外分析参数")
 
 
@@ -445,9 +429,7 @@ class TeachingAdjustmentRequest(BaseModel):
     adjustment_focus: str = Field(
         ..., description="调整重点", pattern=r"^(content|pace|method|assessment)$"
     )
-    target_students: list[int] | None = Field(
-        None, description="目标学生ID列表，为空则全班"
-    )
+    target_students: list[int] | None = Field(None, description="目标学生ID列表，为空则全班")
     current_issues: list[str] | None = Field(None, description="当前发现的问题")
     priority_level: str | None = Field(
         "medium", description="优先级", pattern=r"^(high|medium|low)$"
@@ -468,9 +450,7 @@ class TeachingAdjustmentCreate(BaseModel):
     title: str = Field(..., max_length=200, description="调整建议标题")
     description: str = Field(..., description="详细调整说明")
     adjustments: dict[str, Any] = Field(..., description="具体调整方案")
-    target_students: list[int] = Field(
-        default_factory=list, description="目标学生ID列表"
-    )
+    target_students: list[int] = Field(default_factory=list, description="目标学生ID列表")
     expected_outcome: str | None = Field(None, description="预期效果")
     implementation_timeline: str | None = Field(None, description="实施时间线")
     ai_generated: bool = Field(True, description="是否AI生成")
@@ -490,9 +470,7 @@ class TeachingAdjustmentUpdate(BaseModel):
     )
     implementation_date: datetime | None = Field(None, description="开始实施日期")
     feedback: str | None = Field(None, description="实施反馈")
-    effectiveness_rating: int | None = Field(
-        None, ge=1, le=5, description="效果评分(1-5)"
-    )
+    effectiveness_rating: int | None = Field(None, ge=1, le=5, description="效果评分(1-5)")
 
 
 class TeachingAdjustmentResponse(BaseModel):
@@ -529,9 +507,7 @@ class TeachingAdjustmentListResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    adjustments: list[TeachingAdjustmentResponse] = Field(
-        ..., description="调整建议列表"
-    )
+    adjustments: list[TeachingAdjustmentResponse] = Field(..., description="调整建议列表")
     total: int = Field(..., ge=0, description="总数量")
     page: int = Field(..., ge=1, description="当前页码")
     size: int = Field(..., ge=1, description="每页大小")

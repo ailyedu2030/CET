@@ -175,9 +175,7 @@ class FallbackService:
 
     def _get_preset_response(self, task_type: str) -> dict[str, Any]:
         """获取预设响应"""
-        return self.preset_responses.get(
-            task_type, {"message": "服务暂时不可用，请稍后重试"}
-        )
+        return self.preset_responses.get(task_type, {"message": "服务暂时不可用，请稍后重试"})
 
     def _generate_cache_key(self, request: dict[str, Any]) -> str:
         """生成缓存键"""

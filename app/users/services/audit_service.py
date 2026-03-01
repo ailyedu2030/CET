@@ -347,9 +347,7 @@ class AuditService:
             # 应用分页
             paginated_activities = filtered_activities[offset : offset + limit]
 
-            logger.info(
-                f"获取用户活动记录: 用户 {user_id}, {len(paginated_activities)} 条记录"
-            )
+            logger.info(f"获取用户活动记录: 用户 {user_id}, {len(paginated_activities)} 条记录")
 
             return [
                 type("UserActivity", (), activity) for activity in paginated_activities

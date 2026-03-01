@@ -621,9 +621,7 @@ class CacheService:
             l2_hit_rate = stats["l2_cache"]["hit_rate"]
             if l2_hit_rate < 0.5:  # 命中率低于50%
                 # 建议增加Redis内存或调整TTL
-                optimization_results["actions_taken"].append(
-                    "建议增加Redis内存配置或调整TTL策略"
-                )
+                optimization_results["actions_taken"].append("建议增加Redis内存配置或调整TTL策略")
 
             # 清理过期缓存
             expired_count = await self._cleanup_expired_cache()

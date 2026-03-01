@@ -313,9 +313,7 @@ class ForgettingCurveService:
         for item in review_items:
             # 计算优先级分数
             retention_urgency = 1.0 - item["retention_rate"]  # 保持率越低越紧急
-            time_urgency = min(
-                item["days_since_last_review"] / 30.0, 1.0
-            )  # 时间越长越紧急
+            time_urgency = min(item["days_since_last_review"] / 30.0, 1.0)  # 时间越长越紧急
 
             priority_score = retention_urgency * 0.7 + time_urgency * 0.3
 

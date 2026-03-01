@@ -206,9 +206,7 @@ async def get_active_alerts(
 
         # 获取系统监控数据
         system_monitoring = await service.get_system_operations_monitoring()
-        teaching_dashboard = await service.get_teaching_monitoring_dashboard(
-            1
-        )  # 最近1天
+        teaching_dashboard = await service.get_teaching_monitoring_dashboard(1)  # 最近1天
 
         # 收集所有告警
         all_alerts = []

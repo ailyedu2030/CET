@@ -68,9 +68,7 @@ class StudentExcelImportUtils:
                     missing_columns.append(cn_name)
 
             if missing_columns:
-                result.validation_errors.append(
-                    f"缺少必需列: {', '.join(missing_columns)}"
-                )
+                result.validation_errors.append(f"缺少必需列: {', '.join(missing_columns)}")
                 return result
 
             # 逐行验证数据
@@ -107,8 +105,7 @@ class StudentExcelImportUtils:
                     # 添加到成功列表
                     result.created_students.append(
                         {
-                            "row_number": index
-                            + 2,  # Excel行号（从2开始，因为第1行是标题）
+                            "row_number": index + 2,  # Excel行号（从2开始，因为第1行是标题）
                             "data": validated_data.model_dump(),
                         }
                     )
@@ -201,9 +198,7 @@ class StudentExcelImportUtils:
             # 检查文件扩展名
             file_ext = Path(file_path).suffix.lower()
             if file_ext not in [".xlsx", ".xls"]:
-                validation_result["errors"].append(
-                    "文件格式不正确，请上传Excel文件(.xlsx或.xls)"
-                )
+                validation_result["errors"].append("文件格式不正确，请上传Excel文件(.xlsx或.xls)")
                 return validation_result
 
             # 读取文件信息
@@ -221,9 +216,7 @@ class StudentExcelImportUtils:
 
             # 检查行数限制（建议单次导入不超过1000条）
             if len(df) > 1000:
-                validation_result["warnings"].append(
-                    f"数据量较大({len(df)}行)，建议分批导入以提高成功率"
-                )
+                validation_result["warnings"].append(f"数据量较大({len(df)}行)，建议分批导入以提高成功率")
 
             # 检查必需列
             missing_columns = []
