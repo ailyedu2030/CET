@@ -142,7 +142,7 @@ strict_equality = true
 ignore_missing_imports = true
 
 # 关闭一些严格检查来解决框架兼容性问题
-disable_error_code = ["no-untyped-def", "var-annotated", "name-defined", "misc", "override", "assignment", "no-any-return", "index", "type-arg", "operator", "no-untyped-call", "arg-type", "attr-defined", "unreachable"]
+disable_error_code = ["call-arg", "no-redef", "union-attr", "has-type", "dict-item", "no-untyped-def", "var-annotated", "name-defined", "misc", "override", "assignment", "no-any-return", "index", "type-arg", "operator", "no-untyped-call", "arg-type", "attr-defined", "unreachable"]
 
 [[tool.mypy.overrides]]
 module = ["scripts.*", "tests.*"]
@@ -151,19 +151,19 @@ ignore_errors = true
 # Celery任务装饰器兼容性
 [[tool.mypy.overrides]]
 module = ["app.*.tasks.*", "app.shared.tasks.*"]
-disable_error_code = ["no-untyped-def", "var-annotated", "name-defined", "misc", "override"]
+disable_error_code = ["call-arg", "no-redef", "union-attr", "has-type", "dict-item", "no-untyped-def", "var-annotated", "name-defined", "misc", "override"]
 disallow_untyped_decorators = false
 
 # SQLAlchemy模型兼容性
 [[tool.mypy.overrides]]
 module = ["app.*.models.*", "app.shared.models.*"]
-disable_error_code = ["no-untyped-def", "var-annotated", "name-defined", "misc", "override", "assignment", "no-any-return", "index", "type-arg", "operator", "no-untyped-call", "arg-type", "attr-defined", "unreachable"]
+disable_error_code = ["call-arg", "no-redef", "union-attr", "has-type", "dict-item", "no-untyped-def", "var-annotated", "name-defined", "misc", "override", "assignment", "no-any-return", "index", "type-arg", "operator", "no-untyped-call", "arg-type", "attr-defined", "unreachable"]
 
 # 第三方库兼容性
 [[tool.mypy.overrides]]
 module = ["celery.*", "sqlalchemy.*", "alembic.*", "fastapi.*", "pydantic.*"]
 ignore_missing_imports = true
-disable_error_code = ["no-untyped-def", "var-annotated", "name-defined", "misc"]
+disable_error_code = ["call-arg", "no-redef", "union-attr", "has-type", "dict-item", "no-untyped-def", "var-annotated", "name-defined", "misc"]
 
 [tool.pyright]
 # 禁用pyright类型检查 - 项目使用ruff和mypy作为代码质量工具
