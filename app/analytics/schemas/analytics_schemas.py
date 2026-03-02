@@ -335,7 +335,7 @@ class PredictionRequest(BaseModel):
 class PredictionResult(BaseModel):
     """预测结果模式."""
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
     metric_name: str = Field(..., description="指标名称")
     prediction_type: str = Field(..., description="预测类型")

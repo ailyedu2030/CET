@@ -3,6 +3,7 @@
 from .course_models import (
     Class,
     ClassResourceHistory,
+    ClassStudent,
     Course,
     CourseAssignmentHistory,
     CourseTemplate,
@@ -17,6 +18,7 @@ __all__ = [
     "Course",
     "Class",
     "ClassResourceHistory",
+    "ClassStudent",
     "CourseAssignmentHistory",
     "CourseTemplate",
     "CourseVersion",

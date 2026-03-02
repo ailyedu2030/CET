@@ -28,7 +28,7 @@ class LoginResponse(BaseModel):
     refresh_token: str = Field(..., description="刷新令牌")
     token_type: str = Field(default="bearer", description="令牌类型")
     expires_in: int = Field(..., description="过期时间（秒）")
-    user_info: "UserInfo" = Field(..., description="用户信息")
+    user_info: Any = Field(..., description="用户信息")
 
 
 class UserInfo(BaseModel):
