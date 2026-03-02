@@ -323,3 +323,4 @@ redis_data/
 
 # PostgreSQL data
 postgres_data/
+.gitnexus
