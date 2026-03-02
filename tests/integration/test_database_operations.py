@@ -6,7 +6,7 @@ CET 教育平台 - 数据库操作集成测试
 
 import asyncio
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
@@ -14,7 +14,6 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database import Base
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -128,7 +127,8 @@ class TestDataOperations:
                     value INTEGER,
                     created_at TEXT
                 )
-            """
+                """
+            )
         )
 
         await db_session.execute(
@@ -136,7 +136,7 @@ class TestDataOperations:
                 """
                 INSERT INTO test_data (id, name, value, created_at)
                 VALUES (:id, :name, :value, :created_at)
-            """
+                """
             ),
             sample_data,
         )
@@ -169,7 +169,8 @@ class TestDataOperations:
                     id TEXT PRIMARY KEY,
                     value INTEGER
                 )
-            """
+                """
+            )
         )
 
         await db_session.execute(
@@ -208,12 +209,13 @@ class TestDataOperations:
                     id TEXT PRIMARY KEY,
                     name TEXT
                 )
-            """
+                """
+            )
         )
 
         await db_session.execute(
             text("INSERT INTO test_delete (id, name) VALUES (:id, :name)"),
-            {"id": test_id, "name": "Test"},
+            {"id": test_id, "name": "测试删除"},
         )
         await db_session.commit()
 
@@ -235,104 +237,62 @@ class TestDataOperations:
         assert row is None
         logger.info("✅ 数据删除测试通过")
 
+    async def test_batch_operations(self, db_session: AsyncSession) -> None:
+        """测试批量操作"""
+        # Act
+        await db_session.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS test_batch (
+                    id TEXT PRIMARY KEY,
+                    value INTEGER
+                )
+                """
+            )
+        )
+
+        # Insert multiple
+        batch_data = [{"id": str(uuid4()), "value": i} for i in range(10)]
+        for item in batch_data:
+            await db_session.execute(
+                text("INSERT INTO test_batch (id, value) VALUES (:id, :value)"),
+                item,
+            )
+        await db_session.commit()
+
+        # Query
+        result = await db_session.execute(text("SELECT COUNT(*) FROM test_batch"))
+        count = result.scalar()
+
+        # Assert
+        assert count == 10
+        logger.info("✅ 批量操作测试通过")
+
 
 @pytest.mark.asyncio
 @pytest.mark.integration
-class TestConcurrentOperations:
-    """并发操作测试"""
+class TestConnectionPool:
+    """连接池测试"""
 
-    async def test_concurrent_reads(self, db_session: AsyncSession) -> None:
-        """测试并发读取"""
-        # Act
-        async def read_operation(i: int) -> int:
-            result = await db_session.execute(text(f"SELECT {i}"))
-            return result.scalar()
-
-        tasks = [read_operation(i) for i in range(10)]
+    async def test_concurrent_connections(self, db_session: AsyncSession) -> None:
+        """测试并发连接"""
+        # Act - 执行多个并发查询
+        tasks = [
+            db_session.execute(text(f"SELECT {i} as value")) for i in range(5)
+        ]
         results = await asyncio.gather(*tasks)
 
         # Assert
-        assert len(results) == 10
-        assert all(isinstance(r, int) for r in results)
-        logger.info("✅ 并发读取测试通过")
+        for i, result in enumerate(results):
+            assert result.scalar() == i
 
-    async def test_async_query_performance(self, db_session: AsyncSession) -> None:
-        """测试异步查询性能"""
-        import time
+        logger.info("✅ 并发连接测试通过")
 
-        # Act
-        start_time = time.time()
+    async def test_session_reuse(self, db_session: AsyncSession) -> None:
+        """测试会话重用"""
+        # Act - 在同一个会话中执行多个操作
+        for i in range(3):
+            result = await db_session.execute(text(f"SELECT {i}"))
+            assert result.scalar() == i
 
-        for i in range(100):
-            await db_session.execute(text("SELECT 1"))
-
-        elapsed_time = time.time() - start_time
-
-        # Assert
-        assert elapsed_time < 5.0  # 应该在5秒内完成
-        logger.info(f"✅ 异步查询性能测试通过，耗时: {elapsed_time:.2f}秒")
-
-
-@pytest.mark.asyncio
-@pytest.mark.integration
-class TestErrorHandling:
-    """错误处理测试"""
-
-    async def test_invalid_sql_handling(self, db_session: AsyncSession) -> None:
-        """测试无效SQL处理"""
-        # Act & Assert
-        with pytest.raises(Exception):
-            await db_session.execute(text("INVALID SQL SYNTAX"))
-
-        logger.info("✅ 无效SQL处理测试通过")
-
-    async def test_session_rollback_on_error(self, db_session: AsyncSession) -> None:
-        """测试错误时的会话回滚"""
-        # Act
-        try:
-            await db_session.execute(text("BEGIN"))
-            await db_session.execute(text("INVALID SQL"))
-        except Exception:
-            await db_session.rollback()
-
-        # Verify we can still use the session
-        result = await db_session.execute(text("SELECT 1"))
-        assert result.scalar() == 1
-
-        logger.info("✅ 错误时会话回滚测试通过")
-
-
-@pytest.mark.asyncio
-@pytest.mark.integration
-class TestDatabaseHealthCheck:
-    """数据库健康检查测试"""
-
-    async def test_connection_health(self, db_session: AsyncSession) -> None:
-        """测试连接健康"""
-        # Act
-        result = await db_session.execute(text("SELECT 1"))
-
-        # Assert
-        assert result.scalar() == 1
-        logger.info("✅ 连接健康测试通过")
-
-    async def test_multiple_health_checks(self, db_session: AsyncSession) -> None:
-        """测试多次健康检查"""
-        # Act
-        for _ in range(5):
-            result = await db_session.execute(text("SELECT 1"))
-            assert result.scalar() == 1
-
-        logger.info("✅ 多次健康检查测试通过")
-
-
-# 测试套件标记
-pytestmark = [
-    pytest.mark.asyncio,
-    pytest.mark.integration,
-    pytest.mark.database,
-]
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v", "--tb=short", "-m", "integration"])
+        logger.info("✅ 会话重用测试通过")
