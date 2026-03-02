@@ -21,7 +21,7 @@ faker==20.1.0
 freezegun==1.4.0
 
 # 代码质量工具
-ruff==0.1.15
+ruff==0.6.0
 black==23.12.1
 isort==5.13.2
 mypy==1.8.0

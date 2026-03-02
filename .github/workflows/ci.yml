@@ -45,7 +45,7 @@ jobs:
     - name: Run Ruff linting
       run: |
         echo "::group::Ruff Linting"
-        ruff check . --format=github
+        ruff check . --output-format=github
         echo "::endgroup::"
         
     - name: Run Black formatting check
@@ -57,7 +57,7 @@ jobs:
     - name: Run isort import sorting check
       run: |
         echo "::group::isort Import Sorting Check"
-        ruff check . --select=I --format=github
+        ruff check . --select=I --output-format=github
         echo "::endgroup::"
         
     - name: Run MyPy type checking
