@@ -1,0 +1,45 @@
+# CET 教育平台 - 测试依赖
+# 英语四级学习系统 - 测试环境依赖
+
+# 测试框架
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+pytest-benchmark==4.0.0
+pytest-timeout==2.2.0
+pytest-xdist==3.5.0
+
+# HTTP API 测试
+httpx==0.25.2
+fastapi==0.104.1
+
+# 数据库测试
+sqlalchemy==2.0.23
+asyncpg==0.29.0
+psycopg2-binary==2.9.9
+
+# 模拟和测试工具
+faker==20.1.0
+freezegun==1.4.0
+responses==0.24.1
+pytest-httpserver==1.0.10
+
+# 代码质量工具
+ruff==0.1.15
+black==23.12.1
+isort==5.13.2
+mypy==1.8.0
+bandit==1.7.7
+safety==2.4.0
+
+# 系统监控（可选）
+psutil==5.9.6
+
+# 其他工具
+python-dotenv==1.0.0
+structlog==23.2.0
+loguru==0.7.2
+
+# 覆盖率报告
+coverage[toml]==7.4.1
