@@ -177,10 +177,14 @@ jobs:
     - name: Run database migrations
       run: |
         export ENVIRONMENT=test
+        export DATABASE_URL="postgresql://test_user:test_password@localhost:5432/test_db"
         alembic upgrade head
         
     - name: Run unit tests with coverage
       run: |
+        export DATABASE_URL="postgresql://test_user:test_password@localhost:5432/test_db"
+        export REDIS_URL="redis://localhost:6379/0"
+        export ENVIRONMENT=test
         echo "::group::Backend Unit Tests"
         pytest tests/ -v --cov=app --cov-report=xml --cov-report=html --cov-report=term
         echo "::endgroup::"
