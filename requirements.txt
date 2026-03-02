@@ -112,3 +112,6 @@ twilio==8.11.0
 
 # 健康检查
 healthcheck==1.3.3
+
+# 系统监控
+psutil==5.9.6
