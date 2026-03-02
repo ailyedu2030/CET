@@ -66,7 +66,9 @@ class Settings:
         if database_url:
             # 移除 asyncpg 前缀以获取基础 URL
             if database_url.startswith("postgresql+asyncpg://"):
-                database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+                database_url = database_url.replace(
+                    "postgresql+asyncpg://", "postgresql://", 1
+                )
             return database_url
         # 否则从单独的配置构建
         return (
@@ -79,6 +81,7 @@ class Settings:
     def DATABASE_URL(self) -> str:
         """数据库连接字符串（兼容性属性）."""
         return self.database_url
+
     # Redis配置
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
     REDIS_PORT: int = int(os.getenv("REDIS_PORT", "6379"))
