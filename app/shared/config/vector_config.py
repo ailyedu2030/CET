@@ -79,7 +79,7 @@ class IndexConfig(BaseModel):
 class EmbeddingConfig(BaseModel):
     """向量化配置"""
 
-    model_config = {"from_attributes": True}
+    model_config = {"from_attributes": True, "protected_namespaces": ()}
 
     model_name: str = Field(..., description="嵌入模型名称")
     dimension: int = Field(..., description="向量维度")

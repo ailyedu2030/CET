@@ -13,7 +13,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "015_training_workshop"
-down_revision = "a494cbc08dd5"
+down_revision = "add_user_security_fields"
 branch_labels = None
 depends_on = None
 

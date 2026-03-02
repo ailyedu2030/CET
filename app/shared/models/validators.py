@@ -102,6 +102,10 @@ class TrainingValidator(BaseModel):
 
 class AIConfigValidator(BaseModel):
     """AI配置验证器."""
+    model_config = {"protected_namespaces": ()}
+
+    model_name: str = Field(pattern=r"^(deepseek-chat|deepseek-reasoner)$")
+    """AI配置验证器."""
 
     model_name: str = Field(pattern=r"^(deepseek-chat|deepseek-reasoner)$")
     temperature: float = Field(ge=0.0, le=2.0)

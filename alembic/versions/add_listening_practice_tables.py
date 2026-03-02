@@ -15,7 +15,7 @@ from alembic import op
 
 # revision identifiers
 revision: str = "add_listening_practice_tables"
-down_revision: str | Sequence[str] | None = "a494cbc08dd5"
+down_revision: str | Sequence[str] | None = "017_add_class_student"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 

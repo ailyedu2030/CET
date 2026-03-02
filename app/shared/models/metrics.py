@@ -51,6 +51,11 @@ class TeachingMetrics(BaseModel):
 
 class AIServiceMetrics(BaseModel):
     """AI服务指标模型."""
+    model_config = {"protected_namespaces": ()}
+
+    service_type: str
+    model_type: str
+    """AI服务指标模型."""
 
     service_type: str
     model_type: str
