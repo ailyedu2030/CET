@@ -232,7 +232,7 @@ class KnowledgeGraph:
         if course_id:
             # TODO: 实现按课程ID过滤知识点
             # 需要通过ResourceLibrary关联来过滤
-            logger.info(f"按课程过滤知识点功能待实现，当前加载所有知识点")
+            logger.info("按课程过滤知识点功能待实现，当前加载所有知识点")
 
         result = await self.db.execute(stmt)
         knowledge_points = result.scalars().all()

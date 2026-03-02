@@ -3,7 +3,8 @@
 import asyncio
 import logging
 from datetime import datetime, timedelta
-from typing import Any, AsyncGenerator, Generator
+from typing import Any
+from collections.abc import AsyncGenerator, Generator
 from uuid import uuid4
 
 import pytest
@@ -11,8 +12,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.core.config import settings
-from app.core.database import Base, get_session
+from app.core.database import Base
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -61,13 +61,13 @@ async def db_session(test_db: Any) -> AsyncGenerator[AsyncSession, None]:
 
 
 @pytest.fixture
-async def override_get_session(db_session: AsyncSession) -> AsyncGenerator:
-    """覆盖get_session依赖以使用测试数据库."""
+async def override_get_db(db_session: AsyncSession) -> AsyncGenerator:
+    """覆盖get_db依赖以使用测试数据库."""
 
-    async def _override_get_session() -> AsyncGenerator[AsyncSession, None]:
+    async def _override_get_db() -> AsyncGenerator[AsyncSession, None]:
         yield db_session
 
-    return _override_get_session
+    return _override_get_db
 
 
 @pytest.fixture

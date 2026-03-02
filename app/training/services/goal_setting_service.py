@@ -333,11 +333,13 @@ class GoalSettingService:
         """保存目标到数据库."""
         try:
             goal_obj = TrainingGoalModel(
-                user_id=goal.get('user_id', 0),
-                goal_title=goal.get('goal_title', ''),
-                goal_description=goal.get('goal_description', ''),
-                target_date=datetime.fromisoformat(goal['target_date']) if goal.get('target_date') else None,
-                status=goal.get('status', 'active'),
+                user_id=goal.get("user_id", 0),
+                goal_title=goal.get("goal_title", ""),
+                goal_description=goal.get("goal_description", ""),
+                target_date=datetime.fromisoformat(goal["target_date"])
+                if goal.get("target_date")
+                else None,
+                status=goal.get("status", "active"),
             )
             self.db.add(goal_obj)
             await self.db.commit()
@@ -358,22 +360,24 @@ class GoalSettingService:
     ) -> list[dict[str, Any]]:
         """加载学生目标."""
         try:
-            stmt = select(TrainingGoalModel).where(TrainingGoalModel.user_id == student_id)
+            stmt = select(TrainingGoalModel).where(
+                TrainingGoalModel.user_id == student_id
+            )
             if status:
                 stmt = stmt.where(TrainingGoalModel.status == status)
             stmt = stmt.order_by(desc(TrainingGoalModel.created_at))
-            
+
             result = await self.db.execute(stmt)
             goals = result.scalars().all()
-            
+
             return [
                 {
-                    'goal_id': g.id,
-                    'goal_title': g.goal_title,
-                    'goal_description': g.goal_description,
-                    'target_date': g.target_date.isoformat() if g.target_date else None,
-                    'status': g.status,
-                    'created_at': g.created_at.isoformat() if g.created_at else None,
+                    "goal_id": g.id,
+                    "goal_title": g.goal_title,
+                    "goal_description": g.goal_description,
+                    "target_date": g.target_date.isoformat() if g.target_date else None,
+                    "status": g.status,
+                    "created_at": g.created_at.isoformat() if g.created_at else None,
                 }
                 for g in goals
             ]
@@ -397,13 +401,15 @@ class GoalSettingService:
             if not goal:
                 return None
             return {
-                'goal_id': goal.id,
-                'goal_title': goal.goal_title,
-                'goal_description': goal.goal_description,
-                'target_date': goal.target_date.isoformat() if goal.target_date else None,
-                'status': goal.status,
-                'user_id': goal.user_id,
-                'created_at': goal.created_at.isoformat() if goal.created_at else None,
+                "goal_id": goal.id,
+                "goal_title": goal.goal_title,
+                "goal_description": goal.goal_description,
+                "target_date": goal.target_date.isoformat()
+                if goal.target_date
+                else None,
+                "status": goal.status,
+                "user_id": goal.user_id,
+                "created_at": goal.created_at.isoformat() if goal.created_at else None,
             }
         except Exception as e:
             logger.warning(f"加载目标失败: {e}")

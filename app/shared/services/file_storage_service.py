@@ -532,7 +532,9 @@ class FileStorageService:
     ) -> list[FileMetadata]:
         """查询文件列表"""
         try:
-            stmt = select(FileMetadataModel).where(FileMetadataModel.is_deleted == False)
+            stmt = select(FileMetadataModel).where(
+                FileMetadataModel.is_deleted == False
+            )
 
             conditions = []
             if user_id:
@@ -545,7 +547,11 @@ class FileStorageService:
             if conditions:
                 stmt = stmt.where(and_(*conditions))
 
-            stmt = stmt.order_by(FileMetadataModel.upload_time.desc()).limit(limit).offset(offset)
+            stmt = (
+                stmt.order_by(FileMetadataModel.upload_time.desc())
+                .limit(limit)
+                .offset(offset)
+            )
             result = await self.db.execute(stmt)
             db_files = result.scalars().all()
 
@@ -617,7 +623,9 @@ class FileStorageService:
             self.db.add(db_permission)
             await self.db.commit()
             await self.db.refresh(db_permission)
-            logger.info(f"Saved file permission: {permission.file_id} - {permission.permission}")
+            logger.info(
+                f"Saved file permission: {permission.file_id} - {permission.permission}"
+            )
         except Exception as e:
             await self.db.rollback()
             logger.error(f"Failed to save file permission: {str(e)}")
@@ -630,7 +638,7 @@ class FileStorageService:
         try:
             stmt = select(FilePermissionModel).where(
                 FilePermissionModel.file_id == file_id,
-                FilePermissionModel.permission == permission
+                FilePermissionModel.permission == permission,
             )
             if user_id:
                 stmt = stmt.where(FilePermissionModel.user_id == user_id)
@@ -654,9 +662,10 @@ class FileStorageService:
         """检查显式权限"""
         try:
             from datetime import datetime
+
             stmt = select(FilePermissionModel).where(
                 FilePermissionModel.file_id == file_id,
-                FilePermissionModel.permission == permission
+                FilePermissionModel.permission == permission,
             )
 
             conditions = []

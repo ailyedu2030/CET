@@ -518,7 +518,10 @@ class AchievementService:
         # 其他成就类型的数据获取 - 从训练记录中查询
         try:
             from sqlalchemy import func, select
-            stmt = select(func.count(TrainingSessionModel.id).label('total_sessions')).where(TrainingSessionModel.user_id == user_id)
+
+            stmt = select(
+                func.count(TrainingSessionModel.id).label("total_sessions")
+            ).where(TrainingSessionModel.user_id == user_id)
             result = await self.db.execute(stmt)
             row = result.first()
             if row and row.total_sessions:
@@ -558,19 +561,24 @@ class AchievementService:
     async def _get_recent_learning_data(self, user_id: int) -> dict[str, Any]:
         """获取用户最近的学习数据."""
         try:
-            from sqlalchemy import func, select
+            from sqlalchemy import select, desc
             from datetime import datetime, timedelta
-            
+
             # 获取最近7天的训练记录
             recent_date = datetime.now() - timedelta(days=7)
-            stmt = select(TrainingSessionModel).where(
-                TrainingSessionModel.user_id == user_id,
-                TrainingSessionModel.created_at >= recent_date
-            ).order_by(desc(TrainingSessionModel.created_at)).limit(10)
-            
+            stmt = (
+                select(TrainingSessionModel)
+                .where(
+                    TrainingSessionModel.user_id == user_id,
+                    TrainingSessionModel.created_at >= recent_date,
+                )
+                .order_by(desc(TrainingSessionModel.created_at))
+                .limit(10)
+            )
+
             result = await self.db.execute(stmt)
             sessions = result.scalars().all()
-            
+
             return {
                 "recent_sessions": [
                     {
@@ -578,11 +586,13 @@ class AchievementService:
                         "training_type": s.training_type,
                         "accuracy_rate": s.accuracy_rate,
                         "total_questions": s.total_questions,
-                        "completed_at": s.completed_at.isoformat() if s.completed_at else None
+                        "completed_at": s.completed_at.isoformat()
+                        if s.completed_at
+                        else None,
                     }
                     for s in sessions
                 ],
-                "total_recent_sessions": len(sessions)
+                "total_recent_sessions": len(sessions),
             }
         except Exception as e:
             logger.warning(f"获取最近学习数据失败: {e}")
@@ -636,24 +646,29 @@ class AchievementService:
         """计算学习连续天数."""
         try:
             from datetime import datetime, timedelta
-            from sqlalchemy import func, select
-            
+            from sqlalchemy import func, select, desc
+
             # 查找用户最近的学习日期
             recent_date = datetime.now() - timedelta(days=365)
-            stmt = select(
-                func.date(TrainingSessionModel.created_at).label('study_date'),
-                func.count(TrainingSessionModel.id).label('session_count')
-            ).where(
-                TrainingSessionModel.user_id == user_id,
-                TrainingSessionModel.created_at >= recent_date
-            ).group_by(func.date(TrainingSessionModel.created_at)).order_by(desc('study_date'))
-            
+            stmt = (
+                select(
+                    func.date(TrainingSessionModel.created_at).label("study_date"),
+                    func.count(TrainingSessionModel.id).label("session_count"),
+                )
+                .where(
+                    TrainingSessionModel.user_id == user_id,
+                    TrainingSessionModel.created_at >= recent_date,
+                )
+                .group_by(func.date(TrainingSessionModel.created_at))
+                .order_by(desc("study_date"))
+            )
+
             result = await self.db.execute(stmt)
             dates = result.all()
-            
+
             if not dates:
                 return 0
-            
+
             # 计算连续天数
             streak = 0
             today = datetime.now().date()
@@ -672,11 +687,11 @@ class AchievementService:
         """统计用户完成的总题目数."""
         try:
             from sqlalchemy import func, select
-            
-            stmt = select(
-                func.sum(TrainingSessionModel.total_questions)
-            ).where(TrainingSessionModel.user_id == user_id)
-            
+
+            stmt = select(func.sum(TrainingSessionModel.total_questions)).where(
+                TrainingSessionModel.user_id == user_id
+            )
+
             result = await self.db.execute(stmt)
             total = result.scalar()
             return total or 0
@@ -688,14 +703,12 @@ class AchievementService:
         """计算用户平均正确率."""
         try:
             from sqlalchemy import func, select
-            
-            stmt = select(
-                func.avg(TrainingSessionModel.accuracy_rate)
-            ).where(
+
+            stmt = select(func.avg(TrainingSessionModel.accuracy_rate)).where(
                 TrainingSessionModel.user_id == user_id,
-                TrainingSessionModel.accuracy_rate > 0
+                TrainingSessionModel.accuracy_rate > 0,
             )
-            
+
             result = await self.db.execute(stmt)
             avg = result.scalar()
             return float(avg or 0.0)

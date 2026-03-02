@@ -568,10 +568,10 @@ class ProgressMonitoringService:
         try:
             from sqlalchemy import and_, func, select
             from app.training.models.training_models import TrainingRecord
-            
+
             # 获取计划的总任务数和完成数
             stmt = select(
-                func.count(TrainingRecord.id).label('total'),
+                func.count(TrainingRecord.id).label("total"),
             ).where(
                 and_(
                     TrainingRecord.student_id == student_id,
@@ -580,10 +580,10 @@ class ProgressMonitoringService:
             )
             result = await self.db.execute(stmt)
             total = result.scalar() or 0
-            
+
             # 计算完成率（假设有完成标记的记录）
             completed_stmt = select(
-                func.count(TrainingRecord.id).label('completed'),
+                func.count(TrainingRecord.id).label("completed"),
             ).where(
                 and_(
                     TrainingRecord.student_id == student_id,
@@ -593,7 +593,7 @@ class ProgressMonitoringService:
             )
             completed_result = await self.db.execute(completed_stmt)
             completed = completed_result.scalar() or 0
-            
+
             return completed / max(total, 1)
         except Exception as e:
             logger.warning(f"计算完成率失败: {e}")

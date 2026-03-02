@@ -382,11 +382,15 @@ class LearningPlanService:
         try:
             plan = LearningPlanModel(
                 student_id=student_id,
-                plan_title=plan_data.get('plan_title', ''),
-                plan_type=plan_data.get('plan_type', 'weekly'),
-                status=plan_data.get('status', 'active'),
-                start_date=datetime.fromisoformat(plan_data['start_date']) if plan_data.get('start_date') else None,
-                end_date=datetime.fromisoformat(plan_data['end_date']) if plan_data.get('end_date') else None,
+                plan_title=plan_data.get("plan_title", ""),
+                plan_type=plan_data.get("plan_type", "weekly"),
+                status=plan_data.get("status", "active"),
+                start_date=datetime.fromisoformat(plan_data["start_date"])
+                if plan_data.get("start_date")
+                else None,
+                end_date=datetime.fromisoformat(plan_data["end_date"])
+                if plan_data.get("end_date")
+                else None,
             )
             self.db.add(plan)
             await self.db.commit()
@@ -401,10 +405,14 @@ class LearningPlanService:
         """获取最新的计划ID."""
         try:
             from sqlalchemy import desc
-            stmt = select(LearningPlanModel).where(
-                LearningPlanModel.student_id == student_id
-            ).order_by(desc(LearningPlanModel.created_at)).limit(1)
-            
+
+            stmt = (
+                select(LearningPlanModel)
+                .where(LearningPlanModel.student_id == student_id)
+                .order_by(desc(LearningPlanModel.created_at))
+                .limit(1)
+            )
+
             result = await self.db.execute(stmt)
             plan = result.scalar_one_or_none()
             return plan.id if plan else None
@@ -419,13 +427,13 @@ class LearningPlanService:
             if not plan:
                 return None
             return {
-                'plan_id': plan.id,
-                'student_id': plan.student_id,
-                'plan_title': plan.plan_title,
-                'plan_type': plan.plan_type,
-                'status': plan.status,
-                'start_date': plan.start_date.isoformat() if plan.start_date else None,
-                'end_date': plan.end_date.isoformat() if plan.end_date else None,
+                "plan_id": plan.id,
+                "student_id": plan.student_id,
+                "plan_title": plan.plan_title,
+                "plan_type": plan.plan_type,
+                "status": plan.status,
+                "start_date": plan.start_date.isoformat() if plan.start_date else None,
+                "end_date": plan.end_date.isoformat() if plan.end_date else None,
             }
         except Exception as e:
             logger.warning(f"加载学习计划失败: {e}")

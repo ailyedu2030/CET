@@ -67,7 +67,9 @@ class CompetitionModel(BaseModel):
     __tablename__ = "competitions"
 
     id = Column(Integer, primary_key=True, index=True)
-    competition_id = Column(String(50), unique=True, index=True, nullable=False, comment="竞赛唯一标识")
+    competition_id = Column(
+        String(50), unique=True, index=True, nullable=False, comment="竞赛唯一标识"
+    )
 
     # 基本信息
     title = Column(String(200), nullable=False, comment="竞赛标题")
@@ -82,7 +84,9 @@ class CompetitionModel(BaseModel):
     duration_minutes = Column(Integer, default=30, comment="竞赛时长（分钟）")
 
     # 组织者信息
-    organizer_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="组织者用户ID")
+    organizer_id = Column(
+        Integer, ForeignKey("users.id"), nullable=False, comment="组织者用户ID"
+    )
 
     # 参与限制
     max_participants = Column(Integer, default=100, comment="最大参与人数")
@@ -109,9 +113,13 @@ class CompetitionModel(BaseModel):
     )
 
     # 关系
-    registrations = relationship("CompetitionRegistrationModel", back_populates="competition")
+    registrations = relationship(
+        "CompetitionRegistrationModel", back_populates="competition"
+    )
     sessions = relationship("CompetitionSessionModel", back_populates="competition")
-    leaderboard_entries = relationship("LeaderboardEntryModel", back_populates="competition")
+    leaderboard_entries = relationship(
+        "LeaderboardEntryModel", back_populates="competition"
+    )
 
     def __repr__(self: "CompetitionModel") -> str:
         return f"<CompetitionModel(id={getattr(self, 'id', None)}, title={getattr(self, 'title', None)})>"
@@ -127,12 +135,21 @@ class CompetitionRegistrationModel(BaseModel):
     __tablename__ = "competition_registrations"
 
     id = Column(Integer, primary_key=True, index=True)
-    registration_id = Column(String(50), unique=True, index=True, nullable=False, comment="报名唯一标识")
+    registration_id = Column(
+        String(50), unique=True, index=True, nullable=False, comment="报名唯一标识"
+    )
 
     # 关联信息
-    competition_id = Column(String(50), ForeignKey("competitions.competition_id"), nullable=False, comment="竞赛ID")
+    competition_id = Column(
+        String(50),
+        ForeignKey("competitions.competition_id"),
+        nullable=False,
+        comment="竞赛ID",
+    )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="用户ID")
-    team_id = Column(Integer, ForeignKey("teams.id"), nullable=True, comment="团队ID（团队赛）")
+    team_id = Column(
+        Integer, ForeignKey("teams.id"), nullable=True, comment="团队ID（团队赛）"
+    )
 
     # 报名信息
     registered_at = Column(DateTime, default=datetime.utcnow, comment="报名时间")
@@ -161,10 +178,17 @@ class CompetitionSessionModel(BaseModel):
     __tablename__ = "competition_sessions"
 
     id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(String(50), unique=True, index=True, nullable=False, comment="会话唯一标识")
+    session_id = Column(
+        String(50), unique=True, index=True, nullable=False, comment="会话唯一标识"
+    )
 
     # 关联信息
-    competition_id = Column(String(50), ForeignKey("competitions.competition_id"), nullable=False, comment="竞赛ID")
+    competition_id = Column(
+        String(50),
+        ForeignKey("competitions.competition_id"),
+        nullable=False,
+        comment="竞赛ID",
+    )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="用户ID")
 
     # 会话信息
@@ -201,7 +225,12 @@ class LeaderboardEntryModel(BaseModel):
     id = Column(Integer, primary_key=True, index=True)
 
     # 关联信息
-    competition_id = Column(String(50), ForeignKey("competitions.competition_id"), nullable=False, comment="竞赛ID")
+    competition_id = Column(
+        String(50),
+        ForeignKey("competitions.competition_id"),
+        nullable=False,
+        comment="竞赛ID",
+    )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="用户ID")
 
     # 排名信息

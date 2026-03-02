@@ -426,8 +426,12 @@ class CompetitionService:
         )
         # Set duration_minutes based on competition type if available
         if competition["competition_type"] in self.competition_types:
-            db_competition.duration_minutes = self.competition_types[competition["competition_type"]]["duration_minutes"]
-            db_competition.scoring_method = self.competition_types[competition["competition_type"]]["scoring_method"]
+            db_competition.duration_minutes = self.competition_types[
+                competition["competition_type"]
+            ]["duration_minutes"]
+            db_competition.scoring_method = self.competition_types[
+                competition["competition_type"]
+            ]["scoring_method"]
         self.db.add(db_competition)
         await self.db.commit()
         await self.db.refresh(db_competition)
@@ -441,7 +445,7 @@ class CompetitionService:
             # 获取竞赛类型和难度
             competition_type = competition_data.get("competition_type")
             difficulty = competition_data.get("difficulty_level", "intermediate")
-            
+
             # 基础题库配置
             question_pool_config = {
                 "competition_type": competition_type,
@@ -450,7 +454,7 @@ class CompetitionService:
                 "questions": [],
                 "prepared_at": datetime.now().isoformat(),
             }
-            
+
             # 根据竞赛类型确定题目数量和类型
             type_config = self.competition_types.get(competition_type, {})
             if competition_type == "speed_challenge":
@@ -461,14 +465,19 @@ class CompetitionService:
                 question_types = ["multiple_choice", "short_answer"]
             elif competition_type == "endurance_marathon":
                 question_count = 100
-                question_types = ["multiple_choice", "true_false", "short_answer", "essay"]
+                question_types = [
+                    "multiple_choice",
+                    "true_false",
+                    "short_answer",
+                    "essay",
+                ]
             elif competition_type == "team_battle":
                 question_count = 40
                 question_types = ["multiple_choice", "team_challenge"]
             else:  # daily_challenge
                 question_count = 15
                 question_types = ["multiple_choice"]
-            
+
             # 生成示例题目（实际项目中应从题库服务获取）
             questions = []
             for i in range(question_count):
@@ -477,35 +486,49 @@ class CompetitionService:
                     "type": question_types[i % len(question_types)],
                     "difficulty": difficulty,
                     "question": f"这是第 {i+1} 道题目，类型：{question_types[i % len(question_types)]}",
-                    "options": ["选项A", "选项B", "选项C", "选项D"] if question_types[i % len(question_types)] == "multiple_choice" else [],
-                    "correct_answer": "选项A" if question_types[i % len(question_types)] == "multiple_choice" else "正确答案",
-                    "points": 10 if difficulty == "easy" else 20 if difficulty == "intermediate" else 30,
-                    "time_limit": 30 if question_types[i % len(question_types)] == "multiple_choice" else 60,
+                    "options": ["选项A", "选项B", "选项C", "选项D"]
+                    if question_types[i % len(question_types)] == "multiple_choice"
+                    else [],
+                    "correct_answer": "选项A"
+                    if question_types[i % len(question_types)] == "multiple_choice"
+                    else "正确答案",
+                    "points": 10
+                    if difficulty == "easy"
+                    else 20
+                    if difficulty == "intermediate"
+                    else 30,
+                    "time_limit": 30
+                    if question_types[i % len(question_types)] == "multiple_choice"
+                    else 60,
                 }
                 questions.append(question)
-            
+
             # 随机打乱题目顺序（确保公平性）
             import random
+
             random.shuffle(questions)
-            
+
             question_pool_config["total_questions"] = len(questions)
             question_pool_config["questions"] = questions
-            
+
             # 更新竞赛的题库配置
             result = await self.db.execute(
-                select(CompetitionModel).where(CompetitionModel.competition_id == competition_id)
+                select(CompetitionModel).where(
+                    CompetitionModel.competition_id == competition_id
+                )
             )
             db_competition = result.scalar_one_or_none()
             if db_competition:
                 db_competition.question_pool = question_pool_config
                 await self.db.commit()
                 await self.db.refresh(db_competition)
-                
+
             logger.info("准备竞赛题库: %s, 题目数量: %d", competition_id, len(questions))
-            
+
         except Exception as e:
             logger.error("准备竞赛题库失败: %s", str(e))
             raise
+
     async def _publish_competition_announcement(
         self, competition: dict[str, Any]
     ) -> None:
@@ -532,25 +555,25 @@ class CompetitionService:
                 "published_at": datetime.now().isoformat(),
                 "target_audience": "all_students",  # 可以根据entry_requirements调整
             }
-            
+
             # TODO: 这里可以集成通知系统，发送给相关用户
             # 例如：
             # - 发送系统通知给所有学生
             # - 发送邮件给关注竞赛的用户
             # - 创建活动动态
-            
+
             # 记录公告发布日志
             logger.info(
-                "发布竞赛公告: %s, 目标受众: %s", 
-                competition["title"], 
-                announcement["target_audience"]
+                "发布竞赛公告: %s, 目标受众: %s",
+                competition["title"],
+                announcement["target_audience"],
             )
-            
+
             # TODO: 如果有班级或小组限制，可以针对性通知
             # entry_requirements = competition.get('entry_requirements', {})
             # if 'target_classes' in entry_requirements:
             #     await self._notify_classes(entry_requirements['target_classes'], announcement)
-            
+
         except Exception as e:
             logger.error("发布竞赛公告失败: %s", str(e))
             # 公告发布失败不应阻止竞赛创建，只记录日志
@@ -558,12 +581,14 @@ class CompetitionService:
     async def _get_competition(self, competition_id: str) -> dict[str, Any] | None:
         """获取竞赛信息."""
         result = await self.db.execute(
-            select(CompetitionModel).where(CompetitionModel.competition_id == competition_id)
+            select(CompetitionModel).where(
+                CompetitionModel.competition_id == competition_id
+            )
         )
         db_competition = result.scalar_one_or_none()
         if not db_competition:
             return None
-        
+
         return {
             "competition_id": db_competition.competition_id,
             "organizer_id": db_competition.organizer_id,
@@ -594,10 +619,10 @@ class CompetitionService:
             # TODO: 实现封禁检查逻辑
             # if await self._is_user_banned(user_id, competition['competition_id']):
             #     raise ValueError("您已被禁止参加此竞赛")
-            
+
             # 2. 检查参赛要求
             entry_requirements = competition.get("entry_requirements", {})
-            
+
             # 检查最低积分要求
             if "min_points" in entry_requirements:
                 min_points = entry_requirements["min_points"]
@@ -606,7 +631,7 @@ class CompetitionService:
                 # if user_points < min_points:
                 #     raise ValueError(f"您的积分不足，需要至少 {min_points} 积分")
                 logger.debug("检查积分要求: %d", min_points)
-            
+
             # 检查历史竞赛参与次数限制
             if "max_previous_competitions" in entry_requirements:
                 max_prev = entry_requirements["max_previous_competitions"]
@@ -614,7 +639,7 @@ class CompetitionService:
                 user_competitions = await self._get_user_competitions(user_id)
                 if len(user_competitions) > max_prev:
                     raise ValueError(f"您已参加过 {len(user_competitions)} 次竞赛，超出限制")
-            
+
             # 3. 检查用户在同类竞赛中的历史表现（可选）
             if "min_accuracy_rate" in entry_requirements:
                 min_accuracy = entry_requirements["min_accuracy_rate"]
@@ -623,26 +648,29 @@ class CompetitionService:
                 # if avg_accuracy < min_accuracy:
                 #     raise ValueError(f"您的历史准确率不足，需要至少 {min_accuracy*100}%")
                 logger.debug("检查准确率要求: %.2f", min_accuracy)
-            
+
             # 4. 检查用户是否已经完成过该竞赛（如果不允许重复参加）
             if entry_requirements.get("no_repeat", False):
-                user_result = await self._get_user_competition_result(user_id, competition["competition_id"])
+                user_result = await self._get_user_competition_result(
+                    user_id, competition["competition_id"]
+                )
                 if user_result.get("score", 0) > 0:
                     raise ValueError("您已经参加过此竞赛，不能重复报名")
-            
+
             # 5. 检查用户状态是否正常
             # TODO: 实现用户状态检查
             # if not await self._is_user_active(user_id):
             #     raise ValueError("您的账户状态异常，无法报名")
-            
+
             logger.info("用户 %d 报名资格检查通过: %s", user_id, competition["competition_id"])
-            
+
         except ValueError:
             # 直接重新抛出 ValueError（我们自己抛出的资格不符合错误）
             raise
         except Exception as e:
             logger.error("检查报名资格失败: %s", str(e))
             raise ValueError("报名资格检查失败，请稍后再试")
+
     async def _is_already_registered(self, user_id: int, competition_id: str) -> bool:
         """检查是否已报名."""
         result = await self.db.execute(
@@ -650,7 +678,7 @@ class CompetitionService:
                 and_(
                     CompetitionRegistrationModel.user_id == user_id,
                     CompetitionRegistrationModel.competition_id == competition_id,
-                    CompetitionRegistrationModel.status == "registered"
+                    CompetitionRegistrationModel.status == "registered",
                 )
             )
         )
@@ -681,7 +709,9 @@ class CompetitionService:
     ) -> None:
         """更新参与人数."""
         result = await self.db.execute(
-            select(CompetitionModel).where(CompetitionModel.competition_id == competition_id)
+            select(CompetitionModel).where(
+                CompetitionModel.competition_id == competition_id
+            )
         )
         db_competition = result.scalar_one_or_none()
         if db_competition:
@@ -713,14 +743,14 @@ class CompetitionService:
                 and_(
                     CompetitionSessionModel.user_id == user_id,
                     CompetitionSessionModel.competition_id == competition_id,
-                    CompetitionSessionModel.status == "active"
+                    CompetitionSessionModel.status == "active",
                 )
             )
         )
         db_session = result.scalar_one_or_none()
         if not db_session:
             return None
-        
+
         return {
             "session_id": db_session.session_id,
             "competition_id": db_session.competition_id,
@@ -775,12 +805,14 @@ class CompetitionService:
     async def _get_competition_session(self, session_id: str) -> dict[str, Any] | None:
         """获取竞赛会话."""
         result = await self.db.execute(
-            select(CompetitionSessionModel).where(CompetitionSessionModel.session_id == session_id)
+            select(CompetitionSessionModel).where(
+                CompetitionSessionModel.session_id == session_id
+            )
         )
         db_session = result.scalar_one_or_none()
         if not db_session:
             return None
-        
+
         return {
             "session_id": db_session.session_id,
             "competition_id": db_session.competition_id,
@@ -797,7 +829,9 @@ class CompetitionService:
     async def _end_competition_session(self, session_id: str) -> None:
         """结束竞赛会话."""
         result = await self.db.execute(
-            select(CompetitionSessionModel).where(CompetitionSessionModel.session_id == session_id)
+            select(CompetitionSessionModel).where(
+                CompetitionSessionModel.session_id == session_id
+            )
         )
         db_session = result.scalar_one_or_none()
         if db_session:
@@ -834,26 +868,28 @@ class CompetitionService:
     ) -> dict[str, Any]:
         """更新竞赛会话."""
         result = await self.db.execute(
-            select(CompetitionSessionModel).where(CompetitionSessionModel.session_id == session_id)
+            select(CompetitionSessionModel).where(
+                CompetitionSessionModel.session_id == session_id
+            )
         )
         db_session = result.scalar_one_or_none()
         if not db_session:
             raise ValueError("Session not found")
-        
+
         # Update answers list
         current_answers = db_session.answers or []
         current_answers.append(answer_record)
         db_session.answers = current_answers
-        
+
         # Update score
         db_session.score += answer_record["score"]
-        
+
         # Update current question index
         db_session.current_question_index += 1
-        
+
         await self.db.commit()
         await self.db.refresh(db_session)
-        
+
         return {
             "current_question_index": db_session.current_question_index,
             "score": db_session.score,
@@ -863,24 +899,30 @@ class CompetitionService:
         """完成竞赛会话."""
         # First, end the session
         await self._end_competition_session(session_id)
-        
+
         # Get the session
         session = await self._get_competition_session(session_id)
         if not session:
             raise ValueError("Session not found")
-        
+
         # Calculate completion time
-        completion_time = int((session["end_time"] - session["start_time"]).total_seconds())
-        
+        completion_time = int(
+            (session["end_time"] - session["start_time"]).total_seconds()
+        )
+
         # Calculate accuracy
         total_questions = len(session["questions"]) if session["questions"] else 0
         correct_answers = sum(1 for a in session["answers"] if a.get("is_correct"))
-        accuracy_rate = correct_answers / total_questions if total_questions > 0 else 0.0
-        
+        accuracy_rate = (
+            correct_answers / total_questions if total_questions > 0 else 0.0
+        )
+
         # Get total participants
         competition_result = await self._get_competition(session["competition_id"])
-        total_participants = competition_result.get("participant_count", 0) if competition_result else 0
-        
+        total_participants = (
+            competition_result.get("participant_count", 0) if competition_result else 0
+        )
+
         # Create leaderboard entry
         leaderboard_entry = LeaderboardEntryModel(
             competition_id=session["competition_id"],
@@ -894,7 +936,7 @@ class CompetitionService:
         self.db.add(leaderboard_entry)
         await self.db.commit()
         await self.db.refresh(leaderboard_entry)
-        
+
         return {
             "final_score": session["score"],
             "accuracy_rate": accuracy_rate,
@@ -913,7 +955,7 @@ class CompetitionService:
             .limit(limit)
         )
         entries = result.scalars().all()
-        
+
         return [
             {
                 "user_id": entry.user_id,
@@ -947,18 +989,18 @@ class CompetitionService:
             )
         )
         total_participants = participants_result.scalar() or 0
-        
+
         # Completed sessions
         sessions_result = await self.db.execute(
             select(func.count(CompetitionSessionModel.id)).where(
                 and_(
                     CompetitionSessionModel.competition_id == competition_id,
-                    CompetitionSessionModel.status == "completed"
+                    CompetitionSessionModel.status == "completed",
                 )
             )
         )
         completed_sessions = sessions_result.scalar() or 0
-        
+
         # Average score
         avg_score_result = await self.db.execute(
             select(func.avg(LeaderboardEntryModel.final_score)).where(
@@ -966,7 +1008,7 @@ class CompetitionService:
             )
         )
         average_score = avg_score_result.scalar() or 0.0
-        
+
         # Average time
         avg_time_result = await self.db.execute(
             select(func.avg(LeaderboardEntryModel.completion_time)).where(
@@ -975,9 +1017,11 @@ class CompetitionService:
         )
         average_time_seconds = avg_time_result.scalar() or 0
         average_time = int(average_time_seconds / 60) if average_time_seconds > 0 else 0
-        
-        completion_rate = completed_sessions / total_participants if total_participants > 0 else 0.0
-        
+
+        completion_rate = (
+            completed_sessions / total_participants if total_participants > 0 else 0.0
+        )
+
         return {
             "total_participants": total_participants,
             "completion_rate": completion_rate,
@@ -994,14 +1038,14 @@ class CompetitionService:
             )
         )
         registrations = registrations_result.scalars().all()
-        
+
         competitions = []
         for reg in registrations:
             # Get competition details
             comp = await self._get_competition(reg.competition_id)
             if comp:
                 competitions.append(comp)
-        
+
         return competitions
 
     async def _get_user_competition_result(
@@ -1012,26 +1056,26 @@ class CompetitionService:
             select(LeaderboardEntryModel).where(
                 and_(
                     LeaderboardEntryModel.user_id == user_id,
-                    LeaderboardEntryModel.competition_id == competition_id
+                    LeaderboardEntryModel.competition_id == competition_id,
                 )
             )
         )
         entry = result.scalar_one_or_none()
-        
+
         if not entry:
             return {"score": 0.0, "rank": None, "completion_time": None}
-        
+
         # Calculate rank
         rank_result = await self.db.execute(
             select(func.count(LeaderboardEntryModel.id)).where(
                 and_(
                     LeaderboardEntryModel.competition_id == competition_id,
-                    LeaderboardEntryModel.final_score > entry.final_score
+                    LeaderboardEntryModel.final_score > entry.final_score,
                 )
             )
         )
         rank = (rank_result.scalar() or 0) + 1
-        
+
         return {
             "score": entry.final_score,
             "rank": rank,

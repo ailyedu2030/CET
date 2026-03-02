@@ -322,7 +322,12 @@ class ReminderUtils:
 
         except Exception as e:
             logger.error(f"获取提醒统计失败: {str(e)}")
-            return {"error": str(e), "total_reminders": 0, "by_type": {}, "statistics_generated_at": None}
+            return {
+                "error": str(e),
+                "total_reminders": 0,
+                "by_type": {},
+                "statistics_generated_at": None,
+            }
 
     # ==================== 私有方法 ====================
 

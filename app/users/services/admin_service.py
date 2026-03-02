@@ -583,20 +583,19 @@ class AdminService:
 
             # 3. 检查资质状态
             if teacher_profile.qualification_status != "approved":
-                raise ValueError(
-                    f"教师资质状态无效: {teacher_profile.qualification_status}"
-                )
+                raise ValueError(f"教师资质状态无效: {teacher_profile.qualification_status}")
 
             # 4. 检查资质是否过期
             today = date.today()
-            if teacher_profile.next_review_date and teacher_profile.next_review_date.date() < today:
+            if (
+                teacher_profile.next_review_date
+                and teacher_profile.next_review_date.date() < today
+            ):
                 raise ValueError("教师资质已过期，需要重新审核")
 
             # 5. 检查教学状态
             if teacher_profile.teaching_status != "active":
-                raise ValueError(
-                    f"教师教学状态无效: {teacher_profile.teaching_status}"
-                )
+                raise ValueError(f"教师教学状态无效: {teacher_profile.teaching_status}")
 
             # 6. 验证专业背景匹配（简化实现）
             from app.courses.models.course_models import Course
@@ -609,12 +608,14 @@ class AdminService:
                 # 简化版：检查教师科目与课程科目是否匹配
                 course_subject = getattr(course, "subject", None)
                 if course_subject and teacher_profile.subject != course_subject:
-                    raise ValueError(f"教师科目 {teacher_profile.subject} 与课程科目 {course_subject} 不匹配")
-                logger.info(f"专业匹配验证通过: 教师科目={teacher_profile.subject}, 课程科目={course_subject}")
+                    raise ValueError(
+                        f"教师科目 {teacher_profile.subject} 与课程科目 {course_subject} 不匹配"
+                    )
+                logger.info(
+                    f"专业匹配验证通过: 教师科目={teacher_profile.subject}, 课程科目={course_subject}"
+                )
 
-            logger.info(
-                f"教师资质验证通过: teacher_id={teacher_id}, course_id={course_id}"
-            )
+            logger.info(f"教师资质验证通过: teacher_id={teacher_id}, course_id={course_id}")
 
         except ValueError:
             raise
@@ -639,9 +640,7 @@ class AdminService:
             # 2. 检查课程状态（必须已审核通过或已上线）
             valid_statuses = [CourseStatus.APPROVED, CourseStatus.PUBLISHED]
             if course.status not in valid_statuses:
-                raise ValueError(
-                    f"课程状态无效: {course.status}, 需要状态为 {valid_statuses}"
-                )
+                raise ValueError(f"课程状态无效: {course.status}, 需要状态为 {valid_statuses}")
 
             # 3. 检查课程容量（查询班级配置）
             class_stmt = select(Class).where(Class.course_id == course_id)
@@ -657,17 +656,13 @@ class AdminService:
             for cls in classes:
                 if cls.start_date and cls.end_date:
                     if cls.start_date >= cls.end_date:
-                        raise ValueError(
-                            f"班级 {cls.id} 时间安排不合理: 开始时间 >= 结束时间"
-                        )
+                        raise ValueError(f"班级 {cls.id} 时间安排不合理: 开始时间 >= 结束时间")
 
             # 5. 验证课程准入要求（检查教学大纲是否存在）
             if not course.syllabus:
                 raise ValueError("课程缺少教学大纲")
 
-            logger.info(
-                f"课程分配资格验证通过: course_id={course_id}, status={course.status}"
-            )
+            logger.info(f"课程分配资格验证通过: course_id={course_id}, status={course.status}")
 
         except ValueError:
             raise

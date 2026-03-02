@@ -29,15 +29,11 @@ class FileMetadataModel(BaseModel):
     bucket_type: Mapped[str] = mapped_column(
         String(100), nullable=False, comment="存储桶类型"
     )
-    file_size: Mapped[int] = mapped_column(
-        Integer, nullable=False, comment="文件大小"
-    )
+    file_size: Mapped[int] = mapped_column(Integer, nullable=False, comment="文件大小")
     content_type: Mapped[str] = mapped_column(
         String(200), nullable=False, comment="内容类型"
     )
-    file_hash: Mapped[str] = mapped_column(
-        String(100), nullable=False, comment="文件哈希"
-    )
+    file_hash: Mapped[str] = mapped_column(String(100), nullable=False, comment="文件哈希")
     upload_time: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, comment="上传时间"
     )
@@ -58,7 +54,7 @@ class FileMetadataModel(BaseModel):
     )
 
     # 关系
-    permissions: Mapped[list["FilePermissionModel"]] = relationship(
+    permissions: Mapped[list[FilePermissionModel]] = relationship(
         "FilePermissionModel", back_populates="file", cascade="all, delete-orphan"
     )
 
@@ -74,15 +70,9 @@ class FilePermissionModel(BaseModel):
     user_id: Mapped[str | None] = mapped_column(
         String(100), nullable=True, comment="用户ID"
     )
-    role: Mapped[str | None] = mapped_column(
-        String(100), nullable=True, comment="角色"
-    )
-    permission: Mapped[str] = mapped_column(
-        String(50), nullable=False, comment="权限类型"
-    )
-    granted_by: Mapped[str] = mapped_column(
-        String(100), nullable=False, comment="授权用户"
-    )
+    role: Mapped[str | None] = mapped_column(String(100), nullable=True, comment="角色")
+    permission: Mapped[str] = mapped_column(String(50), nullable=False, comment="权限类型")
+    granted_by: Mapped[str] = mapped_column(String(100), nullable=False, comment="授权用户")
     granted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, comment="授权时间"
     )
