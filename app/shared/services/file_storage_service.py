@@ -532,9 +532,7 @@ class FileStorageService:
     ) -> list[FileMetadata]:
         """查询文件列表"""
         try:
-            stmt = select(FileMetadataModel).where(
-                FileMetadataModel.is_deleted == False
-            )
+            stmt = select(FileMetadataModel).where(~FileMetadataModel.is_deleted)
 
             conditions = []
             if user_id:

@@ -456,7 +456,6 @@ class CompetitionService:
             }
 
             # 根据竞赛类型确定题目数量和类型
-            type_config = self.competition_types.get(competition_type, {})
             if competition_type == "speed_challenge":
                 question_count = 50
                 question_types = ["multiple_choice", "true_false"]
@@ -540,16 +539,15 @@ class CompetitionService:
                 "title": f"新竞赛发布: {competition['title']}",
                 "content": f"""
                 🎉 新竞赛上线啦！
-                
                 竞赛名称：{competition['title']}
                 竞赛类型：{self.competition_types.get(competition['competition_type'], {}).get('name', '未知')}
                 开始时间：{competition['start_time'].strftime('%Y-%m-%d %H:%M')}
                 结束时间：{competition['end_time'].strftime('%Y-%m-%d %H:%M')}
                 报名截止：{competition['registration_deadline'].strftime('%Y-%m-%d %H:%M')}
                 最大参与人数：{competition['max_participants']}
-                
+
                 {competition.get('description', '')}
-                
+
                 快来报名参加吧！
                 """,
                 "published_at": datetime.now().isoformat(),
@@ -669,7 +667,7 @@ class CompetitionService:
             raise
         except Exception as e:
             logger.error("检查报名资格失败: %s", str(e))
-            raise ValueError("报名资格检查失败，请稍后再试")
+            raise ValueError("报名资格检查失败，请稍后再试") from e
 
     async def _is_already_registered(self, user_id: int, competition_id: str) -> bool:
         """检查是否已报名."""

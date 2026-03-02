@@ -621,7 +621,7 @@ class AdminService:
             raise
         except Exception as e:
             logger.error(f"教师资质验证异常: {str(e)}")
-            raise ValueError(f"教师资质验证失败: {str(e)}")
+            raise ValueError(f"教师资质验证失败: {str(e)}") from e
 
     async def _validate_course_assignment_eligibility(self, course_id: int) -> None:
         """验证课程分配资格 - 教育业务规则"""
@@ -668,7 +668,7 @@ class AdminService:
             raise
         except Exception as e:
             logger.error(f"课程分配资格验证异常: {str(e)}")
-            raise ValueError(f"课程分配资格验证失败: {str(e)}")
+            raise ValueError(f"课程分配资格验证失败: {str(e)}") from e
 
     async def _validate_teaching_quality_requirements(
         self, teacher_id: int, course_id: int
@@ -736,7 +736,7 @@ class AdminService:
             raise
         except Exception as e:
             logger.error(f"教学质量要求验证异常: {str(e)}")
-            raise ValueError(f"教学质量要求验证失败: {str(e)}")
+            raise ValueError(f"教学质量要求验证失败: {str(e)}") from e
 
     # ===== 需求6：系统监控与数据决策支持 =====
 

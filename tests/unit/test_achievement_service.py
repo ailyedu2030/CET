@@ -4,18 +4,15 @@ CET 教育平台 - 成就服务单元测试
 全面测试成就服务的所有功能，确保生产级质量。
 """
 
-import asyncio
 import logging
 from datetime import datetime, timedelta
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.training.services.achievement_service import AchievementService
-from app.training.models.training_center_models import TrainingSessionModel
-from app.users.models.user_models import User
 
 # 配置日志
 logging.basicConfig(level=logging.DEBUG)
@@ -164,7 +161,9 @@ class TestAchievementService:
         mock_db_session.execute.return_value = mock_execute_result
 
         # Act
-        result = await achievement_service.get_achievement(sample_achievement_data["achievement_id"])
+        result = await achievement_service.get_achievement(
+            sample_achievement_data["achievement_id"]
+        )
 
         # Assert
         assert result is not None
@@ -253,7 +252,9 @@ class TestAchievementService:
         # Mock existing user achievement query (returns existing)
         mock_user_achievement = MagicMock()
         mock_user_achievement_result = MagicMock()
-        mock_user_achievement_result.scalar_one_or_none.return_value = mock_user_achievement
+        mock_user_achievement_result.scalar_one_or_none.return_value = (
+            mock_user_achievement
+        )
 
         def side_effect(*args, **kwargs):
             if "user_achievements" in str(args):
@@ -299,7 +300,9 @@ class TestAchievementService:
         mock_db_session.execute.return_value = mock_execute_result
 
         # Act
-        result = await achievement_service.get_user_achievements(sample_user_data["user_id"])
+        result = await achievement_service.get_user_achievements(
+            sample_user_data["user_id"]
+        )
 
         # Assert
         assert result is not None
@@ -386,8 +389,10 @@ class TestAchievementService:
         mock_db_session.execute.side_effect = Exception("Database connection failed")
 
         # Act & Assert
-        with pytest.raises(Exception):
-            await achievement_service.get_achievement(sample_achievement_data["achievement_id"])
+        with pytest.raises(Exception):  # noqa: B017
+            await achievement_service.get_achievement(
+                sample_achievement_data["achievement_id"]
+            )
 
         logger.info("✅ 数据库错误处理测试通过")
 
@@ -446,7 +451,9 @@ class TestAchievementServiceEdgeCases:
 
         # Act & Assert
         with pytest.raises(ValueError, match="Achievement is not active"):
-            await achievement_service.award_achievement(user_id=1, achievement_id="ach_001")
+            await achievement_service.award_achievement(
+                user_id=1, achievement_id="ach_001"
+            )
 
         logger.info("✅ 非活动成就测试通过")
 
