@@ -362,7 +362,8 @@ class RestoreService:
                             f"磁盘空间可能不足 (需要: {required_space / 1024 / 1024:.0f} MB, "
                             f"可用: {free_space / 1024 / 1024:.0f} MB)"
                         )
-                except Exception:
+                except Exception as e:
+                    logger.warning(f"Disk space check failed: {str(e)}")
                     warnings.append("无法检查磁盘空间")
 
             # 检查数据库连接

@@ -382,7 +382,10 @@ class EnhancedPerformanceMonitor:
             try:
                 query_stats_result = await self.db.execute(query_stats_query)
                 query_stats = query_stats_result.fetchone()
-            except Exception:
+            except Exception as e:
+                # ✅ 添加日志记录
+                logger.debug(f"pg_stat_statements 未启用，跳过查询统计: {str(e)}")
+                query_stats = None
                 # pg_stat_statements可能未启用
                 query_stats = None
 
@@ -713,7 +716,10 @@ class EnhancedPerformanceMonitor:
             overall_score = baseline_score * 0.6 + sla_score * 0.4
             return round(overall_score, 3)
 
-        except Exception:
+        except Exception as e:
+            # ✅ 添加日志记录
+            logger.warning(f"性能评分计算失败，使用默认值: {str(e)}")
+            return 0.5
             return 0.5
 
     async def _check_sla_compliance(

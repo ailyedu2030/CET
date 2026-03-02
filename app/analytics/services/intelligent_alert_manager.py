@@ -445,7 +445,10 @@ class IntelligentAlertManager:
             dt2 = datetime.fromisoformat(time2.replace("Z", "+00:00"))
             time_diff = abs((dt1 - dt2).total_seconds())
             time_similarity = max(0, 1 - time_diff / 300)  # 5分钟内认为相似
-        except Exception:
+        except Exception as e:
+            # ✅ 添加日志记录
+            logger.warning(f"告警时间解析失败，使用默认相似度: {str(e)}")
+            time_similarity = 0.5
             time_similarity = 0.5
 
         return type_match * 0.5 + severity_match * 0.3 + time_similarity * 0.2

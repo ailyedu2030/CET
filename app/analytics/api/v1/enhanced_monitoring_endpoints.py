@@ -1,5 +1,6 @@
 """增强的性能监控API端点."""
 
+import logging
 from datetime import datetime
 from typing import Any
 
@@ -13,6 +14,8 @@ from app.analytics.services.intelligent_alert_manager import IntelligentAlertMan
 from app.core.database import get_db
 from app.users.models.user_models import User
 from app.users.utils.auth_decorators import get_current_user
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/enhanced-monitoring", tags=["增强性能监控"])
 
@@ -50,6 +53,7 @@ async def comprehensive_performance_analysis(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"性能分析失败: {str(e)}",
@@ -86,6 +90,7 @@ async def intelligent_alert_processing(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"告警处理失败: {str(e)}",
@@ -126,6 +131,7 @@ async def get_current_alert_status(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"获取告警状态失败: {str(e)}",
@@ -180,6 +186,7 @@ async def get_real_time_dashboard(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"获取仪表板数据失败: {str(e)}",
@@ -228,6 +235,7 @@ async def get_key_metrics(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"获取关键指标失败: {str(e)}",
@@ -284,6 +292,7 @@ async def generate_performance_report(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"生成性能报告失败: {str(e)}",
@@ -340,6 +349,7 @@ async def export_monitoring_data(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"导出监控数据失败: {str(e)}",
@@ -430,6 +440,7 @@ async def comprehensive_health_check(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"系统健康检查失败: {str(e)}",
@@ -498,6 +509,7 @@ async def quick_health_check(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         return {
             "success": False,
             "health_status": "unknown",
@@ -539,6 +551,7 @@ async def get_monitoring_thresholds(
         }
 
     except Exception as e:
+        logger.warning(f"Operation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"获取监控配置失败: {str(e)}",

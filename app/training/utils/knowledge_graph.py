@@ -322,7 +322,8 @@ class KnowledgeGraph:
                     continue
 
             return max(depths) if depths else 0
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Max depth calculation failed: {str(e)}")
             return 0
 
     def _find_critical_paths(self, knowledge_id: int) -> list[list[int]]:

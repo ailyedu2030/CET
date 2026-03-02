@@ -162,7 +162,8 @@ class RegistrationVerificationService:
             verified_key = f"phone_verified:{phone_number}"
             result = await self.cache.get(verified_key)
             return result == "true"
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Check phone verification failed: {str(e)}")
             return False
 
     async def get_verification_status(self, phone_number: str) -> dict[str, Any]:

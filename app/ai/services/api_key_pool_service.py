@@ -133,6 +133,9 @@ class APIKeyPoolService:
             self.logger.info(f"API密钥池初始化完成，共加载 {len(self.key_pool)} 个密钥")
 
         except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.error(f"API密钥池初始化失败: {e}")
+            raise
             self.logger.error(f"API密钥池初始化失败: {e}")
             raise
 
@@ -174,6 +177,9 @@ class APIKeyPoolService:
             return optimal_key
 
         except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.error(f"获取最优API密钥失败: {e}")
+            return None
             self.logger.error(f"获取最优API密钥失败: {e}")
             return None
 
@@ -290,6 +296,8 @@ class APIKeyPoolService:
             await self._check_cost_limits()
 
         except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.error(f"记录API使用情况失败: {e}")
             self.logger.error(f"记录API使用情况失败: {e}")
 
     async def _check_key_health(self, key_info: APIKeyInfo) -> None:
@@ -326,6 +334,9 @@ class APIKeyPoolService:
             return successful / len(records)
 
         except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.error(f"获取成功率失败: {e}")
+            return 1.0
             self.logger.error(f"获取成功率失败: {e}")
             return 1.0
 
@@ -352,6 +363,8 @@ class APIKeyPoolService:
                 # 降低非关键请求的处理优先级
 
         except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.error(f"检查成本限制失败: {e}")
             self.logger.error(f"检查成本限制失败: {e}")
 
     async def _get_daily_cost(self, date: dt.date) -> float:
@@ -362,7 +375,11 @@ class APIKeyPoolService:
             )
             result = await self.db.execute(stmt)
             return result.scalar() or 0.0
-        except Exception:
+        except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.warning(f"Get daily cost failed: {str(e)}")
+            return 0.0
+            self.logger.warning(f"Get daily cost failed: {str(e)}")
             return 0.0
 
     async def _get_hourly_cost(self, hour: datetime) -> float:
@@ -374,7 +391,14 @@ class APIKeyPoolService:
             )
             result = await self.db.execute(stmt)
             return result.scalar() or 0.0
-        except Exception:
+        except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.warning(f"Get hourly cost failed: {str(e)}")
+            return 0.0
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.warning(f"Get hourly cost failed: {str(e)}")
+            return 0.0
+            self.logger.warning(f"Get hourly cost failed: {str(e)}")
             return 0.0
 
     async def _load_daily_usage(self) -> None:
@@ -392,6 +416,8 @@ class APIKeyPoolService:
                 key.used_quota = result.scalar() or 0
 
         except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.error(f"加载今日使用统计失败: {e}")
             self.logger.error(f"加载今日使用统计失败: {e}")
 
     async def _refresh_key_status(self) -> None:
@@ -410,6 +436,8 @@ class APIKeyPoolService:
             self.last_refresh = datetime.utcnow()
 
         except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.error(f"刷新密钥状态失败: {e}")
             self.logger.error(f"刷新密钥状态失败: {e}")
 
     async def get_pool_status(self) -> dict[str, Any]:
@@ -439,6 +467,9 @@ class APIKeyPoolService:
             }
 
         except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.error(f"获取密钥池状态失败: {e}")
+            return {}
             self.logger.error(f"获取密钥池状态失败: {e}")
             return {}
 
@@ -507,6 +538,9 @@ class APIKeyPoolService:
             }
 
         except Exception as e:
+            self.logger.warning(f"Operation failed: {str(e)}")
+            self.logger.error(f"获取使用分析数据失败: {e}")
+            return {}
             self.logger.error(f"获取使用分析数据失败: {e}")
             return {}
 

@@ -1,5 +1,10 @@
 """模型注册模块 - 解决循环导入问题."""
 
+import logging
+
+# 在模块级别导入所有模型
+# 课程相关模型
+
 # 在模块级别导入所有模型
 # 课程相关模型
 from app.courses.models import *  # noqa: F403
@@ -35,4 +40,4 @@ def register_all_models() -> None:
     try:
         configure_mappers()
     except Exception as e:
-        print(f"Warning: Failed to configure mappers: {e}")
+        logging.warning(f"Failed to configure mappers: {e}")

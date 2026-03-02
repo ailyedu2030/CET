@@ -460,6 +460,8 @@ class UnifiedNotificationService:
                     results[channel] = {"status": "success", "message": "推送发送成功"}
 
             except Exception as e:
+                logger.warning(f"Multi-channel send failed for {channel}: {str(e)}")
+                results[channel] = {"status": "error", "message": str(e)}
                 results[channel] = {"status": "error", "message": str(e)}
             try:
                 if channel == "in_app":
@@ -483,6 +485,8 @@ class UnifiedNotificationService:
                     results[channel] = {"status": "success", "message": "推送发送成功"}
 
             except Exception as e:
+                logger.warning(f"Multi-channel send failed for {channel}: {str(e)}")
+                results[channel] = {"status": "error", "message": str(e)}
                 results[channel] = {"status": "error", "message": str(e)}
 
         return results

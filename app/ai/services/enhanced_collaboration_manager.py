@@ -89,6 +89,9 @@ class EnhancedCollaborationManager:
             }
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"创建协作会话失败: {str(e)}")
+            raise
             logger.error(f"创建协作会话失败: {str(e)}")
             raise
 
@@ -145,6 +148,9 @@ class EnhancedCollaborationManager:
             }
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"加入协作会话失败: {str(e)}")
+            raise
             logger.error(f"加入协作会话失败: {str(e)}")
             raise
 
@@ -211,6 +217,9 @@ class EnhancedCollaborationManager:
             }
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"处理协作编辑失败: {str(e)}")
+            raise
             logger.error(f"处理协作编辑失败: {str(e)}")
             raise
 
@@ -351,6 +360,13 @@ class EnhancedCollaborationManager:
             }
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"权限验证失败: {str(e)}")
+            return {
+                "allowed": False,
+                "reason": f"权限验证错误: {str(e)}",
+                "required_permissions": [],
+            }
             logger.error(f"权限验证失败: {str(e)}")
             return {
                 "allowed": False,
@@ -472,6 +488,9 @@ class EnhancedCollaborationManager:
             }
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"应用协作编辑失败: {str(e)}")
+            raise
             logger.error(f"应用协作编辑失败: {str(e)}")
             raise
 
@@ -660,6 +679,9 @@ class EnhancedCollaborationManager:
             return None
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"从数据库加载会话失败: {str(e)}")
+            return None
             logger.error(f"从数据库加载会话失败: {str(e)}")
             return None
 
@@ -684,5 +706,8 @@ class EnhancedCollaborationManager:
                 await db.commit()
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"更新会话参与者失败: {str(e)}")
+            raise
             logger.error(f"更新会话参与者失败: {str(e)}")
             raise

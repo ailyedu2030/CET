@@ -121,10 +121,9 @@ export const GradingResultsPage: React.FC = () => {
   const [_gradingHistory, setGradingHistory] = useState<GradingHistory[]>([])
   const [apiKeyPool, setApiKeyPool] = useState<ApiKeyPool>({
     keys: [
-      'sk-deepseek-key-1',
-      'sk-deepseek-key-2',
-      'sk-deepseek-key-3',
-      // 在实际项目中，这些密钥应该从环境变量或安全存储中获取
+      // 🔴 SECURITY FIX: 移除硬编码密钥，改用后端代理
+      // TODO: 改为调用后端 API 代理，如: /api/v1/ai/grading/proxy
+      // 避免在前端暴露 API 密钥
     ],
     currentIndex: 0,
     failedKeys: new Set(),
@@ -180,11 +179,13 @@ export const GradingResultsPage: React.FC = () => {
     }))
   }
 
-  // 调用DeepSeek API进行批改
-  const callDeepSeekAPI = async (content: string, apiKey: string): Promise<AIAnalysisResult> => {
+  // 🔴 SECURITY FIX: 调用后端代理 API，避免在前端暴露密钥
+  // TODO: 改为调用后端 API，如: gradingApi.callAiGrading(content)
+  const callDeepSeekAPI = async (content: string, _apiKey: string): Promise<AIAnalysisResult> => {
+    // 直接调用后端代理，不在前端处理 API 密钥
     const config: DeepSeekConfig = {
-      apiKey,
-      baseUrl: 'https://api.deepseek.com/v1',
+      apiKey: '',  // 由后端代理处理
+      baseUrl: '/api/v1/ai',  // 改为后端代理地址
       model: 'deepseek-chat',
       maxTokens: 2000,
       temperature: 0.7,

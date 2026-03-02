@@ -158,6 +158,8 @@ class PerformanceService:
             try:
                 await self.monitoring_task
             except asyncio.CancelledError:
+                self.logger.warning("Monitoring task was cancelled")
+                pass
                 pass
         self.logger.info("性能监控已停止")
 

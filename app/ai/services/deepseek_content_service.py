@@ -95,13 +95,22 @@ class DeepSeekContentService:
                     else:
                         logger.error("Syllabus response is not a dict")
                         return None
-                except json.JSONDecodeError:
+                except json.JSONDecodeError as e:
+                    logger.warning(f"Operation failed: {str(e)}")
+                    logger.error("Failed to parse syllabus JSON response")
+                    return None
                     logger.error("Failed to parse syllabus JSON response")
                     return None
 
             return None
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"Syllabus generation failed: {str(e)}")
+            return None
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"Syllabus generation failed: {str(e)}")
+            return None
             logger.error(f"Syllabus generation failed: {str(e)}")
             return None
 
@@ -139,13 +148,22 @@ class DeepSeekContentService:
                     else:
                         logger.error("Lesson plan response is not a dict")
                         return None
-                except json.JSONDecodeError:
+                except json.JSONDecodeError as e:
+                    logger.warning(f"Operation failed: {str(e)}")
+                    logger.error("Failed to parse lesson plan JSON response")
+                    return None
                     logger.error("Failed to parse lesson plan JSON response")
                     return None
 
             return None
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"Lesson plan generation failed: {str(e)}")
+            return None
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"Lesson plan generation failed: {str(e)}")
+            return None
             logger.error(f"Lesson plan generation failed: {str(e)}")
             return None
 
@@ -182,6 +200,12 @@ class DeepSeekContentService:
             return content[:200]  # Fallback to truncated content
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"Summary generation failed: {str(e)}")
+            return content[:200]
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"Summary generation failed: {str(e)}")
+            return content[:200]
             logger.error(f"Summary generation failed: {str(e)}")
             return content[:200]
 
@@ -265,6 +289,14 @@ class DeepSeekContentService:
                             )
 
             except TimeoutError as e:
+                logger.warning(f"Operation failed: {str(e)}")
+                logger.warning(
+                    f"DeepSeek API timeout, attempt {attempt + 1}/{self.max_retries}"
+                )
+                if attempt < self.max_retries - 1:
+                    await asyncio.sleep(self.retry_delay * (attempt + 1))
+                    continue
+                raise BusinessLogicError("API request timeout") from e
                 logger.warning(
                     f"DeepSeek API timeout, attempt {attempt + 1}/{self.max_retries}"
                 )
@@ -274,6 +306,12 @@ class DeepSeekContentService:
                 raise BusinessLogicError("API request timeout") from e
 
             except Exception as e:
+                logger.warning(f"Operation failed: {str(e)}")
+                logger.error(f"DeepSeek API call failed: {str(e)}")
+                if attempt < self.max_retries - 1:
+                    await asyncio.sleep(self.retry_delay * (attempt + 1))
+                    continue
+                raise
                 logger.error(f"DeepSeek API call failed: {str(e)}")
                 if attempt < self.max_retries - 1:
                     await asyncio.sleep(self.retry_delay * (attempt + 1))

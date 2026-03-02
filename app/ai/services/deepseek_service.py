@@ -426,6 +426,7 @@ class DeepSeekService:
                         return False, error_msg
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
             return False, f"验证请求失败: {str(e)}"
 
 

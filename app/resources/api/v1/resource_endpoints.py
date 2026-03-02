@@ -659,7 +659,8 @@ async def health_check(db: AsyncSession = Depends(get_db)) -> dict[str, Any]:
         vector_status = "healthy"
         try:
             await vector_service.initialize_collections()
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Vector service initialization failed: {str(e)}")
             vector_status = "unhealthy"
 
         # 检查语义搜索服务
@@ -668,7 +669,8 @@ async def health_check(db: AsyncSession = Depends(get_db)) -> dict[str, Any]:
             semantic_service = SemanticSearchService(cache_service)
             # 简单测试
             await semantic_service.semantic_search("test", top_k=1)
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Semantic search test failed: {str(e)}")
             semantic_status = "unhealthy"
 
         return {

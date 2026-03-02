@@ -102,6 +102,9 @@ class DeepSeekEmbeddingService:
             return embedding
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"Text vectorization failed: {str(e)}")
+            raise BusinessLogicError(f"Failed to vectorize text: {str(e)}") from e
             logger.error(f"Text vectorization failed: {str(e)}")
             raise BusinessLogicError(f"Failed to vectorize text: {str(e)}") from e
 
@@ -158,6 +161,9 @@ class DeepSeekEmbeddingService:
             return all_embeddings
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"Batch vectorization failed: {str(e)}")
+            raise BusinessLogicError(f"Failed to vectorize batch: {str(e)}") from e
             logger.error(f"Batch vectorization failed: {str(e)}")
             raise BusinessLogicError(f"Failed to vectorize batch: {str(e)}") from e
 
@@ -223,7 +229,10 @@ class DeepSeekEmbeddingService:
                                 else:
                                     # 如果不是标准格式，生成伪向量
                                     return self._generate_pseudo_embedding(text)
-                            except json.JSONDecodeError:
+                            except json.JSONDecodeError as e:
+                                logger.warning(f"Operation failed: {str(e)}")
+                                # 如果解析失败，生成伪向量
+                                return self._generate_pseudo_embedding(text)
                                 # 如果解析失败，生成伪向量
                                 return self._generate_pseudo_embedding(text)
 
@@ -247,7 +256,15 @@ class DeepSeekEmbeddingService:
                                 f"API request failed: {response.status}"
                             )
 
-            except TimeoutError:
+            except TimeoutError as e:
+                logger.warning(f"Operation failed: {str(e)}")
+                logger.warning(
+                    f"DeepSeek API timeout, attempt {attempt + 1}/{self.max_retries}"
+                )
+                if attempt < self.max_retries - 1:
+                    await asyncio.sleep(self.retry_delay * (attempt + 1))
+                    continue
+                raise BusinessLogicError("API request timeout") from None
                 logger.warning(
                     f"DeepSeek API timeout, attempt {attempt + 1}/{self.max_retries}"
                 )
@@ -257,6 +274,12 @@ class DeepSeekEmbeddingService:
                 raise BusinessLogicError("API request timeout") from None
 
             except Exception as e:
+                logger.warning(f"Operation failed: {str(e)}")
+                logger.error(f"DeepSeek API call failed: {str(e)}")
+                if attempt < self.max_retries - 1:
+                    await asyncio.sleep(self.retry_delay * (attempt + 1))
+                    continue
+                raise
                 logger.error(f"DeepSeek API call failed: {str(e)}")
                 if attempt < self.max_retries - 1:
                     await asyncio.sleep(self.retry_delay * (attempt + 1))

@@ -99,6 +99,9 @@ class SyllabusService:
             return syllabus
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"大纲生成失败: {str(e)}")
+            raise
             logger.error(f"大纲生成失败: {str(e)}")
             raise
 
@@ -146,6 +149,10 @@ class SyllabusService:
             return SyllabusResponse.model_validate(syllabus)  # type: ignore[no-any-return]
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"创建大纲失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"创建大纲失败: {str(e)}")
             raise
@@ -180,6 +187,12 @@ class SyllabusService:
             return None
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"获取大纲失败: {str(e)}")
+            raise
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"获取大纲失败: {str(e)}")
+            raise
             logger.error(f"获取大纲失败: {str(e)}")
             raise
 
@@ -223,6 +236,10 @@ class SyllabusService:
             return SyllabusResponse.model_validate(syllabus)  # type: ignore[no-any-return]
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"更新大纲失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"更新大纲失败: {str(e)}")
             raise
@@ -277,6 +294,9 @@ class SyllabusService:
             return [SyllabusResponse.model_validate(s) for s in syllabi], total
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"获取大纲列表失败: {str(e)}")
+            raise
             logger.error(f"获取大纲列表失败: {str(e)}")
             raise
 
@@ -318,6 +338,10 @@ class SyllabusService:
             return True
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"删除大纲失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"删除大纲失败: {str(e)}")
             raise
@@ -350,6 +374,10 @@ class SyllabusService:
             return SyllabusResponse.model_validate(syllabus)  # type: ignore[no-any-return]
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"审批大纲失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"审批大纲失败: {str(e)}")
             raise
@@ -375,6 +403,9 @@ class SyllabusService:
             return [SyllabusResponse.model_validate(s) for s in syllabi]
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"获取大纲版本失败: {str(e)}")
+            raise
             logger.error(f"获取大纲版本失败: {str(e)}")
             raise
 
@@ -416,7 +447,9 @@ class SyllabusService:
         try:
             major, minor, patch = map(int, latest_version.split("."))
             return f"{major}.{minor}.{patch + 1}"
-        except (ValueError, AttributeError):
+        except (ValueError, AttributeError) as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            return "1.0.1"
             return "1.0.1"
 
     async def regenerate_syllabus_section(
@@ -482,9 +515,14 @@ class SyllabusService:
                 )
 
             except json.JSONDecodeError as e:
+                logger.warning(f"Operation failed: {str(e)}")
+                raise ValueError("生成内容格式错误") from e
                 raise ValueError("生成内容格式错误") from e
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"重新生成大纲部分失败: {str(e)}")
+            raise
             logger.error(f"重新生成大纲部分失败: {str(e)}")
             raise
 

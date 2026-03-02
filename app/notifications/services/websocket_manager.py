@@ -266,7 +266,8 @@ class WebSocketConnectionManager:
                     for websocket in list(self.active_connections[user_id]):
                         try:
                             await websocket.close()
-                        except Exception:
+                        except Exception as e:
+                            logger.warning(f"WebSocket close error: {str(e)}")
                             pass
                         self.active_connections[user_id].discard(websocket)
 
@@ -339,11 +340,14 @@ class WebSocketConnectionManager:
                             "timestamp": datetime.utcnow().isoformat(),
                         },
                     )
-                except Exception:
+                except Exception as e:
+                    logger.warning(f"Heartbeat connection lost: {str(e)}")
+                    break
                     # 连接已断开
                     break
 
         except asyncio.CancelledError:
+            logger.info(f"Heartbeat monitor cancelled for connection: {connection_id}")
             pass
         except Exception as e:
             logger.error(f"心跳监控任务失败: {str(e)}")

@@ -11,11 +11,11 @@
       "temperature": 0.1
     },
     "oracle": {
-      "model": "opencode/big-pickle",
+      "model": "volcengine/doubao-seed-2.0-code",
       "temperature": 0.1
     },
     "librarian": {
-      "model": "opencode/minimax-m2.5-free",
+      "model": "volcengine/doubao-seed-2.0-code",
       "temperature": 0.1
     },
     "explore": {
@@ -35,7 +35,7 @@
       "temperature": 0.1
     },
     "atlas": {
-      "model": "opencode/big-pickle",
+      "model": "volcengine/doubao-seed-2.0-code",
       "temperature": 0.1
     },
     "prometheus": {
@@ -43,53 +43,13 @@
       "temperature": 0.1
     },
     "sisyphus-junior": {
-      "model": "opencode/minimax-m2.5-free",
-      "temperature": 0.1
-    },
-    "code-reviewer": {
-      "model": "volcengine/doubao-seed-2.0-code",
-      "temperature": 0.1
-    },
-    "security-reviewer": {
-      "model": "volcengine/doubao-seed-2.0-code",
-      "temperature": 0.1
-    },
-    "tdd-guide": {
-      "model": "volcengine/doubao-seed-2.0-code",
-      "temperature": 0.1
-    },
-    "e2e-runner": {
-      "model": "volcengine/doubao-seed-2.0-code",
-      "temperature": 0.1
-    },
-    "refactor-cleaner": {
-      "model": "volcengine/doubao-seed-2.0-code",
-      "temperature": 0.1
-    },
-    "python-reviewer": {
-      "model": "volcengine/doubao-seed-2.0-code",
-      "temperature": 0.1
-    },
-    "database-reviewer": {
-      "model": "volcengine/doubao-seed-2.0-code",
-      "temperature": 0.1
-    },
-    "build-error-resolver": {
-      "model": "volcengine/doubao-seed-2.0-code",
-      "temperature": 0.1
-    },
-    "doc-updater": {
-      "model": "volcengine/kimi-k2-thinking",
-      "temperature": 0.1
-    },
-    "go-reviewer": {
       "model": "volcengine/doubao-seed-2.0-code",
       "temperature": 0.1
     }
   },
   "categories": {
     "quick": {
-      "model": "opencode/minimax-m2.5-free"
+      "model": "volcengine/doubao-seed-2.0-code"
     },
     "visual-engineering": {
       "model": "volcengine/doubao-seed-2.0-code"
@@ -104,7 +64,7 @@
       "model": "volcengine/kimi-k2.5"
     },
     "unspecified-low": {
-      "model": "opencode/minimax-m2.5-free"
+      "model": "volcengine/doubao-seed-2.0-code"
     },
     "unspecified-high": {
       "model": "volcengine/doubao-seed-2.0-code"
@@ -118,23 +78,5 @@
       "command": "npx",
       "args": ["-y", "gitnexus@latest", "mcp"]
     }
-  },
-  "features": {
-    "ultrawork": {
-      "enabled": true
-    },
-    "auto_context": {
-      "inject_agents_md": true,
-      "inject_readme": true
-    },
-    "background_agent": {
-      "max_concurrent": 5
-    },
-    "learning": {
-      "enabled": true
-    }
-  },
-  "disabled_hooks": [],
-  "disabled_skills": [],
-  "disabled_commands": []
+  }
 }

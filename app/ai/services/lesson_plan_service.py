@@ -119,6 +119,9 @@ class LessonPlanService:
             return lesson_plan
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"教案生成失败: {str(e)}")
+            raise
             logger.error(f"教案生成失败: {str(e)}")
             raise
 
@@ -151,6 +154,10 @@ class LessonPlanService:
             return LessonPlanResponse.model_validate(lesson_plan)  # type: ignore[no-any-return]
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"创建教案失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"创建教案失败: {str(e)}")
             raise
@@ -176,6 +183,9 @@ class LessonPlanService:
             return None
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"获取教案失败: {str(e)}")
+            raise
             logger.error(f"获取教案失败: {str(e)}")
             raise
 
@@ -220,6 +230,14 @@ class LessonPlanService:
             return LessonPlanResponse.model_validate(lesson_plan)  # type: ignore[no-any-return]
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"更新教案失败: {str(e)}")
+            raise
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"更新教案失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"更新教案失败: {str(e)}")
             raise
@@ -259,6 +277,12 @@ class LessonPlanService:
             return [LessonPlanResponse.model_validate(lp) for lp in lesson_plans], total
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"获取教案列表失败: {str(e)}")
+            raise
+            logger.warning(f"Operation failed: {str(e)}")
+            logger.error(f"获取教案列表失败: {str(e)}")
+            raise
             logger.error(f"获取教案列表失败: {str(e)}")
             raise
 
@@ -296,6 +320,14 @@ class LessonPlanService:
             return True
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"删除教案失败: {str(e)}")
+            raise
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"删除教案失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"删除教案失败: {str(e)}")
             raise
@@ -336,6 +368,10 @@ class LessonPlanService:
             return CollaborationSessionResponse.model_validate(session)  # type: ignore[no-any-return]
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"创建协作会话失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"创建协作会话失败: {str(e)}")
             raise
@@ -371,6 +407,10 @@ class LessonPlanService:
             return CollaborationSessionResponse.model_validate(session)  # type: ignore[no-any-return]
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"加入协作会话失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"加入协作会话失败: {str(e)}")
             raise
@@ -419,6 +459,10 @@ class LessonPlanService:
             return CollaborationSessionResponse.model_validate(session)  # type: ignore[no-any-return]
 
         except Exception as e:
+            logger.warning(f"Operation failed: {str(e)}")
+            await db.rollback()
+            logger.error(f"更新协作会话失败: {str(e)}")
+            raise
             await db.rollback()
             logger.error(f"更新协作会话失败: {str(e)}")
             raise

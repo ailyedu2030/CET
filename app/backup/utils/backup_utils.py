@@ -179,7 +179,8 @@ class BackupValidator:
             try:
                 with open(file_path, "rb") as f:
                     f.read(1024)  # 读取前1KB测试
-            except Exception:
+            except Exception as e:
+                logger.warning(f"Backup file read check failed: {str(e)}")
                 return {"valid": False, "error": "备份文件无法读取"}
 
             # 校验和验证

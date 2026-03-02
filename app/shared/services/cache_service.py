@@ -178,7 +178,8 @@ class LRUCache:
 
             return True
 
-        except Exception:
+        except Exception as e:
+            self.logger.warning(f"Cache set operation failed: {str(e)}")
             return False
 
     def delete(self, key: str) -> bool:
@@ -209,7 +210,8 @@ class LRUCache:
         """计算值的大小"""
         try:
             return len(pickle.dumps(value))
-        except Exception:
+        except Exception as e:
+            self.logger.warning(f"Size calculation failed, using fallback: {str(e)}")
             return len(str(value).encode("utf-8"))
 
     def _update_hit_rate(self) -> None:
@@ -430,7 +432,8 @@ class CacheService:
                         value = pickle.loads(raw_value)
                     else:
                         value = json.loads(str(raw_value))
-                except Exception:
+                except Exception as e:
+                    self.logger.warning(f"Cache deserialization failed: {str(e)}, trying fallback")
                     if isinstance(raw_value, bytes):
                         value = json.loads(raw_value.decode("utf-8"))
                     else:
@@ -458,7 +461,8 @@ class CacheService:
             if config and config.enable_serialization:
                 try:
                     raw_value = pickle.dumps(value)
-                except Exception:
+                except Exception as e:
+                    self.logger.warning(f"Cache serialization failed: {str(e)}, using JSON fallback")
                     raw_value = json.dumps(value).encode("utf-8")
             else:
                 raw_value = str(value).encode("utf-8")

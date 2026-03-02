@@ -135,7 +135,8 @@ class AuditMiddleware(BaseHTTPMiddleware):
                     body = await request.body()
                     if body and len(body) <= self.max_body_size:
                         request_body = body.decode("utf-8")
-                except Exception:
+                except Exception as e:
+                    logger.warning(f"Request body decode failed: {str(e)}")
                     request_body = "<failed_to_decode>"
 
             # 构建审计日志
@@ -176,7 +177,8 @@ class AuditMiddleware(BaseHTTPMiddleware):
                             response_body = bytes(response.body).decode("utf-8")
                         else:
                             response_body = response.body.decode("utf-8")
-                except Exception:
+                except Exception as e:
+                    logger.warning(f"Response body decode failed: {str(e)}")
                     response_body = "<failed_to_decode>"
 
             # 过滤敏感头部

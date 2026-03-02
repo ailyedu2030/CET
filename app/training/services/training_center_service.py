@@ -4,7 +4,7 @@ import json
 import random
 from datetime import datetime
 from typing import Any, cast
-
+from loguru import logger
 from sqlalchemy import Float, and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -351,7 +351,15 @@ class TrainingCenterService:
 
                     questions.append(await self._build_question_response(question))
 
-            except Exception:
+            except Exception as e:
+                # ✅ 添加日志记录
+                logger.warning(
+                    f"AI生成词汇题目失败，使用备用题目: {str(e)}",
+                    extra={
+                        "difficulty": difficulty_level.value,
+                        "question_type": question_type.value,
+                    },
+                )
                 # AI生成失败时使用备用题目
                 backup_question = await self._get_backup_question(
                     TrainingType.VOCABULARY, difficulty_level, question_type
@@ -412,7 +420,15 @@ class TrainingCenterService:
 
                     questions.append(await self._build_question_response(question))
 
-            except Exception:
+            except Exception as e:
+                # ✅ 添加日志记录
+                logger.warning(
+                    f"AI生成听力题目失败，使用备用题目: {str(e)}",
+                    extra={
+                        "difficulty": difficulty_level.value,
+                        "question_type": question_type.value,
+                    },
+                )
                 backup_question = await self._get_backup_question(
                     TrainingType.LISTENING, difficulty_level, question_type
                 )
@@ -492,7 +508,15 @@ class TrainingCenterService:
                                 await self._build_question_response(question)
                             )
 
-            except Exception:
+            except Exception as e:
+                # ✅ 添加日志记录
+                logger.warning(
+                    f"AI生成阅读题目失败，使用备用题目: {str(e)}",
+                    extra={
+                        "difficulty": difficulty_level.value,
+                        "question_type": question_type.value,
+                    },
+                )
                 # 使用备用题目
                 for _ in range(min(4, question_count - len(questions))):
                     backup_question = await self._get_backup_question(
@@ -559,7 +583,15 @@ class TrainingCenterService:
 
                     questions.append(await self._build_question_response(question))
 
-            except Exception:
+            except Exception as e:
+                # ✅ 添加日志记录
+                logger.warning(
+                    f"AI生成写作题目失败，使用备用题目: {str(e)}",
+                    extra={
+                        "difficulty": difficulty_level.value,
+                        "question_type": question_type.value,
+                    },
+                )
                 backup_question = await self._get_backup_question(
                     TrainingType.WRITING, difficulty_level, question_type
                 )
@@ -629,7 +661,15 @@ class TrainingCenterService:
 
                     questions.append(await self._build_question_response(question))
 
-            except Exception:
+            except Exception as e:
+                # ✅ 添加日志记录
+                logger.warning(
+                    f"AI生成翻译题目失败，使用备用题目: {str(e)}",
+                    extra={
+                        "difficulty": difficulty_level.value,
+                        "question_type": question_type.value,
+                    },
+                )
                 backup_question = await self._get_backup_question(
                     TrainingType.TRANSLATION, difficulty_level, question_type
                 )
@@ -904,7 +944,9 @@ class TrainingCenterService:
             else:
                 # 记录错误但不抛出，让调用方处理
                 return None
-        except Exception:
+        except Exception as e:
+            # ✅ 添加日志记录
+            logger.warning(f"AI调用失败: {str(e)}")
             # 记录错误但不抛出，让调用方处理
             return None
 
@@ -948,7 +990,9 @@ class TrainingCenterService:
                 .get("content", "")
             )
             return cast(dict[str, Any], json.loads(content))
-        except Exception:
+        except Exception as e:
+            # ✅ 添加日志记录
+            logger.warning(f"AI阅读响应解析失败: {str(e)}")
             # 返回默认阅读材料
             return {
                 "passage": "默认阅读材料...",
@@ -1179,7 +1223,9 @@ class TrainingCenterService:
             else:
                 raise ValueError("AI响应为空")
 
-        except Exception:
+        except Exception as e:
+            # ✅ 添加日志记录
+            logger.warning(f"AI作文批改失败: {str(e)}")
             # AI批改失败，使用基础评分
             word_count = len(essay_text.split())
             basic_score = min(
@@ -1288,7 +1334,9 @@ class TrainingCenterService:
             else:
                 raise ValueError("AI响应为空")
 
-        except Exception:
+        except Exception as e:
+            # ✅ 添加日志记录
+            logger.warning(f"AI翻译批改失败: {str(e)}")
             # AI批改失败，使用基础评分
             similarity_score = self._calculate_text_similarity(
                 user_translation, reference_translation

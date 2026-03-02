@@ -661,7 +661,8 @@ class CostCalculator:
             potential_savings = peak_cost * 0.2
             return potential_savings
 
-        except Exception:
+        except Exception as e:
+            self.logger.warning(f"Off-peak savings calculation failed: {str(e)}")
             return 0.0
 
 

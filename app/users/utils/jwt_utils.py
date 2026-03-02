@@ -107,7 +107,7 @@ class JWTManager:
 
         access_token = self.create_access_token(data=token_data)
         refresh_token = self.create_refresh_token(
-            data={"sub": str(user_id), "username": username}
+            data=token_data  # ✅ 传入完整数据，包含 user_type 和 roles
         )
 
         return {
@@ -127,9 +127,12 @@ class JWTManager:
             return None
 
         # 创建新的访问令牌
+        # ✅ 从 refresh token payload 中获取所有信息
         new_token_data = {
             "sub": payload.get("sub"),
             "username": payload.get("username"),
+            "user_type": payload.get("user_type"),  # ✅ 新增：用户类型
+            "roles": payload.get("roles", []),      # ✅ 新增：用户角色
         }
 
         access_token: str = self.create_access_token(data=new_token_data)

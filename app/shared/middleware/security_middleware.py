@@ -219,7 +219,8 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                             )
                             if detection.is_malicious:
                                 return detection
-                except Exception:
+                except Exception as e:
+                    logger.warning(f"SQL injection check parse error: {str(e)}")
                     pass  # 忽略解析错误
 
             return None
@@ -252,7 +253,8 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                             )
                             if detection.is_malicious:
                                 return detection
-                except Exception:
+                except Exception as e:
+                    logger.warning(f"XSS check parse error: {str(e)}")
                     pass  # 忽略解析错误
 
             return None
