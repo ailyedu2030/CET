@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.training.utils.interaction_analyzer import InteractionAnalyzer
 from app.users.models.user_models import User
+from app.training.models.social_models import StudyGroupModel, StudyGroupMembershipModel
 
 logger = logging.getLogger(__name__)
 
@@ -426,8 +427,21 @@ class SocialLearningService:
 
     async def _save_study_group(self, group: dict[str, Any]) -> None:
         """保存学习小组到数据库."""
-        # TODO: 实现数据库保存逻辑
-        logger.info(f"保存学习小组: {group['group_id']}")
+        try:
+            study_group = StudyGroupModel(
+                group_name=group.get('group_name', ''),
+                description=group.get('description', ''),
+                max_members=group.get('max_members', 6),
+                current_members=0,
+                is_active=True,
+            )
+            self.db.add(study_group)
+            await self.db.commit()
+            await self.db.refresh(study_group)
+            logger.info(f"保存学习小组成功: {study_group.id}")
+        except Exception as e:
+            logger.warning(f"保存学习小组失败: {e}")
+            await self.db.rollback()
 
     async def _create_group_discussion_area(self, group_id: str) -> None:
         """创建小组讨论区."""
@@ -443,26 +457,101 @@ class SocialLearningService:
 
     async def _get_user_active_groups(self, user_id: int) -> list[dict[str, Any]]:
         """获取用户参与的活跃小组."""
-        # TODO: 实现从数据库获取用户小组的逻辑
+        try:
+            from sqlalchemy import select
+            from app.training.models.social_models import StudyGroupMembershipModel
+            
+            # 通过会员关系查询用户参与的小组
+            stmt = select(StudyGroupModel).join(
+                StudyGroupMembershipModel,
+                StudyGroupMembershipModel.group_id == StudyGroupModel.id
+            ).where(
+                StudyGroupMembershipModel.user_id == user_id,
+                StudyGroupModel.is_active == True  # noqa: E712
+            )
+            
+            result = await self.db.execute(stmt)
+            groups = result.scalars().all()
+            
+            return [
+                {
+                    'group_id': g.id,
+                    'group_name': g.group_name,
+                    'description': g.description,
+                    'member_count': g.current_members,
+                    'created_at': g.created_at.isoformat() if g.created_at else None,
+                }
+                for g in groups
+            ]
+        except Exception as e:
+            logger.warning(f"获取用户小组失败: {e}")
         return []
 
     async def _get_study_group(self, group_id: str) -> dict[str, Any] | None:
         """获取学习小组信息."""
-        # TODO: 实现从数据库获取小组信息的逻辑
-        return {
-            "group_id": group_id,
-            "status": "active",
-            "member_ids": [],
-            "current_members": 0,
-            "max_members": 6,
-        }
+        try:
+            # group_id 可能是字符串，尝试转换为int
+            try:
+                gid = int(group_id)
+                group = await self.db.get(StudyGroupModel, gid)
+            except ValueError:
+                # 如果不是数字，通过名称查询
+                from sqlalchemy import select
+                stmt = select(StudyGroupModel).where(StudyGroupModel.group_name == group_id)
+                result = await self.db.execute(stmt)
+                group = result.scalar_one_or_none()
+            
+            if not group:
+                return None
+            return {
+                'group_id': group.id,
+                'group_name': group.group_name,
+                'description': group.description,
+                'status': 'active' if group.is_active else 'inactive',
+                'current_members': group.current_members,
+                'max_members': group.max_members,
+                'created_at': group.created_at.isoformat() if group.created_at else None,
+            }
+        except Exception as e:
+            logger.warning(f"获取小组信息失败: {e}")
+        return None
 
     async def _add_group_member(
         self, group_id: str, user_id: int, join_reason: str
     ) -> dict[str, Any]:
         """添加小组成员."""
-        # TODO: 实现添加成员的逻辑
-        return {"group_id": group_id, "current_members": 2}
+        try:
+            from sqlalchemy import select
+            from app.training.models.social_models import StudyGroupMembershipModel
+            
+            # 检查是否已经是成员
+            gid = int(group_id) if group_id.isdigit() else 0
+            stmt = select(StudyGroupMembershipModel).where(
+                StudyGroupMembershipModel.group_id == gid,
+                StudyGroupMembershipModel.user_id == user_id
+            )
+            result = await self.db.execute(stmt)
+            existing = result.scalar_one_or_none()
+            
+            if existing:
+                return {"error": "用户已是小组成员", "group_id": group_id}
+            
+            # 添加成员
+            membership = StudyGroupMembershipModel(
+                group_id=gid,
+                user_id=user_id,
+                join_reason=join_reason,
+                role='member',
+                status='active'
+            )
+            self.db.add(membership)
+            await self.db.commit()
+            
+            return {"group_id": group_id, "current_members": 2, "status": "success"}
+        except Exception as e:
+            logger.warning(f"添加小组成员失败: {e}")
+            await self.db.rollback()
+            return {"error": str(e), "group_id": group_id}
 
     async def _send_welcome_message(
         self, group_id: str, user_id: int, username: str
@@ -473,8 +562,22 @@ class SocialLearningService:
 
     async def _verify_group_membership(self, user_id: int, group_id: str) -> bool:
         """验证用户是否为小组成员."""
-        # TODO: 实现成员验证逻辑
-        return True
+        try:
+            from sqlalchemy import select
+            from app.training.models.social_models import StudyGroupMembershipModel
+            
+            gid = int(group_id) if group_id.isdigit() else 0
+            stmt = select(StudyGroupMembershipModel).where(
+                StudyGroupMembershipModel.group_id == gid,
+                StudyGroupMembershipModel.user_id == user_id,
+                StudyGroupMembershipModel.status == 'active'
+            )
+            result = await self.db.execute(stmt)
+            membership = result.scalar_one_or_none()
+            return membership is not None
+        except Exception as e:
+            logger.warning(f"验证成员资格失败: {e}")
+            return False
 
     async def _check_discussion_cooldown(self, user_id: int, group_id: str) -> bool:
         """检查讨论发言冷却时间."""

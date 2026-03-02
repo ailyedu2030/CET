@@ -137,7 +137,7 @@ class ErrorAnalysisService:
 
         except Exception as e:
             logger.error(f"错题分类失败: {str(e)}")
-            return {}
+            return {"error": "错题分类失败", "details": str(e), "categories": []}
 
     async def analyze_error_patterns(
         self, student_id: int, days: int = 30
@@ -288,7 +288,7 @@ class ErrorAnalysisService:
 
         except Exception as e:
             logger.error(f"生成强化训练计划失败: {str(e)}")
-            return {}
+            return {"error": "生成强化训练计划失败", "details": str(e), "training_modules": []}
 
     # ==================== 私有方法 ====================
 

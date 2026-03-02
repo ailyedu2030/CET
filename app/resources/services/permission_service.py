@@ -62,6 +62,7 @@ class PermissionService:
                     permission_data.resource_id,
                     permission_data.shared_with.class_ids or [],
                     permission_data.shared_with.teacher_ids or [],
+                    user_id,  # 传递当前用户ID
                 )
             elif permission_data.permission.value != "class":
                 # 清除班级共享配置
@@ -416,6 +417,7 @@ class PermissionService:
         resource_id: int,
         class_ids: list[int],
         teacher_ids: list[int],
+        user_id: int,  # 新增：当前用户ID
     ) -> None:
         """更新班级共享配置"""
         from app.resources.models.resource_models import ResourceShare
@@ -430,7 +432,7 @@ class PermissionService:
             share = ResourceShare(
                 resource_id=resource_id,
                 resource_type=resource_type,
-                shared_by=0,  # TODO: 获取当前用户ID
+                shared_by=user_id,  # 使用当前用户ID
                 class_id=class_id,
                 share_scope="class",
                 permission_level=PermissionType.COURSE_READ,
@@ -443,7 +445,7 @@ class PermissionService:
             share = ResourceShare(
                 resource_id=resource_id,
                 resource_type=resource_type,
-                shared_by=0,
+                shared_by=user_id,
                 shared_with=teacher_id,
                 share_scope="private",
                 permission_level=PermissionType.COURSE_READ,

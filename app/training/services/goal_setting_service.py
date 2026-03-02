@@ -8,6 +8,7 @@ from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.training.models.training_models import TrainingRecord
+from app.training.models.training_center_models import TrainingGoalModel
 from app.users.models.user_models import User
 
 logger = logging.getLogger(__name__)
@@ -330,8 +331,20 @@ class GoalSettingService:
 
     async def _save_goal(self, goal: dict[str, Any]) -> None:
         """保存目标到数据库."""
-        # TODO: 实现数据库保存逻辑
-        logger.info(f"保存目标: {goal['goal_id']}")
+        try:
+            goal_obj = TrainingGoalModel(
+                user_id=goal.get('user_id', 0),
+                goal_title=goal.get('goal_title', ''),
+                goal_description=goal.get('goal_description', ''),
+                target_date=datetime.fromisoformat(goal['target_date']) if goal.get('target_date') else None,
+                status=goal.get('status', 'active'),
+            )
+            self.db.add(goal_obj)
+            await self.db.commit()
+            logger.info(f"保存目标成功: {goal['goal_id']}")
+        except Exception as e:
+            logger.warning(f"保存目标失败: {e}")
+            await self.db.rollback()
 
     async def _create_initial_milestones(
         self, goal_id: int, milestones: list[dict[str, Any]]
@@ -344,7 +357,28 @@ class GoalSettingService:
         self, student_id: int, status: str | None = None
     ) -> list[dict[str, Any]]:
         """加载学生目标."""
-        # TODO: 实现从数据库加载目标的逻辑
+        try:
+            stmt = select(TrainingGoalModel).where(TrainingGoalModel.user_id == student_id)
+            if status:
+                stmt = stmt.where(TrainingGoalModel.status == status)
+            stmt = stmt.order_by(desc(TrainingGoalModel.created_at))
+            
+            result = await self.db.execute(stmt)
+            goals = result.scalars().all()
+            
+            return [
+                {
+                    'goal_id': g.id,
+                    'goal_title': g.goal_title,
+                    'goal_description': g.goal_description,
+                    'target_date': g.target_date.isoformat() if g.target_date else None,
+                    'status': g.status,
+                    'created_at': g.created_at.isoformat() if g.created_at else None,
+                }
+                for g in goals
+            ]
+        except Exception as e:
+            logger.warning(f"加载学生目标失败: {e}")
         return []
 
     async def _calculate_goal_progress(self, goal_id: int) -> dict[str, Any]:
@@ -358,8 +392,22 @@ class GoalSettingService:
 
     async def _load_goal(self, goal_id: int) -> dict[str, Any] | None:
         """加载目标信息."""
-        # TODO: 实现从数据库加载目标的逻辑
-        return {"goal_id": goal_id, "status": "active"}
+        try:
+            goal = await self.db.get(TrainingGoalModel, goal_id)
+            if not goal:
+                return None
+            return {
+                'goal_id': goal.id,
+                'goal_title': goal.goal_title,
+                'goal_description': goal.goal_description,
+                'target_date': goal.target_date.isoformat() if goal.target_date else None,
+                'status': goal.status,
+                'user_id': goal.user_id,
+                'created_at': goal.created_at.isoformat() if goal.created_at else None,
+            }
+        except Exception as e:
+            logger.warning(f"加载目标失败: {e}")
+        return None
 
     async def _calculate_updated_progress(
         self, goal: dict[str, Any], progress_data: dict[str, Any]

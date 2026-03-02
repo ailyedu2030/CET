@@ -31,10 +31,10 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         
     - name: Cache Python dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
           
@@ -42,10 +42,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        # 确保安装所有必需的依赖
-        pip install httpx aiofiles 'python-jose[cryptography]'
-        pip install ruff mypy black isort
-        
     - name: Run Ruff linting
       run: |
         echo "::group::Ruff Linting"
@@ -152,10 +148,10 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         
     - name: Cache Python dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
           
@@ -163,10 +159,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        # 确保安装所有必需的依赖
-        pip install httpx aiofiles 'python-jose[cryptography]'
-        pip install pytest pytest-cov pytest-asyncio pytest-mock pytest-benchmark
-        
     - name: Set up test environment
       run: |
         cp .env.example .env.test
@@ -309,6 +301,7 @@ jobs:
     
     steps:
     - name: Check CI results
+      id: ci-check
       run: |
         echo "::group::CI Results Summary"
         echo "Code Quality: ${{ needs.code-quality.result }}"
@@ -318,14 +311,17 @@ jobs:
         echo "Docker Build: ${{ needs.docker-build.result }}"
         echo "Security Scan: ${{ needs.security-scan.result }}"
         echo "::endgroup::"
-        
-        if [[ "${{ needs.code-quality.result }}" != "success" ]] || \
-           [[ "${{ needs.frontend-quality.result }}" != "success" ]] || \
-           [[ "${{ needs.backend-tests.result }}" != "success" ]] || \
-           [[ "${{ needs.frontend-tests.result }}" != "success" ]] || \
-           [[ "${{ needs.docker-build.result }}" != "success" ]]; then
+
+        # Check each job result
+        CODE_QUALITY_OK=${{ needs.code-quality.result == 'success' }}
+        FRONTEND_QUALITY_OK=${{ needs.frontend-quality.result == 'success' }}
+        BACKEND_TESTS_OK=${{ needs.backend-tests.result == 'success' }}
+        FRONTEND_TESTS_OK=${{ needs.frontend-tests.result == 'success' }}
+        DOCKER_BUILD_OK=${{ needs.docker-build.result == 'success' }}
+
+        if [ "$CODE_QUALITY_OK" = "true" ] && [ "$FRONTEND_QUALITY_OK" = "true" ] && [ "$BACKEND_TESTS_OK" = "true" ] && [ "$FRONTEND_TESTS_OK" = "true" ] && [ "$DOCKER_BUILD_OK" = "true" ]; then
+          echo "✅ CI pipeline passed"
+        else
           echo "❌ CI pipeline failed"
           exit 1
-        else
-          echo "✅ CI pipeline passed"
         fi

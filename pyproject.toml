@@ -95,6 +95,7 @@ ignore = [
     "ANN102",  # Missing type annotation for `cls` in classmethod
     "ANN204",  # Missing return type annotation for special method
     "I001",    # Import block needs sorting (let ruff handle this)
+    "UP042",   # Use StrEnum instead of str + Enum (CI has older ruff)
 ]
 
 [tool.ruff.lint.per-file-ignores]

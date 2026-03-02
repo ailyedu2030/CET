@@ -144,7 +144,7 @@ jobs:
         delete-branch: true
         
     - name: Upload dependency reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: python-dependency-reports
@@ -194,7 +194,7 @@ jobs:
         echo "::endgroup::"
         
     - name: Upload Node.js dependency reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: nodejs-dependency-reports
@@ -211,8 +211,7 @@ jobs:
     
     steps:
     - name: Download all reports
-      uses: actions/download-artifact@v3
-      
+      uses: actions/download-artifact@v4
     - name: Generate summary report
       run: |
         echo "# 🔍 Dependency Update Summary" > summary.md
@@ -238,7 +237,6 @@ jobs:
         cat summary.md
         
     - name: Upload summary
-      uses: actions/upload-artifact@v3
-      with:
+      uses: actions/upload-artifact@v4
         name: dependency-summary
         path: summary.md

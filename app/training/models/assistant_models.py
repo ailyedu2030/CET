@@ -361,3 +361,39 @@ class VoiceRecognitionRecordModel(BaseModel):
 
     def __repr__(self: "VoiceRecognitionRecordModel") -> str:
         return f"<VoiceRecognitionRecordModel(id={getattr(self, 'id', None)}, user_id={getattr(self, 'user_id', None)})>"
+
+
+class ResourceRecommendationModel(BaseModel):
+    """
+    资源推荐记录模型
+
+    记录为用户推荐的学习资源
+    """
+
+    __tablename__ = "resource_recommendations"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    # 关联信息
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="用户ID")
+    resource_id = Column(Integer, ForeignKey("learning_resources.id"), nullable=False, comment="资源ID")
+
+    # 推荐信息
+    recommendation_score = Column(Float, default=0.0, comment="推荐评分")
+    recommendation_reason = Column(Text, comment="推荐理由")
+    recommendation_source = Column(String(50), default="unknown", comment="推荐来源")
+
+    # 用户反馈
+    user_clicked = Column(Boolean, default=False, comment="用户是否点击")
+    user_viewed = Column(Boolean, default=False, comment="用户是否查看")
+    user_rating = Column(Float, comment="用户评分")
+    feedback_text = Column(Text, comment="反馈内容")
+
+    # 时间戳
+    created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
+    )
+
+    def __repr__(self: "ResourceRecommendationModel") -> str:
+        return f"<ResourceRecommendationModel(id={{getattr(self, 'id', None)}}, user_id={{getattr(self, 'user_id', None)}})>"

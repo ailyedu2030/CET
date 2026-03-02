@@ -428,8 +428,9 @@ class ProgressMonitoringService:
         self, student_id: int, metrics: dict[str, Any]
     ) -> None:
         """更新监控状态."""
-        # TODO: 实现监控状态更新逻辑
-        logger.info(f"更新学生 {student_id} 监控状态")
+        # 可以将监控状态缓存到Redis或数据库
+        # 这里只记录日志，实际实现可以保存到监控状态表
+        logger.info(f"更新学生 {student_id} 监控状态: {metrics}")
 
     def _determine_overall_status(self, metrics: dict[str, Any]) -> str:
         """确定整体状态."""
@@ -564,8 +565,39 @@ class ProgressMonitoringService:
         self, student_id: int, start_date: datetime, end_date: datetime
     ) -> float:
         """计算完成率."""
-        # TODO: 实现实际的完成率计算逻辑
-        return 0.75
+        try:
+            from sqlalchemy import and_, func, select
+            from app.training.models.training_models import TrainingRecord
+            
+            # 获取计划的总任务数和完成数
+            stmt = select(
+                func.count(TrainingRecord.id).label('total'),
+            ).where(
+                and_(
+                    TrainingRecord.student_id == student_id,
+                    TrainingRecord.created_at.between(start_date, end_date),
+                )
+            )
+            result = await self.db.execute(stmt)
+            total = result.scalar() or 0
+            
+            # 计算完成率（假设有完成标记的记录）
+            completed_stmt = select(
+                func.count(TrainingRecord.id).label('completed'),
+            ).where(
+                and_(
+                    TrainingRecord.student_id == student_id,
+                    TrainingRecord.created_at.between(start_date, end_date),
+                    TrainingRecord.is_correct == True,  # noqa: E712
+                )
+            )
+            completed_result = await self.db.execute(completed_stmt)
+            completed = completed_result.scalar() or 0
+            
+            return completed / max(total, 1)
+        except Exception as e:
+            logger.warning(f"计算完成率失败: {e}")
+            return 0.0
 
     async def _calculate_accuracy_rate(
         self, student_id: int, start_date: datetime, end_date: datetime

@@ -5,6 +5,14 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, and_, desc, func
+
+from app.training.models.competition_models import (
+    CompetitionModel,
+    CompetitionRegistrationModel,
+    CompetitionSessionModel,
+    LeaderboardEntryModel,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -113,11 +121,11 @@ class CompetitionService:
             # 发布竞赛公告
             await self._publish_competition_announcement(competition)
 
-            logger.info(f"用户 {organizer_id} 创建竞赛: {competition['title']}")
+            logger.info("用户 %d 创建竞赛: %s", organizer_id, competition["title"])
             return competition
 
         except Exception as e:
-            logger.error(f"创建竞赛失败: {str(e)}")
+            logger.error("创建竞赛失败: %s", str(e))
             raise
 
     async def register_for_competition(
@@ -164,7 +172,7 @@ class CompetitionService:
             # 发送确认通知
             await self._send_registration_confirmation(user_id, competition)
 
-            logger.info(f"用户 {user_id} 报名竞赛: {competition_id}")
+            logger.info("用户 %d 报名竞赛: %s", user_id, competition_id)
             return {
                 "registration": registration,
                 "competition": competition,
@@ -172,7 +180,7 @@ class CompetitionService:
             }
 
         except Exception as e:
-            logger.error(f"竞赛报名失败: {str(e)}")
+            logger.error("竞赛报名失败: %s", str(e))
             raise
 
     async def start_competition_session(
@@ -223,7 +231,7 @@ class CompetitionService:
             # 保存竞赛会话
             await self._save_competition_session(session)
 
-            logger.info(f"用户 {user_id} 开始竞赛会话: {competition_id}")
+            logger.info("用户 %d 开始竞赛会话: %s", user_id, competition_id)
             return {
                 "session": session,
                 "first_question": questions[0] if questions else None,
@@ -231,7 +239,7 @@ class CompetitionService:
             }
 
         except Exception as e:
-            logger.error(f"开始竞赛会话失败: {str(e)}")
+            logger.error("开始竞赛会话失败: %s", str(e))
             raise
 
     async def submit_competition_answer(
@@ -305,7 +313,7 @@ class CompetitionService:
             }
 
         except Exception as e:
-            logger.error(f"提交竞赛答案失败: {str(e)}")
+            logger.error("提交竞赛答案失败: %s", str(e))
             raise
 
     async def get_competition_leaderboard(
@@ -337,7 +345,7 @@ class CompetitionService:
             }
 
         except Exception as e:
-            logger.error(f"获取竞赛排行榜失败: {str(e)}")
+            logger.error("获取竞赛排行榜失败: %s", str(e))
             raise
 
     async def get_user_competition_history(self, user_id: int) -> dict[str, Any]:
@@ -362,7 +370,7 @@ class CompetitionService:
             }
 
         except Exception as e:
-            logger.error(f"获取用户竞赛历史失败: {str(e)}")
+            logger.error("获取用户竞赛历史失败: %s", str(e))
             raise
 
     # ==================== 私有方法 ====================
@@ -398,33 +406,75 @@ class CompetitionService:
 
     async def _save_competition(self, competition: dict[str, Any]) -> None:
         """保存竞赛到数据库."""
-        # TODO: 实现数据库保存逻辑
-        logger.info(f"保存竞赛: {competition['competition_id']}")
+        db_competition = CompetitionModel(
+            competition_id=competition["competition_id"],
+            organizer_id=competition["organizer_id"],
+            title=competition["title"],
+            description=competition.get("description", ""),
+            competition_type=competition["competition_type"],
+            difficulty_level=competition.get("difficulty_level", "intermediate"),
+            start_time=competition["start_time"],
+            end_time=competition["end_time"],
+            registration_deadline=competition["registration_deadline"],
+            max_participants=competition.get("max_participants", 100),
+            participant_count=competition.get("participant_count", 0),
+            entry_requirements=competition.get("entry_requirements", {}),
+            question_pool=competition.get("question_pool", []),
+            rules=competition.get("rules", []),
+            prizes=competition.get("prizes", {}),
+            status=competition.get("status", "upcoming"),
+        )
+        # Set duration_minutes based on competition type if available
+        if competition["competition_type"] in self.competition_types:
+            db_competition.duration_minutes = self.competition_types[competition["competition_type"]]["duration_minutes"]
+            db_competition.scoring_method = self.competition_types[competition["competition_type"]]["scoring_method"]
+        self.db.add(db_competition)
+        await self.db.commit()
+        await self.db.refresh(db_competition)
+        logger.info("保存竞赛: %s", competition["competition_id"])
 
     async def _prepare_competition_questions(
         self, competition_id: str, competition_data: dict[str, Any]
     ) -> None:
         """准备竞赛题库."""
         # TODO: 实现题库准备逻辑
-        logger.info(f"准备竞赛题库: {competition_id}")
+        logger.info("准备竞赛题库: %s", competition_id)
 
     async def _publish_competition_announcement(
         self, competition: dict[str, Any]
     ) -> None:
         """发布竞赛公告."""
         # TODO: 实现公告发布逻辑
-        logger.info(f"发布竞赛公告: {competition['title']}")
+        logger.info("发布竞赛公告: %s", competition["title"])
 
     async def _get_competition(self, competition_id: str) -> dict[str, Any] | None:
         """获取竞赛信息."""
-        # TODO: 实现从数据库获取竞赛信息的逻辑
+        result = await self.db.execute(
+            select(CompetitionModel).where(CompetitionModel.competition_id == competition_id)
+        )
+        db_competition = result.scalar_one_or_none()
+        if not db_competition:
+            return None
+        
         return {
-            "competition_id": competition_id,
-            "status": "active",
-            "registration_deadline": datetime.now() + timedelta(days=1),
-            "max_participants": 100,
-            "participant_count": 50,
-            "duration_minutes": 30,
+            "competition_id": db_competition.competition_id,
+            "organizer_id": db_competition.organizer_id,
+            "title": db_competition.title,
+            "description": db_competition.description,
+            "competition_type": db_competition.competition_type,
+            "difficulty_level": db_competition.difficulty_level,
+            "start_time": db_competition.start_time,
+            "end_time": db_competition.end_time,
+            "registration_deadline": db_competition.registration_deadline,
+            "duration_minutes": db_competition.duration_minutes,
+            "max_participants": db_competition.max_participants,
+            "participant_count": db_competition.participant_count,
+            "entry_requirements": db_competition.entry_requirements,
+            "question_pool": db_competition.question_pool,
+            "rules": db_competition.rules,
+            "prizes": db_competition.prizes,
+            "status": db_competition.status,
+            "scoring_method": db_competition.scoring_method,
         }
 
     async def _check_registration_eligibility(
@@ -436,8 +486,16 @@ class CompetitionService:
 
     async def _is_already_registered(self, user_id: int, competition_id: str) -> bool:
         """检查是否已报名."""
-        # TODO: 实现报名状态检查逻辑
-        return False
+        result = await self.db.execute(
+            select(CompetitionRegistrationModel).where(
+                and_(
+                    CompetitionRegistrationModel.user_id == user_id,
+                    CompetitionRegistrationModel.competition_id == competition_id,
+                    CompetitionRegistrationModel.status == "registered"
+                )
+            )
+        )
+        return result.scalar_one_or_none() is not None
 
     async def _generate_registration_id(self) -> str:
         """生成报名ID."""
@@ -446,22 +504,39 @@ class CompetitionService:
 
     async def _save_registration(self, registration: dict[str, Any]) -> None:
         """保存报名记录."""
-        # TODO: 实现数据库保存逻辑
-        logger.info(f"保存报名记录: {registration['registration_id']}")
+        db_registration = CompetitionRegistrationModel(
+            registration_id=registration["registration_id"],
+            competition_id=registration["competition_id"],
+            user_id=registration["user_id"],
+            team_id=registration.get("team_id"),
+            registered_at=registration["registered_at"],
+            status=registration["status"],
+        )
+        self.db.add(db_registration)
+        await self.db.commit()
+        await self.db.refresh(db_registration)
+        logger.info("保存报名记录: %s", registration["registration_id"])
 
     async def _update_participant_count(
         self, competition_id: str, increment: int
     ) -> None:
         """更新参与人数."""
-        # TODO: 实现参与人数更新逻辑
-        logger.info(f"更新竞赛参与人数: {competition_id}")
+        result = await self.db.execute(
+            select(CompetitionModel).where(CompetitionModel.competition_id == competition_id)
+        )
+        db_competition = result.scalar_one_or_none()
+        if db_competition:
+            db_competition.participant_count += increment
+            await self.db.commit()
+            await self.db.refresh(db_competition)
+        logger.info("更新竞赛参与人数: %s", competition_id)
 
     async def _send_registration_confirmation(
         self, user_id: int, competition: dict[str, Any]
     ) -> None:
         """发送报名确认通知."""
         # TODO: 实现通知发送逻辑
-        logger.info(f"发送报名确认: 用户{user_id}, 竞赛{competition['competition_id']}")
+        logger.info("发送报名确认: 用户%d, 竞赛%s", user_id, competition["competition_id"])
 
     async def _verify_participation_eligibility(
         self, user_id: int, competition_id: str
@@ -474,8 +549,31 @@ class CompetitionService:
         self, user_id: int, competition_id: str
     ) -> dict[str, Any] | None:
         """获取活跃的竞赛会话."""
-        # TODO: 实现活跃会话获取逻辑
-        return None
+        result = await self.db.execute(
+            select(CompetitionSessionModel).where(
+                and_(
+                    CompetitionSessionModel.user_id == user_id,
+                    CompetitionSessionModel.competition_id == competition_id,
+                    CompetitionSessionModel.status == "active"
+                )
+            )
+        )
+        db_session = result.scalar_one_or_none()
+        if not db_session:
+            return None
+        
+        return {
+            "session_id": db_session.session_id,
+            "competition_id": db_session.competition_id,
+            "user_id": db_session.user_id,
+            "questions": db_session.questions or [],
+            "start_time": db_session.start_time,
+            "end_time": db_session.end_time,
+            "current_question_index": db_session.current_question_index,
+            "answers": db_session.answers or [],
+            "score": db_session.score,
+            "status": db_session.status,
+        }
 
     async def _get_competition_questions(
         self, competition_id: str, user_id: int
@@ -498,25 +596,56 @@ class CompetitionService:
 
     async def _save_competition_session(self, session: dict[str, Any]) -> None:
         """保存竞赛会话."""
-        # TODO: 实现数据库保存逻辑
-        logger.info(f"保存竞赛会话: {session['session_id']}")
+        db_session = CompetitionSessionModel(
+            session_id=session["session_id"],
+            competition_id=session["competition_id"],
+            user_id=session["user_id"],
+            questions=session["questions"],
+            start_time=session["start_time"],
+            end_time=session["end_time"],
+            current_question_index=session["current_question_index"],
+            answers=session["answers"],
+            score=session["score"],
+            status=session["status"],
+        )
+        self.db.add(db_session)
+        await self.db.commit()
+        await self.db.refresh(db_session)
+        logger.info("保存竞赛会话: %s", session["session_id"])
 
     async def _get_competition_session(self, session_id: str) -> dict[str, Any] | None:
         """获取竞赛会话."""
-        # TODO: 实现从数据库获取会话的逻辑
+        result = await self.db.execute(
+            select(CompetitionSessionModel).where(CompetitionSessionModel.session_id == session_id)
+        )
+        db_session = result.scalar_one_or_none()
+        if not db_session:
+            return None
+        
         return {
-            "session_id": session_id,
-            "user_id": 1,
-            "status": "active",
-            "end_time": datetime.now() + timedelta(minutes=30),
-            "questions": [],
-            "current_question_index": 0,
+            "session_id": db_session.session_id,
+            "competition_id": db_session.competition_id,
+            "user_id": db_session.user_id,
+            "questions": db_session.questions or [],
+            "start_time": db_session.start_time,
+            "end_time": db_session.end_time,
+            "current_question_index": db_session.current_question_index,
+            "answers": db_session.answers or [],
+            "score": db_session.score,
+            "status": db_session.status,
         }
 
     async def _end_competition_session(self, session_id: str) -> None:
         """结束竞赛会话."""
-        # TODO: 实现会话结束逻辑
-        logger.info(f"结束竞赛会话: {session_id}")
+        result = await self.db.execute(
+            select(CompetitionSessionModel).where(CompetitionSessionModel.session_id == session_id)
+        )
+        db_session = result.scalar_one_or_none()
+        if db_session:
+            db_session.status = "completed"
+            await self.db.commit()
+            await self.db.refresh(db_session)
+        logger.info("结束竞赛会话: %s", session_id)
 
     async def _validate_answer_data(
         self, answer_data: dict[str, Any]
@@ -545,20 +674,97 @@ class CompetitionService:
         self, session_id: str, answer_record: dict[str, Any]
     ) -> dict[str, Any]:
         """更新竞赛会话."""
-        # TODO: 实现会话更新逻辑
-        return {"current_question_index": 1, "score": 1.0}
+        result = await self.db.execute(
+            select(CompetitionSessionModel).where(CompetitionSessionModel.session_id == session_id)
+        )
+        db_session = result.scalar_one_or_none()
+        if not db_session:
+            raise ValueError("Session not found")
+        
+        # Update answers list
+        current_answers = db_session.answers or []
+        current_answers.append(answer_record)
+        db_session.answers = current_answers
+        
+        # Update score
+        db_session.score += answer_record["score"]
+        
+        # Update current question index
+        db_session.current_question_index += 1
+        
+        await self.db.commit()
+        await self.db.refresh(db_session)
+        
+        return {
+            "current_question_index": db_session.current_question_index,
+            "score": db_session.score,
+        }
 
     async def _complete_competition_session(self, session_id: str) -> dict[str, Any]:
         """完成竞赛会话."""
-        # TODO: 实现会话完成逻辑
-        return {"final_score": 0.8, "rank": 15, "total_participants": 50}
+        # First, end the session
+        await self._end_competition_session(session_id)
+        
+        # Get the session
+        session = await self._get_competition_session(session_id)
+        if not session:
+            raise ValueError("Session not found")
+        
+        # Calculate completion time
+        completion_time = int((session["end_time"] - session["start_time"]).total_seconds())
+        
+        # Calculate accuracy
+        total_questions = len(session["questions"]) if session["questions"] else 0
+        correct_answers = sum(1 for a in session["answers"] if a.get("is_correct"))
+        accuracy_rate = correct_answers / total_questions if total_questions > 0 else 0.0
+        
+        # Get total participants
+        competition_result = await self._get_competition(session["competition_id"])
+        total_participants = competition_result.get("participant_count", 0) if competition_result else 0
+        
+        # Create leaderboard entry
+        leaderboard_entry = LeaderboardEntryModel(
+            competition_id=session["competition_id"],
+            user_id=session["user_id"],
+            final_score=session["score"],
+            completion_time=completion_time,
+            accuracy_rate=accuracy_rate,
+            total_participants=total_participants,
+            rank=None,  # Will be calculated later
+        )
+        self.db.add(leaderboard_entry)
+        await self.db.commit()
+        await self.db.refresh(leaderboard_entry)
+        
+        return {
+            "final_score": session["score"],
+            "accuracy_rate": accuracy_rate,
+            "completion_time": completion_time,
+            "total_participants": total_participants,
+        }
 
     async def _get_leaderboard_data(
         self, competition_id: str, limit: int
     ) -> list[dict[str, Any]]:
         """获取排行榜数据."""
-        # TODO: 实现排行榜数据获取逻辑
-        return []
+        result = await self.db.execute(
+            select(LeaderboardEntryModel)
+            .where(LeaderboardEntryModel.competition_id == competition_id)
+            .order_by(desc(LeaderboardEntryModel.final_score))
+            .limit(limit)
+        )
+        entries = result.scalars().all()
+        
+        return [
+            {
+                "user_id": entry.user_id,
+                "final_score": entry.final_score,
+                "accuracy_rate": entry.accuracy_rate,
+                "completion_time": entry.completion_time,
+                "rank": None,  # Will be set by caller
+            }
+            for entry in entries
+        ]
 
     def _calculate_reward(self, rank: int, total_participants: int) -> dict[str, Any]:
         """计算奖励."""
@@ -575,25 +781,103 @@ class CompetitionService:
 
     async def _get_competition_statistics(self, competition_id: str) -> dict[str, Any]:
         """获取竞赛统计."""
-        # TODO: 实现统计数据获取逻辑
+        # Total participants
+        participants_result = await self.db.execute(
+            select(func.count(CompetitionRegistrationModel.id)).where(
+                CompetitionRegistrationModel.competition_id == competition_id
+            )
+        )
+        total_participants = participants_result.scalar() or 0
+        
+        # Completed sessions
+        sessions_result = await self.db.execute(
+            select(func.count(CompetitionSessionModel.id)).where(
+                and_(
+                    CompetitionSessionModel.competition_id == competition_id,
+                    CompetitionSessionModel.status == "completed"
+                )
+            )
+        )
+        completed_sessions = sessions_result.scalar() or 0
+        
+        # Average score
+        avg_score_result = await self.db.execute(
+            select(func.avg(LeaderboardEntryModel.final_score)).where(
+                LeaderboardEntryModel.competition_id == competition_id
+            )
+        )
+        average_score = avg_score_result.scalar() or 0.0
+        
+        # Average time
+        avg_time_result = await self.db.execute(
+            select(func.avg(LeaderboardEntryModel.completion_time)).where(
+                LeaderboardEntryModel.competition_id == competition_id
+            )
+        )
+        average_time_seconds = avg_time_result.scalar() or 0
+        average_time = int(average_time_seconds / 60) if average_time_seconds > 0 else 0
+        
+        completion_rate = completed_sessions / total_participants if total_participants > 0 else 0.0
+        
         return {
-            "total_participants": 50,
-            "completion_rate": 0.9,
-            "average_score": 0.75,
-            "average_time": 25,
+            "total_participants": total_participants,
+            "completion_rate": completion_rate,
+            "average_score": average_score,
+            "average_time": average_time,
         }
 
     async def _get_user_competitions(self, user_id: int) -> list[dict[str, Any]]:
         """获取用户参与的竞赛."""
-        # TODO: 实现用户竞赛获取逻辑
-        return []
+        # Get registrations for this user
+        registrations_result = await self.db.execute(
+            select(CompetitionRegistrationModel).where(
+                CompetitionRegistrationModel.user_id == user_id
+            )
+        )
+        registrations = registrations_result.scalars().all()
+        
+        competitions = []
+        for reg in registrations:
+            # Get competition details
+            comp = await self._get_competition(reg.competition_id)
+            if comp:
+                competitions.append(comp)
+        
+        return competitions
 
     async def _get_user_competition_result(
         self, user_id: int, competition_id: str
     ) -> dict[str, Any]:
         """获取用户竞赛结果."""
-        # TODO: 实现用户结果获取逻辑
-        return {"score": 0.8, "rank": 15, "completion_time": 25}
+        result = await self.db.execute(
+            select(LeaderboardEntryModel).where(
+                and_(
+                    LeaderboardEntryModel.user_id == user_id,
+                    LeaderboardEntryModel.competition_id == competition_id
+                )
+            )
+        )
+        entry = result.scalar_one_or_none()
+        
+        if not entry:
+            return {"score": 0.0, "rank": None, "completion_time": None}
+        
+        # Calculate rank
+        rank_result = await self.db.execute(
+            select(func.count(LeaderboardEntryModel.id)).where(
+                and_(
+                    LeaderboardEntryModel.competition_id == competition_id,
+                    LeaderboardEntryModel.final_score > entry.final_score
+                )
+            )
+        )
+        rank = (rank_result.scalar() or 0) + 1
+        
+        return {
+            "score": entry.final_score,
+            "rank": rank,
+            "completion_time": entry.completion_time,
+        }
 
     async def _calculate_user_competition_stats(
         self, competitions: list[dict[str, Any]]

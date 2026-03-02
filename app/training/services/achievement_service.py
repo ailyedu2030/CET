@@ -7,6 +7,7 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.training.utils.gamification_utils import GamificationUtils
+from app.training.models.training_center_models import TrainingSessionModel
 from app.users.models.user_models import User
 
 logger = logging.getLogger(__name__)
@@ -514,7 +515,16 @@ class AchievementService:
             return {"total_questions": await self._count_total_questions(user_id)}
         elif achievement_type == "accuracy_expert":
             return {"accuracy_rate": await self._calculate_accuracy_rate(user_id)}
-        # 其他成就类型的数据获取
+        # 其他成就类型的数据获取 - 从训练记录中查询
+        try:
+            from sqlalchemy import func, select
+            stmt = select(func.count(TrainingSessionModel.id).label('total_sessions')).where(TrainingSessionModel.user_id == user_id)
+            result = await self.db.execute(stmt)
+            row = result.first()
+            if row and row.total_sessions:
+                return {"total_sessions": row.total_sessions or 0}
+        except Exception as e:
+            logger.warning(f"获取成就数据失败: {e}")
         return {}
 
     def _check_achievement_condition(
@@ -547,7 +557,35 @@ class AchievementService:
 
     async def _get_recent_learning_data(self, user_id: int) -> dict[str, Any]:
         """获取用户最近的学习数据."""
-        # TODO: 实现最近学习数据获取逻辑
+        try:
+            from sqlalchemy import func, select
+            from datetime import datetime, timedelta
+            
+            # 获取最近7天的训练记录
+            recent_date = datetime.now() - timedelta(days=7)
+            stmt = select(TrainingSessionModel).where(
+                TrainingSessionModel.user_id == user_id,
+                TrainingSessionModel.created_at >= recent_date
+            ).order_by(desc(TrainingSessionModel.created_at)).limit(10)
+            
+            result = await self.db.execute(stmt)
+            sessions = result.scalars().all()
+            
+            return {
+                "recent_sessions": [
+                    {
+                        "id": s.id,
+                        "training_type": s.training_type,
+                        "accuracy_rate": s.accuracy_rate,
+                        "total_questions": s.total_questions,
+                        "completed_at": s.completed_at.isoformat() if s.completed_at else None
+                    }
+                    for s in sessions
+                ],
+                "total_recent_sessions": len(sessions)
+            }
+        except Exception as e:
+            logger.warning(f"获取最近学习数据失败: {e}")
         return {}
 
     async def _check_badge_condition(
@@ -595,10 +633,72 @@ class AchievementService:
         return []
 
     async def _calculate_learning_streak(self, user_id: int) -> int:
-        return 5  # 简化实现
+        """计算学习连续天数."""
+        try:
+            from datetime import datetime, timedelta
+            from sqlalchemy import func, select
+            
+            # 查找用户最近的学习日期
+            recent_date = datetime.now() - timedelta(days=365)
+            stmt = select(
+                func.date(TrainingSessionModel.created_at).label('study_date'),
+                func.count(TrainingSessionModel.id).label('session_count')
+            ).where(
+                TrainingSessionModel.user_id == user_id,
+                TrainingSessionModel.created_at >= recent_date
+            ).group_by(func.date(TrainingSessionModel.created_at)).order_by(desc('study_date'))
+            
+            result = await self.db.execute(stmt)
+            dates = result.all()
+            
+            if not dates:
+                return 0
+            
+            # 计算连续天数
+            streak = 0
+            today = datetime.now().date()
+            for i, row in enumerate(dates):
+                expected_date = today - timedelta(days=i)
+                if row.study_date == expected_date:
+                    streak += 1
+                else:
+                    break
+            return streak
+        except Exception as e:
+            logger.warning(f"计算学习连续天数失败: {e}")
+            return 0
 
     async def _count_total_questions(self, user_id: int) -> int:
-        return 250  # 简化实现
+        """统计用户完成的总题目数."""
+        try:
+            from sqlalchemy import func, select
+            
+            stmt = select(
+                func.sum(TrainingSessionModel.total_questions)
+            ).where(TrainingSessionModel.user_id == user_id)
+            
+            result = await self.db.execute(stmt)
+            total = result.scalar()
+            return total or 0
+        except Exception as e:
+            logger.warning(f"统计题目数失败: {e}")
+            return 0
 
     async def _calculate_accuracy_rate(self, user_id: int) -> float:
-        return 0.78  # 简化实现
+        """计算用户平均正确率."""
+        try:
+            from sqlalchemy import func, select
+            
+            stmt = select(
+                func.avg(TrainingSessionModel.accuracy_rate)
+            ).where(
+                TrainingSessionModel.user_id == user_id,
+                TrainingSessionModel.accuracy_rate > 0
+            )
+            
+            result = await self.db.execute(stmt)
+            avg = result.scalar()
+            return float(avg or 0.0)
+        except Exception as e:
+            logger.warning(f"计算正确率失败: {e}")
+            return 0.0

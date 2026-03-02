@@ -8,7 +8,8 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import TrainingType
-from app.training.models.training_models import TrainingRecord, TrainingSession
+from app.training.models.training_models import TrainingRecord
+from app.training.models.learning_plan_models import LearningPlanModel, TrainingSession
 from app.training.utils.plan_generator import PlanGenerator
 from app.users.models.user_models import User
 
@@ -378,19 +379,57 @@ class LearningPlanService:
         self, student_id: int, plan_data: dict[str, Any]
     ) -> int:
         """保存学习计划到数据库."""
-        # 这里应该保存到数据库，简化处理返回模拟ID
-        # TODO: 实现实际的数据库保存逻辑
-        return hash(f"{student_id}_{datetime.now().isoformat()}") % 1000000
+        try:
+            plan = LearningPlanModel(
+                student_id=student_id,
+                plan_title=plan_data.get('plan_title', ''),
+                plan_type=plan_data.get('plan_type', 'weekly'),
+                status=plan_data.get('status', 'active'),
+                start_date=datetime.fromisoformat(plan_data['start_date']) if plan_data.get('start_date') else None,
+                end_date=datetime.fromisoformat(plan_data['end_date']) if plan_data.get('end_date') else None,
+            )
+            self.db.add(plan)
+            await self.db.commit()
+            await self.db.refresh(plan)
+            return plan.id
+        except Exception as e:
+            logger.warning(f"保存学习计划失败: {e}")
+            await self.db.rollback()
+            return 0
 
     async def _get_latest_plan_id(self, student_id: int) -> int | None:
         """获取最新的计划ID."""
-        # TODO: 实现从数据库获取最新计划ID的逻辑
-        return 1  # 简化处理
+        try:
+            from sqlalchemy import desc
+            stmt = select(LearningPlanModel).where(
+                LearningPlanModel.student_id == student_id
+            ).order_by(desc(LearningPlanModel.created_at)).limit(1)
+            
+            result = await self.db.execute(stmt)
+            plan = result.scalar_one_or_none()
+            return plan.id if plan else None
+        except Exception as e:
+            logger.warning(f"获取最新计划ID失败: {e}")
+        return None
 
     async def _load_learning_plan(self, plan_id: int) -> dict[str, Any]:
         """从数据库加载学习计划."""
-        # TODO: 实现从数据库加载计划的逻辑
-        return {"plan_id": plan_id, "status": "active"}
+        try:
+            plan = await self.db.get(LearningPlanModel, plan_id)
+            if not plan:
+                return None
+            return {
+                'plan_id': plan.id,
+                'student_id': plan.student_id,
+                'plan_title': plan.plan_title,
+                'plan_type': plan.plan_type,
+                'status': plan.status,
+                'start_date': plan.start_date.isoformat() if plan.start_date else None,
+                'end_date': plan.end_date.isoformat() if plan.end_date else None,
+            }
+        except Exception as e:
+            logger.warning(f"加载学习计划失败: {e}")
+        return None
 
     async def _calculate_plan_progress(
         self, student_id: int, plan_id: int

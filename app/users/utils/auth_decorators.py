@@ -68,6 +68,8 @@ async def get_current_active_user(
     """获取当前活跃用户的依赖函数."""
     if not current_user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="账户已被禁用")
+    if not current_user.is_verified:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="账户未验证")
     return current_user
 
 
@@ -86,8 +88,23 @@ def AuthRequired(
     require_active: bool = True,
 ) -> Any:
     """创建认证依赖的工厂函数."""
-    # 暂时返回简单的依赖
-    return Depends(get_current_user)
+
+    async def auth_dependency(
+        current_user: Annotated[User, Depends(get_current_user)],
+    ) -> User:
+        if require_active and not current_user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="账户已被禁用",
+            )
+        if require_verified and not current_user.is_verified:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="账户未验证",
+            )
+        return current_user
+
+    return Depends(auth_dependency)
 
 
 # 保持向后兼容的AuthRequired装饰器类
@@ -218,9 +235,7 @@ class PermissionRequired:
 
             # 检查角色
             if self.required_role:
-                has_role = await auth_service.verify_user_role(
-                    current_user.id, self.required_role
-                )
+                has_role = await auth_service.verify_user_role(current_user.id, self.required_role)
                 if not has_role:
                     raise HTTPException(
                         status_code=status.HTTP_403_FORBIDDEN,
@@ -231,9 +246,7 @@ class PermissionRequired:
             if self.required_permissions:
                 permission_checks = []
                 for perm in self.required_permissions:
-                    has_perm = await auth_service.verify_user_permission(
-                        current_user.id, perm
-                    )
+                    has_perm = await auth_service.verify_user_permission(current_user.id, perm)
                     permission_checks.append(has_perm)
 
                 if self.require_all_permissions:
@@ -345,9 +358,7 @@ async def get_current_super_admin_user(
     return current_user
 
 
-def create_permission_dependency(
-    permissions: list[str], require_all: bool = True
-) -> Any:
+def create_permission_dependency(permissions: list[str], require_all: bool = True) -> Any:
     """创建权限检查依赖函数.
 
     Args:

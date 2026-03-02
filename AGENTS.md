@@ -1,160 +1,43 @@
-# CET 项目 Agents 指南
+# CET 教育平台项目
 
 ## 项目概述
-
-CET (Coding Education Technology) 是一个教育技术平台，用于代码教育。
+CET 教育平台是一个基于 FastAPI 的英语水平考试训练系统，提供词汇、听力、阅读、写作、翻译等训练模块。
 
 ## 技术栈
+- **后端**: FastAPI + SQLAlchemy + PostgreSQL
+- **前端**: React + TypeScript
+- **AI**: OpenAI GPT API
+- **数据库**: PostgreSQL + Redis
+- **向量数据库**: Milvus
 
-- **后端**: Python FastAPI
-- **前端**: React/TypeScript
-- **数据库**: PostgreSQL (通过 Alembic 管理)
-- **容器**: Docker, Docker Compose
-- **测试**: pytest
+## 核心模块
 
-## 目录结构
+### app/training/
+- `services/achievement_service.py` - 成就系统
+- `services/goal_setting_service.py` - 目标设定
+- `services/learning_plan_service.py` - 学习计划
+- `services/progress_monitoring_service.py` - 进度监控
+- `services/error_analysis_service.py` - 错题分析
+- `services/competition_service.py` - 竞赛系统
+- `services/social_learning_service.py` - 社交学习
 
-```
-/app                 # 主应用代码
-  /api              # API 路由
-  /core             # 核心配置
-  /models           # 数据库模型
-  /schemas          # Pydantic schemas
-  /services         # 业务逻辑
-  /utils            # 工具函数
-/alembic            # 数据库迁移
-/frontend           # 前端代码
-/config             # 配置文件
-/scripts            # 脚本
-/tests              # 测试
-```
+### app/users/
+- `services/auth_service.py` - 认证服务
+- `services/admin_service.py` - 管理服务
+
+### app/resources/
+- `services/permission_service.py` - 权限服务
+- `services/knowledge_service.py` - 知识服务
 
 ## 代码规范
-
-- 使用 Python type hints
-- 遵循 PEP 8
+- 使用 async/await 异步编程
+- 遵循 PEP 8 代码规范
 - 使用 Pydantic 进行数据验证
-- 使用 SQLAlchemy 作为 ORM
+- 所有服务方法必须包含完整的异常处理
 
-## 常用命令
-
-```bash
-# 安装依赖
-pip install -r requirements.txt
-
-# 运行后端
-uvicorn app.main:app --reload
-
-# 运行测试
-pytest
-
-# 数据库迁移
-alembic upgrade head
-```
-
-## Agents 使用
-
-### 正确的调用方式
-
-这些是 **Agents（智能体）**，不是 slash 命令。需要通过 `task()` 或 `call_omo_agent()` 调用：
-
-```typescript
-// ✅ 正确的方式 - 使用 task() 调用
-task(
-  subagent_type="code-reviewer", 
-  prompt="请审查这段代码: ...", 
-  load_skills=[]
-)
-
-// ✅ 正确的方式 - 使用 call_omo_agent()
-call_omo_agent(
-  subagent_type="build-error-resolver", 
-  prompt="修复这个构建错误: ..."
-)
-```
-
-### ❌ 错误的调用方式
-
-```typescript
-// ❌ 错误 - 这些是 agents，不是 skills
-skill("code-reviewer")
-load_skills: ["build-error-resolver"]
-
-// ❌ 错误 - 不是 slash 命令
-/code-reviewer
-/build-error-resolver
-```
-
-### 可用的 Specialized Agents
-
-| Agent | 用途 |
-|-------|------|
-| `code-reviewer` | 代码审查 |
-| `security-reviewer` | 安全审查 |
-| `python-reviewer` | Python 专项审查 |
-| `database-reviewer` | 数据库审查 |
-| `go-reviewer` | Go 代码审查 |
-| `tdd-guide` | TDD 指导 |
-| `e2e-runner` | E2E 测试 |
-| `refactor-cleaner` | 重构 |
-| `build-error-resolver` | 构建错误修复 |
-| `doc-updater` | 文档更新 |
-
-### 可用的 Built-in Agents
-
-| Agent | 用途 |
-|-------|------|
-| `sisyphus` | 主编排器 |
-| `hephaestus` | 深度工作 |
-| `oracle` | 顾问（只读）|
-| `atlas` | Todo 编排 |
-| `prometheus` | 规划 |
-| `metis` | 计划咨询 |
-| `momus` | 计划审查 |
-| `librarian` | 文档搜索 |
-| `explore` | 代码搜索 |
-| `multimodal-looker` | 图片/PDF 分析 |
-
-### 可用的 Skills
-
-| Skill | 用途 |
-|-------|------|
-| `git-master` | Git 操作 |
-| `playwright` | 浏览器自动化 |
-| `frontend-ui-ux` | 前端 UI/UX |
-| `dev-browser` | 浏览器交互 |
-
-使用方式：
-```typescript
-task(
-  category="visual-engineering", 
-  load_skills=["frontend-ui-ux"],
-  prompt="..."
-)
-```
-
-<!-- gitnexus:start -->
-# GitNexus MCP
-
-This project is indexed by GitNexus as **CET** (9549 symbols, 24532 relationships, 300 execution flows).
-
-## Always Start Here
-
-1. **Read `gitnexus://repo/{name}/context`** — codebase overview + check index freshness
-2. **Match your task to a skill below** and **read that skill file**
-3. **Follow the skill's workflow and checklist**
-
-> If step 1 warns the index is stale, run `npx gitnexus analyze` in the terminal first.
-
-## Skills
-
-| Task | Read this skill file |
-|------|---------------------|
-| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
-| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
-| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
-| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
-| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
-
-<!-- gitnexus:end -->
+## 数据库模型
+- TrainingSessionModel - 训练会话
+- TrainingGoalModel - 学习目标
+- LearningPlanModel - 学习计划
+- StudyGroupModel - 学习小组
+- AchievementModel - 成就
