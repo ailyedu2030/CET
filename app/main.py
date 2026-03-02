@@ -22,6 +22,7 @@ from app.core.exceptions import (
     ResourceNotFoundError,
     ValidationError,
 )
+
 # 导入各模块的路由器
 from app.ai.api.v1 import router as ai_router
 from app.analytics.api.v1 import router as analytics_router
@@ -98,9 +99,7 @@ async def business_logic_exception_handler(
 
 
 @app.exception_handler(HTTPException)
-async def http_exception_handler(
-    request: Request, exc: HTTPException
-) -> JSONResponse:
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     """处理HTTP异常."""
     return JSONResponse(
         status_code=exc.status_code,
@@ -140,6 +139,7 @@ async def readiness_check() -> dict[str, str | bool]:
         "database": True,  # 占位 - 实际应该检查数据库连接
         "redis": True,  # 占位 - 实际应该检查Redis连接
     }
+
 
 # 根路径
 @app.get("/")

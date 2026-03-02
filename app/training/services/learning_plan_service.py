@@ -420,7 +420,7 @@ class LearningPlanService:
             logger.warning(f"获取最新计划ID失败: {e}")
         return None
 
-    async def _load_learning_plan(self, plan_id: int) -> dict[str, Any]:
+    async def _load_learning_plan(self, plan_id: int) -> dict[str, Any] | None:
         """从数据库加载学习计划."""
         try:
             plan = await self.db.get(LearningPlanModel, plan_id)

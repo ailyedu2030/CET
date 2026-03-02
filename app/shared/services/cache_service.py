@@ -433,7 +433,9 @@ class CacheService:
                     else:
                         value = json.loads(str(raw_value))
                 except Exception as e:
-                    self.logger.warning(f"Cache deserialization failed: {str(e)}, trying fallback")
+                    self.logger.warning(
+                        f"Cache deserialization failed: {str(e)}, trying fallback"
+                    )
                     if isinstance(raw_value, bytes):
                         value = json.loads(raw_value.decode("utf-8"))
                     else:
@@ -462,7 +464,9 @@ class CacheService:
                 try:
                     raw_value = pickle.dumps(value)
                 except Exception as e:
-                    self.logger.warning(f"Cache serialization failed: {str(e)}, using JSON fallback")
+                    self.logger.warning(
+                        f"Cache serialization failed: {str(e)}, using JSON fallback"
+                    )
                     raw_value = json.dumps(value).encode("utf-8")
             else:
                 raw_value = str(value).encode("utf-8")

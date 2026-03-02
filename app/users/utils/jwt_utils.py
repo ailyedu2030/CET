@@ -132,7 +132,7 @@ class JWTManager:
             "sub": payload.get("sub"),
             "username": payload.get("username"),
             "user_type": payload.get("user_type"),  # ✅ 新增：用户类型
-            "roles": payload.get("roles", []),      # ✅ 新增：用户角色
+            "roles": payload.get("roles", []),  # ✅ 新增：用户角色
         }
 
         access_token: str = self.create_access_token(data=new_token_data)
