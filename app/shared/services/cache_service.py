@@ -675,9 +675,8 @@ async def get_cache_service() -> CacheService:
     global _cache_service
 
     if _cache_service is None:
-        from app.core.redis import get_redis
-
         from app.core.database import get_db
+        from app.core.redis import get_redis
 
         async for db in get_db():
             redis = await get_redis()
