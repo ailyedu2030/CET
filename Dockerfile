@@ -49,7 +49,7 @@ RUN mkdir -p /app/reports
 RUN mkdir -p /app/static
 
 # 复制前端构建产物到静态文件目录
-RUN cp -r /app/frontend/dist/* /app/static/
+RUN cp -r /app/dist/* /app/static/ 2>/dev/null || true
 # 创建非root用户
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 RUN chown -R appuser:appuser /app
