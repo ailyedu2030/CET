@@ -29,6 +29,7 @@ from .learning_mixins import (
 )
 from .metrics import AIServiceMetrics, LearningMetrics, SystemMetrics, TeachingMetrics
 from .validators import ResourceValidator, TrainingValidator, UserValidator
+from .file_storage_models import FileMetadataModel, FilePermissionModel
 
 __all__ = [
     # Pydantic BaseModel
@@ -65,4 +66,7 @@ __all__ = [
     "ResourceValidator",
     "TrainingValidator",
     "UserValidator",
+    # 文件存储模型
+    "FileMetadataModel",
+    "FilePermissionModel",
 ]

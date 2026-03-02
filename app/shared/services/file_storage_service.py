@@ -13,11 +13,13 @@ from uuid import uuid4
 
 from fastapi import UploadFile
 from pydantic import BaseModel, Field
+from sqlalchemy import select, and_, or_, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.config.storage_config import storage_config
 from app.shared.services.cache_service import CacheService
 from app.shared.utils.minio_client import minio_client
+from app.shared.models.file_storage_models import FileMetadataModel, FilePermissionModel
 
 logger = logging.getLogger(__name__)
 
@@ -465,16 +467,60 @@ class FileStorageService:
         # 检查显式权限
         return await self._check_explicit_permission(file_id, user_id, permission)
 
-    # 以下方法需要根据实际数据库模型实现
+    # 数据库操作方法
     async def _save_file_metadata(self, metadata: FileMetadata) -> None:
         """保存文件元数据到数据库"""
-        # TODO: 实现数据库保存逻辑
-        pass
+        try:
+            db_metadata = FileMetadataModel(
+                file_id=metadata.file_id,
+                original_name=metadata.original_name,
+                object_name=metadata.object_name,
+                bucket_type=metadata.bucket_type,
+                file_size=metadata.file_size,
+                content_type=metadata.content_type,
+                file_hash=metadata.file_hash,
+                upload_time=metadata.upload_time,
+                uploaded_by=metadata.uploaded_by,
+                access_level=metadata.access_level,
+                version=metadata.version,
+                is_deleted=metadata.is_deleted,
+                extra_metadata=metadata.metadata,
+            )
+            self.db.add(db_metadata)
+            await self.db.commit()
+            await self.db.refresh(db_metadata)
+            logger.info(f"Saved file metadata to database: {metadata.file_id}")
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Failed to save file metadata {metadata.file_id}: {str(e)}")
+            raise
 
     async def _get_file_metadata_from_db(self, file_id: str) -> FileMetadata | None:
         """从数据库获取文件元数据"""
-        # TODO: 实现数据库查询逻辑
-        return None
+        try:
+            stmt = select(FileMetadataModel).where(FileMetadataModel.file_id == file_id)
+            result = await self.db.execute(stmt)
+            db_metadata = result.scalar_one_or_none()
+            if db_metadata:
+                return FileMetadata(
+                    file_id=db_metadata.file_id,
+                    original_name=db_metadata.original_name,
+                    object_name=db_metadata.object_name,
+                    bucket_type=db_metadata.bucket_type,
+                    file_size=db_metadata.file_size,
+                    content_type=db_metadata.content_type,
+                    file_hash=db_metadata.file_hash,
+                    upload_time=db_metadata.upload_time,
+                    uploaded_by=db_metadata.uploaded_by,
+                    access_level=db_metadata.access_level,
+                    version=db_metadata.version,
+                    is_deleted=db_metadata.is_deleted,
+                    metadata=db_metadata.extra_metadata,
+                )
+            return None
+        except Exception as e:
+            logger.error(f"Failed to get file metadata {file_id}: {str(e)}")
+            raise
 
     async def _query_files(
         self,
@@ -485,39 +531,167 @@ class FileStorageService:
         offset: int = 0,
     ) -> list[FileMetadata]:
         """查询文件列表"""
-        # TODO: 实现数据库查询逻辑
-        return []
+        try:
+            stmt = select(FileMetadataModel).where(FileMetadataModel.is_deleted == False)
+
+            conditions = []
+            if user_id:
+                conditions.append(FileMetadataModel.uploaded_by == user_id)
+            if bucket_type:
+                conditions.append(FileMetadataModel.bucket_type == bucket_type)
+            if access_level:
+                conditions.append(FileMetadataModel.access_level == access_level)
+
+            if conditions:
+                stmt = stmt.where(and_(*conditions))
+
+            stmt = stmt.order_by(FileMetadataModel.upload_time.desc()).limit(limit).offset(offset)
+            result = await self.db.execute(stmt)
+            db_files = result.scalars().all()
+
+            return [
+                FileMetadata(
+                    file_id=db_file.file_id,
+                    original_name=db_file.original_name,
+                    object_name=db_file.object_name,
+                    bucket_type=db_file.bucket_type,
+                    file_size=db_file.file_size,
+                    content_type=db_file.content_type,
+                    file_hash=db_file.file_hash,
+                    upload_time=db_file.upload_time,
+                    uploaded_by=db_file.uploaded_by,
+                    access_level=db_file.access_level,
+                    version=db_file.version,
+                    is_deleted=db_file.is_deleted,
+                    metadata=db_file.extra_metadata,
+                )
+                for db_file in db_files
+            ]
+        except Exception as e:
+            logger.error(f"Failed to query files: {str(e)}")
+            raise
 
     async def _delete_file_metadata(self, file_id: str) -> None:
         """删除文件元数据"""
-        # TODO: 实现数据库删除逻辑
-        pass
+        try:
+            stmt = select(FileMetadataModel).where(FileMetadataModel.file_id == file_id)
+            result = await self.db.execute(stmt)
+            db_metadata = result.scalar_one_or_none()
+            if db_metadata:
+                await self.db.delete(db_metadata)
+                await self.db.commit()
+                logger.info(f"Deleted file metadata from database: {file_id}")
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Failed to delete file metadata {file_id}: {str(e)}")
+            raise
 
     async def _mark_file_deleted(self, file_id: str) -> None:
         """标记文件为已删除"""
-        # TODO: 实现数据库更新逻辑
-        pass
+        try:
+            stmt = (
+                update(FileMetadataModel)
+                .where(FileMetadataModel.file_id == file_id)
+                .values(is_deleted=True)
+            )
+            await self.db.execute(stmt)
+            await self.db.commit()
+            logger.info(f"Marked file as deleted: {file_id}")
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Failed to mark file deleted {file_id}: {str(e)}")
+            raise
 
     async def _save_file_permission(self, permission: FilePermission) -> None:
         """保存文件权限"""
-        # TODO: 实现数据库保存逻辑
-        pass
+        try:
+            db_permission = FilePermissionModel(
+                file_id=permission.file_id,
+                user_id=permission.user_id,
+                role=permission.role,
+                permission=permission.permission,
+                granted_by=permission.granted_by,
+                granted_at=permission.granted_at,
+                expires_at=permission.expires_at,
+            )
+            self.db.add(db_permission)
+            await self.db.commit()
+            await self.db.refresh(db_permission)
+            logger.info(f"Saved file permission: {permission.file_id} - {permission.permission}")
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Failed to save file permission: {str(e)}")
+            raise
 
     async def _delete_file_permission(
         self, file_id: str, user_id: str | None, role: str | None, permission: str
     ) -> None:
         """删除文件权限"""
-        # TODO: 实现数据库删除逻辑
-        pass
+        try:
+            stmt = select(FilePermissionModel).where(
+                FilePermissionModel.file_id == file_id,
+                FilePermissionModel.permission == permission
+            )
+            if user_id:
+                stmt = stmt.where(FilePermissionModel.user_id == user_id)
+            if role:
+                stmt = stmt.where(FilePermissionModel.role == role)
+
+            result = await self.db.execute(stmt)
+            db_permissions = result.scalars().all()
+            for db_perm in db_permissions:
+                await self.db.delete(db_perm)
+            await self.db.commit()
+            logger.info(f"Deleted file permission: {file_id} - {permission}")
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Failed to delete file permission: {str(e)}")
+            raise
 
     async def _check_explicit_permission(
         self, file_id: str, user_id: str | None, permission: str
     ) -> bool:
         """检查显式权限"""
-        # TODO: 实现权限检查逻辑
-        return False
+        try:
+            from datetime import datetime
+            stmt = select(FilePermissionModel).where(
+                FilePermissionModel.file_id == file_id,
+                FilePermissionModel.permission == permission
+            )
+
+            conditions = []
+            if user_id:
+                conditions.append(FilePermissionModel.user_id == user_id)
+            # TODO: 这里可以扩展角色检查逻辑
+
+            if conditions:
+                stmt = stmt.where(or_(*conditions))
+
+            result = await self.db.execute(stmt)
+            db_permissions = result.scalars().all()
+
+            now = datetime.now()
+            for perm in db_permissions:
+                if perm.expires_at is None or perm.expires_at > now:
+                    return True
+
+            return False
+        except Exception as e:
+            logger.error(f"Failed to check explicit permission: {str(e)}")
+            return False
 
     async def _update_file_version(self, file_id: str, version: int) -> None:
         """更新文件版本"""
-        # TODO: 实现版本更新逻辑
-        pass
+        try:
+            stmt = (
+                update(FileMetadataModel)
+                .where(FileMetadataModel.file_id == file_id)
+                .values(version=version)
+            )
+            await self.db.execute(stmt)
+            await self.db.commit()
+            logger.info(f"Updated file version: {file_id} to v{version}")
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Failed to update file version {file_id}: {str(e)}")
+            raise

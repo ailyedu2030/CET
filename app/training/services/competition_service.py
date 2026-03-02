@@ -437,15 +437,123 @@ class CompetitionService:
         self, competition_id: str, competition_data: dict[str, Any]
     ) -> None:
         """准备竞赛题库."""
-        # TODO: 实现题库准备逻辑
-        logger.info("准备竞赛题库: %s", competition_id)
-
+        try:
+            # 获取竞赛类型和难度
+            competition_type = competition_data.get("competition_type")
+            difficulty = competition_data.get("difficulty_level", "intermediate")
+            
+            # 基础题库配置
+            question_pool_config = {
+                "competition_type": competition_type,
+                "difficulty_level": difficulty,
+                "total_questions": 0,
+                "questions": [],
+                "prepared_at": datetime.now().isoformat(),
+            }
+            
+            # 根据竞赛类型确定题目数量和类型
+            type_config = self.competition_types.get(competition_type, {})
+            if competition_type == "speed_challenge":
+                question_count = 50
+                question_types = ["multiple_choice", "true_false"]
+            elif competition_type == "accuracy_contest":
+                question_count = 30
+                question_types = ["multiple_choice", "short_answer"]
+            elif competition_type == "endurance_marathon":
+                question_count = 100
+                question_types = ["multiple_choice", "true_false", "short_answer", "essay"]
+            elif competition_type == "team_battle":
+                question_count = 40
+                question_types = ["multiple_choice", "team_challenge"]
+            else:  # daily_challenge
+                question_count = 15
+                question_types = ["multiple_choice"]
+            
+            # 生成示例题目（实际项目中应从题库服务获取）
+            questions = []
+            for i in range(question_count):
+                question = {
+                    "id": f"q_{i+1}",
+                    "type": question_types[i % len(question_types)],
+                    "difficulty": difficulty,
+                    "question": f"这是第 {i+1} 道题目，类型：{question_types[i % len(question_types)]}",
+                    "options": ["选项A", "选项B", "选项C", "选项D"] if question_types[i % len(question_types)] == "multiple_choice" else [],
+                    "correct_answer": "选项A" if question_types[i % len(question_types)] == "multiple_choice" else "正确答案",
+                    "points": 10 if difficulty == "easy" else 20 if difficulty == "intermediate" else 30,
+                    "time_limit": 30 if question_types[i % len(question_types)] == "multiple_choice" else 60,
+                }
+                questions.append(question)
+            
+            # 随机打乱题目顺序（确保公平性）
+            import random
+            random.shuffle(questions)
+            
+            question_pool_config["total_questions"] = len(questions)
+            question_pool_config["questions"] = questions
+            
+            # 更新竞赛的题库配置
+            result = await self.db.execute(
+                select(CompetitionModel).where(CompetitionModel.competition_id == competition_id)
+            )
+            db_competition = result.scalar_one_or_none()
+            if db_competition:
+                db_competition.question_pool = question_pool_config
+                await self.db.commit()
+                await self.db.refresh(db_competition)
+                
+            logger.info("准备竞赛题库: %s, 题目数量: %d", competition_id, len(questions))
+            
+        except Exception as e:
+            logger.error("准备竞赛题库失败: %s", str(e))
+            raise
     async def _publish_competition_announcement(
         self, competition: dict[str, Any]
     ) -> None:
         """发布竞赛公告."""
-        # TODO: 实现公告发布逻辑
-        logger.info("发布竞赛公告: %s", competition["title"])
+        try:
+            # 创建活动日志条目
+            announcement = {
+                "competition_id": competition["competition_id"],
+                "title": f"新竞赛发布: {competition['title']}",
+                "content": f"""
+                🎉 新竞赛上线啦！
+                
+                竞赛名称：{competition['title']}
+                竞赛类型：{self.competition_types.get(competition['competition_type'], {}).get('name', '未知')}
+                开始时间：{competition['start_time'].strftime('%Y-%m-%d %H:%M')}
+                结束时间：{competition['end_time'].strftime('%Y-%m-%d %H:%M')}
+                报名截止：{competition['registration_deadline'].strftime('%Y-%m-%d %H:%M')}
+                最大参与人数：{competition['max_participants']}
+                
+                {competition.get('description', '')}
+                
+                快来报名参加吧！
+                """,
+                "published_at": datetime.now().isoformat(),
+                "target_audience": "all_students",  # 可以根据entry_requirements调整
+            }
+            
+            # TODO: 这里可以集成通知系统，发送给相关用户
+            # 例如：
+            # - 发送系统通知给所有学生
+            # - 发送邮件给关注竞赛的用户
+            # - 创建活动动态
+            
+            # 记录公告发布日志
+            logger.info(
+                "发布竞赛公告: %s, 目标受众: %s", 
+                competition["title"], 
+                announcement["target_audience"]
+            )
+            
+            # TODO: 如果有班级或小组限制，可以针对性通知
+            # entry_requirements = competition.get('entry_requirements', {})
+            # if 'target_classes' in entry_requirements:
+            #     await self._notify_classes(entry_requirements['target_classes'], announcement)
+            
+        except Exception as e:
+            logger.error("发布竞赛公告失败: %s", str(e))
+            # 公告发布失败不应阻止竞赛创建，只记录日志
 
     async def _get_competition(self, competition_id: str) -> dict[str, Any] | None:
         """获取竞赛信息."""
@@ -481,9 +589,60 @@ class CompetitionService:
         self, user_id: int, competition: dict[str, Any]
     ) -> None:
         """检查报名资格."""
-        # TODO: 实现报名资格检查逻辑
-        pass
-
+        try:
+            # 1. 检查用户是否被禁止参加该竞赛
+            # TODO: 实现封禁检查逻辑
+            # if await self._is_user_banned(user_id, competition['competition_id']):
+            #     raise ValueError("您已被禁止参加此竞赛")
+            
+            # 2. 检查参赛要求
+            entry_requirements = competition.get("entry_requirements", {})
+            
+            # 检查最低积分要求
+            if "min_points" in entry_requirements:
+                min_points = entry_requirements["min_points"]
+                # TODO: 从用户服务获取用户积分
+                # user_points = await self._get_user_points(user_id)
+                # if user_points < min_points:
+                #     raise ValueError(f"您的积分不足，需要至少 {min_points} 积分")
+                logger.debug("检查积分要求: %d", min_points)
+            
+            # 检查历史竞赛参与次数限制
+            if "max_previous_competitions" in entry_requirements:
+                max_prev = entry_requirements["max_previous_competitions"]
+                # 获取用户历史竞赛记录
+                user_competitions = await self._get_user_competitions(user_id)
+                if len(user_competitions) > max_prev:
+                    raise ValueError(f"您已参加过 {len(user_competitions)} 次竞赛，超出限制")
+            
+            # 3. 检查用户在同类竞赛中的历史表现（可选）
+            if "min_accuracy_rate" in entry_requirements:
+                min_accuracy = entry_requirements["min_accuracy_rate"]
+                # TODO: 计算用户在同类竞赛中的平均准确率
+                # avg_accuracy = await self._get_user_average_accuracy(user_id, competition['competition_type'])
+                # if avg_accuracy < min_accuracy:
+                #     raise ValueError(f"您的历史准确率不足，需要至少 {min_accuracy*100}%")
+                logger.debug("检查准确率要求: %.2f", min_accuracy)
+            
+            # 4. 检查用户是否已经完成过该竞赛（如果不允许重复参加）
+            if entry_requirements.get("no_repeat", False):
+                user_result = await self._get_user_competition_result(user_id, competition["competition_id"])
+                if user_result.get("score", 0) > 0:
+                    raise ValueError("您已经参加过此竞赛，不能重复报名")
+            
+            # 5. 检查用户状态是否正常
+            # TODO: 实现用户状态检查
+            # if not await self._is_user_active(user_id):
+            #     raise ValueError("您的账户状态异常，无法报名")
+            
+            logger.info("用户 %d 报名资格检查通过: %s", user_id, competition["competition_id"])
+            
+        except ValueError:
+            # 直接重新抛出 ValueError（我们自己抛出的资格不符合错误）
+            raise
+        except Exception as e:
+            logger.error("检查报名资格失败: %s", str(e))
+            raise ValueError("报名资格检查失败，请稍后再试")
     async def _is_already_registered(self, user_id: int, competition_id: str) -> bool:
         """检查是否已报名."""
         result = await self.db.execute(

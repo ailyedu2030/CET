@@ -1,7 +1,7 @@
 """管理员服务 - 处理管理员端所有业务逻辑."""
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from typing import Any
 
 from sqlalchemy import and_, func
@@ -553,32 +553,195 @@ class AdminService:
         self, teacher_id: int, course_id: int
     ) -> None:
         """验证教师资质 - 教育系统核心业务逻辑"""
-        # TODO: 实现教师资质验证
-        # 1. 检查教师证书有效性
-        # 2. 验证专业背景匹配度
-        # 3. 检查教学经验要求
-        # 4. 验证继续教育学分
-        pass
+        try:
+            # 1. 获取用户和教师档案
+            from app.users.models.user_models import TeacherProfile
+
+            # 查询用户是否为教师
+            user_stmt = select(User).where(
+                User.id == teacher_id, User.user_type == UserType.TEACHER
+            )
+            user_result = await self.db.execute(user_stmt)
+            user = user_result.scalar_one_or_none()
+
+            if not user:
+                raise ValueError(f"用户 {teacher_id} 不是教师")
+
+            # 查询教师档案
+            profile_stmt = select(TeacherProfile).where(
+                TeacherProfile.user_id == teacher_id
+            )
+            profile_result = await self.db.execute(profile_stmt)
+            teacher_profile = profile_result.scalar_one_or_none()
+
+            if not teacher_profile:
+                raise ValueError(f"教师 {teacher_id} 没有教师档案")
+
+            # 2. 检查教师证书有效性
+            if not teacher_profile.teacher_certificate:
+                raise ValueError("教师未上传教师资格证书")
+
+            # 3. 检查资质状态
+            if teacher_profile.qualification_status != "approved":
+                raise ValueError(
+                    f"教师资质状态无效: {teacher_profile.qualification_status}"
+                )
+
+            # 4. 检查资质是否过期
+            today = date.today()
+            if teacher_profile.next_review_date and teacher_profile.next_review_date.date() < today:
+                raise ValueError("教师资质已过期，需要重新审核")
+
+            # 5. 检查教学状态
+            if teacher_profile.teaching_status != "active":
+                raise ValueError(
+                    f"教师教学状态无效: {teacher_profile.teaching_status}"
+                )
+
+            # 6. 验证专业背景匹配（简化实现）
+            from app.courses.models.course_models import Course
+
+            course_stmt = select(Course).where(Course.id == course_id)
+            course_result = await self.db.execute(course_stmt)
+            course = course_result.scalar_one_or_none()
+
+            if course and teacher_profile.subject:
+                # 简化版：检查教师科目与课程科目是否匹配
+                course_subject = getattr(course, "subject", None)
+                if course_subject and teacher_profile.subject != course_subject:
+                    raise ValueError(f"教师科目 {teacher_profile.subject} 与课程科目 {course_subject} 不匹配")
+                logger.info(f"专业匹配验证通过: 教师科目={teacher_profile.subject}, 课程科目={course_subject}")
+
+            logger.info(
+                f"教师资质验证通过: teacher_id={teacher_id}, course_id={course_id}"
+            )
+
+        except ValueError:
+            raise
+        except Exception as e:
+            logger.error(f"教师资质验证异常: {str(e)}")
+            raise ValueError(f"教师资质验证失败: {str(e)}")
 
     async def _validate_course_assignment_eligibility(self, course_id: int) -> None:
         """验证课程分配资格 - 教育业务规则"""
-        # TODO: 实现课程分配资格验证
-        # 1. 检查课程状态（已审核、未开始）
-        # 2. 验证课程准入要求
-        # 3. 检查课程容量和资源
-        # 4. 确认课程时间安排合理性
-        pass
+        try:
+            from app.courses.models.course_models import Course, Class
+            from app.shared.models.enums import CourseStatus
+
+            # 1. 查询课程
+            course_stmt = select(Course).where(Course.id == course_id)
+            course_result = await self.db.execute(course_stmt)
+            course = course_result.scalar_one_or_none()
+
+            if not course:
+                raise ValueError(f"课程 {course_id} 不存在")
+
+            # 2. 检查课程状态（必须已审核通过或已上线）
+            valid_statuses = [CourseStatus.APPROVED, CourseStatus.PUBLISHED]
+            if course.status not in valid_statuses:
+                raise ValueError(
+                    f"课程状态无效: {course.status}, 需要状态为 {valid_statuses}"
+                )
+
+            # 3. 检查课程容量（查询班级配置）
+            class_stmt = select(Class).where(Class.course_id == course_id)
+            class_result = await self.db.execute(class_stmt)
+            classes = class_result.scalars().all()
+
+            total_capacity = sum(cls.max_students for cls in classes)
+            if total_capacity == 0 and classes:
+                raise ValueError("课程班级配置的学生容量为0")
+
+            # 4. 检查课程时间安排合理性（简化实现）
+            # 这里可以检查课程开始/结束时间是否合理
+            for cls in classes:
+                if cls.start_date and cls.end_date:
+                    if cls.start_date >= cls.end_date:
+                        raise ValueError(
+                            f"班级 {cls.id} 时间安排不合理: 开始时间 >= 结束时间"
+                        )
+
+            # 5. 验证课程准入要求（检查教学大纲是否存在）
+            if not course.syllabus:
+                raise ValueError("课程缺少教学大纲")
+
+            logger.info(
+                f"课程分配资格验证通过: course_id={course_id}, status={course.status}"
+            )
+
+        except ValueError:
+            raise
+        except Exception as e:
+            logger.error(f"课程分配资格验证异常: {str(e)}")
+            raise ValueError(f"课程分配资格验证失败: {str(e)}")
 
     async def _validate_teaching_quality_requirements(
         self, teacher_id: int, course_id: int
     ) -> None:
         """验证教学质量要求 - 教育质量保障"""
-        # TODO: 实现教学质量验证
-        # 1. 检查教师历史教学评价
-        # 2. 验证学生反馈和满意度
-        # 3. 分析教学效果数据
-        # 4. 确保教学质量标准
-        pass
+        try:
+            from app.users.models.user_models import TeacherProfile, TeachingRecord
+
+            # 1. 获取教师档案
+            profile_stmt = select(TeacherProfile).where(
+                TeacherProfile.user_id == teacher_id
+            )
+            profile_result = await self.db.execute(profile_stmt)
+            teacher_profile = profile_result.scalar_one_or_none()
+
+            if not teacher_profile:
+                raise ValueError(f"教师 {teacher_id} 没有教师档案")
+
+            # 2. 检查教师历史教学评价
+            MIN_REQUIRED_RATING = 3.5  # 最低要求评分
+            if teacher_profile.average_rating < MIN_REQUIRED_RATING:
+                raise ValueError(
+                    f"教师平均评分 {teacher_profile.average_rating} 低于最低要求 {MIN_REQUIRED_RATING}"
+                )
+
+            # 3. 查询教学记录统计
+            records_stmt = select(
+                func.count(TeachingRecord.id).label("total_records"),
+                func.avg(TeachingRecord.teaching_rating).label("avg_record_rating"),
+            ).where(TeachingRecord.teacher_id == teacher_id)
+            records_result = await self.db.execute(records_stmt)
+            record_stats = records_result.first()
+
+            total_records = record_stats.total_records or 0
+            avg_record_rating = record_stats.avg_record_rating or 0.0
+
+            # 4. 检查教学经验（至少有3条教学记录）
+            MIN_TEACHING_RECORDS = 3
+            if total_records > 0 and total_records < MIN_TEACHING_RECORDS:
+                logger.warning(
+                    f"教师 {teacher_id} 教学记录较少: {total_records} 条, 建议 {MIN_TEACHING_RECORDS} 条"
+                )
+
+            # 5. 检查教学效果数据
+            if total_records > 0 and avg_record_rating < MIN_REQUIRED_RATING:
+                raise ValueError(
+                    f"教师历史教学记录平均评分 {avg_record_rating:.2f} 低于最低要求 {MIN_REQUIRED_RATING}"
+                )
+
+            # 6. 检查学生人数（可选，根据业务需求）
+            # 如果教师学生数过多，可以提示，但不阻止分配
+            MAX_STUDENT_SUGGESTION = 100
+            if teacher_profile.student_count > MAX_STUDENT_SUGGESTION:
+                logger.warning(
+                    f"教师 {teacher_id} 当前学生数 {teacher_profile.student_count} 较多, 建议不超过 {MAX_STUDENT_SUGGESTION}"
+                )
+
+            logger.info(
+                f"教学质量要求验证通过: teacher_id={teacher_id}, "
+                f"avg_rating={teacher_profile.average_rating}, "
+                f"total_records={total_records}"
+            )
+
+        except ValueError:
+            raise
+        except Exception as e:
+            logger.error(f"教学质量要求验证异常: {str(e)}")
+            raise ValueError(f"教学质量要求验证失败: {str(e)}")
 
     # ===== 需求6：系统监控与数据决策支持 =====
 
