@@ -61,6 +61,14 @@ class Settings:
     @property
     def database_url(self) -> str:
         """数据库连接字符串."""
+        # 优先使用 DATABASE_URL 环境变量
+        database_url = os.getenv("DATABASE_URL")
+        if database_url:
+            # 移除 asyncpg 前缀以获取基础 URL
+            if database_url.startswith("postgresql+asyncpg://"):
+                database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+            return database_url
+        # 否则从单独的配置构建
         return (
             f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
             f"@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
@@ -71,7 +79,6 @@ class Settings:
     def DATABASE_URL(self) -> str:
         """数据库连接字符串（兼容性属性）."""
         return self.database_url
-
     # Redis配置
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
     REDIS_PORT: int = int(os.getenv("REDIS_PORT", "6379"))
