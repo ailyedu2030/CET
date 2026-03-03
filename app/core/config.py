@@ -7,6 +7,7 @@ from typing import ClassVar
 # 加载 .env 文件
 load_dotenv()
 
+
 class Settings:
     """应用配置类."""
 
@@ -65,6 +66,7 @@ class Settings:
     def database_url(self) -> str:
         """数据库连接字符串."""
         from urllib.parse import quote_plus
+
         # 优先使用 DATABASE_URL 环境变量
         database_url = os.getenv("DATABASE_URL")
         if database_url:
