@@ -67,44 +67,27 @@ class CompetitionModel(BaseModel):
     __tablename__ = "competitions"
 
     id = Column(Integer, primary_key=True, index=True)
-    competition_id = Column(
-        String(50), unique=True, index=True, nullable=False, comment="竞赛唯一标识"
-    )
 
     # 基本信息
     title = Column(String(200), nullable=False, comment="竞赛标题")
     description = Column(Text, comment="竞赛描述")
-    competition_type = Column(String(30), nullable=False, comment="竞赛类型")
-    difficulty_level = Column(String(20), default="intermediate", comment="难度级别")
-
-    # 时间信息
-    start_time = Column(DateTime, nullable=False, comment="开始时间")
-    end_time = Column(DateTime, nullable=False, comment="结束时间")
-    registration_deadline = Column(DateTime, nullable=False, comment="报名截止时间")
-    duration_minutes = Column(Integer, default=30, comment="竞赛时长（分钟）")
-
-    # 组织者信息
+    competition_type = Column(String(50), nullable=False, comment="竞赛类型")
+    status = Column(String(50), nullable=False, comment="竞赛状态")
     organizer_id = Column(
         Integer, ForeignKey("users.id"), nullable=False, comment="组织者用户ID"
     )
-
-    # 参与限制
-    max_participants = Column(Integer, default=100, comment="最大参与人数")
-    participant_count = Column(Integer, default=0, comment="当前参与人数")
-
-    # 竞赛配置
-    entry_requirements = Column(JSON, comment="参赛要求")
-    question_pool = Column(JSON, comment="题库配置")
-    rules = Column(JSON, comment="竞赛规则")
-    prizes = Column(JSON, comment="奖励设置")
-    scoring_method = Column(String(50), comment="评分方式")
-
-    # 状态
-    status = Column(String(20), default="upcoming", comment="竞赛状态")
-
-    # 统计信息
-    view_count = Column(Integer, default=0, comment="查看次数")
-    is_featured = Column(Boolean, default=False, comment="是否推荐")
+    start_time = Column(DateTime, nullable=False, comment="开始时间")
+    end_time = Column(DateTime, nullable=False, comment="结束时间")
+    registration_deadline = Column(DateTime, nullable=False, comment="报名截止时间")
+    max_participants = Column(Integer, comment="最大参与人数")
+    current_participants = Column(Integer, nullable=False, comment="当前参与人数")
+    difficulty_level = Column(String(50), nullable=False, comment="难度级别")
+    duration_minutes = Column(Integer, nullable=False, comment="竞赛时长（分钟）")
+    question_count = Column(Integer, nullable=False, comment="题目数量")
+    passing_score = Column(Float, nullable=False, comment="及格分数")
+    reward_config = Column(JSON, comment="奖励配置")
+    rules = Column(Text, comment="竞赛规则")
+    is_public = Column(Boolean, nullable=False, comment="是否公开")
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
@@ -117,9 +100,6 @@ class CompetitionModel(BaseModel):
         "CompetitionRegistrationModel", back_populates="competition"
     )
     sessions = relationship("CompetitionSessionModel", back_populates="competition")
-    leaderboard_entries = relationship(
-        "LeaderboardEntryModel", back_populates="competition"
-    )
 
     def __repr__(self: "CompetitionModel") -> str:
         return f"<CompetitionModel(id={getattr(self, 'id', None)}, title={getattr(self, 'title', None)})>"
@@ -135,25 +115,12 @@ class CompetitionRegistrationModel(BaseModel):
     __tablename__ = "competition_registrations"
 
     id = Column(Integer, primary_key=True, index=True)
-    registration_id = Column(
-        String(50), unique=True, index=True, nullable=False, comment="报名唯一标识"
-    )
-
-    # 关联信息
     competition_id = Column(
-        String(50),
-        ForeignKey("competitions.competition_id"),
-        nullable=False,
-        comment="竞赛ID",
+        Integer, ForeignKey("competitions.id"), nullable=False, comment="竞赛ID"
     )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="用户ID")
-    team_id = Column(
-        Integer, ForeignKey("teams.id"), nullable=True, comment="团队ID（团队赛）"
-    )
-
-    # 报名信息
-    registered_at = Column(DateTime, default=datetime.utcnow, comment="报名时间")
-    status = Column(String(20), default="registered", comment="报名状态")
+    registration_time = Column(DateTime, nullable=False, comment="报名时间")
+    status = Column(String(50), nullable=False, comment="报名状态")
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
@@ -165,7 +132,7 @@ class CompetitionRegistrationModel(BaseModel):
     competition = relationship("CompetitionModel", back_populates="registrations")
 
     def __repr__(self: "CompetitionRegistrationModel") -> str:
-        return f"<CompetitionRegistrationModel(id={getattr(self, 'id', None)}, registration_id={getattr(self, 'registration_id', None)})>"
+        return f"<CompetitionRegistrationModel(id={getattr(self, 'id', None)}, competition_id={getattr(self, 'competition_id', None)}, user_id={getattr(self, 'user_id', None)})>"
 
 
 class CompetitionSessionModel(BaseModel):
@@ -178,27 +145,17 @@ class CompetitionSessionModel(BaseModel):
     __tablename__ = "competition_sessions"
 
     id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(
-        String(50), unique=True, index=True, nullable=False, comment="会话唯一标识"
-    )
-
-    # 关联信息
     competition_id = Column(
-        String(50),
-        ForeignKey("competitions.competition_id"),
-        nullable=False,
-        comment="竞赛ID",
+        Integer, ForeignKey("competitions.id"), nullable=False, comment="竞赛ID"
     )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="用户ID")
-
-    # 会话信息
-    questions = Column(JSON, comment="题目列表")
-    answers = Column(JSON, comment="答案记录")
+    session_id = Column(String(100), nullable=False, comment="会话唯一标识")
     start_time = Column(DateTime, nullable=False, comment="开始时间")
     end_time = Column(DateTime, comment="结束时间")
-    current_question_index = Column(Integer, default=0, comment="当前题目索引")
-    score = Column(Float, default=0.0, comment="得分")
-    status = Column(String(20), default="active", comment="会话状态")
+    current_question_index = Column(Integer, nullable=False, comment="当前题目索引")
+    score = Column(Float, nullable=False, comment="得分")
+    answers = Column(JSON, comment="答案记录")
+    status = Column(String(50), nullable=False, comment="会话状态")
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
@@ -213,37 +170,28 @@ class CompetitionSessionModel(BaseModel):
         return f"<CompetitionSessionModel(id={getattr(self, 'id', None)}, session_id={getattr(self, 'session_id', None)})>"
 
 
-class LeaderboardEntryModel(BaseModel):
+class CompetitionResultModel(BaseModel):
     """
-    排行榜模型
+    竞赛结果模型
 
-    竞赛排行榜记录
+    竞赛结果记录
     """
 
-    __tablename__ = "leaderboard_entries"
+    __tablename__ = "competition_results"
 
     id = Column(Integer, primary_key=True, index=True)
-
-    # 关联信息
     competition_id = Column(
-        String(50),
-        ForeignKey("competitions.competition_id"),
-        nullable=False,
-        comment="竞赛ID",
+        Integer, ForeignKey("competitions.id"), nullable=False, comment="竞赛ID"
     )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, comment="用户ID")
-
-    # 排名信息
-    rank = Column(Integer, comment="排名")
+    session_id = Column(String(100), nullable=False, comment="会话唯一标识")
     final_score = Column(Float, nullable=False, comment="最终得分")
-    completion_time = Column(Integer, comment="完成时间（秒）")
-    accuracy_rate = Column(Float, comment="准确率")
-    total_participants = Column(Integer, comment="总参与人数")
-
-    # 奖励信息
-    reward_points = Column(Integer, default=0, comment="奖励积分")
-    reward_badge = Column(String(50), comment="奖励徽章")
-    reward_title = Column(String(50), comment="奖励称号")
+    rank = Column(Integer, comment="排名")
+    completion_time = Column(Integer, nullable=False, comment="完成时间（秒）")
+    correct_answers = Column(Integer, nullable=False, comment="正确答案数")
+    total_questions = Column(Integer, nullable=False, comment="总题数")
+    accuracy_rate = Column(Float, nullable=False, comment="准确率")
+    reward_earned = Column(JSON, comment="获得的奖励")
 
     # 时间戳
     created_at = Column(DateTime, default=datetime.utcnow, comment="创建时间")
@@ -251,8 +199,5 @@ class LeaderboardEntryModel(BaseModel):
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间"
     )
 
-    # 关系
-    competition = relationship("CompetitionModel", back_populates="leaderboard_entries")
-
-    def __repr__(self: "LeaderboardEntryModel") -> str:
-        return f"<LeaderboardEntryModel(id={getattr(self, 'id', None)}, competition_id={getattr(self, 'competition_id', None)}, user_id={getattr(self, 'user_id', None)})>"
+    def __repr__(self: "CompetitionResultModel") -> str:
+        return f"<CompetitionResultModel(id={getattr(self, 'id', None)}, competition_id={getattr(self, 'competition_id', None)}, user_id={getattr(self, 'user_id', None)})>"

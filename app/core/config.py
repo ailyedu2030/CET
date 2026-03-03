@@ -1,8 +1,11 @@
 """应用核心配置模块."""
 
+from dotenv import load_dotenv
 import os
 from typing import ClassVar
 
+# 加载 .env 文件
+load_dotenv()
 
 class Settings:
     """应用配置类."""
@@ -61,6 +64,7 @@ class Settings:
     @property
     def database_url(self) -> str:
         """数据库连接字符串."""
+        from urllib.parse import quote_plus
         # 优先使用 DATABASE_URL 环境变量
         database_url = os.getenv("DATABASE_URL")
         if database_url:
@@ -70,9 +74,10 @@ class Settings:
                     "postgresql+asyncpg://", "postgresql://", 1
                 )
             return database_url
-        # 否则从单独的配置构建
+        # 否则从单独的配置构建，密码需要 URL 编码
+        encoded_password = quote_plus(self.POSTGRES_PASSWORD)
         return (
-            f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            f"postgresql+asyncpg://{self.POSTGRES_USER}:{encoded_password}"
             f"@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )
 

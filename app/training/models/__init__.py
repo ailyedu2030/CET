@@ -5,7 +5,7 @@ from .competition_models import (
     CompetitionModel,
     CompetitionRegistrationModel,
     CompetitionSessionModel,
-    LeaderboardEntryModel,
+    CompetitionResultModel,
 )
 from .assistant_models import ResourceRecommendationModel
 
@@ -17,6 +17,6 @@ __all__ = [
     "CompetitionModel",
     "CompetitionRegistrationModel",
     "CompetitionSessionModel",
-    "LeaderboardEntryModel",
+    "CompetitionResultModel",
     "ResourceRecommendationModel",
 ]
