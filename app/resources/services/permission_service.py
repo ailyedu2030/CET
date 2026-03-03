@@ -123,7 +123,7 @@ class PermissionService:
                     and_(
                         ResourceShare.resource_id == ResourceLibrary.id,
                         ResourceShare.resource_type == resource_type,
-                        ResourceShare.is_active == True,
+                        ResourceShare.is_active,
                     ),
                     isouter=True,
                 )
@@ -484,7 +484,7 @@ class PermissionService:
             ResourceShare.resource_id == resource_id,
             ResourceShare.resource_type == resource_type,
             ResourceShare.share_scope == "class",
-            ResourceShare.is_active == True,
+            ResourceShare.is_active,
         )
         result = await self.db.execute(stmt)
         shares = result.scalars().all()

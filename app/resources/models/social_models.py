@@ -49,19 +49,6 @@ class ResourceComment(BaseModel):
         comment="父评论ID",
     )
 
-    # 审计信息
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=datetime.utcnow,
-        comment="创建时间",
-    )
-    updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True),
-        nullable=True,
-        comment="更新时间",
-    )
-
     # 关系 - 使用字符串引用避免循环导入
     resource: Mapped["ResourceLibrary"] = relationship(
         "ResourceLibrary",
@@ -113,19 +100,6 @@ class ResourceRating(BaseModel):
         comment="评分(1-5)",
     )
 
-    # 审计信息
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=datetime.utcnow,
-        comment="创建时间",
-    )
-    updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True),
-        nullable=True,
-        comment="更新时间",
-    )
-
     # 关系 - 使用字符串引用避免循环导入
     resource: Mapped["ResourceLibrary"] = relationship(
         "ResourceLibrary",
@@ -138,17 +112,6 @@ class ResourceRating(BaseModel):
 
     def __repr__(self) -> str:
         return f"<ResourceRating(id={self.id}, resource_id={self.resource_id}, rating={self.rating})>"
-
-
-# 导出
-__all__ = [
-    "ResourceComment",
-    "ResourceRating",
-    "ResourceTag",
-    "ResourceCategory",
-    "ResourceQuota",
-    "ResourceSyncLog",
-]
 
 
 class ResourceTag(BaseModel):
@@ -176,12 +139,6 @@ class ResourceTag(BaseModel):
     )
 
     # 审计信息
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=datetime.utcnow,
-        comment="创建时间",
-    )
     created_by: Mapped[int | None] = mapped_column(
         Integer,
         ForeignKey("users.id"),
@@ -234,19 +191,6 @@ class ResourceCategory(BaseModel):
         comment="分类描述",
     )
 
-    # 审计信息
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=datetime.utcnow,
-        comment="创建时间",
-    )
-    updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True),
-        nullable=True,
-        comment="更新时间",
-    )
-
     # 关系
     parent: Mapped["ResourceCategory | None"] = relationship(
         "ResourceCategory",
@@ -257,6 +201,9 @@ class ResourceCategory(BaseModel):
         "ResourceCategory",
         back_populates="parent",
     )
+
+    def __repr__(self) -> str:
+        return f"<ResourceCategory(id={self.id}, name={self.name}, level={self.level})>"
 
 
 class ResourceQuota(BaseModel):
@@ -320,19 +267,6 @@ class ResourceQuota(BaseModel):
         nullable=False,
         default=datetime.utcnow,
         comment="周期开始时间",
-    )
-
-    # 审计信息
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=datetime.utcnow,
-        comment="创建时间",
-    )
-    updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True),
-        nullable=True,
-        comment="更新时间",
     )
 
     def __repr__(self) -> str:
@@ -426,15 +360,17 @@ class ResourceSyncLog(BaseModel):
         nullable=True,
         comment="完成时间",
     )
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=datetime.utcnow,
-        comment="创建时间",
-    )
 
     def __repr__(self) -> str:
         return f"<ResourceSyncLog(id={self.id}, type={self.sync_type}, status={self.status})>"
 
-    def __repr__(self) -> str:
-        return f"<ResourceCategory(id={self.id}, name={self.name}, level={self.level})>"
+
+# 导出
+__all__ = [
+    "ResourceComment",
+    "ResourceRating",
+    "ResourceTag",
+    "ResourceCategory",
+    "ResourceQuota",
+    "ResourceSyncLog",
+]

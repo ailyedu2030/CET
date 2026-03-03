@@ -8,8 +8,8 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.enums import TrainingType
-from app.training.models.training_models import TrainingRecord
-from app.training.models.learning_plan_models import LearningPlanModel, TrainingSession
+from app.training.models.training_models import TrainingRecord, TrainingSession
+from app.training.models.learning_plan_models import LearningPlanModel
 from app.training.utils.plan_generator import PlanGenerator
 from app.users.models.user_models import User
 
@@ -408,7 +408,7 @@ class LearningPlanService:
 
             stmt = (
                 select(LearningPlanModel)
-                .where(LearningPlanModel.student_id == student_id)
+                .where(LearningPlanModel.user_id == student_id)
                 .order_by(desc(LearningPlanModel.created_at))
                 .limit(1)
             )
@@ -428,9 +428,8 @@ class LearningPlanService:
                 return None
             return {
                 "plan_id": plan.id,
-                "student_id": plan.student_id,
-                "plan_title": plan.plan_title,
-                "plan_type": plan.plan_type,
+                "student_id": plan.user_id,
+                "plan_title": plan.plan_name,
                 "status": plan.status,
                 "start_date": plan.start_date.isoformat() if plan.start_date else None,
                 "end_date": plan.end_date.isoformat() if plan.end_date else None,

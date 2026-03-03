@@ -81,7 +81,7 @@ class QuestionBatchService:
         """获取题目批次列表."""
         try:
             # 构建查询条件
-            conditions = [QuestionBatch.is_active == True]  # noqa: E712
+            conditions = [QuestionBatch.is_active]  # noqa: E712
 
             if training_type:
                 conditions.append(QuestionBatch.training_type == training_type)
@@ -156,7 +156,7 @@ class QuestionBatchService:
         try:
             query = select(QuestionBatch).where(
                 and_(
-                    QuestionBatch.id == batch_id, QuestionBatch.is_active == True
+                    QuestionBatch.id == batch_id, QuestionBatch.is_active
                 )  # noqa: E712
             )
             result = await self.db.execute(query)
@@ -192,7 +192,7 @@ class QuestionBatchService:
         try:
             query = select(QuestionBatch).where(
                 and_(
-                    QuestionBatch.id == batch_id, QuestionBatch.is_active == True
+                    QuestionBatch.id == batch_id, QuestionBatch.is_active
                 )  # noqa: E712
             )
             result = await self.db.execute(query)
@@ -243,7 +243,7 @@ class QuestionBatchService:
         try:
             query = select(QuestionBatch).where(
                 and_(
-                    QuestionBatch.id == batch_id, QuestionBatch.is_active == True
+                    QuestionBatch.id == batch_id, QuestionBatch.is_active
                 )  # noqa: E712
             )
             result = await self.db.execute(query)
