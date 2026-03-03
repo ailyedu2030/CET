@@ -13,6 +13,9 @@ from app.training.models.training_center_models import (
     TrainingAchievementModel,
 )
 from app.users.models.user_models import User
+from app.notifications.services.notification_service import UnifiedNotificationService
+from app.notifications.schemas.notification_schemas import NotificationCreate
+from app.shared.models.enums import UserType
 
 logger = logging.getLogger(__name__)
 
@@ -454,6 +457,17 @@ class AchievementService:
     ) -> None:
         """发送成就通知."""
         # TODO: 实现通知发送逻辑
+        notification_service = UnifiedNotificationService(self.db)
+        for achievement in achievements:
+            notification_data = NotificationCreate(
+                title="🎉 成就解锁！",
+                content=f"恭喜你解锁了成就：{achievement['name']}！获得 {achievement['points']} 积分！",
+                notification_type="achievement",
+                priority="high",
+                metadata={"achievement_id": achievement.get('achievement_id'), "points": achievement.get('points')}
+            )
+            await notification_service.send_notification(notification_data, [user_id])
+        logger.info(f"发送成就通知给用户 {user_id}")
         logger.info(f"发送成就通知给用户 {user_id}")
 
     async def _get_user_badges(self, user_id: int) -> list[dict[str, Any]]:
@@ -629,6 +643,7 @@ class AchievementService:
             if not user:
                 return False
             # TODO: Implement proper admin check based on user role
+            return user.user_type == UserType.ADMIN
             return hasattr(user, 'is_admin') and user.is_admin
         except Exception as e:
             logger.warning(f"验证管理员权限失败: {e}")
@@ -650,6 +665,18 @@ class AchievementService:
     async def _save_custom_achievement(self, achievement: dict[str, Any]) -> None:
         """保存自定义成就."""
         # TODO: 实现数据库保存逻辑 for custom achievements
+        db_achievement = TrainingAchievementModel(
+            user_id=achievement.get('user_id'),
+            achievement_name=achievement.get('name'),
+            achievement_description=achievement.get('description'),
+            achievement_type="custom",
+            reward_points=achievement.get('points', 0),
+            is_unlocked=True,
+            unlocked_at=datetime.now(),
+        )
+        self.db.add(db_achievement)
+        await self.db.commit()
+        logger.info(f"保存自定义成就: {achievement['achievement_id']}")
         logger.info(f"保存自定义成就: {achievement['achievement_id']}")
 
     def _get_current_achievement_level(
