@@ -167,8 +167,33 @@ ignore = [
 "app/shared/utils/minio_client.py" = ["F811"]
 "app/training/services/question_batch_service.py" = ["E712"]
 "app/users/services/token_blocklist_service.py" = ["UP007"]
+target-version = "py311"
+line-length = 100
 
-[tool.mypy]
+# 排除不需要检查的文件和目录
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "node_modules",
+    "quality-reports",
+    "*.json",
+    "*.md",
+    "*.yml",
+    "*.yaml",
+    "*.toml",
+    "*.txt",
+    "*.sh",
+    ".env*",
+    "Dockerfile*",
+    ".github/CODEOWNERS",
+]
+
+
 python_version = "3.11"
 strict = true
 warn_return_any = true
