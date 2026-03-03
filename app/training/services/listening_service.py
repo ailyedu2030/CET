@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.shared.models.enums import DifficultyLevel
+from app.training.models.listening_models import ListeningExercise, ListeningResult
 
 logger = logging.getLogger(__name__)
 
